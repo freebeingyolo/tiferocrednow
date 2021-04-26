@@ -1,3 +1,6 @@
+include ':lib_step'
+include ':lib_ble'
+include ':lib_test'
 include ':lib_base'
 include ':lib_res'
 include ':app'
