@@ -10,6 +10,16 @@ lib_res			#公共资源
 lib_step		#计步
 ```
 
+# 类名
+
+```
+BaseActivity		#所有Activity的基类
+BaseFragment		#所有Fragment的基类
+BaseApplication		#基础Application类
+ActivityHolder		#Activity的栈列表
+
+```
+
 
 
 
