@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId "com.css.wondercorefit"
         minSdkVersion 19
-        targetSdkVersion 22
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
 
@@ -31,11 +31,24 @@ android {
         jvmTarget = '1.8'
     }
 
-    buildFeatures{
+    buildFeatures {
         dataBinding true
     }
 
+    applicationVariants.all { v ->
+        v.outputs.all {
+            // 输出apk名称为WonderCoreFit_v1.0_2018-08-13_D.apk,d表示debug版本，r表示release版本
+            def targetFileNamePrefix
+            targetFileNamePrefix = v.buildType.name.equals("release") ? "r" : "d"
+            def fileName = "WonderCoreFit_v${defaultConfig.versionName}_${releaseTime()}_${targetFileNamePrefix}.apk"
+            outputFileName = fileName
+        }
+    }
+}
 
+//UTC:世界统一时间，不属于任意时区
+def releaseTime() {
+    return new Date().format("yyyyMMddHHmm", TimeZone.getTimeZone("UTC"))
 }
 
 dependencies {
