@@ -1,6 +1,5 @@
 package com.css.step
 
-import android.R.attr.data
 import android.app.*
 import android.content.Context
 import android.content.Intent
