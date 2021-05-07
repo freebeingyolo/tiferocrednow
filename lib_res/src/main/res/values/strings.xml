@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">京造运动</string>
+    <string name="title_index_home">首页</string>
+    <string name="title_index_course">教程</string>
+    <string name="title_index_mall">商城</string>
+    <string name="title_index_setting">设置</string>
 </resources>
