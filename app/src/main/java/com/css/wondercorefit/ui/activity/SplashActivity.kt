@@ -1,16 +1,13 @@
 package com.css.wondercorefit.ui.activity
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.blankj.utilcode.constant.PermissionConstants
-import com.blankj.utilcode.util.ArrayUtils
 import com.blankj.utilcode.util.PermissionUtils
 import com.css.base.uibase.BaseActivity
-import com.css.base.uibase.viewmodel.DefaultYuboViewModel
 import com.css.wondercorefit.R
 import com.css.wondercorefit.viewmodel.SplashViewModel
 

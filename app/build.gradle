@@ -39,12 +39,20 @@ android {
     }
 
     applicationVariants.all { v ->
+        //v.getPackageApplicationProvider().get().outputDirectory = new File(rootDir, "apk")
+        //v.getPackageApplicationProvider().get().outputDirectory = new File("$rootDir/apk")
         v.outputs.all {
             // 输出apk名称为WonderCoreFit_v1.0_2018-08-13_D.apk,d表示debug版本，r表示release版本
             def targetFileNamePrefix
             targetFileNamePrefix = v.buildType.name.equals("release") ? "r" : "d"
-            def fileName = "WonderCoreFit_v${defaultConfig.versionName}_${releaseTime()}_${targetFileNamePrefix}.apk"
+            def releaseTime = new Date().format("yyyyMMddHHmm", TimeZone.getTimeZone("GMT+08:00"))
+            def fileName = "WonderCoreFit_v${defaultConfig.versionName}_${releaseTime}_${targetFileNamePrefix}.apk"
             outputFileName = fileName
+        }
+    }
+    repositories {
+        flatDir{
+            dir '../lib_ble/libs'
         }
     }
 }
@@ -55,14 +63,11 @@ def releaseTime() {
 }
 
 dependencies {
+//    implementation fileTree(includes: ['*.jar'],dir:"libs")
     implementation project(':lib_base')
     implementation project(':lib_step')
     implementation project(':lib_ble')
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.2.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+//    implementation project(':lib_qrscan')
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

@@ -13,8 +13,12 @@ abstract class BaseActivity <VM : BaseViewModel> : BaseWonderActivity<VM>(){
         ActivityHolder.addActivity(this)
     }
 
+    override fun onStop() {
+        super.onStop()
+        if (this.isFinishing) ActivityHolder.removeActivity(this)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        ActivityHolder.removeActivity(this)
     }
 }

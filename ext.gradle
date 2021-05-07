@@ -35,4 +35,5 @@ ext{
             //事件总线
             eventBus                 : 'org.greenrobot:eventbus:3.2.0',
     ]
+    isDebugType=false
 }
