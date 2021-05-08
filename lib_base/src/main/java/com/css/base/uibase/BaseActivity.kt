@@ -14,8 +14,12 @@ abstract class BaseActivity <VM : BaseViewModel,VB: ViewBinding> : BaseWonderAct
         ActivityHolder.addActivity(this)
     }
 
+    override fun onStop() {
+        super.onStop()
+        if (this.isFinishing) ActivityHolder.removeActivity(this)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        ActivityHolder.removeActivity(this)
     }
 }

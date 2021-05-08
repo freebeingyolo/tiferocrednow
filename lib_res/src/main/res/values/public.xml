@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 提供resource给外部用 -->
+    <public name="mylib_app_name" type="string"/>
+
+
+</resources>

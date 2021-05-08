@@ -8,7 +8,6 @@ open class BaseApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         initBlankj()
-
     }
 
     private fun initBlankj() {

@@ -5,4 +5,5 @@ include ':lib_test'
 include ':lib_base'
 include ':lib_res'
 include ':app'
+include ':lib_qrscan'
 rootProject.name = "WonderCoreFit"

@@ -1,7 +1,18 @@
 <resources>
-    <string name="app_name">京造运动</string>
+    <string name="app_name">WonderCoreFit</string>
+    <string name="allow_usecamera">Open Camera Permission</string>
+    <string name="exit">exit</string>
+    <string name="qrscan_require_permission">"Scan requires permission "</string>
+
     <string name="title_index_home">首页</string>
     <string name="title_index_course">教程</string>
     <string name="title_index_mall">商城</string>
     <string name="title_index_setting">设置</string>
+
+    <string name="kg">kg</string>
+    <string name="today_step">今日步数</string>
+    <string name="store_name">健身好店铺</string>
+    <string name="mall_product">运动好产品</string>
+    <string name="person_information">个人信息</string>
+    <string name="about_us">关于我们</string>
 </resources>
