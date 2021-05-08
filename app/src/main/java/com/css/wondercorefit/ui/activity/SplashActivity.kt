@@ -50,6 +50,27 @@ class SplashActivity : BaseActivity<SplashViewModel>() {
             }
             .callback(object : PermissionUtils.FullCallback {
                 override fun onGranted(permissionsGranted: List<String>) {
+                    checkBodySensorPermission()
+                }
+
+                override fun onDenied(
+                    permissionsDeniedForever: List<String>,
+                    permissionsDenied: List<String>
+                ) {
+                    checkBodySensorPermission()
+                }
+            })
+            .request()
+    }
+
+    private fun checkBodySensorPermission() {
+        val permission = PermissionConstants.SENSORS
+        PermissionUtils.permission(permission)
+            .rationale { _, shouldRequest ->
+                shouldRequest.again(true)
+            }
+            .callback(object : PermissionUtils.FullCallback {
+                override fun onGranted(permissionsGranted: List<String>) {
                     checkLocationPermission()
                 }
 

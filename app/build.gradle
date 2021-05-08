@@ -58,6 +58,8 @@ dependencies {
     implementation project(':lib_base')
     implementation project(':lib_step')
     implementation project(':lib_ble')
+    implementation 'com.github.seagazer:liteplayer:1.0.7'
+    implementation 'com.danikula:videocache:2.7.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.2.0'
