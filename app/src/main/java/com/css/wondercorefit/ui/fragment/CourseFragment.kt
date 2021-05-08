@@ -3,8 +3,6 @@ package com.css.wondercorefit.ui.fragment
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
@@ -28,8 +26,6 @@ import com.seagazer.liteplayer.list.ListItemChangedListener
 import com.seagazer.liteplayer.list.ListPlayer2
 import com.seagazer.liteplayer.widget.LiteGestureController
 import com.seagazer.liteplayer.widget.LiteMediaController
-import kotlinx.android.synthetic.main.fragment_course.*
-import kotlinx.android.synthetic.main.fragment_main.top_view
 
 class CourseFragment : BaseFragment<DefaultYuboViewModel, FragmentCourseBinding>() {
     private lateinit var listPlayer: ListPlayer2
@@ -40,11 +36,10 @@ class CourseFragment : BaseFragment<DefaultYuboViewModel, FragmentCourseBinding>
         super.initView( savedInstanceState)
         SystemBarHelper.immersiveStatusBar(activity, 0f)
         SystemBarHelper.setHeightAndPadding(activity, mViewBinding?.topView)
-    }
 
         val listAdapter = ListAdapter()
-        video_listView.adapter = listAdapter
-        video_listView.setOnItemClickListener { _, _, position, _ ->
+        mViewBinding?.videoListView?.adapter = listAdapter
+        mViewBinding?.videoListView?.setOnItemClickListener { _, _, position, _ ->
             if (!isAutoPlay) {
                 listPlayer.onItemClick(position)
             }
@@ -82,7 +77,7 @@ class CourseFragment : BaseFragment<DefaultYuboViewModel, FragmentCourseBinding>
         val videoScrollListener = object : ListPlayer2.VideoListScrollListener {
 
             override fun getVideoContainer(childIndex: Int, position: Int): ViewGroup? {
-                val itemView = video_listView.getChildAt(childIndex)
+                val itemView = mViewBinding?.videoListView?.getChildAt(childIndex)
                 return if (itemView != null && itemView.tag != null) {
                     val videoHolder = itemView.tag as ListAdapter.VideoHolder
                     listPlayerHolder = videoHolder
@@ -97,11 +92,20 @@ class CourseFragment : BaseFragment<DefaultYuboViewModel, FragmentCourseBinding>
             }
         }
 
-        listPlayer.attachToListView(video_listView, false, videoScrollListener)
+        mViewBinding?.let { listPlayer.attachToListView(it.videoListView, false, videoScrollListener) }
         listPlayer.setAutoPlayMode(false)
         listPlayer.setRepeatMode(true)
         isAutoPlay = false
     }
+
+    override fun initViewBinding(
+        inflater: LayoutInflater,
+        viewGroup: ViewGroup?
+    ): FragmentCourseBinding=FragmentCourseBinding.inflate(inflater, viewGroup, false)
+
+    override fun initViewModel(): DefaultYuboViewModel=   ViewModelProvider(this).get(DefaultYuboViewModel::class.java)
+
+    override fun getLayoutResId(): Int =R.layout.fragment_course
 
     inner class ListAdapter : BaseAdapter() {
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
@@ -140,15 +144,6 @@ class CourseFragment : BaseFragment<DefaultYuboViewModel, FragmentCourseBinding>
 
     }
 
-    override fun initViewModel(): DefaultYuboViewModel =
-        ViewModelProvider(this).get(DefaultYuboViewModel::class.java)
-
-    override fun getLayoutResId(): Int = R.layout.fragment_course
-    override fun initViewBinding(
-        inflater: LayoutInflater,
-        viewGroup: ViewGroup?
-    ): FragmentCourseBinding = FragmentCourseBinding.inflate(inflater, viewGroup, false)
-    override fun getLayoutResId(): Int =R.layout.fragment_course
 
     override fun onBackPressed() {
         if (listPlayer.isFullScreen()) {
