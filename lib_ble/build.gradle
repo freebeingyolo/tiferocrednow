@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-kapt'
 }
 
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
@@ -51,7 +52,7 @@ dependencies {
 //    implementation fileTree(includes: ['*.jar'],dir:"libs")
     implementation project(':lib_service')
     implementation project(':lib_base')
-    implementation(name:"bluetoothlib_ts_1.0.3",ext:"aar")
+    implementation(name: "bluetoothlib_ts_1.0.3", ext: "aar")
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
