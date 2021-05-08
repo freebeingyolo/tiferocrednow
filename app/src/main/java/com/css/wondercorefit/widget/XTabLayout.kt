@@ -9,10 +9,10 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.css.service.inner.BaseInner
 import com.css.wondercorefit.R
-import kotlinx.android.synthetic.main.main_tab_view.view.*
 
 class XTabLayout @JvmOverloads constructor(
     context: Context,
@@ -41,22 +41,23 @@ class XTabLayout @JvmOverloads constructor(
 
     private fun initUI() {
         setBackgroundColor(Color.WHITE)
-        LayoutInflater.from(context).inflate(R.layout.main_tab_view, this, true)
-        mMainIcon = tab_main.findViewById(R.id.icon)
-        mMainName = tab_main.findViewById(R.id.name)
-        tab_main.setOnClickListener(this)
-
-        mCourseIcon = tab_course.findViewById(R.id.icon)
-        mCourseName = tab_course.findViewById(R.id.name)
-        tab_course.setOnClickListener(this)
-
-        mMallIcon = tab_mall.findViewById(R.id.icon)
-        mMallName = tab_mall.findViewById(R.id.name)
-        tab_mall.setOnClickListener(this)
-
-        mSettingIcon = tab_setting.findViewById(R.id.icon)
-        mSettingName = tab_setting.findViewById(R.id.name)
-        tab_setting.setOnClickListener(this)
+        var view = LayoutInflater.from(context).inflate(R.layout.main_tab_view, this, true)
+        val tabMain = view.findViewById<ConstraintLayout>(R.id.tab_main)
+        mMainIcon = tabMain.findViewById(R.id.icon)
+        mMainName = tabMain.findViewById(R.id.name)
+        tabMain.setOnClickListener(this)
+        val tabCourse = view.findViewById<ConstraintLayout>(R.id.tab_course)
+        mCourseIcon = tabCourse.findViewById(R.id.icon)
+        mCourseName = tabCourse.findViewById(R.id.name)
+        tabCourse.setOnClickListener(this)
+        val tabMall = view.findViewById<ConstraintLayout>(R.id.tab_mall)
+        mMallIcon = tabMall.findViewById(R.id.icon)
+        mMallName = tabMall.findViewById(R.id.name)
+        tabMall.setOnClickListener(this)
+        val tabSetting = view.findViewById<ConstraintLayout>(R.id.tab_setting)
+        mSettingIcon = tabSetting.findViewById(R.id.icon)
+        mSettingName = tabSetting.findViewById(R.id.name)
+        tabSetting.setOnClickListener(this)
     }
 
     fun initTab(callback: (Int) -> Unit) {

@@ -1,7 +1,6 @@
 package com.css.wondercorefit.ui.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,17 +9,21 @@ import com.css.base.uibase.BaseFragment
 import com.css.base.uibase.viewmodel.DefaultYuboViewModel
 import com.css.service.utils.SystemBarHelper
 import com.css.wondercorefit.R
-import kotlinx.android.synthetic.main.fragment_main.*
+import com.css.wondercorefit.databinding.FragmentMallBinding
 
-class MallFragment : BaseFragment<DefaultYuboViewModel>() {
+class MallFragment : BaseFragment<DefaultYuboViewModel,FragmentMallBinding>() {
 
-    override fun initView(rootView: View, savedInstanceState: Bundle?) {
-        super.initView(rootView, savedInstanceState)
+    override fun initView( savedInstanceState: Bundle?) {
+        super.initView( savedInstanceState)
         SystemBarHelper.immersiveStatusBar(activity, 0f)
-        SystemBarHelper.setHeightAndPadding(activity, top_view)
+        SystemBarHelper.setHeightAndPadding(activity, mViewBinding?.topView)
     }
 
     override fun initViewModel(): DefaultYuboViewModel = ViewModelProvider(this).get(DefaultYuboViewModel::class.java)
 
     override fun getLayoutResId(): Int=R.layout.fragment_mall
+    override fun initViewBinding(
+        inflater: LayoutInflater,
+        viewGroup: ViewGroup?
+    ): FragmentMallBinding = FragmentMallBinding.inflate(inflater, viewGroup, false)
 }

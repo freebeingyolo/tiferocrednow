@@ -6,18 +6,19 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.util.SPUtils
 import com.css.base.uibase.BaseActivity
 import com.css.base.uibase.viewmodel.DefaultYuboViewModel
 import com.css.service.inner.BaseInner
 import com.css.wondercorefit.R
+import com.css.wondercorefit.databinding.ActivityMainBinding
 import com.css.wondercorefit.ui.fragment.CourseFragment
 import com.css.wondercorefit.ui.fragment.MainFragment
 import com.css.wondercorefit.ui.fragment.MallFragment
 import com.css.wondercorefit.ui.fragment.SettingFragment
-import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : BaseActivity<DefaultYuboViewModel>() {
+class MainActivity : BaseActivity<DefaultYuboViewModel,ActivityMainBinding>() {
     private var mCurFragment: Fragment? = null
     private lateinit var mTabMainFragment: MainFragment
     lateinit var mTabCourseFragment: CourseFragment
@@ -28,10 +29,9 @@ class MainActivity : BaseActivity<DefaultYuboViewModel>() {
     override fun initViewModel(): DefaultYuboViewModel =
         ViewModelProvider(this).get(DefaultYuboViewModel::class.java)
 
-    override fun enabledVisibleToolBar(): Boolean = false
-
-    override fun initView(rootView: View, savedInstanceState: Bundle?) {
-        super.initView(rootView, savedInstanceState)
+    override fun initView( savedInstanceState: Bundle?) {
+        super.initView(savedInstanceState)
+        setWhiteFakeStatus(R.id.cl_parent,false)
         initTablayout()
     }
 
@@ -40,8 +40,8 @@ class MainActivity : BaseActivity<DefaultYuboViewModel>() {
         mTabCourseFragment = CourseFragment()
         mTabMallFragment = MallFragment()
         mTabSettingFragment = SettingFragment()
-        tablayout.initTab(callback = {
-            tablayout.tag = it
+       mViewBinding.tablayout.initTab(callback = {
+           mViewBinding.tablayout.tag = it
 //            val fragment = getFragment(it)
             when (it) {
                 BaseInner.TabIndex.HOME -> {
@@ -108,4 +108,5 @@ class MainActivity : BaseActivity<DefaultYuboViewModel>() {
         return null
     }
 
+    override fun initViewBinding(): ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
 }
