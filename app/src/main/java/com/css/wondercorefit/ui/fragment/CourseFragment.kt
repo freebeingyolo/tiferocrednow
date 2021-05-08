@@ -46,7 +46,7 @@ class CourseFragment : BaseFragment<DefaultYuboViewModel, FragmentCourseBinding>
         }
         listPlayer = ListPlayer2(LitePlayerView(context!!)).apply {
             displayProgress(true)
-            setProgressColor(resources.getColor(R.color.colorAccent), resources.getColor(R.color.colorPrimaryDark))
+            setProgressColor(R.color.colorAccent, R.color.colorPrimaryDark)
             attachOverlay(LoadingOverlay(context!!))
             attachMediaController(LiteMediaController(context!!))
             attachGestureController(LiteGestureController(context!!).apply {
@@ -87,7 +87,7 @@ class CourseFragment : BaseFragment<DefaultYuboViewModel, FragmentCourseBinding>
                 }
             }
 
-            override fun getVideoDataSource(position: Int): DataSource? {
+            override fun getVideoDataSource(position: Int): DataSource {
                 return DataSource(VideoCacheHelper.url(listAdapter.getItem(position)))
             }
         }
