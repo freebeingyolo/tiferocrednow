@@ -1,7 +1,11 @@
 package com.css.wondercorefit.ui.activity
 
+import android.content.ComponentName
+import android.content.Intent
+import android.content.ServiceConnection
 import android.graphics.Color
-import android.os.Bundle
+import android.os.*
+import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -11,6 +15,9 @@ import com.blankj.utilcode.util.SPUtils
 import com.css.base.uibase.BaseActivity
 import com.css.base.uibase.viewmodel.DefaultViewModel
 import com.css.service.inner.BaseInner
+import com.css.step.ISportStepInterface
+import com.css.step.TodayStepManager
+import com.css.step.TodayStepService
 import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.ActivityMainBinding
 import com.css.wondercorefit.ui.fragment.CourseFragment
@@ -25,6 +32,12 @@ class MainActivity : BaseActivity<DefaultViewModel,ActivityMainBinding>() {
     private lateinit var mTabMallFragment: MallFragment
     private lateinit var mTabSettingFragment: SettingFragment
 
+    private var iSportStepInterface: ISportStepInterface? = null
+    private lateinit var stepArray:String
+    private val mDelayHandler = Handler(TodayStepCounterCall())
+    private val REFRESH_STEP_WHAT = 0
+    private val TIME_INTERVAL_REFRESH: Long = 500
+
     override fun initViewModel(): DefaultViewModel =
         ViewModelProvider(this).get(DefaultViewModel::class.java)
 
@@ -32,6 +45,7 @@ class MainActivity : BaseActivity<DefaultViewModel,ActivityMainBinding>() {
         super.initView(savedInstanceState)
         setWhiteFakeStatus(R.id.cl_parent,false)
         initTablayout()
+        startStep()
     }
 
     private fun initTablayout() {
@@ -39,7 +53,7 @@ class MainActivity : BaseActivity<DefaultViewModel,ActivityMainBinding>() {
         mTabCourseFragment = CourseFragment()
         mTabMallFragment = MallFragment()
         mTabSettingFragment = SettingFragment()
-       mViewBinding.tablayout.initTab(callback = {
+        mViewBinding.tablayout.initTab(callback = {
            mViewBinding.tablayout.tag = it
 //            val fragment = getFragment(it)
             when (it) {
@@ -73,6 +87,38 @@ class MainActivity : BaseActivity<DefaultViewModel,ActivityMainBinding>() {
 
     }
 
+    private fun startStep() {
+        TodayStepManager().init(application)
+        //开启计步Service，同时绑定Activity进行aidl通信
+    }
+
+    inner class TodayStepCounterCall : Handler.Callback {
+        override fun handleMessage(msg: Message): Boolean {
+            when (msg.what) {
+                REFRESH_STEP_WHAT -> {
+
+                    //每隔500毫秒获取一次计步数据刷新UI
+                    if (null != iSportStepInterface) {
+                        var step: String? = null
+                        try {
+                            step = iSportStepInterface!!.todaySportStepArray
+                        } catch (e: RemoteException) {
+                            e.printStackTrace()
+                        }
+                        if (stepArray != step) {
+                            stepArray = step.toString()
+//                            updateStepCount(stepArray)
+                        }
+                    }
+                    mDelayHandler.sendEmptyMessageDelayed(
+                        REFRESH_STEP_WHAT,
+                        TIME_INTERVAL_REFRESH
+                    )
+                }
+            }
+            return false
+        }
+    }
 
     fun changeFragment(tabIndex: Int) {
         val fragment = getFragment(tabIndex) ?: return
