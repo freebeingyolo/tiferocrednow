@@ -103,23 +103,11 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
         lifecycle.addObserver(mViewModel)
     }
 
-    /**
-     * 获取layout resource id
-     *
-     * @return 布局layout
-     */
-    @LayoutRes
-    protected abstract fun getLayoutResId(): Int
-
     abstract fun initViewModel(): VM
 
     abstract fun initViewBinding(): VB
 
     private fun initContentView() {
-        val layoutResID: Int = getLayoutResId()
-        if (layoutResID == 0) {
-            return
-        }
         mViewBinding = initViewBinding()
         super.setContentView(mViewBinding.root)
     }

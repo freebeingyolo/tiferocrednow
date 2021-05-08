@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.util.SPUtils
 import com.css.base.uibase.BaseActivity
-import com.css.base.uibase.viewmodel.DefaultYuboViewModel
+import com.css.base.uibase.viewmodel.DefaultViewModel
 import com.css.service.inner.BaseInner
 import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.ActivityMainBinding
@@ -18,16 +18,15 @@ import com.css.wondercorefit.ui.fragment.MainFragment
 import com.css.wondercorefit.ui.fragment.MallFragment
 import com.css.wondercorefit.ui.fragment.SettingFragment
 
-class MainActivity : BaseActivity<DefaultYuboViewModel,ActivityMainBinding>() {
+class MainActivity : BaseActivity<DefaultViewModel,ActivityMainBinding>() {
     private var mCurFragment: Fragment? = null
     private lateinit var mTabMainFragment: MainFragment
     lateinit var mTabCourseFragment: CourseFragment
     private lateinit var mTabMallFragment: MallFragment
     private lateinit var mTabSettingFragment: SettingFragment
-    override fun getLayoutResId(): Int = R.layout.activity_main
 
-    override fun initViewModel(): DefaultYuboViewModel =
-        ViewModelProvider(this).get(DefaultYuboViewModel::class.java)
+    override fun initViewModel(): DefaultViewModel =
+        ViewModelProvider(this).get(DefaultViewModel::class.java)
 
     override fun initView( savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)

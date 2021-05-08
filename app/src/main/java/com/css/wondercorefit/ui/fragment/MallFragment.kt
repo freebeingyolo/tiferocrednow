@@ -6,12 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.css.base.uibase.BaseFragment
-import com.css.base.uibase.viewmodel.DefaultYuboViewModel
+import com.css.base.uibase.viewmodel.DefaultViewModel
 import com.css.service.utils.SystemBarHelper
 import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.FragmentMallBinding
 
-class MallFragment : BaseFragment<DefaultYuboViewModel,FragmentMallBinding>() {
+class MallFragment : BaseFragment<DefaultViewModel,FragmentMallBinding>() {
 
     override fun initView( savedInstanceState: Bundle?) {
         super.initView( savedInstanceState)
@@ -19,7 +19,7 @@ class MallFragment : BaseFragment<DefaultYuboViewModel,FragmentMallBinding>() {
         SystemBarHelper.setHeightAndPadding(activity, mViewBinding?.topView)
     }
 
-    override fun initViewModel(): DefaultYuboViewModel = ViewModelProvider(this).get(DefaultYuboViewModel::class.java)
+    override fun initViewModel(): DefaultViewModel = ViewModelProvider(this).get(DefaultViewModel::class.java)
 
     override fun getLayoutResId(): Int=R.layout.fragment_mall
     override fun initViewBinding(

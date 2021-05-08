@@ -18,7 +18,6 @@ class SplashActivity : BaseActivity<SplashViewModel,ActivitySplashBinding>() {
         super.initView(savedInstanceState)
     }
 
-    override fun getLayoutResId(): Int = R.layout.activity_splash
 
     override fun initViewModel(): SplashViewModel =
         ViewModelProvider(this).get(SplashViewModel::class.java)

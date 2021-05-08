@@ -6,4 +6,13 @@
     <string name="mall_product">运动好产品</string>
     <string name="person_information">个人信息</string>
     <string name="about_us">关于我们</string>
+    <string name="sex">性别</string>
+    <string name="age">年龄</string>
+    <string name="stature">身高</string>
+    <string name="target_weight">目标体重</string>
+    <string name="target_step">目标步数</string>
+    <string name="wonder_core">万达康</string>
+    <string name="tos">服务条款</string>
+    <string name="disclaimer">免责声明</string>
+    <string name="privacy_policy">隐私政策</string>
 </resources>

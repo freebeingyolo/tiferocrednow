@@ -30,10 +30,6 @@ class TestActivity : BaseActivity<TestViewModel, ActivityTestActvityBinding>() {
         }
     }
 
-    override fun getLayoutResId(): Int {
-        return R.layout.activity_test_actvity
-    }
-
     override fun initViewModel(): TestViewModel {
         return TestViewModel()
     }

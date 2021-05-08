@@ -11,28 +11,29 @@ import com.css.base.uibase.inner.OnToolBarClickListener
 import com.css.base.uibase.viewmodel.DefaultViewModel
 import com.css.base.view.ToolBarView
 import com.css.wondercorefit.R
-import com.css.wondercorefit.databinding.ActivityPersonInformationBinding
-import com.css.wondercorefit.viewmodel.SplashViewModel
+import com.css.wondercorefit.databinding.ActivityAboutUsBinding
 
-class PersonInformationActivity : BaseActivity<DefaultViewModel,ActivityPersonInformationBinding>(),OnToolBarClickListener {
+class AboutUsActivity : BaseActivity<DefaultViewModel, ActivityAboutUsBinding>(),
+    OnToolBarClickListener {
     companion object {
         fun starActivity(context: Context) {
-            val intent = Intent(context, PersonInformationActivity::class.java)
+            val intent = Intent(context, AboutUsActivity::class.java)
             context.startActivity(intent)
         }
     }
 
-    override fun initView( savedInstanceState: Bundle?) {
-        super.initView( savedInstanceState)
+    override fun initView(savedInstanceState: Bundle?) {
+        super.initView(savedInstanceState)
         setWhiteFakeStatus(R.id.ll_parent,false)
-        mViewBinding.toolBarView.setCenterText( "个人信息")
+        mViewBinding.toolBarView.setCenterText("关于我们")
         mViewBinding.toolBarView.setToolBarClickListener(this)
     }
 
     override fun initViewModel(): DefaultViewModel =
         ViewModelProvider(this).get(DefaultViewModel::class.java)
 
-    override fun initViewBinding(): ActivityPersonInformationBinding =ActivityPersonInformationBinding.inflate(layoutInflater)
+    override fun initViewBinding(): ActivityAboutUsBinding =
+        ActivityAboutUsBinding.inflate(layoutInflater)
 
     override fun onClickToolBarView(view: View, event: ToolBarView.ViewType) {
         when (event) {
