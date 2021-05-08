@@ -13,26 +13,10 @@
         android:layout_height="0dp"
         android:background="@color/white" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="40dp"
-        android:text="视" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="40dp"
-        android:text="频" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="40dp"
-        android:text="列" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="40dp"
-        android:text="表" />
+    <ListView
+        android:id="@+id/video_listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
     <!--    <androidx.recyclerview.widget.RecyclerView-->
     <!--        android:layout_width="match_parent"-->
     <!--        android:layout_height="match_parent">-->

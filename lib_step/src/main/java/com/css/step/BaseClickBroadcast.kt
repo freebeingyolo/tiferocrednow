@@ -7,6 +7,6 @@ import android.content.BroadcastReceiver
  * Created by chenPan on 2021/05/07.
  */
 
-public abstract class BaseClickBroadcast: BroadcastReceiver() {
+abstract class BaseClickBroadcast: BroadcastReceiver() {
 
 }

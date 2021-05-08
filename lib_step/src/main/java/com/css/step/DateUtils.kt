@@ -29,7 +29,7 @@ class DateUtils {
     }
 
     /**
-     * 格式化输入的millis
+     * 格式化输入的 millis
      *
      * @param millis
      * @param pattern yyyy-MM-dd HH:mm:ss E
@@ -42,12 +42,12 @@ class DateUtils {
     }
 
     /**
-     * 将dateString原来old格式转换成new格式
+     * 将 dateString 原来 old 格式转换成 new 格式
      *
      * @param dateString
      * @param oldPattern yyyy-MM-dd HH:mm:ss E
      * @param newPattern
-     * @return oldPattern和dateString形式不一样直接返回dateString
+     * @return oldPattern 和 dateString 形式不一样直接返回 dateString
      */
     fun dateFormat(
         dateString: String?, oldPattern: String?,
