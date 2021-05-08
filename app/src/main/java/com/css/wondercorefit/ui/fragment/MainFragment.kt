@@ -1,13 +1,20 @@
 package com.css.wondercorefit.ui.fragment
 
-import android.os.Bundle
+import android.app.Application
+import android.content.ComponentName
+import android.content.Intent
+import android.content.ServiceConnection
+import android.os.*
+import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.css.base.uibase.BaseFragment
-import com.css.base.view.ToolBarView
 import com.css.service.utils.SystemBarHelper
+import com.css.step.ISportStepInterface
+import com.css.step.TodayStepManager
+import com.css.step.TodayStepService
 import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.FragmentMainBinding
 import com.css.wondercorefit.viewmodel.MainViewModel
@@ -15,10 +22,89 @@ import com.css.wondercorefit.viewmodel.MainViewModel
 
 class MainFragment : BaseFragment<MainViewModel,FragmentMainBinding>() {
 
+    private var iSportStepInterface: ISportStepInterface? = null
+    private lateinit var stepArray:String
+    private val mDelayHandler = Handler(TodayStepCounterCall())
+    private val REFRESH_STEP_WHAT = 0
+    private val TIME_INTERVAL_REFRESH: Long = 500
+
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         SystemBarHelper.immersiveStatusBar(activity, 0f)
         SystemBarHelper.setHeightAndPadding(activity, mViewBinding?.topView)
+        startStep()
+    }
+
+    private fun startStep() {
+        activity?.let { TodayStepManager().init(it.application) }
+        //开启计步Service，同时绑定Activity进行aidl通信
+        val intent = Intent(activity, TodayStepService::class.java)
+        activity?.startService(intent)
+        activity?.bindService(intent, object : ServiceConnection {
+            override fun onServiceConnected(name: ComponentName, service: IBinder) {
+                //Activity和Service通过aidl进行通信
+                Log.d("428"," enter  onServiceConnected   ")
+                iSportStepInterface = ISportStepInterface.Stub.asInterface(service)
+                Log.d("428"," enter  onServiceConnected   later ")
+                try {
+                    stepArray = iSportStepInterface!!.todaySportStepArray
+                    Log.d("428"," enter  onServiceConnected  getTodaySportStepArray  :   " + stepArray )
+                    updataValues(stepArray)
+                } catch (e: RemoteException) {
+                    e.printStackTrace()
+                }
+                mDelayHandler.sendEmptyMessageDelayed(
+                    REFRESH_STEP_WHAT,
+                    TIME_INTERVAL_REFRESH
+                )
+            }
+
+            override fun onServiceDisconnected(name: ComponentName) {}
+        }, AppCompatActivity.BIND_AUTO_CREATE)
+    }
+
+    private fun updataValues(stepArray: String) {
+        mViewBinding?.tvStepNum?.text = stepArray
+        mViewBinding?.tvWalkingDistance?.text = getDistanceByStep(stepArray.toLong()) + "km"
+        mViewBinding?.tvCalorieConsumption?.text = getCalorieByStep(stepArray.toLong()) + "kcal"
+    }
+
+    // 公里计算公式
+    private fun getDistanceByStep(steps: Long): String {
+        return String.format("%.2f", steps * 0.6f / 1000)
+    }
+
+    // 千卡路里计算公式
+    private fun getCalorieByStep(steps: Long): String {
+        return String.format("%.1f", steps * 0.6f * 60 * 1.036f / 1000)
+    }
+
+    inner class TodayStepCounterCall : Handler.Callback {
+        override fun handleMessage(msg: Message): Boolean {
+            when (msg.what) {
+                REFRESH_STEP_WHAT -> {
+
+                    //每隔500毫秒获取一次计步数据刷新UI
+                    if (null != iSportStepInterface) {
+                        var step: String? = null
+                        try {
+                            step = iSportStepInterface!!.todaySportStepArray
+                        } catch (e: RemoteException) {
+                            e.printStackTrace()
+                        }
+                        if (stepArray != step) {
+                            stepArray = step.toString()
+//                            updateStepCount(stepArray)
+                        }
+                    }
+                    mDelayHandler.sendEmptyMessageDelayed(
+                        REFRESH_STEP_WHAT,
+                        TIME_INTERVAL_REFRESH
+                    )
+                }
+            }
+            return false
+        }
     }
 
     override fun initViewModel(): MainViewModel =
