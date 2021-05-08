@@ -7,7 +7,7 @@ import com.css.base.ActivityHolder
 import com.css.base.uibase.base.BaseWonderActivity
 import com.css.base.uibase.viewmodel.BaseViewModel
 
-abstract class BaseActivity <VM : BaseViewModel,VB: ViewBinding> : BaseWonderActivity<VM,VB>(){
+abstract class BaseActivity<VM : BaseViewModel, VB : ViewBinding> : BaseWonderActivity<VM, VB>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -8,9 +8,10 @@ import com.blankj.utilcode.util.LogUtils
 import com.css.base.constants.QRScanConstants
 import com.css.base.uibase.BaseActivity
 import com.css.wondercorefit.R
+import com.css.wondercorefit.databinding.ActivityTestActvityBinding
 import com.css.wondercorefit.viewmodel.TestViewModel
 
-class TestActivity : BaseActivity<TestViewModel>() {
+class TestActivity : BaseActivity<TestViewModel, ActivityTestActvityBinding>() {
 
     fun startScan(view: View) {
         var intent = Intent("com.csss.qrscan")
@@ -36,4 +37,7 @@ class TestActivity : BaseActivity<TestViewModel>() {
     override fun initViewModel(): TestViewModel {
         return TestViewModel()
     }
+
+    override fun initViewBinding(): ActivityTestActvityBinding =
+        ActivityTestActvityBinding.inflate(layoutInflater)
 }
