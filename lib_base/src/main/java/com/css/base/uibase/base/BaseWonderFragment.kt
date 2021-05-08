@@ -13,6 +13,7 @@ import android.widget.ImageView
 import androidx.annotation.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.css.base.R
@@ -26,9 +27,10 @@ import com.css.base.view.ToolBarView
 import java.lang.ref.Reference
 import java.lang.ref.WeakReference
 
-abstract class BaseWonderFragment<VM : BaseViewModel> : Fragment(), IBaseView,
-    OnToolBarClickListener {
+abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), IBaseView{
     lateinit var viewModel: VM
+
+     var mViewBinding: VB ?=null
 
     private var mViewRef: Reference<Activity>? = null
 
@@ -103,38 +105,19 @@ abstract class BaseWonderFragment<VM : BaseViewModel> : Fragment(), IBaseView,
         isAttachViewModelOk = true
     }
 
+    abstract fun initViewBinding(inflater: LayoutInflater, viewGroup: ViewGroup?): VB
     override fun onCreateView(
         inflater: LayoutInflater,
         viewGroup: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         if (mRootView == null) {
             //为空时初始化。
             //根布局
             mRootView = inflater.inflate(R.layout.activity_base, viewGroup, false)
-            //toolbar容器
-            val toolbarVs = mRootView!!.findViewById<ViewStub>(R.id.vs_toolbar)
-            //子布局容器
-            mChildContainerLayout = mRootView!!.findViewById(R.id.fl_container)
-            if (enabledVisibleToolBar()) {
-                val toolbarLayoutId =
-                    if (isShowCustomToolbar()) {
-                        getCustomToolBarLayoutResId()
-                    } else {
-                        getToolBarLayoutResId()
-                    }
-                //toolbar资源id
-                toolbarVs.layoutResource = toolbarLayoutId
-                //填充toolbar
-                mTopBarView = toolbarVs.inflate()
-            }
-            //子布局
-            inflater.inflate(getLayoutResId(), mChildContainerLayout, true)
-
         }
-
-        return mRootView
+        mViewBinding = initViewBinding(inflater, viewGroup)
+        return mViewBinding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -144,11 +127,7 @@ abstract class BaseWonderFragment<VM : BaseViewModel> : Fragment(), IBaseView,
             log("onViewCreated fragment刚创建，Activity就destroy了！")
             return
         }
-        initImmersionBar()
-        if (enabledVisibleToolBar()) {
-            initCommonToolBar()
-        }
-        initView(getRootView(), savedInstanceState)
+        initView(savedInstanceState)
         initUIChangeLiveDataCallBack()
         initData()
 
@@ -168,7 +147,7 @@ abstract class BaseWonderFragment<VM : BaseViewModel> : Fragment(), IBaseView,
      * 此时已经setContentView
      * 可以做一些初始化操作
      */
-    override fun initView(rootView: View, savedInstanceState: Bundle?) {
+    override fun initView(savedInstanceState: Bundle?) {
     }
 
     /**
@@ -212,10 +191,6 @@ abstract class BaseWonderFragment<VM : BaseViewModel> : Fragment(), IBaseView,
     }
 
     override fun initData() {
-    }
-
-    override fun getCoverStatusLayoutResId(): Int {
-        return 0
     }
 
     override fun finishAc() {
@@ -271,7 +246,6 @@ abstract class BaseWonderFragment<VM : BaseViewModel> : Fragment(), IBaseView,
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         try {
-            initImmersionBar()
             log("fragment visible onHiddenChanged:" + super.isResumed() + ";" + super.isVisible() + ";" + super.isHidden() + ";" + super.getUserVisibleHint() + ";" + super.isAdded())
             setUserVisible(!hidden)
         } catch (e: Throwable) {
@@ -312,7 +286,7 @@ abstract class BaseWonderFragment<VM : BaseViewModel> : Fragment(), IBaseView,
     override fun onBackPressed() {
         try {
             if (getBaseActivity() != null) {
-                if (getBaseActivity() is BaseWonderActivity<*>) {
+                if (getBaseActivity() is BaseWonderActivity<*, *>) {
                     getBaseActivity()!!.onBackPressed()
                 }
             }
@@ -328,7 +302,6 @@ abstract class BaseWonderFragment<VM : BaseViewModel> : Fragment(), IBaseView,
     private fun onUserVisible() {
         log("[onUserVisible]")
         onVisible()
-        doInitLazyData()
     }
 
     /**
@@ -349,25 +322,6 @@ abstract class BaseWonderFragment<VM : BaseViewModel> : Fragment(), IBaseView,
      */
     protected open fun onVisible() {}
 
-    private fun doInitLazyData() {
-        if (!isInitLazyData) {
-            isInitLazyData = true
-            postInitLazyData()
-        }
-    }
-
-    private fun postInitLazyData() {
-        if (getRootView() != null) {
-            val runnable = Runnable {
-                val activityNOFinishing = activity != null && !requireActivity().isFinishing
-                if (!isViewDestroyed() && activityNOFinishing) {
-                    initLazyData()
-                }
-            }
-            getRootView().post(runnable)
-        }
-    }
-
     override fun initLazyData() {
     }
 
@@ -380,21 +334,14 @@ abstract class BaseWonderFragment<VM : BaseViewModel> : Fragment(), IBaseView,
     override fun onDestroyView() {
         super.onDestroyView()
         isFVisible = false
+        mViewBinding = null
     }
 
-    override fun getRootView(): View {
-        return mRootView!!
-    }
 
     override fun onDestroy() {
         this.isViewDestroy = true
         super.onDestroy()
     }
-
-    override fun enabledDefaultBack(): Boolean {
-        return false
-    }
-
 
     private fun log(args: String) {
         LogUtils.i("BaseFragment", this.javaClass.simpleName + " " + args)
@@ -459,229 +406,6 @@ abstract class BaseWonderFragment<VM : BaseViewModel> : Fragment(), IBaseView,
         ToastUtils.setGravity(Gravity.CENTER, 0, 0)
         ToastUtils.showLong(resId)
     }
-
-    //--------------------toolbar start setting -----------------------------
-
-
-    /**
-     * 初始化toolbar可重写覆盖自定的toolbar,base中实现的是通用的toolbar
-     */
-    open fun initCommonToolBar() {
-
-        mCommonToolbarView = mRootView!!.findViewById(R.id.toolBarView) as ToolBarView?
-        if (!hasCommonToolBar()) {
-            return
-        }
-        mCommonToolbarView!!.setToolBarClickListener(this)
-        //支持默认返回按钮和事件
-        setToolBarViewVisible(enabledDefaultBack(), ToolBarView.ViewType.LEFT_IMAGE)
-    }
-
-    override fun initCommonToolBarBg(): ToolBarView.ToolBarBg {
-        return ToolBarView.ToolBarBg.WHITE
-    }
-
-    override fun enabledVisibleToolBar(): Boolean {
-        return false
-    }
-
-    override fun getCustomToolBarLayoutResId(): Int {
-        return 0
-    }
-
-    protected open fun hasCommonToolBar(): Boolean {
-        return mCommonToolbarView != null
-    }
-
-
-    override fun getToolBarLayoutResId(): Int {
-        when (initCommonToolBarBg()) {
-            ToolBarView.ToolBarBg.WHITE -> return R.layout.include_common_white_toolbar
-            else -> return R.layout.include_common_white_toolbar
-        }
-    }
-
-    /**
-     * 是过滤器显示通用toolBar
-     *
-     * @return
-     */
-    private fun isShowCustomToolbar(): Boolean {
-        return getCustomToolBarLayoutResId() != 0
-    }
-
-    override fun setToolBarTitle(title: String): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setCenterText(title)
-        } else {
-            return null
-        }
-    }
-
-    override fun setToolBarTitle(@StringRes resId: Int): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setCenterText(resId)
-        } else {
-            return null
-        }
-    }
-
-    override fun setToolBarTitleColor(@ColorRes resId: Int): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setCenterTextColor(resId)
-        } else {
-            return null
-        }
-    }
-
-    override fun setToolBarTitleColorInt(@ColorInt resId: Int): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setCenterTextColorInt(resId)
-        } else {
-            return null
-        }
-    }
-
-    override fun setRightImageScaleType(scaleType: ImageView.ScaleType): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setRightImageScaleType(scaleType)
-        } else {
-            return null
-        }
-    }
-
-    override fun setRightImage(bm: Bitmap): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setRightImage(bm)
-        } else {
-            return null
-        }
-    }
-
-    override fun setToolBarRightImage(@DrawableRes drawable: Int): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setRightImage(drawable)
-        } else {
-            return null
-        }
-    }
-
-    override fun setToolBarRightText(@StringRes resId: Int): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setRightText(resId)
-        } else {
-            return null
-        }
-    }
-
-    override fun setToolBarRightText(text: String): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setRightText(text)
-        } else {
-            return null
-        }
-    }
-
-    override fun setToolBarRightTextColor(@ColorRes resId: Int): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setRightTextColor(resId)
-        } else {
-            return null
-        }
-    }
-
-    override fun setToolBarRightTextColorInt(@ColorInt resId: Int): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setRightTextColorInt(resId)
-        } else {
-            return null
-        }
-    }
-
-    override fun setToolBarBottomLineVisible(isVisible: Boolean): ToolBarView? {
-        return if (hasCommonToolBar()) {
-            getCommonToolBarView()?.showBottomLine(isVisible)
-        } else null
-    }
-
-    override fun setToolBarViewVisible(
-        isVisible: Boolean,
-        vararg events: ToolBarView.ViewType
-    ): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setToolBarViewVisible(isVisible, *events)
-        } else {
-            return null
-        }
-    }
-
-    /**
-     * 顶部toolbar，自定义view或通用toolbar
-     *
-     * @return
-     */
-    protected open fun getTopToolBar(): View? {
-        return mTopBarView
-    }
-
-    protected open fun getCommonToolBarView(): ToolBarView? {
-        return mCommonToolbarView
-    }
-
-    override fun onClickToolBarView(view: View, event: ToolBarView.ViewType) {
-        when (event) {
-            //支持默认返回按钮和事件
-            ToolBarView.ViewType.LEFT_IMAGE -> {
-                if (enabledDefaultBack()) {
-                    onBackPressed()
-                }
-            }
-        }
-    }
-
-    //--------------------toolbar end setting -----------------------------
-
-
-    //----------------------- 沉浸式 ImmersionBar start ------------------------
-    private fun canUsedImmersionBar(): Boolean {
-        return if (getBaseActivity() != null && getBaseActivity() is BaseActivity<*>) {
-            (getBaseActivity() as BaseActivity<*>).enabledImmersion() && enabledImmersion()
-        } else false
-    }
-
-    override fun enabledImmersion(): Boolean {
-        return true
-    }
-
-    override fun enbaleFixImmersionAndEditBug(): Boolean {
-        return false
-    }
-
-    open fun initImmersionBar() {
-        if (getBaseActivity() == null) {
-            return
-        }
-        if (!canUsedImmersionBar()) {
-            return
-        }
-        val baseActivity = getBaseActivity() as BaseWonderActivity<*>
-        if (enabledVisibleToolBar()) {
-            when (initCommonToolBarBg()) {
-
-                ToolBarView.ToolBarBg.WHITE -> baseActivity.setWhiteFakeStatus(
-                    R.id.ll_base_root,
-                    enbaleFixImmersionAndEditBug()
-                )
-            }
-        } else {
-            baseActivity.setTransparentStatus(R.id.ll_base_root, enbaleFixImmersionAndEditBug())
-        }
-    }
-
-    //----------------------- 沉浸式 ImmersionBar end ------------------------
-
-
-    //------------------ toolbar end ------------
     /**
      * 创建fragment时传入的数据对象
      */

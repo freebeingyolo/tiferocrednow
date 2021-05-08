@@ -47,6 +47,7 @@ dependencies {
     api dep.lifecycler_ext
     api dep.lifecycler_viewmodel
     api dep.utils
+    api dep.viewbinding
 
     //glide
     api dep.glide
@@ -58,6 +59,9 @@ dependencies {
     api dep.logging_interceptor
     api dep.retrofit
     api dep.converter_gson
+
+    api dep.basePopup
+
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
