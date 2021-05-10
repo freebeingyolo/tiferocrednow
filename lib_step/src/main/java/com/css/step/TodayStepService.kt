@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class TodayStepService: Service(),Handler.Callback {
+class TodayStepService: Service(), Handler.Callback {
     private val TAG = "TodayStepService"
 
     //保存数据库频率
@@ -71,7 +71,6 @@ class TodayStepService: Service(),Handler.Callback {
     }
 
     override fun onCreate() {
-        Log.d("428", "enter onCreate   ")
         super.onCreate()
         mTodayStepDBHelper = TodayStepDBHelper(applicationContext)
         sensorManager = this
@@ -351,15 +350,12 @@ class TodayStepService: Service(),Handler.Callback {
         val DISTANCE = "km"
         val CALORIE = "kaluli"
 
-        override fun getCurrentTimeSportStep(): Int {
-            return currentTimeSportStep
-        }
         override fun getTodaySportStepArray(): String? {
                 if (null != mTodayStepDBHelper) {
                     val todayStepDataArrayList: List<TodayStepData>? =
                         mTodayStepDBHelper!!.getQueryAll()
                     if (null == todayStepDataArrayList || 0 == todayStepDataArrayList.size) {
-                        return null
+                        return ""
                     }
                     val jsonArray = JSONArray()
                     for (i in todayStepDataArrayList.indices) {
@@ -439,5 +435,4 @@ class TodayStepService: Service(),Handler.Callback {
         }
         return null
     }
-
 }
