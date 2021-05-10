@@ -21,12 +21,13 @@ import com.css.wondercorefit.viewmodel.MainViewModel
 
 
 class MainFragment : BaseFragment<MainViewModel,FragmentMainBinding>() {
+    private val TAG = "TodayStepService"
 
-    private var iSportStepInterface: ISportStepInterface? = null
+    private lateinit var iSportStepInterface: ISportStepInterface
     private lateinit var stepArray:String
     private val mDelayHandler = Handler(TodayStepCounterCall())
     private val REFRESH_STEP_WHAT = 0
-    private val TIME_INTERVAL_REFRESH: Long = 500
+    private val TIME_INTERVAL_REFRESH: Long = 5000
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
@@ -43,13 +44,11 @@ class MainFragment : BaseFragment<MainViewModel,FragmentMainBinding>() {
         activity?.bindService(intent, object : ServiceConnection {
             override fun onServiceConnected(name: ComponentName, service: IBinder) {
                 //Activity和Service通过aidl进行通信
-                Log.d("428"," enter  onServiceConnected   ")
                 iSportStepInterface = ISportStepInterface.Stub.asInterface(service)
-                Log.d("428"," enter  onServiceConnected   later ")
                 try {
-                    stepArray = iSportStepInterface!!.todaySportStepArray
-                    Log.d("428"," enter  onServiceConnected  getTodaySportStepArray  :   " + stepArray )
+                    stepArray = iSportStepInterface.todaySportStepArray
                     updataValues(stepArray)
+                    Log.d(TAG, " getTodaySportStepArray  :   $stepArray")
                 } catch (e: RemoteException) {
                     e.printStackTrace()
                 }
@@ -65,8 +64,8 @@ class MainFragment : BaseFragment<MainViewModel,FragmentMainBinding>() {
 
     private fun updataValues(stepArray: String) {
         mViewBinding?.tvStepNum?.text = stepArray
-        mViewBinding?.tvWalkingDistance?.text = getDistanceByStep(stepArray.toLong()) + "km"
-        mViewBinding?.tvCalorieConsumption?.text = getCalorieByStep(stepArray.toLong()) + "kcal"
+        mViewBinding?.tvWalkingDistance?.text = "步行距离：" + getDistanceByStep(stepArray.toLong()) + " km"
+        mViewBinding?.tvCalorieConsumption?.text = "消耗热量：" + getCalorieByStep(stepArray.toLong()) + " kcal"
     }
 
     // 公里计算公式
@@ -89,6 +88,8 @@ class MainFragment : BaseFragment<MainViewModel,FragmentMainBinding>() {
                         var step: String? = null
                         try {
                             step = iSportStepInterface!!.todaySportStepArray
+                            Log.d(TAG," refresh UI in 5000 ms  :   " )
+                            updataValues(step)
                         } catch (e: RemoteException) {
                             e.printStackTrace()
                         }
