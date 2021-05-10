@@ -177,7 +177,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="15dp"
-            android:text="消耗热量：0.0kcal"
+            android:text="消耗热量：0.0 kcal"
             android:textColor="@color/black"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
