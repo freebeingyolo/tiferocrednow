@@ -1,23 +1,18 @@
 package com.css.wondercorefit.ui.activity
 
-import android.content.ComponentName
-import android.content.Intent
-import android.content.ServiceConnection
-import android.graphics.Color
-import android.os.*
-import android.util.Log
-import android.view.View
-import androidx.core.content.ContextCompat
+import android.os.Bundle
+import android.os.Handler
+import android.os.Message
+import android.os.RemoteException
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.viewbinding.ViewBinding
-import com.blankj.utilcode.util.SPUtils
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.css.base.uibase.BaseActivity
 import com.css.base.uibase.viewmodel.DefaultViewModel
 import com.css.service.inner.BaseInner
+import com.css.service.router.PATH_APP_MAIN
 import com.css.step.ISportStepInterface
 import com.css.step.TodayStepManager
-import com.css.step.TodayStepService
 import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.ActivityMainBinding
 import com.css.wondercorefit.ui.fragment.CourseFragment
@@ -25,7 +20,8 @@ import com.css.wondercorefit.ui.fragment.MainFragment
 import com.css.wondercorefit.ui.fragment.MallFragment
 import com.css.wondercorefit.ui.fragment.SettingFragment
 
-class MainActivity : BaseActivity<DefaultViewModel,ActivityMainBinding>() {
+@Route(path = PATH_APP_MAIN)
+class MainActivity : BaseActivity<DefaultViewModel, ActivityMainBinding>() {
     private var mCurFragment: Fragment? = null
     private lateinit var mTabMainFragment: MainFragment
     lateinit var mTabCourseFragment: CourseFragment
@@ -33,7 +29,7 @@ class MainActivity : BaseActivity<DefaultViewModel,ActivityMainBinding>() {
     private lateinit var mTabSettingFragment: SettingFragment
 
     private var iSportStepInterface: ISportStepInterface? = null
-    private lateinit var stepArray:String
+    private lateinit var stepArray: String
     private val mDelayHandler = Handler(TodayStepCounterCall())
     private val REFRESH_STEP_WHAT = 0
     private val TIME_INTERVAL_REFRESH: Long = 500
@@ -41,9 +37,9 @@ class MainActivity : BaseActivity<DefaultViewModel,ActivityMainBinding>() {
     override fun initViewModel(): DefaultViewModel =
         ViewModelProvider(this).get(DefaultViewModel::class.java)
 
-    override fun initView( savedInstanceState: Bundle?) {
+    override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        setWhiteFakeStatus(R.id.cl_parent,false)
+        setWhiteFakeStatus(R.id.cl_parent, false)
         initTablayout()
         startStep()
     }
@@ -54,7 +50,7 @@ class MainActivity : BaseActivity<DefaultViewModel,ActivityMainBinding>() {
         mTabMallFragment = MallFragment()
         mTabSettingFragment = SettingFragment()
         mViewBinding.tablayout.initTab(callback = {
-           mViewBinding.tablayout.tag = it
+            mViewBinding.tablayout.tag = it
 //            val fragment = getFragment(it)
             when (it) {
                 BaseInner.TabIndex.HOME -> {
@@ -153,5 +149,6 @@ class MainActivity : BaseActivity<DefaultViewModel,ActivityMainBinding>() {
         return null
     }
 
-    override fun initViewBinding(): ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
+    override fun initViewBinding(): ActivityMainBinding =
+        ActivityMainBinding.inflate(layoutInflater)
 }

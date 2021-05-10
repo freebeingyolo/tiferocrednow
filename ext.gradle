@@ -36,7 +36,11 @@ ext {
             //事件总线
             eventBus             : 'org.greenrobot:eventbus:3.2.0',
             //选择器
-            pickerView           : 'com.contrarywind:Android-PickerView:4.1.9'
+            pickerView           : 'com.contrarywind:Android-PickerView:4.1.9',
+            liteplayer           : 'com.github.seagazer:liteplayer:1.0.7',
+
+            arouter              : 'com.alibaba:arouter-api:1.5.0',
+            arouter_compiler     : 'com.alibaba:arouter-compiler:1.5.0'
     ]
     isDebugType = false
 }

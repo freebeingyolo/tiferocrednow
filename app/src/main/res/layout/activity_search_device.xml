@@ -5,8 +5,9 @@
     android:id="@+id/ll_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context=".ui.activity.binding.BindingDeviceActivity">
+    tools:context=".ui.activity.binding.SearchDeviceActivity">
 
     <com.css.base.view.ToolBarView
         android:id="@+id/toolBarView"
@@ -23,38 +24,41 @@
         app:rightTextColor="@color/common_black_color"
         app:showBottomLine="false" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="15dp"
-        android:text="蓝牙智能体脂秤"
-        android:textColor="@color/black" />
-
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_ble_bfs"
-        android:layout_width="match_parent"
-        android:layout_height="170dp"
-        android:layout_marginStart="25dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="25dp"
-        android:scaleType="fitXY"
         android:src="@mipmap/icon" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
         android:layout_marginTop="15dp"
-        android:text="蓝牙健腹轮"
+        android:text="已经搜索到智能称，请点击绑定"
         android:textColor="@color/black" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="170dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="25dp"
-        android:scaleType="fitXY"
-        android:src="@mipmap/icon" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:orientation="horizontal"
+        android:paddingStart="50dp"
+        android:paddingEnd="50dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="重新搜索"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="确认绑定"
+            android:textColor="@color/black" />
+    </LinearLayout>
 </LinearLayout>

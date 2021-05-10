@@ -29,11 +29,14 @@
         android:allowBackup="false"
         android:icon="@mipmap/icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:networkSecurityConfig="@xml/network_security_config"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Wonder.Base">
-        <activity android:name=".ui.activity.index.BindingDeviceActivity"></activity>
+        <activity android:name=".ui.activity.binding.SearchDeviceActivity"></activity>
+        <activity android:name=".ui.activity.index.ABRollerActivity" />
+        <activity android:name=".ui.activity.index.BfsMeasureResultsActivity" />
+        <activity android:name=".ui.activity.binding.BindingDeviceActivity" />
         <activity android:name=".ui.activity.setting.AboutUsActivity" />
         <activity android:name=".ui.activity.setting.PersonInformationActivity" />
         <activity android:name=".ui.activity.TestActivity" />
@@ -44,11 +47,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.MainActivity"
+        <activity
+            android:name=".ui.activity.MainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:screenOrientation="portrait"
-            android:theme="@style/FullScreenTheme"
-            />
+            android:theme="@style/FullScreenTheme" />
     </application>
 
 </manifest>
