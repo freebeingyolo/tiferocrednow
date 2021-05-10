@@ -355,7 +355,7 @@ class TodayStepService: Service(), Handler.Callback {
                     val todayStepDataArrayList: List<TodayStepData>? =
                         mTodayStepDBHelper!!.getQueryAll()
                     if (null == todayStepDataArrayList || 0 == todayStepDataArrayList.size) {
-                        return ""
+                        return "0"
                     }
                     val jsonArray = JSONArray()
                     for (i in todayStepDataArrayList.indices) {

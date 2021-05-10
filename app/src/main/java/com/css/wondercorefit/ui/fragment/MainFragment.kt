@@ -64,8 +64,8 @@ class MainFragment : BaseFragment<MainViewModel,FragmentMainBinding>() {
 
     private fun updataValues(stepArray: String) {
         mViewBinding?.tvStepNum?.text = stepArray
-        mViewBinding?.tvWalkingDistance?.text = getDistanceByStep(stepArray.toLong()) + " km"
-        mViewBinding?.tvCalorieConsumption?.text = getCalorieByStep(stepArray.toLong()) + " kcal"
+        mViewBinding?.tvWalkingDistance?.text = "步行距离：" + getDistanceByStep(stepArray.toLong()) + " km"
+        mViewBinding?.tvCalorieConsumption?.text = "消耗热量：" + getCalorieByStep(stepArray.toLong()) + " kcal"
     }
 
     // 公里计算公式

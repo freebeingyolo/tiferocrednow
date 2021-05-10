@@ -103,7 +103,7 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
         viewGroup: ViewGroup?
     ): FragmentCourseBinding=FragmentCourseBinding.inflate(inflater, viewGroup, false)
 
-    override fun initViewModel(): DefaultYuboViewModel=   ViewModelProvider(this).get(DefaultYuboViewModel::class.java)
+    override fun initViewModel(): DefaultViewModel=   ViewModelProvider(this).get(DefaultViewModel::class.java)
 
     override fun getLayoutResId(): Int =R.layout.fragment_course
 
