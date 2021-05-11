@@ -83,6 +83,8 @@ class MainFragment : BaseFragment<MainViewModel,FragmentMainBinding>() {
             mViewBinding?.tvTodayStep?.text = "今天尚未运动，" + "\n" + "快去运动一下吧"
             mViewBinding?.tvStepNum?.visibility = View.INVISIBLE
         } else {
+            mViewBinding?.tvStepNum?.visibility = View.VISIBLE
+            mViewBinding?.tvTodayStep?.text = "今日步数"
             mViewBinding?.tvStepNum?.text = realSteps.toString()
         }
         mViewBinding?.tvWalkingDistance?.text = "步行距离：" + getDistanceByStep(realSteps.toLong()) + " km"
