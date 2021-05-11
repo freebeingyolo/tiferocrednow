@@ -1,4 +1,4 @@
-package com.css.step
+package com.css.step.service
 
 import android.app.*
 import android.content.Context
@@ -13,6 +13,12 @@ import android.os.IBinder
 import android.os.Message
 import android.text.TextUtils
 import android.util.Log
+import com.css.step.*
+import com.css.step.data.ConstantData
+import com.css.step.data.TodayStepData
+import com.css.step.utils.Logger
+import com.css.step.utils.OnStepCounterListener
+import com.css.step.utils.TodayStepDBHelper
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -36,7 +42,6 @@ class TodayStepService: Service(), Handler.Callback {
 
     val INTENT_NAME_0_SEPARATE = "intent_name_0_separate"
     val INTENT_NAME_BOOT = "intent_name_boot"
-    val INTENT_JOB_SCHEDULER = "intent_job_scheduler"
 
     var currentTimeSportStep = 0
 
@@ -110,9 +115,9 @@ class TodayStepService: Service(), Handler.Callback {
             builder = Notification.Builder(this.applicationContext, ConstantData.CHANNEL_ID)
             val notificationChannel =
                 NotificationChannel(
-                        ConstantData.CHANNEL_ID,
-                        ConstantData.CHANNEL_NAME,
-                        NotificationManager.IMPORTANCE_MIN
+                    ConstantData.CHANNEL_ID,
+                    ConstantData.CHANNEL_NAME,
+                    NotificationManager.IMPORTANCE_MIN
                 )
             notificationChannel.enableLights(false)//如果使用中的设备支持通知灯，则说明此通知通道是否应显示灯
             notificationChannel.setShowBadge(false)//是否显示角标
@@ -123,28 +128,29 @@ class TodayStepService: Service(), Handler.Callback {
             builder = Notification.Builder(this.applicationContext)
         }
         builder!!.setPriority(Notification.PRIORITY_MIN)
-        val receiverName = getReceiver(getApplicationContext())
+
+        val receiverName: String? = getReceiver(applicationContext)
         var contentIntent = PendingIntent.getBroadcast(
-                this,
-                BROADCAST_REQUEST_CODE,
-                Intent(),
-                PendingIntent.FLAG_UPDATE_CURRENT
+            this,
+            BROADCAST_REQUEST_CODE,
+            Intent(),
+            PendingIntent.FLAG_UPDATE_CURRENT
         )
         if (!TextUtils.isEmpty(receiverName)) {
             contentIntent = try {
                 PendingIntent.getBroadcast(
-                        this,
-                        BROADCAST_REQUEST_CODE,
-                        Intent(this, Class.forName(receiverName!!)),
-                        PendingIntent.FLAG_UPDATE_CURRENT
+                    this,
+                    BROADCAST_REQUEST_CODE,
+                    Intent(this, Class.forName(receiverName!!)),
+                    PendingIntent.FLAG_UPDATE_CURRENT
                 )
             } catch (e: Exception) {
                 e.printStackTrace()
                 PendingIntent.getBroadcast(
-                        this,
-                        BROADCAST_REQUEST_CODE,
-                        Intent(),
-                        PendingIntent.FLAG_UPDATE_CURRENT
+                    this,
+                    BROADCAST_REQUEST_CODE,
+                    Intent(),
+                    PendingIntent.FLAG_UPDATE_CURRENT
                 )
             }
         }
@@ -164,18 +170,18 @@ class TodayStepService: Service(), Handler.Callback {
             builder!!.setLargeIcon(BitmapFactory.decodeResource(getResources(), largeIcon))
         } else {
             builder!!.setLargeIcon(
-                    BitmapFactory.decodeResource(
-                            getResources(),
-                            R.mipmap.ic_notification_default
-                    )
+                BitmapFactory.decodeResource(
+                    getResources(),
+                    R.mipmap.ic_notification_default
+                )
             )
         }
         builder!!.setTicker(getString(R.string.app_name))
         builder!!.setContentTitle(
-                getString(
-                        R.string.title_notification_bar,
-                        currentStep.toString()
-                )
+            getString(
+                R.string.title_notification_bar,
+                currentStep.toString()
+            )
         )
         val km = getDistanceByStep(currentStep.toLong())
         val calorie = getCalorieByStep(currentStep.toLong())
@@ -349,6 +355,9 @@ class TodayStepService: Service(), Handler.Callback {
         val STEP_NUM = "stepNum"
         val DISTANCE = "km"
         val CALORIE = "kaluli"
+        override fun getCurrentTimeSportStep(): Int {
+            return currentTimeSportStep
+        }
 
         override fun getTodaySportStepArray(): String? {
                 if (null != mTodayStepDBHelper) {
@@ -363,8 +372,8 @@ class TodayStepService: Service(), Handler.Callback {
                         try {
                             val subObject = JSONObject()
                             subObject.put(
-                                    TodayStepDBHelper(applicationContext).TODAY,
-                                    todayStepData.getToday()
+                                TodayStepDBHelper(applicationContext).TODAY,
+                                todayStepData.getToday()
                             )
                             subObject.put(SPORT_DATE, todayStepData.getDate())
                             subObject.put(STEP_NUM, todayStepData.getStep())
@@ -403,8 +412,8 @@ class TodayStepService: Service(), Handler.Callback {
     fun getReceiver(context: Context): String? {
         try {
             val packageInfo = context.packageManager.getPackageInfo(
-                    context.packageName,
-                    PackageManager.GET_RECEIVERS
+                context.packageName,
+                PackageManager.GET_RECEIVERS
             )
             val activityInfos = packageInfo.receivers
             if (null != activityInfos && activityInfos.size > 0) {

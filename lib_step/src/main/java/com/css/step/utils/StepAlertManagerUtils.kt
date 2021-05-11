@@ -1,10 +1,12 @@
-package com.css.step
+package com.css.step.utils
 
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import com.css.step.receiver.TodayStepAlertReceive
+import com.css.step.service.TodayStepService
 import java.util.*
 
 class StepAlertManagerUtils {

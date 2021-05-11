@@ -71,6 +71,7 @@ dependencies {
     implementation project(':lib_base')
     implementation project(':lib_step')
     implementation project(':lib_ble')
+    implementation 'com.alibaba:arouter-api:1.5.0'
     implementation dep.liteplayer
     implementation 'com.danikula:videocache:2.7.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'

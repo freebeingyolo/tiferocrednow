@@ -1,7 +1,8 @@
-package com.css.step
+package com.css.step.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.css.step.utils.Logger
 
 class PreferencesHelper {
     private val TAG = "PreferencesHelper"

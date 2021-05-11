@@ -1,6 +1,5 @@
 package com.css.wondercorefit.ui.fragment
 
-import android.app.Application
 import android.content.ComponentName
 import android.content.Intent
 import android.content.ServiceConnection
@@ -9,12 +8,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startForegroundService
 import androidx.lifecycle.ViewModelProvider
+import com.blankj.utilcode.util.ServiceUtils.startService
 import com.css.base.uibase.BaseFragment
 import com.css.service.utils.SystemBarHelper
 import com.css.step.ISportStepInterface
 import com.css.step.TodayStepManager
-import com.css.step.TodayStepService
+import com.css.step.service.SensorService
+import com.css.step.service.TodayStepService
 import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.FragmentMainBinding
 import com.css.wondercorefit.viewmodel.MainViewModel
@@ -27,21 +29,36 @@ class MainFragment : BaseFragment<MainViewModel,FragmentMainBinding>() {
     private lateinit var stepArray:String
     private val mDelayHandler = Handler(TodayStepCounterCall())
     private val REFRESH_STEP_WHAT = 0
-    private val TIME_INTERVAL_REFRESH: Long = 5000
+    private val TIME_INTERVAL_REFRESH: Long = 1000
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         SystemBarHelper.immersiveStatusBar(activity, 0f)
         SystemBarHelper.setHeightAndPadding(activity, mViewBinding?.topView)
+        startSensorService()
         startStep()
+    }
+
+    private fun startSensorService() {
+        val intentSensor = Intent(activity, SensorService::class.java)
+        if(Build.VERSION.SDK_INT >= 26){
+            activity?.startForegroundService (intentSensor);
+        }else{
+            activity?.startService (intentSensor);
+        }
     }
 
     private fun startStep() {
         activity?.let { TodayStepManager().init(it.application) }
+
         //开启计步Service，同时绑定Activity进行aidl通信
-        val intent = Intent(activity, TodayStepService::class.java)
-        activity?.startService(intent)
-        activity?.bindService(intent, object : ServiceConnection {
+        val intentSteps = Intent(activity, TodayStepService::class.java)
+        if(Build.VERSION.SDK_INT >= 26){
+            activity?.startForegroundService (intentSteps);
+        }else{
+            activity?.startService (intentSteps);
+        }
+        activity?.bindService(intentSteps, object : ServiceConnection {
             override fun onServiceConnected(name: ComponentName, service: IBinder) {
                 //Activity和Service通过aidl进行通信
                 iSportStepInterface = ISportStepInterface.Stub.asInterface(service)

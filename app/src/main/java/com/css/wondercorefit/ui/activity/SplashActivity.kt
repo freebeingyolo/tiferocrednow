@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -43,7 +44,7 @@ class SplashActivity : BaseActivity<SplashViewModel,ActivitySplashBinding>() {
     }
     override fun onStart() {
         super.onStart()
-        checkStoragePermission()
+            checkStoragePermission()
     }
     private fun checkStoragePermission() {
         val permission = PermissionConstants.STORAGE
@@ -53,14 +54,14 @@ class SplashActivity : BaseActivity<SplashViewModel,ActivitySplashBinding>() {
             }
             .callback(object : PermissionUtils.FullCallback {
                 override fun onGranted(permissionsGranted: List<String>) {
-                    checkBodySensorPermission()
+                    checkLocationPermission()
                 }
 
                 override fun onDenied(
                     permissionsDeniedForever: List<String>,
                     permissionsDenied: List<String>
                 ) {
-                    checkBodySensorPermission()
+                    checkLocationPermission()
                 }
             })
             .request()
@@ -85,10 +86,8 @@ class SplashActivity : BaseActivity<SplashViewModel,ActivitySplashBinding>() {
                     //此处需要弹窗通知用户去设置权限
                     Toast.makeText(this, "请允许获取健身运动信息，不然无法为你计步哦~", Toast.LENGTH_SHORT).show()
                 }
-                checkLocationPermission()
-            } else {
-                checkLocationPermission()
             }
+        start()
     }
 
     private fun checkLocationPermission() {
@@ -99,14 +98,14 @@ class SplashActivity : BaseActivity<SplashViewModel,ActivitySplashBinding>() {
             }
             .callback(object : PermissionUtils.FullCallback {
                 override fun onGranted(permissionsGranted: List<String>) {
-                    start()
+                    checkBodySensorPermission()
                 }
 
                 override fun onDenied(
                     permissionsDeniedForever: List<String>,
                     permissionsDenied: List<String>
                 ) {
-                    start()
+                    checkBodySensorPermission()
                 }
             })
             .request()
