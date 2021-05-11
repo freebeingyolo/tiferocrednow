@@ -417,16 +417,20 @@ class TodayStepService: Service(), Handler.Callback {
         //获取当前时间
         currentDate = TimeUtil.getCurrentDate()
         //获取昨天时间
-        yesterdayDate = TimeUtil.getCurrentDate()
+        val preCalendar = Calendar.getInstance()
+        preCalendar.add(Calendar.DATE, -1)
+        yesterdayDate = SimpleDateFormat("yyyy年MM月dd日").format(preCalendar.time)
         //获取数据库
         stepDataDao = StepDataDao(applicationContext)
     }
 
     private fun defaultSteps(): Int {
-        val currentEntity = stepDataDao?.getCurDataByDate(currentDate!!)
-        val yesterdayEntity = stepDataDao?.getCurDataByDate(currentDate!!)
-//        val defaultSteps:Int = (currentEntity?.steps?.toInt())!! - (yesterdayEntity?.steps?.toInt()!!)
-        val defaultSteps:Int = (currentEntity?.steps?.toInt())!! - 40502
+        var currentEntity = stepDataDao?.getCurDataByDate(currentDate!!)?.steps
+        var yesterdayEntity = stepDataDao?.getCurDataByDate(yesterdayDate!!)?.steps
+        if (yesterdayEntity == null) {
+            yesterdayEntity = currentEntity
+        }
+        val defaultSteps:Int = (currentEntity?.toInt())!! - (yesterdayEntity?.toInt()!!)
         Log.d(TAG , " defaultSteps   :  $defaultSteps")
         return defaultSteps
     }
