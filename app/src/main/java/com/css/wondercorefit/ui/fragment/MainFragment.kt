@@ -15,8 +15,10 @@ import com.css.base.uibase.BaseFragment
 import com.css.service.utils.SystemBarHelper
 import com.css.step.ISportStepInterface
 import com.css.step.TodayStepManager
+import com.css.step.db.StepDataDao
 import com.css.step.service.SensorService
 import com.css.step.service.TodayStepService
+import com.css.step.utils.TimeUtil
 import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.FragmentMainBinding
 import com.css.wondercorefit.viewmodel.MainViewModel
@@ -26,7 +28,7 @@ class MainFragment : BaseFragment<MainViewModel,FragmentMainBinding>() {
     private val TAG = "TodayStepService"
 
     private lateinit var iSportStepInterface: ISportStepInterface
-    private lateinit var stepArray:String
+    private var stepArray:Int = 0
     private val mDelayHandler = Handler(TodayStepCounterCall())
     private val REFRESH_STEP_WHAT = 0
     private val TIME_INTERVAL_REFRESH: Long = 1000
@@ -79,10 +81,11 @@ class MainFragment : BaseFragment<MainViewModel,FragmentMainBinding>() {
         }, AppCompatActivity.BIND_AUTO_CREATE)
     }
 
-    private fun updataValues(stepArray: String) {
-        mViewBinding?.tvStepNum?.text = stepArray
-        mViewBinding?.tvWalkingDistance?.text = "步行距离：" + getDistanceByStep(stepArray.toLong()) + " km"
-        mViewBinding?.tvCalorieConsumption?.text = "消耗热量：" + getCalorieByStep(stepArray.toLong()) + " kcal"
+    private fun updataValues(stepArray: Int) {
+        val realSteps = stepArray
+        mViewBinding?.tvStepNum?.text = realSteps.toString()
+        mViewBinding?.tvWalkingDistance?.text = "步行距离：" + getDistanceByStep(realSteps.toLong()) + " km"
+        mViewBinding?.tvCalorieConsumption?.text = "消耗热量：" + getCalorieByStep(realSteps.toLong()) + " kcal"
     }
 
     // 公里计算公式
@@ -102,7 +105,7 @@ class MainFragment : BaseFragment<MainViewModel,FragmentMainBinding>() {
 
                     //每隔500毫秒获取一次计步数据刷新UI
                     if (null != iSportStepInterface) {
-                        var step: String? = null
+                        var step: Int = 0
                         try {
                             step = iSportStepInterface!!.todaySportStepArray
                             Log.d(TAG," refresh UI in 5000 ms  :   " )
@@ -110,8 +113,9 @@ class MainFragment : BaseFragment<MainViewModel,FragmentMainBinding>() {
                         } catch (e: RemoteException) {
                             e.printStackTrace()
                         }
+                        Log.d(TAG," stepArray  :  $stepArray    step   :   $step " )
                         if (stepArray != step) {
-                            stepArray = step.toString()
+                            stepArray = step
 //                            updateStepCount(stepArray)
                         }
                     }

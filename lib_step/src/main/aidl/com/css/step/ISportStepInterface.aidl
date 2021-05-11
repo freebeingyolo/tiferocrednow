@@ -12,5 +12,5 @@ interface ISportStepInterface {
      /**
       * 获取当天步数列表，json格式
       */
-     String getTodaySportStepArray();
+     int getTodaySportStepArray();
 }

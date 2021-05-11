@@ -16,8 +16,10 @@ import android.util.Log
 import com.css.step.*
 import com.css.step.data.ConstantData
 import com.css.step.data.TodayStepData
+import com.css.step.db.StepDataDao
 import com.css.step.utils.Logger
 import com.css.step.utils.OnStepCounterListener
+import com.css.step.utils.TimeUtil
 import com.css.step.utils.TodayStepDBHelper
 import org.json.JSONArray
 import org.json.JSONException
@@ -31,6 +33,16 @@ class TodayStepService: Service(), Handler.Callback {
 
     //保存数据库频率
     private val DB_SAVE_COUNTER = 50
+
+
+    //当前日期
+    private var currentDate: String? = null
+    //昨天日期
+    private var yesterdayDate: String? = null
+    //当前步数
+    private var currentStep: Int = 0
+    //数据库
+    private var stepDataDao: StepDataDao? = null
 
     //传感器的采样周期，这里使用SensorManager.SENSOR_DELAY_FASTEST，如果使用SENSOR_DELAY_UI会导致部分手机后台清理内存之后传感器不记步
     private val SAMPLING_PERIOD_US = SensorManager.SENSOR_DELAY_FASTEST
@@ -77,10 +89,12 @@ class TodayStepService: Service(), Handler.Callback {
 
     override fun onCreate() {
         super.onCreate()
+        initCurrentSteps()
         mTodayStepDBHelper = TodayStepDBHelper(applicationContext)
         sensorManager = this
             .getSystemService(Context.SENSOR_SERVICE) as SensorManager?
-        initNotification(currentTimeSportStep)
+        initNotification(currentTimeSportStep  + defaultSteps())
+
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -318,12 +332,13 @@ class TodayStepService: Service(), Handler.Callback {
      * 更新通知
      */
     private fun updateNotification(stepCount: Int) {
+        val realSteps = stepCount + defaultSteps()
         if (null == builder || null == nm) {
             return
         }
-        builder!!.setContentTitle(getString(R.string.title_notification_bar, stepCount.toString()))
-        val km = getDistanceByStep(stepCount.toLong())
-        val calorie = getCalorieByStep(stepCount.toLong())
+        builder!!.setContentTitle(getString(R.string.title_notification_bar, realSteps.toString()))
+        val km = getDistanceByStep(realSteps.toLong())
+        val calorie = getCalorieByStep(realSteps.toLong())
         builder!!.setContentText("$calorie 千卡  $km 公里")
         notification = builder!!.build()
         nm!!.notify(R.string.app_name, notification)
@@ -359,12 +374,12 @@ class TodayStepService: Service(), Handler.Callback {
             return currentTimeSportStep
         }
 
-        override fun getTodaySportStepArray(): String? {
+        override fun getTodaySportStepArray(): Int {
                 if (null != mTodayStepDBHelper) {
                     val todayStepDataArrayList: List<TodayStepData>? =
                         mTodayStepDBHelper!!.getQueryAll()
                     if (null == todayStepDataArrayList || 0 == todayStepDataArrayList.size) {
-                        return "0"
+                        return defaultSteps()
                     }
                     val jsonArray = JSONArray()
                     for (i in todayStepDataArrayList.indices) {
@@ -385,18 +400,35 @@ class TodayStepService: Service(), Handler.Callback {
                         }
                     }
                     Logger().e(TAG, jsonArray.toString())
-
+//                    initNotification(defaultSteps() + todayStepDataArrayList[todayStepDataArrayList.size - 1].getStep().toInt())
                     //仅返回步数信息
-                    todayStepDataArrayList[todayStepDataArrayList.size - 1].getStep()
-                    return  todayStepDataArrayList[todayStepDataArrayList.size - 1].getStep().toString()
+                    return defaultSteps() + todayStepDataArrayList[todayStepDataArrayList.size - 1].getStep().toInt()
 
                     // 返回所有信息jsonArray
                     //return jsonArray.toString()
                 }
-                return null
+
+                return 0
             }
 
+    }
 
+    private fun initCurrentSteps() {
+        //获取当前时间
+        currentDate = TimeUtil.getCurrentDate()
+        //获取昨天时间
+        yesterdayDate = TimeUtil.getCurrentDate()
+        //获取数据库
+        stepDataDao = StepDataDao(applicationContext)
+    }
+
+    private fun defaultSteps(): Int {
+        val currentEntity = stepDataDao?.getCurDataByDate(currentDate!!)
+        val yesterdayEntity = stepDataDao?.getCurDataByDate(currentDate!!)
+//        val defaultSteps:Int = (currentEntity?.steps?.toInt())!! - (yesterdayEntity?.steps?.toInt()!!)
+        val defaultSteps:Int = (currentEntity?.steps?.toInt())!! - 40502
+        Log.d(TAG , " defaultSteps   :  $defaultSteps")
+        return defaultSteps
     }
 
     // 公里计算公式
