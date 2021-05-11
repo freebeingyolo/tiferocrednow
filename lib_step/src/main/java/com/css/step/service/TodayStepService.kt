@@ -1,4 +1,4 @@
-package com.css.step
+package com.css.step.service
 
 import android.app.*
 import android.content.Context
@@ -13,6 +13,14 @@ import android.os.IBinder
 import android.os.Message
 import android.text.TextUtils
 import android.util.Log
+import com.css.step.*
+import com.css.step.data.ConstantData
+import com.css.step.data.TodayStepData
+import com.css.step.db.StepDataDao
+import com.css.step.utils.Logger
+import com.css.step.utils.OnStepCounterListener
+import com.css.step.utils.TimeUtil
+import com.css.step.utils.TodayStepDBHelper
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -26,6 +34,16 @@ class TodayStepService: Service(), Handler.Callback {
     //保存数据库频率
     private val DB_SAVE_COUNTER = 50
 
+
+    //当前日期
+    private var currentDate: String? = null
+    //昨天日期
+    private var yesterdayDate: String? = null
+    //当前步数
+    private var currentStep: Int = 0
+    //数据库
+    private var stepDataDao: StepDataDao? = null
+
     //传感器的采样周期，这里使用SensorManager.SENSOR_DELAY_FASTEST，如果使用SENSOR_DELAY_UI会导致部分手机后台清理内存之后传感器不记步
     private val SAMPLING_PERIOD_US = SensorManager.SENSOR_DELAY_FASTEST
 
@@ -36,7 +54,6 @@ class TodayStepService: Service(), Handler.Callback {
 
     val INTENT_NAME_0_SEPARATE = "intent_name_0_separate"
     val INTENT_NAME_BOOT = "intent_name_boot"
-    val INTENT_JOB_SCHEDULER = "intent_job_scheduler"
 
     var currentTimeSportStep = 0
 
@@ -72,10 +89,12 @@ class TodayStepService: Service(), Handler.Callback {
 
     override fun onCreate() {
         super.onCreate()
+        initCurrentSteps()
         mTodayStepDBHelper = TodayStepDBHelper(applicationContext)
         sensorManager = this
             .getSystemService(Context.SENSOR_SERVICE) as SensorManager?
-        initNotification(currentTimeSportStep)
+        initNotification(currentTimeSportStep  + defaultSteps())
+
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -110,9 +129,9 @@ class TodayStepService: Service(), Handler.Callback {
             builder = Notification.Builder(this.applicationContext, ConstantData.CHANNEL_ID)
             val notificationChannel =
                 NotificationChannel(
-                        ConstantData.CHANNEL_ID,
-                        ConstantData.CHANNEL_NAME,
-                        NotificationManager.IMPORTANCE_MIN
+                    ConstantData.CHANNEL_ID,
+                    ConstantData.CHANNEL_NAME,
+                    NotificationManager.IMPORTANCE_MIN
                 )
             notificationChannel.enableLights(false)//如果使用中的设备支持通知灯，则说明此通知通道是否应显示灯
             notificationChannel.setShowBadge(false)//是否显示角标
@@ -123,28 +142,29 @@ class TodayStepService: Service(), Handler.Callback {
             builder = Notification.Builder(this.applicationContext)
         }
         builder!!.setPriority(Notification.PRIORITY_MIN)
-        val receiverName = getReceiver(getApplicationContext())
+
+        val receiverName: String? = getReceiver(applicationContext)
         var contentIntent = PendingIntent.getBroadcast(
-                this,
-                BROADCAST_REQUEST_CODE,
-                Intent(),
-                PendingIntent.FLAG_UPDATE_CURRENT
+            this,
+            BROADCAST_REQUEST_CODE,
+            Intent(),
+            PendingIntent.FLAG_UPDATE_CURRENT
         )
         if (!TextUtils.isEmpty(receiverName)) {
             contentIntent = try {
                 PendingIntent.getBroadcast(
-                        this,
-                        BROADCAST_REQUEST_CODE,
-                        Intent(this, Class.forName(receiverName!!)),
-                        PendingIntent.FLAG_UPDATE_CURRENT
+                    this,
+                    BROADCAST_REQUEST_CODE,
+                    Intent(this, Class.forName(receiverName!!)),
+                    PendingIntent.FLAG_UPDATE_CURRENT
                 )
             } catch (e: Exception) {
                 e.printStackTrace()
                 PendingIntent.getBroadcast(
-                        this,
-                        BROADCAST_REQUEST_CODE,
-                        Intent(),
-                        PendingIntent.FLAG_UPDATE_CURRENT
+                    this,
+                    BROADCAST_REQUEST_CODE,
+                    Intent(),
+                    PendingIntent.FLAG_UPDATE_CURRENT
                 )
             }
         }
@@ -164,18 +184,18 @@ class TodayStepService: Service(), Handler.Callback {
             builder!!.setLargeIcon(BitmapFactory.decodeResource(getResources(), largeIcon))
         } else {
             builder!!.setLargeIcon(
-                    BitmapFactory.decodeResource(
-                            getResources(),
-                            R.mipmap.ic_notification_default
-                    )
+                BitmapFactory.decodeResource(
+                    getResources(),
+                    R.mipmap.ic_notification_default
+                )
             )
         }
         builder!!.setTicker(getString(R.string.app_name))
         builder!!.setContentTitle(
-                getString(
-                        R.string.title_notification_bar,
-                        currentStep.toString()
-                )
+            getString(
+                R.string.title_notification_bar,
+                currentStep.toString()
+            )
         )
         val km = getDistanceByStep(currentStep.toLong())
         val calorie = getCalorieByStep(currentStep.toLong())
@@ -312,12 +332,13 @@ class TodayStepService: Service(), Handler.Callback {
      * 更新通知
      */
     private fun updateNotification(stepCount: Int) {
+        val realSteps = stepCount + defaultSteps()
         if (null == builder || null == nm) {
             return
         }
-        builder!!.setContentTitle(getString(R.string.title_notification_bar, stepCount.toString()))
-        val km = getDistanceByStep(stepCount.toLong())
-        val calorie = getCalorieByStep(stepCount.toLong())
+        builder!!.setContentTitle(getString(R.string.title_notification_bar, realSteps.toString()))
+        val km = getDistanceByStep(realSteps.toLong())
+        val calorie = getCalorieByStep(realSteps.toLong())
         builder!!.setContentText("$calorie 千卡  $km 公里")
         notification = builder!!.build()
         nm!!.notify(R.string.app_name, notification)
@@ -349,13 +370,16 @@ class TodayStepService: Service(), Handler.Callback {
         val STEP_NUM = "stepNum"
         val DISTANCE = "km"
         val CALORIE = "kaluli"
+        override fun getCurrentTimeSportStep(): Int {
+            return currentTimeSportStep
+        }
 
-        override fun getTodaySportStepArray(): String? {
+        override fun getTodaySportStepArray(): Int {
                 if (null != mTodayStepDBHelper) {
                     val todayStepDataArrayList: List<TodayStepData>? =
                         mTodayStepDBHelper!!.getQueryAll()
                     if (null == todayStepDataArrayList || 0 == todayStepDataArrayList.size) {
-                        return "0"
+                        return defaultSteps()
                     }
                     val jsonArray = JSONArray()
                     for (i in todayStepDataArrayList.indices) {
@@ -363,8 +387,8 @@ class TodayStepService: Service(), Handler.Callback {
                         try {
                             val subObject = JSONObject()
                             subObject.put(
-                                    TodayStepDBHelper(applicationContext).TODAY,
-                                    todayStepData.getToday()
+                                TodayStepDBHelper(applicationContext).TODAY,
+                                todayStepData.getToday()
                             )
                             subObject.put(SPORT_DATE, todayStepData.getDate())
                             subObject.put(STEP_NUM, todayStepData.getStep())
@@ -376,35 +400,56 @@ class TodayStepService: Service(), Handler.Callback {
                         }
                     }
                     Logger().e(TAG, jsonArray.toString())
-
+//                    initNotification(defaultSteps() + todayStepDataArrayList[todayStepDataArrayList.size - 1].getStep().toInt())
                     //仅返回步数信息
-                    todayStepDataArrayList[todayStepDataArrayList.size - 1].getStep()
-                    return  todayStepDataArrayList[todayStepDataArrayList.size - 1].getStep().toString()
+                    return defaultSteps() + todayStepDataArrayList[todayStepDataArrayList.size - 1].getStep().toInt()
 
                     // 返回所有信息jsonArray
                     //return jsonArray.toString()
                 }
-                return null
+
+                return 0
             }
 
+    }
 
+    private fun initCurrentSteps() {
+        //获取当前时间
+        currentDate = TimeUtil.getCurrentDate()
+        //获取昨天时间
+        val preCalendar = Calendar.getInstance()
+        preCalendar.add(Calendar.DATE, -1)
+        yesterdayDate = SimpleDateFormat("yyyy年MM月dd日").format(preCalendar.time)
+        //获取数据库
+        stepDataDao = StepDataDao(applicationContext)
+    }
+
+    private fun defaultSteps(): Int {
+        var currentEntity = stepDataDao?.getCurDataByDate(currentDate!!)?.steps
+        var yesterdayEntity = stepDataDao?.getCurDataByDate(yesterdayDate!!)?.steps
+        if (yesterdayEntity == null) {
+            yesterdayEntity = currentEntity
+        }
+        val defaultSteps:Int = (currentEntity?.toInt())!! - (yesterdayEntity?.toInt()!!)
+        Log.d(TAG , " defaultSteps   :  $defaultSteps")
+        return defaultSteps
     }
 
     // 公里计算公式
     private fun getDistanceByStep(steps: Long): String {
-        return String.format("%.2f", steps * 0.6f / 1000)
+        return String.format("%.2f", steps * 0.7f / 1000)
     }
 
     // 千卡路里计算公式
     private fun getCalorieByStep(steps: Long): String {
-        return String.format("%.1f", steps * 0.6f * 60 * 1.036f / 1000)
+        return String.format("%.1f", steps * 0.7f * 60 * 1.036f / 1000)
     }
 
     fun getReceiver(context: Context): String? {
         try {
             val packageInfo = context.packageManager.getPackageInfo(
-                    context.packageName,
-                    PackageManager.GET_RECEIVERS
+                context.packageName,
+                PackageManager.GET_RECEIVERS
             )
             val activityInfos = packageInfo.receivers
             if (null != activityInfos && activityInfos.size > 0) {

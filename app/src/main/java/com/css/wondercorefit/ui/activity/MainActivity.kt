@@ -1,5 +1,6 @@
 package com.css.wondercorefit.ui.activity
 
+import android.os.*
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
@@ -27,12 +28,6 @@ class MainActivity : BaseActivity<DefaultViewModel, ActivityMainBinding>() {
     lateinit var mTabCourseFragment: CourseFragment
     private lateinit var mTabMallFragment: MallFragment
     private lateinit var mTabSettingFragment: SettingFragment
-
-    private var iSportStepInterface: ISportStepInterface? = null
-    private lateinit var stepArray: String
-    private val mDelayHandler = Handler(TodayStepCounterCall())
-    private val REFRESH_STEP_WHAT = 0
-    private val TIME_INTERVAL_REFRESH: Long = 500
 
     override fun initViewModel(): DefaultViewModel =
         ViewModelProvider(this).get(DefaultViewModel::class.java)
@@ -86,34 +81,6 @@ class MainActivity : BaseActivity<DefaultViewModel, ActivityMainBinding>() {
     private fun startStep() {
         TodayStepManager().init(application)
         //开启计步Service，同时绑定Activity进行aidl通信
-    }
-
-    inner class TodayStepCounterCall : Handler.Callback {
-        override fun handleMessage(msg: Message): Boolean {
-            when (msg.what) {
-                REFRESH_STEP_WHAT -> {
-
-                    //每隔500毫秒获取一次计步数据刷新UI
-                    if (null != iSportStepInterface) {
-                        var step: String? = null
-                        try {
-                            step = iSportStepInterface!!.todaySportStepArray
-                        } catch (e: RemoteException) {
-                            e.printStackTrace()
-                        }
-                        if (stepArray != step) {
-                            stepArray = step.toString()
-//                            updateStepCount(stepArray)
-                        }
-                    }
-                    mDelayHandler.sendEmptyMessageDelayed(
-                        REFRESH_STEP_WHAT,
-                        TIME_INTERVAL_REFRESH
-                    )
-                }
-            }
-            return false
-        }
     }
 
     fun changeFragment(tabIndex: Int) {

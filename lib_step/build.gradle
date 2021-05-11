@@ -40,6 +40,9 @@ android {
 dependencies {
 
     implementation project(':lib_service')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     testImplementation 'junit:junit:4.+'
     kapt dep.arouter_compiler
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

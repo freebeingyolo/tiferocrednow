@@ -1,4 +1,4 @@
-package com.css.step
+package com.css.step.data
 
 import android.os.Parcel
 import android.os.Parcelable

@@ -1,12 +1,12 @@
-package com.css.step
+package com.css.step.utils
 
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.css.step.data.TodayStepData
 import java.util.*
-import javax.xml.transform.OutputKeys.VERSION
 
 class TodayStepDBHelper: SQLiteOpenHelper {
     private val TAG = "TodayStepDBHelper"

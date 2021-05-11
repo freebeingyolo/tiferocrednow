@@ -1,9 +1,10 @@
-package com.css.step
+package com.css.step.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log.e
+import com.css.step.utils.Logger
+import com.css.step.utils.PreferencesHelper
 
 class TodayStepShutdownReceiver: BroadcastReceiver() {
 
