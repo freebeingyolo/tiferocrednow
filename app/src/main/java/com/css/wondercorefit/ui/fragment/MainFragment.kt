@@ -111,7 +111,6 @@ class MainFragment : BaseFragment<MainViewModel,FragmentMainBinding>() {
     override fun initViewModel(): MainViewModel =
         ViewModelProvider(this).get(MainViewModel::class.java)
 
-    override fun getLayoutResId(): Int = R.layout.fragment_main
 
     override fun initViewBinding(
         inflater: LayoutInflater,

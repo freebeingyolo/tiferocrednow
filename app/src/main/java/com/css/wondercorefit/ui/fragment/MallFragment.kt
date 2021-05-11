@@ -21,7 +21,6 @@ class MallFragment : BaseFragment<DefaultViewModel,FragmentMallBinding>() {
 
     override fun initViewModel(): DefaultViewModel = ViewModelProvider(this).get(DefaultViewModel::class.java)
 
-    override fun getLayoutResId(): Int=R.layout.fragment_mall
     override fun initViewBinding(
         inflater: LayoutInflater,
         viewGroup: ViewGroup?

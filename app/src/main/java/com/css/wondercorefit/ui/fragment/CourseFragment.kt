@@ -105,8 +105,6 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
 
     override fun initViewModel(): DefaultViewModel=   ViewModelProvider(this).get(DefaultViewModel::class.java)
 
-    override fun getLayoutResId(): Int =R.layout.fragment_course
-
     inner class ListAdapter : BaseAdapter() {
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
             val itemView: View

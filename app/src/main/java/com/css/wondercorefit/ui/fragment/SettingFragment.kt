@@ -28,7 +28,6 @@ class SettingFragment : BaseFragment<DefaultViewModel, FragmentSettingBinding>()
     override fun initViewModel(): DefaultViewModel =
         ViewModelProvider(this).get(DefaultViewModel::class.java)
 
-    override fun getLayoutResId(): Int = R.layout.fragment_setting
     override fun onClick(v: View) {
         when (v.id) {
             R.id.rl_person_info -> {

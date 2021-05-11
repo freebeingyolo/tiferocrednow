@@ -111,11 +111,6 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
         viewGroup: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        if (mRootView == null) {
-            //为空时初始化。
-            //根布局
-            mRootView = inflater.inflate(R.layout.activity_base, viewGroup, false)
-        }
         mViewBinding = initViewBinding(inflater, viewGroup)
         return mViewBinding!!.root
     }
@@ -134,13 +129,6 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
     }
 
     abstract fun initViewModel(): VM
-
-    /**
-     * layout resource id
-     *
-     * @return Fragment视图
-     */
-    protected abstract fun getLayoutResId(): Int
 
     /**
      * 运行在initView之后
