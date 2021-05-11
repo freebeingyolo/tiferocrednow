@@ -6,20 +6,16 @@ import android.content.ServiceConnection
 import android.os.*
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.startForegroundService
 import androidx.lifecycle.ViewModelProvider
-import com.blankj.utilcode.util.ServiceUtils.startService
 import com.css.base.uibase.BaseFragment
 import com.css.service.utils.SystemBarHelper
 import com.css.step.ISportStepInterface
 import com.css.step.TodayStepManager
-import com.css.step.db.StepDataDao
 import com.css.step.service.SensorService
 import com.css.step.service.TodayStepService
-import com.css.step.utils.TimeUtil
-import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.FragmentMainBinding
 import com.css.wondercorefit.viewmodel.MainViewModel
 
@@ -83,7 +79,12 @@ class MainFragment : BaseFragment<MainViewModel,FragmentMainBinding>() {
 
     private fun updataValues(stepArray: Int) {
         val realSteps = stepArray
-        mViewBinding?.tvStepNum?.text = realSteps.toString()
+        if (realSteps == 0) {
+            mViewBinding?.tvTodayStep?.text = "今天尚未运动，" + "\n" + "快去运动一下吧"
+            mViewBinding?.tvStepNum?.visibility = View.INVISIBLE
+        } else {
+            mViewBinding?.tvStepNum?.text = realSteps.toString()
+        }
         mViewBinding?.tvWalkingDistance?.text = "步行距离：" + getDistanceByStep(realSteps.toLong()) + " km"
         mViewBinding?.tvCalorieConsumption?.text = "消耗热量：" + getCalorieByStep(realSteps.toLong()) + " kcal"
     }
