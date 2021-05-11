@@ -13,17 +13,19 @@ import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.PermissionUtils
 import com.css.base.constants.ARouterConstants
 import com.css.base.constants.QRScanConstants
 import com.css.base.uibase.BaseActivity
+import com.css.qrscan.databinding.ActivityQrscanMainBinding
 import com.css.qrscan.viewmodel.QrScanViewModel
 import com.huawei.hms.hmsscankit.RemoteView
 import com.huawei.hms.ml.scan.HmsScan
 import kotlinx.android.synthetic.main.activity_qrscan_main.*
 
-class QrScanActivity : BaseActivity<QrScanViewModel>() {
+class QrScanActivity : BaseActivity<QrScanViewModel, ActivityQrscanMainBinding>() {
 
     var remoteView: RemoteView? = null;
     val permissions: Array<String> =
@@ -133,11 +135,10 @@ class QrScanActivity : BaseActivity<QrScanViewModel>() {
         }
     }
 
-    override fun getLayoutResId(): Int {
-        return R.layout.activity_qrscan_main
+    override fun initViewModel(): QrScanViewModel {
+        return ViewModelProvider(this).get(QrScanViewModel::class.java)
     }
 
-    override fun initViewModel(): QrScanViewModel {
-        return QrScanViewModel()
-    }
+    override fun initViewBinding(): ActivityQrscanMainBinding =
+        ActivityQrscanMainBinding.inflate(layoutInflater)
 }
