@@ -42,7 +42,6 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         SystemBarHelper.immersiveStatusBar(activity, 0f)
-        mViewBinding?.courseTitle?.text = getString(R.string.app_name)
         SystemBarHelper.setHeightAndPadding(activity, mViewBinding?.topView)
         initRecycle()
     }
