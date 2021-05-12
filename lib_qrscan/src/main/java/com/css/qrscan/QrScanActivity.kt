@@ -10,20 +10,16 @@ import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.Gravity
-import android.view.View
 import android.widget.FrameLayout
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.PermissionUtils
-import com.css.base.constants.ARouterConstants
 import com.css.base.constants.QRScanConstants
 import com.css.base.uibase.BaseActivity
 import com.css.qrscan.databinding.ActivityQrscanMainBinding
 import com.css.qrscan.viewmodel.QrScanViewModel
 import com.huawei.hms.hmsscankit.RemoteView
 import com.huawei.hms.ml.scan.HmsScan
-import kotlinx.android.synthetic.main.activity_qrscan_main.*
 
 class QrScanActivity : BaseActivity<QrScanViewModel, ActivityQrscanMainBinding>() {
 
@@ -42,10 +38,10 @@ class QrScanActivity : BaseActivity<QrScanViewModel, ActivityQrscanMainBinding>(
             this.right = (screenW / 2 + scanFrameSize / 2).toInt()
             this.top = (screenH / 2 - scanFrameSize / 2).toInt()
             this.bottom = (screenH / 2 + scanFrameSize / 2).toInt()
-            var lp = scanWindow.layoutParams
+            var lp = mViewBinding.scanWindow.layoutParams
             lp.width = scanFrameSize
             lp.height = scanFrameSize
-            scanWindow.layoutParams = lp
+            mViewBinding.scanWindow.layoutParams = lp
         }
         remoteView = RemoteView.Builder().setContext(this).setBoundingBox(rect)
             .setFormat(HmsScan.QRCODE_SCAN_TYPE).build()
@@ -68,7 +64,7 @@ class QrScanActivity : BaseActivity<QrScanViewModel, ActivityQrscanMainBinding>(
             FrameLayout.LayoutParams.MATCH_PARENT
         )
         params.gravity = Gravity.CENTER;
-        scannerContainer.addView(remoteView, params)
+        mViewBinding.scannerContainer.addView(remoteView, params)
         remoteView?.onCreate(savedInstanceState)
     }
 

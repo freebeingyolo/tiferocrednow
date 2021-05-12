@@ -1,12 +1,8 @@
-if (rootProject.ext.isDebugType) {
-    apply plugin: 'com.android.application'
-} else {
-    apply plugin: 'com.android.library'
-}
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.huawei.agconnect'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+
 kapt {
     arguments {
         arg("AROUTER_MODULE_NAME", project.getName())
@@ -17,7 +13,7 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -41,8 +37,8 @@ android {
         jvmTarget = '1.8'
     }
     buildFeatures{
-        dataBinding true
         viewBinding true
+        dataBinding true
     }
 
 }

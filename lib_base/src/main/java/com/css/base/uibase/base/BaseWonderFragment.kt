@@ -3,34 +3,29 @@ package com.css.base.uibase.base
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
-import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.ImageView
-import androidx.annotation.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
-import com.css.base.R
-import com.css.base.uibase.BaseActivity
 import com.css.base.uibase.inner.IBaseView
-import com.css.base.uibase.inner.OnToolBarClickListener
 import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.base.utils.FragmentStarter
-import com.css.base.utils.UICoreConfig
 import com.css.base.view.ToolBarView
 import java.lang.ref.Reference
 import java.lang.ref.WeakReference
 
-abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), IBaseView{
-    lateinit var viewModel: VM
+abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), IBaseView {
+    lateinit var mViewModel: VM
 
-     var mViewBinding: VB ?=null
+    var mViewBinding: VB? = null
 
     private var mViewRef: Reference<Activity>? = null
 
@@ -100,8 +95,8 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
     }
 
     private fun attachViewModelAndLifecycle() {
-        viewModel = initViewModel()
-        lifecycle.addObserver(viewModel)
+        mViewModel = initViewModel()
+        lifecycle.addObserver(mViewModel)
         isAttachViewModelOk = true
     }
 
@@ -144,31 +139,31 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
     private fun initUIChangeLiveDataCallBack() {
 
         //Toast
-        viewModel.showToastStrEvent.observe(viewLifecycleOwner, Observer { t ->
+        mViewModel.showToastStrEvent.observe(viewLifecycleOwner, Observer { t ->
             showToast(t)
         })
-        viewModel.showLongToastStrEvent.observe(viewLifecycleOwner, Observer { t ->
+        mViewModel.showLongToastStrEvent.observe(viewLifecycleOwner, Observer { t ->
             showLongToast(t)
         })
-        viewModel.showToastResEvent.observe(viewLifecycleOwner, Observer { t ->
+        mViewModel.showToastResEvent.observe(viewLifecycleOwner, Observer { t ->
             showToast(t)
         })
-        viewModel.showLongToastResEvent.observe(viewLifecycleOwner, Observer { t ->
+        mViewModel.showLongToastResEvent.observe(viewLifecycleOwner, Observer { t ->
             showLongToast(t)
         })
-        viewModel.showCenterToastStrEvent.observe(viewLifecycleOwner, Observer { t ->
+        mViewModel.showCenterToastStrEvent.observe(viewLifecycleOwner, Observer { t ->
             showCenterToast(t)
         })
-        viewModel.showCenterLongToastStrEvent.observe(viewLifecycleOwner, Observer { t ->
+        mViewModel.showCenterLongToastStrEvent.observe(viewLifecycleOwner, Observer { t ->
             showCenterLongToast(t)
         })
-        viewModel.showCenterToastResEvent.observe(viewLifecycleOwner, Observer { t ->
+        mViewModel.showCenterToastResEvent.observe(viewLifecycleOwner, Observer { t ->
             showCenterToast(t)
         })
-        viewModel.showCenterLongToastResEvent.observe(viewLifecycleOwner, Observer { t ->
+        mViewModel.showCenterLongToastResEvent.observe(viewLifecycleOwner, Observer { t ->
             showCenterLongToast(t)
         })
-        viewModel.finishAcEvent.observe(viewLifecycleOwner, Observer {
+        mViewModel.finishAcEvent.observe(viewLifecycleOwner, Observer {
             finishAc()
         })
         registorUIChangeLiveDataCallBack()
@@ -394,6 +389,7 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
         ToastUtils.setGravity(Gravity.CENTER, 0, 0)
         ToastUtils.showLong(resId)
     }
+
     /**
      * 创建fragment时传入的数据对象
      */
@@ -427,6 +423,5 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
     open fun startFragment(toFragment: Fragment?, tag: String?) {
         FragmentStarter.startFragment(this, toFragment, tag)
     }
-
     //--------------------- control fragment end --------------------------
 }

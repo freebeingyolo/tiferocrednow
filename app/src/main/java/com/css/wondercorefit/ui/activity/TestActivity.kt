@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.view.View
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import com.blankj.utilcode.util.LogUtils
 import com.css.base.constants.QRScanConstants
 import com.css.base.uibase.BaseActivity
@@ -31,7 +32,7 @@ class TestActivity : BaseActivity<TestViewModel, ActivityTestActvityBinding>() {
     }
 
     override fun initViewModel(): TestViewModel {
-        return TestViewModel()
+        return ViewModelProvider(this).get(TestViewModel::class.java)
     }
 
     override fun initViewBinding(): ActivityTestActvityBinding =

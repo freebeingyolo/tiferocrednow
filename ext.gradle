@@ -38,9 +38,10 @@ ext {
             //选择器
             pickerView           : 'com.contrarywind:Android-PickerView:4.1.9',
             liteplayer           : 'com.github.seagazer:liteplayer:1.0.7',
+            recyclerView         : 'androidx.recyclerview:recyclerview:1.2.0-alpha03',
 
             arouter              : 'com.alibaba:arouter-api:1.5.1',
             arouter_compiler     : 'com.alibaba:arouter-compiler:1.5.1'
     ]
-    isDebugType = false
+    isDebugType = true
 }

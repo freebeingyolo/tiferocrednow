@@ -22,7 +22,7 @@ import com.css.base.utils.OSUtils
 
 abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompatActivity(),
     IBaseView{
-    private val TAG = this.javaClass.simpleName
+    protected val TAG = this.javaClass.simpleName
 
     lateinit var mViewModel: VM
 

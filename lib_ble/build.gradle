@@ -1,21 +1,25 @@
-plugins {
-    id 'com.android.library'
-    id 'kotlin-android'
-    id 'kotlin-kapt'
+if (rootProject.ext.isDebugType) {
+    apply plugin: 'com.android.application'
+} else {
+    apply plugin: 'com.android.library'
 }
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+
 kapt {
     arguments {
         arg("AROUTER_MODULE_NAME", project.getName())
     }
 }
 
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        minSdkVersion 19
-        targetSdkVersion 30
+        minSdkVersion 21
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
 
@@ -50,14 +54,20 @@ android {
         jvmTarget = '1.8'
     }
 
+    buildFeatures {
+        dataBinding true
+    }
 }
 
 dependencies {
 //    implementation fileTree(includes: ['*.jar'],dir:"libs")
-    implementation project(':lib_service')
     implementation project(':lib_base')
+
     implementation(name: "bluetoothlib_ts_1.0.3", ext: "aar")
-    kapt dep.arouter_compiler
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

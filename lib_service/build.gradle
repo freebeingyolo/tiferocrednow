@@ -66,6 +66,7 @@ dependencies {
 
     api dep.basePopup
     api dep.pickerView
+    api dep.recyclerView
     api dep.arouter
     kapt dep.arouter_compiler
     testImplementation 'junit:junit:4.+'
