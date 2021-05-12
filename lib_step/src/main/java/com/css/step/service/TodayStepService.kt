@@ -4,7 +4,6 @@ import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.BitmapFactory
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.os.Build
@@ -13,10 +12,11 @@ import android.os.IBinder
 import android.os.Message
 import android.text.TextUtils
 import android.util.Log
+import com.css.service.data.UserData
+import com.css.service.utils.WonderCoreCache
 import com.css.step.*
 import com.css.step.data.ConstantData
 import com.css.step.data.TodayStepData
-import com.css.step.db.StepDataDao
 import com.css.step.utils.Logger
 import com.css.step.utils.OnStepCounterListener
 import com.css.step.utils.TimeUtil
@@ -41,8 +41,7 @@ class TodayStepService: Service(), Handler.Callback {
     private var yesterdayDate: String? = null
     //当前步数
     private var currentStep: Int = 0
-    //数据库
-    private var stepDataDao: StepDataDao? = null
+    private lateinit var userData: UserData
 
     //传感器的采样周期，这里使用SensorManager.SENSOR_DELAY_FASTEST，如果使用SENSOR_DELAY_UI会导致部分手机后台清理内存之后传感器不记步
     private val SAMPLING_PERIOD_US = SensorManager.SENSOR_DELAY_FASTEST
@@ -89,7 +88,7 @@ class TodayStepService: Service(), Handler.Callback {
 
     override fun onCreate() {
         super.onCreate()
-        initCurrentSteps()
+        userData = WonderCoreCache.getUserInfo()
         mTodayStepDBHelper = TodayStepDBHelper(applicationContext)
         sensorManager = this
             .getSystemService(Context.SENSOR_SERVICE) as SensorManager?
@@ -400,26 +399,8 @@ class TodayStepService: Service(), Handler.Callback {
 
     }
 
-    private fun initCurrentSteps() {
-        //获取当前时间
-        currentDate = TimeUtil.getCurrentDate()
-        //获取昨天时间
-        val preCalendar = Calendar.getInstance()
-        preCalendar.add(Calendar.DATE, -1)
-        yesterdayDate = SimpleDateFormat("yyyy年MM月dd日").format(preCalendar.time)
-        //获取数据库
-        stepDataDao = StepDataDao(applicationContext)
-    }
-
     private fun defaultSteps(): Int {
-        var currentEntity = stepDataDao?.getCurDataByDate(currentDate!!)?.steps
-        var yesterdayEntity = stepDataDao?.getCurDataByDate(yesterdayDate!!)?.steps
-        if (yesterdayEntity == null) {
-            yesterdayEntity = currentEntity
-        }
-        val defaultSteps:Int = (currentEntity?.toInt())!! - (yesterdayEntity?.toInt()!!)
-        Log.d(TAG , " defaultSteps   :  $defaultSteps")
-        return (defaultSteps * 0.8f).toInt()
+        return userData.defaultSteps
     }
 
     // 公里计算公式

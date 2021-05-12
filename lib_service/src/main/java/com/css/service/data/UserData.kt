@@ -6,4 +6,7 @@ data class UserData(
     var stature: String = "170",
     var targetWeight: String = "60",
     var targetStep: String = "10000",
+    var sensorSteps: Int = 0,
+    var defaultSteps: Int = 0,
+    var saveDate: String = "2021年5月12号"
 )

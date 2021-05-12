@@ -15,10 +15,11 @@ import android.hardware.SensorManager
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
+import com.css.service.data.UserData
+import com.css.service.utils.WonderCoreCache
 import com.css.step.R
 import com.css.step.data.ConstantData
 import com.css.step.data.StepEntity
-import com.css.step.db.StepDataDao
 import com.css.step.utils.TimeUtil
 
 class SensorService : Service(), SensorEventListener {
@@ -28,12 +29,12 @@ class SensorService : Service(), SensorEventListener {
     private var sensorManager: SensorManager? = null
     //系统计步器步数
     private var systemSteps: Int = 0
-    //当前日期
-    private var currentDate: String? = null
-    //数据库
-    private var stepDataDao: StepDataDao? = null
     //广播接收
     private var mInfoReceiver: BroadcastReceiver? = null
+    //当前日期
+    private var currentDate: String? = null
+
+    private lateinit var userData: UserData
 
 
     override fun onCreate() {
@@ -104,15 +105,10 @@ class SensorService : Service(), SensorEventListener {
      * 初始化当天数据
      */
     private fun initTodayData() {
+        userData = WonderCoreCache.getUserInfo()
         //获取当前时间
         currentDate = TimeUtil.getCurrentDate()
-        //获取数据库
-        stepDataDao = StepDataDao(applicationContext)
         Thread(Runnable { getStepDetector() }).start()
-//        // 获取当天的数据，
-//        val entity = stepDataDao!!.getCurDataByDate(currentDate!!)
-//        // 为空则说明还没有该天的数据，有则说明已经开始当天的计步了
-//        currentStep = if (entity == null) 0 else Integer.parseInt(entity.steps!!)
     }
 
     /**
@@ -160,32 +156,30 @@ class SensorService : Service(), SensorEventListener {
         systemSteps = event!!.values[0].toInt()
         Log.d(TAG,"onSensorChanged  ： $systemSteps")
         saveStepData()
-
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
     }
 
     /**
-     * 保存系统计步器数据到数据库中
+     * 处理系统计步器数据
      */
     private fun saveStepData() {
-        //查询数据库中的数据
-        var entity = stepDataDao?.getCurDataByDate(currentDate!!)
-        //为空则说明还没有该天的数据，有则说明已经开始当天的计步了
-        if (entity == null) {
-            //没有则新建一条数据
-            Log.d(TAG, "addNewData   :   $currentDate     $systemSteps ")
-            entity = StepEntity()
-            entity.curDate = currentDate
-            entity.steps = systemSteps.toString()
-            stepDataDao?.addNewData(entity)
-        } else {
-            //有则更新当前的数据
-            Log.d(TAG, "updateCurData   :   $currentDate     $systemSteps ")
-            entity.steps = systemSteps.toString()
-            stepDataDao?.updateCurData(entity)
+        Log.d(TAG, "addNewData   :   $currentDate     $systemSteps ")
+        var currentSteps: Int = userData.sensorSteps
+        var defaultSteps = systemSteps - currentSteps
+        if (currentSteps == 0) {
+            defaultSteps = 0
         }
+        if (defaultSteps <= 0) {
+            defaultSteps = systemSteps
+        }
+        if (currentDate != userData.saveDate) {
+            userData.defaultSteps = defaultSteps
+            userData.saveDate = currentDate.toString()
+        }
+        userData.sensorSteps = systemSteps
+        WonderCoreCache.saveUserInfo(userData)
     }
 
     override fun onDestroy() {
