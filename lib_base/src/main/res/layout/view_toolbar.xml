@@ -31,10 +31,9 @@
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintStart_toEndOf="@+id/img_left"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="这标题很长这标题很长这标题很长" />
+            tools:text="这标题很长" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_right"

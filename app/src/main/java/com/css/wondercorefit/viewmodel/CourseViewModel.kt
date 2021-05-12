@@ -29,8 +29,8 @@ object CourseViewModel : BaseViewModel() {
 
     val urls = arrayListOf(url1, url2, url3, url4, url5, url6, url7, url8, url9, url10)
     val name = arrayListOf(str1, str2, str3, str4, str5, str6, str7, str8, str9, str10)
-    val picture: IntArray = intArrayOf(R.mipmap.focused_settings, R.mipmap.focused_course,
-        R.mipmap.focused_home, R.mipmap.focused_mall, R.mipmap.focused_settings,
-        R.mipmap.focused_settings, R.mipmap.focused_course, R.mipmap.focused_home,
-        R.mipmap.focused_mall, R.mipmap.focused_settings)
+    val picture: IntArray = intArrayOf(R.mipmap.icon_focused_settings, R.mipmap.icon_focused_course,
+        R.mipmap.icon_focused_home, R.mipmap.icon_focused_mall, R.mipmap.icon_focused_settings,
+        R.mipmap.icon_focused_settings, R.mipmap.icon_focused_course, R.mipmap.icon_focused_home,
+        R.mipmap.icon_focused_mall, R.mipmap.icon_focused_settings)
 }

@@ -7,3 +7,5 @@ include ':lib_res'
 include ':app'
 include ':lib_qrscan'
 rootProject.name = "WonderCoreFit"
+include ':wheelview'
+include ':pickerview'

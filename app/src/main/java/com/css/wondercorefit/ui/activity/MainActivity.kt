@@ -83,7 +83,7 @@ class MainActivity : BaseActivity<DefaultViewModel, ActivityMainBinding>() {
         //开启计步Service，同时绑定Activity进行aidl通信
     }
 
-    fun changeFragment(tabIndex: Int) {
+    private fun changeFragment(tabIndex: Int) {
         val fragment = getFragment(tabIndex) ?: return
         if (mCurFragment == fragment) {
             return
