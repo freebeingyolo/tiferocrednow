@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:id="@+id/ll_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".ui.activity.setting.PersonInformationActivity">
@@ -34,16 +34,16 @@
 
     <RelativeLayout
         android:id="@+id/rl_sex"
-        android:layout_marginTop="8dp"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:gravity="center_vertical"
+        android:layout_marginTop="8dp"
         android:paddingStart="20dp"
         android:paddingEnd="15dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:text="@string/sex"
             android:textColor="@color/black"
             android:textSize="14sp" />
@@ -53,9 +53,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="23dp"
             android:text="女"
             android:textColor="@color/black"
             android:textSize="14sp" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/icon_next" />
     </RelativeLayout>
 
     <View
@@ -69,13 +78,13 @@
         android:id="@+id/rl_age"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:gravity="center_vertical"
         android:paddingStart="20dp"
         android:paddingEnd="15dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:text="@string/age"
             android:textColor="@color/black"
             android:textSize="14sp" />
@@ -85,9 +94,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:text="18"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="23dp"
+            android:text="18岁"
             android:textColor="@color/black"
             android:textSize="14sp" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/icon_next" />
     </RelativeLayout>
 
     <View
@@ -101,13 +119,13 @@
         android:id="@+id/rl_stature"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:gravity="center_vertical"
         android:paddingStart="20dp"
         android:paddingEnd="15dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:text="@string/stature"
             android:textColor="@color/black"
             android:textSize="14sp" />
@@ -117,9 +135,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="23dp"
             android:text="168"
             android:textColor="@color/black"
             android:textSize="14sp" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/icon_next" />
     </RelativeLayout>
 
     <View
@@ -139,27 +166,38 @@
         android:textStyle="bold" />
 
     <RelativeLayout
+        android:id="@+id/rl_target_weight"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="8dp"
-        android:gravity="center_vertical"
         android:paddingStart="15dp"
         android:paddingEnd="15dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:text="@string/target_weight"
             android:textColor="@color/black"
             android:textSize="14sp" />
 
         <TextView
+            android:id="@+id/tv_target_weight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="23dp"
             android:text="48kg"
             android:textColor="@color/black"
             android:textSize="14sp" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/icon_next" />
     </RelativeLayout>
 
     <View
@@ -170,26 +208,37 @@
         android:background="@color/color_e5e5e5" />
 
     <RelativeLayout
+        android:id="@+id/rl_target_step"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:gravity="center_vertical"
         android:paddingStart="15dp"
         android:paddingEnd="15dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:text="@string/target_step"
             android:textColor="@color/black"
             android:textSize="14sp" />
 
         <TextView
+            android:id="@+id/tv_target_step"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="23dp"
             android:text="8000"
             android:textColor="@color/black"
             android:textSize="14sp" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/icon_next" />
     </RelativeLayout>
 
     <View
