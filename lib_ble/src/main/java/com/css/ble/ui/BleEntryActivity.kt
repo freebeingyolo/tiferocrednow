@@ -19,7 +19,8 @@ class BleEntryActivity : BaseActivity<WeightBondVM, ActivityBleEntryBinding>() {
             BleLog.d(TAG, "服务与界面建立连接成功")
             val mBluetoothService = (service as ELinkBleServer.BluetoothBinder).service
             mViewModel.onBindService(mBluetoothService)
-            if(mViewModel.isBleEnvironmentOk){
+
+            if (mViewModel.isBleEnvironmentOk) {
                 mViewModel.startScanBle()
             }
         }

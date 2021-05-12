@@ -39,7 +39,11 @@ class DeviceListFragment : BaseFragment<DeviceListVM, FragmentDeviceListBinding>
         mViewBinding?.lv!!.apply {
             mAdapter = RecycleViewAdapter()
             mAdapter.itemClickListener = object : RecycleViewAdapter.onItemClickListener {
-                override fun onItemClick(holder: RecycleViewAdapter.MyViewHolder, position: Int,deviceInfo: DeviceInfo) {
+                override fun onItemClick(
+                    holder: RecycleViewAdapter.MyViewHolder,
+                    position: Int,
+                    deviceInfo: DeviceInfo
+                ) {
                     startFragment(WeightBondFragment.newInstance())
                 }
             }
@@ -74,7 +78,9 @@ class DeviceListFragment : BaseFragment<DeviceListVM, FragmentDeviceListBinding>
             mList?.let {
                 binding.name.text = it[position].name
                 binding.icon.setImageResource(it[position].icon)
-                itemClickListener?.onItemClick(holder, position, it[position])
+                binding.container.setOnClickListener {
+                    itemClickListener?.onItemClick(holder, position, mList!![position])
+                }
             }
         }
 

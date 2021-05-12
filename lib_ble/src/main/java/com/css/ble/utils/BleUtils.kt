@@ -1,9 +1,12 @@
 package com.css.ble.utils
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
+import androidx.core.app.ActivityCompat
 
 object BleUtils {
 
@@ -19,6 +22,23 @@ object BleUtils {
                 false
             }
         }
+    }
+
+    fun isLocationAllowed(ctx: Context): Boolean {
+        var neededPermissions = mutableListOf<String>()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) { //target sdk版本在29以上的需要精确定位权限才能搜索到蓝牙设备
+            neededPermissions.add(Manifest.permission.ACCESS_FINE_LOCATION)
+            neededPermissions.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            neededPermissions.add(Manifest.permission.ACCESS_COARSE_LOCATION)
+        }
+        for (b in neededPermissions) {
+            if (ActivityCompat.checkSelfPermission(ctx, b) != PackageManager.PERMISSION_GRANTED) {
+                return false
+            }
+        }
+        return true
     }
 
 }
