@@ -175,20 +175,7 @@ class TodayStepService: Service(), Handler.Callback {
             Logger().e(TAG, "smallIcon")
             builder!!.setSmallIcon(smallIcon)
         } else {
-            builder!!.setSmallIcon(R.mipmap.ic_notification_default) // 设置通知小ICON
-        }
-        val largeIcon: Int =
-            getResources().getIdentifier("icon_step_large", "mipmap", getPackageName())
-        if (0 != largeIcon) {
-            Logger().e(TAG, "largeIcon")
-            builder!!.setLargeIcon(BitmapFactory.decodeResource(getResources(), largeIcon))
-        } else {
-            builder!!.setLargeIcon(
-                BitmapFactory.decodeResource(
-                    getResources(),
-                    R.mipmap.ic_notification_default
-                )
-            )
+            builder!!.setSmallIcon(R.mipmap.icon) // 设置通知小ICON
         }
         builder!!.setTicker(getString(R.string.app_name))
         builder!!.setContentTitle(
@@ -199,7 +186,7 @@ class TodayStepService: Service(), Handler.Callback {
         )
         val km = getDistanceByStep(currentStep.toLong())
         val calorie = getCalorieByStep(currentStep.toLong())
-        builder!!.setContentText("$calorie 千卡  $km 公里")
+        builder!!.setContentText("步行 $km km    消耗 $calorie kcal")
 
         //设置不可清除
         builder!!.setOngoing(true)
@@ -339,7 +326,7 @@ class TodayStepService: Service(), Handler.Callback {
         builder!!.setContentTitle(getString(R.string.title_notification_bar, realSteps.toString()))
         val km = getDistanceByStep(realSteps.toLong())
         val calorie = getCalorieByStep(realSteps.toLong())
-        builder!!.setContentText("$calorie 千卡  $km 公里")
+        builder!!.setContentText("步行 $km km    消耗 $calorie kcal")
         notification = builder!!.build()
         nm!!.notify(R.string.app_name, notification)
     }
@@ -432,7 +419,7 @@ class TodayStepService: Service(), Handler.Callback {
         }
         val defaultSteps:Int = (currentEntity?.toInt())!! - (yesterdayEntity?.toInt()!!)
         Log.d(TAG , " defaultSteps   :  $defaultSteps")
-        return defaultSteps
+        return (defaultSteps * 0.8f).toInt()
     }
 
     // 公里计算公式

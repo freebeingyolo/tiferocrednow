@@ -10,9 +10,13 @@
     <string name="title_index_setting">设置</string>
 
     <string name="kg">kg</string>
-    <string name="today_step">今日步数</string>
+    <string name="today_steps" translatable="false">今日步数</string>
     <string name="store_name">健身好店铺</string>
     <string name="mall_product">运动好产品</string>
     <string name="person_information">个人信息</string>
     <string name="about_us">关于我们</string>
+    <string name="zero_stepsOne" translatable="false">今天尚未运动，</string>
+    <string name="zero_stepsTwo" translatable="false">快去运动一下吧</string>
+    <string name="step_distance" translatable="false">步行距离：</string>
+    <string name="step_calorie" translatable="false">消耗热量：</string>
 </resources>

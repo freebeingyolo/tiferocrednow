@@ -87,12 +87,12 @@ lint/tmp/
 # lint/reports/
 
 .DS_Store
-build/
-captures/
 
 
 #Custom
 test/
-release/
 lib_test/
 apk/
+/build
+/debug/output.json
+/.idea

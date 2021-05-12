@@ -110,14 +110,14 @@ class XTabLayout @JvmOverloads constructor(
                 localClickConfig(
                     mMainIcon,
                     mMainName,
-                    R.mipmap.focused_home,
+                    R.mipmap.icon_focused_home,
                     R.string.title_index_home
                 )
             } else {
                 localUnclickConfig(
                     mMainIcon,
                     mMainName,
-                    R.mipmap.unfocused_home,
+                    R.mipmap.icon_unfocused_home,
                     R.string.title_index_home
                 )
             }
@@ -129,14 +129,14 @@ class XTabLayout @JvmOverloads constructor(
                 localClickConfig(
                     mCourseIcon,
                     mCourseName,
-                    R.mipmap.focused_course,
+                    R.mipmap.icon_focused_course,
                     R.string.title_index_course
                 )
             } else {
                 localUnclickConfig(
                     mCourseIcon,
                     mCourseName,
-                    R.mipmap.unfocused_course,
+                    R.mipmap.icon_unfocused_course,
                     R.string.title_index_course
                 )
             }
@@ -148,14 +148,14 @@ class XTabLayout @JvmOverloads constructor(
                 localClickConfig(
                     mMallIcon,
                     mMallName,
-                    R.mipmap.focused_mall,
+                    R.mipmap.icon_focused_mall,
                     R.string.title_index_mall
                 )
             } else {
                 localUnclickConfig(
                     mMallIcon,
                     mMallName,
-                    R.mipmap.unfocused_mall,
+                    R.mipmap.icon_unfocused_mall,
                     R.string.title_index_mall
                 )
             }
@@ -167,14 +167,14 @@ class XTabLayout @JvmOverloads constructor(
                 localClickConfig(
                     mSettingIcon,
                     mSettingName,
-                    R.mipmap.focused_settings,
+                    R.mipmap.icon_focused_settings,
                     R.string.title_index_setting
                 )
             } else {
                 localUnclickConfig(
                     mSettingIcon,
                     mSettingName,
-                    R.mipmap.unfocused_settings,
+                    R.mipmap.icon_unfocused_settings,
                     R.string.title_index_setting
                 )
             }

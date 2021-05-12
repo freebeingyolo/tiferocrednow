@@ -6,8 +6,8 @@
     android:layout_height="match_parent">
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/icon"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
         app:layout_constraintBottom_toTopOf="@+id/name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,6 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#212121"
+        android:layout_marginTop="1dp"
         android:maxLines="1"
         android:gravity="center"
         android:textSize="11dp"

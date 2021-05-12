@@ -16,12 +16,13 @@ import com.css.step.ISportStepInterface
 import com.css.step.TodayStepManager
 import com.css.step.service.SensorService
 import com.css.step.service.TodayStepService
+import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.FragmentMainBinding
 import com.css.wondercorefit.viewmodel.MainViewModel
 
 
 class MainFragment : BaseFragment<MainViewModel,FragmentMainBinding>() {
-    private val TAG = "TodayStepService"
+    private val TAG = "MainFragment"
 
     private lateinit var iSportStepInterface: ISportStepInterface
     private var stepArray:Int = 0
@@ -80,15 +81,15 @@ class MainFragment : BaseFragment<MainViewModel,FragmentMainBinding>() {
     private fun updataValues(stepArray: Int) {
         val realSteps = stepArray
         if (realSteps == 0) {
-            mViewBinding?.tvTodayStep?.text = "今天尚未运动，" + "\n" + "快去运动一下吧"
+            mViewBinding?.tvTodayStep?.text = getString(R.string.zero_stepsOne) + "\n" + getString(R.string.zero_stepsTwo)
             mViewBinding?.tvStepNum?.visibility = View.INVISIBLE
         } else {
             mViewBinding?.tvStepNum?.visibility = View.VISIBLE
-            mViewBinding?.tvTodayStep?.text = "今日步数"
+            mViewBinding?.tvTodayStep?.text = getString(R.string.today_steps)
             mViewBinding?.tvStepNum?.text = realSteps.toString()
         }
-        mViewBinding?.tvWalkingDistance?.text = "步行距离：" + getDistanceByStep(realSteps.toLong()) + " km"
-        mViewBinding?.tvCalorieConsumption?.text = "消耗热量：" + getCalorieByStep(realSteps.toLong()) + " kcal"
+        mViewBinding?.tvWalkingDistanceNum?.text = getDistanceByStep(realSteps.toLong())
+        mViewBinding?.tvCalorieConsumptionNum?.text = getCalorieByStep(realSteps.toLong())
     }
 
     // 公里计算公式

@@ -8,6 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#e4e4e4</color>
+    <color name="text_color">#333333</color>
+    <color name="bg_gray">#F6F6F6</color>
+    <color name="text_666666">#666666</color>
 
     <color name="colorPrimary">#4A90CE</color>
     <color name="colorPrimaryDark">#33618A</color>
@@ -16,5 +19,6 @@
     <color name="color_e5e5e5">#e5e5e5</color>
     <color name="tab_textcolor_focus">#212121</color>
     <color name="tab_textcolor_unfocus">#464646</color>
+    <color name="course_black">#FF333333</color>
 
 </resources>

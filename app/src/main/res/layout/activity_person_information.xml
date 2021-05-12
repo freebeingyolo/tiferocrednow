@@ -26,18 +26,19 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         android:text="基础信息"
-        android:textSize="15sp"
+        android:textSize="12dp"
         android:textStyle="bold" />
 
     <RelativeLayout
         android:id="@+id/rl_sex"
+        android:layout_marginTop="8dp"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:gravity="center_vertical"
-        android:paddingStart="15dp"
+        android:paddingStart="20dp"
         android:paddingEnd="15dp">
 
         <TextView
@@ -45,7 +46,7 @@
             android:layout_height="wrap_content"
             android:text="@string/sex"
             android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/tv_sex"
@@ -60,15 +61,16 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginStart="15dp"
+        android:layout_marginStart="20dp"
         android:layout_marginEnd="15dp"
-        android:background="@color/gray" />
+        android:background="@color/color_e5e5e5" />
 
     <RelativeLayout
+        android:id="@+id/rl_age"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:gravity="center_vertical"
-        android:paddingStart="15dp"
+        android:paddingStart="20dp"
         android:paddingEnd="15dp">
 
         <TextView
@@ -76,9 +78,10 @@
             android:layout_height="wrap_content"
             android:text="@string/age"
             android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:textSize="14sp" />
 
         <TextView
+            android:id="@+id/tv_age"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -92,13 +95,14 @@
         android:layout_height="1dp"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
-        android:background="@color/gray" />
+        android:background="@color/color_e5e5e5" />
 
     <RelativeLayout
+        android:id="@+id/rl_stature"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:gravity="center_vertical"
-        android:paddingStart="15dp"
+        android:paddingStart="20dp"
         android:paddingEnd="15dp">
 
         <TextView
@@ -106,9 +110,10 @@
             android:layout_height="wrap_content"
             android:text="@string/stature"
             android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:textSize="14sp" />
 
         <TextView
+            android:id="@+id/tv_stature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -122,20 +127,21 @@
         android:layout_height="1dp"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
-        android:background="@color/gray" />
+        android:background="@color/color_e5e5e5" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="25dp"
         android:text="目标设定"
-        android:textSize="15sp"
+        android:textSize="12sp"
         android:textStyle="bold" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_marginTop="8dp"
         android:gravity="center_vertical"
         android:paddingStart="15dp"
         android:paddingEnd="15dp">
@@ -145,7 +151,7 @@
             android:layout_height="wrap_content"
             android:text="@string/target_weight"
             android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:textSize="14sp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -161,7 +167,7 @@
         android:layout_height="1dp"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
-        android:background="@color/gray" />
+        android:background="@color/color_e5e5e5" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -175,7 +181,7 @@
             android:layout_height="wrap_content"
             android:text="@string/target_step"
             android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:textSize="14sp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -191,5 +197,5 @@
         android:layout_height="1dp"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
-        android:background="@color/gray" />
+        android:background="@color/color_e5e5e5" />
 </LinearLayout>

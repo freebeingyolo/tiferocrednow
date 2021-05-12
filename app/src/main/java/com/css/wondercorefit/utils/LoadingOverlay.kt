@@ -28,7 +28,7 @@ class LoadingOverlay @JvmOverloads constructor(
     private lateinit var player: LitePlayerView
 
     init {
-        setBackgroundResource(R.drawable.bg_loading_overlay)
+        setBackgroundResource(R.drawable.video_background_style)
         val padding = DpHelper.dp2px(context, 8f)
         setPadding(padding, padding, padding, padding)
         LayoutInflater.from(context).inflate(R.layout.loading_overlay, this, true)
