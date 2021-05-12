@@ -7,31 +7,29 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.css.base.uibase.BaseFragment
-import com.css.ble.BR
 import com.css.ble.bean.DeviceInfo
-import com.css.ble.databinding.FragmentDeviceBondBinding
+import com.css.ble.databinding.FragmentDeviceListBinding
 import com.css.ble.databinding.LayoutDeviceItemBinding
 import com.css.ble.ui.view.SpaceItemDecoration
-import com.css.ble.viewmodel.BoundViewModel
+import com.css.ble.viewmodel.DeviceListVM
 
-class DeviceBondFragment : BaseFragment<BoundViewModel, FragmentDeviceBondBinding>() {
+class DeviceListFragment : BaseFragment<DeviceListVM, FragmentDeviceListBinding>() {
     companion object {
-        fun newInstance() = DeviceBondFragment()
-        private val TAG: String? = "DeviceBondFragment"
+        fun newInstance() = DeviceListFragment()
+        private val TAG: String = "DeviceBondFragment"
     }
 
     lateinit var mAdapter: RecycleViewAdapter
 
-    override fun initViewBinding(inflater: LayoutInflater, viewGroup: ViewGroup?): FragmentDeviceBondBinding {
-        return FragmentDeviceBondBinding.inflate(layoutInflater, viewGroup, false)
+    override fun initViewBinding(inflater: LayoutInflater, viewGroup: ViewGroup?): FragmentDeviceListBinding {
+        return FragmentDeviceListBinding.inflate(layoutInflater, viewGroup, false)
     }
 
-    override fun initViewModel(): BoundViewModel {
-        return ViewModelProvider(requireActivity()).get(BoundViewModel::class.java)
+    override fun initViewModel(): DeviceListVM {
+        return ViewModelProvider(requireActivity()).get(DeviceListVM::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -40,6 +38,11 @@ class DeviceBondFragment : BaseFragment<BoundViewModel, FragmentDeviceBondBindin
         mViewBinding!!.lifecycleOwner = viewLifecycleOwner
         mViewBinding?.lv!!.apply {
             mAdapter = RecycleViewAdapter()
+            mAdapter.itemClickListener = object : RecycleViewAdapter.onItemClickListener {
+                override fun onItemClick(holder: RecycleViewAdapter.MyViewHolder, position: Int,deviceInfo: DeviceInfo) {
+                    startFragment(WeightBondFragment.newInstance())
+                }
+            }
             addItemDecoration(SpaceItemDecoration(30))
             layoutManager = LinearLayoutManager(requireContext())
             //(layoutManager as LinearLayoutManager).orientation = LinearLayoutManager.VERTICAL
@@ -55,6 +58,7 @@ class DeviceBondFragment : BaseFragment<BoundViewModel, FragmentDeviceBondBindin
 
     class RecycleViewAdapter : RecyclerView.Adapter<RecycleViewAdapter.MyViewHolder>() {
         var mList: List<DeviceInfo>? = null
+        var itemClickListener: onItemClickListener? = null
 
         class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -70,13 +74,16 @@ class DeviceBondFragment : BaseFragment<BoundViewModel, FragmentDeviceBondBindin
             mList?.let {
                 binding.name.text = it[position].name
                 binding.icon.setImageResource(it[position].icon)
+                itemClickListener?.onItemClick(holder, position, it[position])
             }
-
         }
 
         override fun getItemCount(): Int {
             return mList?.size ?: 0
         }
 
+        interface onItemClickListener {
+            fun onItemClick(holder: MyViewHolder, position: Int, deviceInfo: DeviceInfo)
+        }
     }
 }

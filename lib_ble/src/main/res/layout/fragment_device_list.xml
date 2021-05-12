@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="model"
+            type="com.css.ble.viewmodel.DeviceListVM" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/ll_base_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical"
+        tools:context=".ui.DeviceListFragment">
+
+        <include layout="@layout/include_common_white_toolbar" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/lv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+</layout>

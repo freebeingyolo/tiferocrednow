@@ -6,13 +6,12 @@ import com.css.ble.R
 import com.css.ble.bean.DeviceInfo
 import kotlin.concurrent.thread
 
-class BoundViewModel : BaseViewModel() {
+class DeviceListVM : BaseViewModel() {
 
     val _deviceInfos: MutableLiveData<MutableList<DeviceInfo>> by lazy {
         MutableLiveData<MutableList<DeviceInfo>>().apply {
             value = mutableListOf<DeviceInfo>().also {
                 loadData()
-
             }
         }
     }
@@ -26,5 +25,7 @@ class BoundViewModel : BaseViewModel() {
             _deviceInfos.postValue(_deviceInfos.value)
         }
     }
+
+
 }
 
