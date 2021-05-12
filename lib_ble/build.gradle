@@ -63,6 +63,7 @@ android {
 dependencies {
 //    implementation fileTree(includes: ['*.jar'],dir:"libs")
     implementation project(':lib_base')
+    kapt dep.arouter_compiler
 
     implementation(name: "bluetoothlib_ts_1.0.3", ext: "aar")
     implementation 'androidx.appcompat:appcompat:1.2.0'

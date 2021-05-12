@@ -10,7 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.alibaba.android.arouter.launcher.ARouter
 import com.css.base.uibase.BaseFragment
+import com.css.service.router.PATH_APP_BLE
+import com.css.service.router.PATH_APP_QRSCAN
 import com.css.service.utils.SystemBarHelper
 import com.css.step.ISportStepInterface
 import com.css.step.TodayStepManager
@@ -21,11 +24,11 @@ import com.css.wondercorefit.databinding.FragmentMainBinding
 import com.css.wondercorefit.viewmodel.MainViewModel
 
 
-class MainFragment : BaseFragment<MainViewModel,FragmentMainBinding>() {
+class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>() {
     private val TAG = "MainFragment"
 
     private lateinit var iSportStepInterface: ISportStepInterface
-    private var stepArray:Int = 0
+    private var stepArray: Int = 0
     private val mDelayHandler = Handler(TodayStepCounterCall())
     private val REFRESH_STEP_WHAT = 0
     private val TIME_INTERVAL_REFRESH: Long = 1000
@@ -36,14 +39,17 @@ class MainFragment : BaseFragment<MainViewModel,FragmentMainBinding>() {
         SystemBarHelper.setHeightAndPadding(activity, mViewBinding?.topView)
         startSensorService()
         startStep()
+        mViewBinding!!.addBleDevice.setOnClickListener {
+            ARouter.getInstance().build(PATH_APP_BLE).navigation()
+        }
     }
 
     private fun startSensorService() {
         val intentSensor = Intent(activity, SensorService::class.java)
-        if(Build.VERSION.SDK_INT >= 26){
-            activity?.startForegroundService (intentSensor);
-        }else{
-            activity?.startService (intentSensor);
+        if (Build.VERSION.SDK_INT >= 26) {
+            activity?.startForegroundService(intentSensor);
+        } else {
+            activity?.startService(intentSensor);
         }
     }
 
@@ -52,10 +58,10 @@ class MainFragment : BaseFragment<MainViewModel,FragmentMainBinding>() {
 
         //开启计步Service，同时绑定Activity进行aidl通信
         val intentSteps = Intent(activity, TodayStepService::class.java)
-        if(Build.VERSION.SDK_INT >= 26){
-            activity?.startForegroundService (intentSteps);
-        }else{
-            activity?.startService (intentSteps);
+        if (Build.VERSION.SDK_INT >= 26) {
+            activity?.startForegroundService(intentSteps);
+        } else {
+            activity?.startService(intentSteps);
         }
         activity?.bindService(intentSteps, object : ServiceConnection {
             override fun onServiceConnected(name: ComponentName, service: IBinder) {
@@ -81,7 +87,8 @@ class MainFragment : BaseFragment<MainViewModel,FragmentMainBinding>() {
     private fun updataValues(stepArray: Int) {
         val realSteps = stepArray
         if (realSteps == 0) {
-            mViewBinding?.tvTodayStep?.text = getString(R.string.zero_stepsOne) + "\n" + getString(R.string.zero_stepsTwo)
+            mViewBinding?.tvTodayStep?.text =
+                getString(R.string.zero_stepsOne) + "\n" + getString(R.string.zero_stepsTwo)
             mViewBinding?.tvStepNum?.visibility = View.INVISIBLE
         } else {
             mViewBinding?.tvStepNum?.visibility = View.VISIBLE
@@ -112,12 +119,12 @@ class MainFragment : BaseFragment<MainViewModel,FragmentMainBinding>() {
                         var step: Int = 0
                         try {
                             step = iSportStepInterface!!.todaySportStepArray
-                            Log.d(TAG," refresh UI in 5000 ms  :   " )
+                            Log.d(TAG, " refresh UI in 5000 ms  :   ")
                             updataValues(step)
                         } catch (e: RemoteException) {
                             e.printStackTrace()
                         }
-                        Log.d(TAG," stepArray  :  $stepArray    step   :   $step " )
+                        Log.d(TAG, " stepArray  :  $stepArray    step   :   $step ")
                         if (stepArray != step) {
                             stepArray = step
 //                            updateStepCount(stepArray)

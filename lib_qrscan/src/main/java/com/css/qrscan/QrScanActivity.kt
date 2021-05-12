@@ -12,15 +12,18 @@ import android.text.TextUtils
 import android.view.Gravity
 import android.widget.FrameLayout
 import androidx.lifecycle.ViewModelProvider
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.PermissionUtils
 import com.css.base.constants.QRScanConstants
 import com.css.base.uibase.BaseActivity
 import com.css.qrscan.databinding.ActivityQrscanMainBinding
 import com.css.qrscan.viewmodel.QrScanViewModel
+import com.css.service.router.PATH_APP_QRSCAN
 import com.huawei.hms.hmsscankit.RemoteView
 import com.huawei.hms.ml.scan.HmsScan
 
+@Route(path = PATH_APP_QRSCAN)
 class QrScanActivity : BaseActivity<QrScanViewModel, ActivityQrscanMainBinding>() {
 
     var remoteView: RemoteView? = null;

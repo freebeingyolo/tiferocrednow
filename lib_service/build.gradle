@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
 }
+
 kapt {
     arguments {
         arg("AROUTER_MODULE_NAME", project.getName())

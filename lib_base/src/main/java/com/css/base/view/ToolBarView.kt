@@ -16,6 +16,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.SizeUtils
 import com.css.base.R
 import com.css.base.uibase.inner.OnToolBarClickListener
@@ -43,7 +44,13 @@ class ToolBarView @JvmOverloads constructor(context: Context, attrs: AttributeSe
     private var imgRight: AppCompatImageView
     private var bottomLine: View
 
-    private var listener: OnToolBarClickListener? = null
+    private var listener: OnToolBarClickListener? = object : OnToolBarClickListener {
+        override fun onClickToolBarView(view: View, event: ViewType) {
+            when (event) {
+                ViewType.LEFT_IMAGE -> ActivityUtils.getActivityByContext(context).onBackPressed()
+            }
+        }
+    }
 
     fun setToolBarClickListener(listener: OnToolBarClickListener): ToolBarView {
         this.listener = listener
@@ -56,7 +63,8 @@ class ToolBarView @JvmOverloads constructor(context: Context, attrs: AttributeSe
         val centerTvStr1 = typedArray.getString(R.styleable.toolbarView_centerText)
         val centerTvStr2 = typedArray.getResourceId(R.styleable.toolbarView_centerText, 0)
         val centerTvColor1 = typedArray.getColor(R.styleable.toolbarView_centerTextColor, 0)
-        val centerTvSize = typedArray.getDimensionPixelSize(R.styleable.toolbarView_centerTextSize, SizeUtils.sp2px(18F))
+        val centerTvSize =
+            typedArray.getDimensionPixelSize(R.styleable.toolbarView_centerTextSize, SizeUtils.sp2px(18F))
 
         val rightTvStr1 = typedArray.getString(R.styleable.toolbarView_rightText)
         val rightTvStr2 = typedArray.getResourceId(R.styleable.toolbarView_rightText, 0)

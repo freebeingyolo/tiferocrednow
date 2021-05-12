@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.css.base.uibase.BaseFragment
+import com.css.ble.R
 import com.css.ble.bean.DeviceInfo
 import com.css.ble.databinding.FragmentDeviceListBinding
 import com.css.ble.databinding.LayoutDeviceItemBinding

@@ -41,30 +41,34 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBoundBinding
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        Log.d(TAG,"==="+parentFragmentManager.backStackEntryCount)
         mViewBinding?.apply { tips.setOnClickListener { tipsClick(it) } }
         mViewModel.bleEnabled.observe(viewLifecycleOwner) {
             updateBleCondition()
         }
-        mViewModel.locationAllowed.observe(viewLifecycleOwner) {
+        mViewModel.locationPermission.observe(viewLifecycleOwner) {
             updateBleCondition()
         }
         mViewModel.locationOpened.observe(viewLifecycleOwner) {
             updateBleCondition()
         }
-        mViewModel.bleEnabled.value = BluetoothAdapter.getDefaultAdapter().isEnabled()
-        mViewModel.locationOpened.value = BleUtils.isLocationEnabled(requireContext())
-        mViewModel.locationAllowed.value = BleUtils.isLocationAllowed(requireContext())
+
     }
 
 
     private fun updateBleCondition() {
+
+        Log.d(
+            TAG, "bleEnabled:${mViewModel.bleEnabled.value}," +
+                    " locationAllowed: ${mViewModel.locationPermission.value}"
+                    + " locationOpened: ${mViewModel.locationOpened.value}"
+        )
         when {
             !mViewModel.bleEnabled.value!! -> {
                 mViewBinding!!.tips.text = "蓝牙未打开"
                 mViewBinding!!.tips.setTextColor(Color.RED)
             }
-            !mViewModel.locationAllowed.value!! -> {
+            !mViewModel.locationPermission.value!! -> {
                 mViewBinding!!.tips.text = "定位权限未允许"
                 mViewBinding!!.tips.setTextColor(Color.RED)
             }
@@ -82,14 +86,13 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBoundBinding
             if (!mViewModel.mBluetoothService!!.isScanStatus()) {
                 mViewModel.startScanBle(10);
             }
+        } else {
+            mViewModel.stopScanBle()
         }
     }
 
     override fun onResume() {
         super.onResume()
-        mViewModel.bleEnabled.value = BluetoothAdapter.getDefaultAdapter().isEnabled()
-        mViewModel.locationOpened.value = BleUtils.isLocationEnabled(requireContext())
-        mViewModel.locationAllowed.value = BleUtils.isLocationAllowed(requireContext())
     }
 
     //点击检查蓝牙环境
@@ -98,18 +101,18 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBoundBinding
             BluetoothAdapter.getDefaultAdapter().enable()
             return
         }
-        if (!mViewModel.locationAllowed.value!!) {
+        if (!mViewModel.locationPermission.value!!) {
             PermissionUtils.permission(PermissionConstants.LOCATION)
                 .rationale { _, shouldRequest ->
                     shouldRequest.again(true)
                 }
                 .callback(object : PermissionUtils.FullCallback {
                     override fun onGranted(granted: MutableList<String>) {
-                        mViewModel.locationAllowed.value = true
+                        mViewModel.locationPermission.value = true
                     }
 
                     override fun onDenied(deniedForever: MutableList<String>, denied: MutableList<String>) {
-                        mViewModel.locationAllowed.value = false
+                        mViewModel.locationPermission.value = false
                     }
                 })
                 .request()
@@ -126,7 +129,7 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBoundBinding
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             GPS_REQUEST_CODE -> {
-                mViewModel.locationAllowed.value = BleUtils.isLocationAllowed(requireContext())
+                mViewModel.locationOpened.value = BleUtils.isLocationEnabled(requireContext())
             }
         }
     }

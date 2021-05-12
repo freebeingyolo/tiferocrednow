@@ -20,9 +20,9 @@ class WeightBondVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastDataParsin
     }
 
     var bleEnabled: MutableLiveData<Boolean> = MutableLiveData<Boolean>().also { it.value = false }
-    var locationAllowed: MutableLiveData<Boolean> = MutableLiveData<Boolean>().also { it.value = false }
+    var locationPermission: MutableLiveData<Boolean> = MutableLiveData<Boolean>().also { it.value = false }
     var locationOpened: MutableLiveData<Boolean> = MutableLiveData<Boolean>().also { it.value = false }
-    val isBleEnvironmentOk get() = bleEnabled.value!! && locationAllowed.value!! && locationOpened.value!!
+    val isBleEnvironmentOk get() = bleEnabled.value!! && locationPermission.value!! && locationOpened.value!!
 
     var mBluetoothService: ELinkBleServer? = null
     private var decryptKey: IntArray = TianShengKey
@@ -32,9 +32,10 @@ class WeightBondVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastDataParsin
         discovered,
         bonded
     }
+
     private var _state: LiveData<State> = MutableLiveData<State>().apply { value = State.bonding }
 
-    val state:LiveData<State>
+    val state: LiveData<State>
         get() = _state
 
     private val mOnScanFilterListener: OnScanFilterListener = object : OnScanFilterListener {
@@ -167,6 +168,10 @@ class WeightBondVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastDataParsin
         Log.d(TAG, "startScanBle")
         this.decryptKey = decryptKey
         this.mBluetoothService?.scanLeDevice(timeOut)
+    }
+
+    fun stopScanBle() {
+
     }
 
     override fun getWeightData(

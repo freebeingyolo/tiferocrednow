@@ -132,7 +132,7 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
 
     private fun back() {
         val cnt = supportFragmentManager.backStackEntryCount
-        if (cnt <= 1 && isTaskRoot) {
+        if (cnt < 1 && isTaskRoot) {
             val closeWarningHint = "再按一次退出程序"
             if (!mCloseWarned && !TextUtils.isEmpty(closeWarningHint)) {
                 closeToast =
@@ -154,7 +154,7 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
 
     private fun doReturnBack() {
         val count = supportFragmentManager.backStackEntryCount
-        if (count <= 1) {
+        if (count < 1) {
             finish()
         } else {
             supportFragmentManager.popBackStackImmediate()

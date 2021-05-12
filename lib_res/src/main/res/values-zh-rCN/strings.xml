@@ -11,9 +11,26 @@
     <string name="title_index_mall">商城</string>
     <string name="title_index_setting">设置</string>
 
-    <string name="kg">kg</string>
-    <string name="store_name">健身好店铺</string>
-    <string name="mall_product">运动好产品</string>
-    <string name="person_information">个人信息</string>
-    <string name="about_us">关于我们</string>
+    <string name="kg" >kg</string>
+    <string name="store_name" >健身好店铺</string>
+    <string name="mall_product" >运动好产品</string>
+    <string name="person_information" >个人信息</string>
+    <string name="about_us" >关于我们</string>
+    <string name="sex" >性别</string>
+    <string name="age" >年龄</string>
+    <string name="stature" >身高</string>
+    <string name="target_weight" >目标体重</string>
+    <string name="target_step" >目标步数</string>
+    <string name="wonder_core" >万达康</string>
+    <string name="tos" >服务条款</string>
+    <string name="disclaimer" >免责声明</string>
+    <string name="privacy_policy" >隐私政策</string>
+    <string name="details" >详情</string>
+    <string name="tmaill_store" >天猫旗舰店</string>
+    <string name="sports_products" >运动好产品</string>
+    <string name="zero_stepsOne">今天尚未运动，</string>
+    <string name="zero_stepsTwo">快去运动一下吧</string>
+    <string name="step_distance">步行距离：</string>
+    <string name="step_calorie">消耗热量：</string>
+    <string name="today_steps">今日步数</string>
 </resources>

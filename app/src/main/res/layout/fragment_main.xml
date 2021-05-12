@@ -14,15 +14,30 @@
         android:layout_height="0dp"
         android:background="@color/white" />
 
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="44dp"
-        android:background="@color/white"
-        android:gravity="center"
-        android:text="@string/app_name"
-        android:textColor="@color/text_color"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        android:layout_height="44dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:gravity="center"
+            android:text="@string/app_name"
+            android:textColor="@color/text_color"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/addBleDevice"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="30dp"
+            android:background="@mipmap/icon" />
+    </RelativeLayout>
+
 
     <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
     <!--        android:layout_width="match_parent"-->
@@ -146,7 +161,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
-            android:text="@string/today_step"
+            android:text="@string/today_steps"
             android:textColor="@color/text_666666"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="@+id/pb_step"
@@ -235,9 +250,10 @@
 
                 <View
                     android:layout_width="1dp"
-                    android:layout_marginTop="13dp"
                     android:layout_height="match_parent"
-                    android:background="#CDCDCD"/>
+                    android:layout_marginTop="13dp"
+                    android:background="#CDCDCD" />
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -281,17 +297,20 @@
                         app:layout_constraintStart_toEndOf="@+id/tv_calorie_consumption_num" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
+                android:layout_height="1dp"
                 android:layout_marginStart="13dp"
                 android:layout_marginEnd="13dp"
-                android:layout_height="1dp"
-                android:background="#CDCDCD"/>
+                android:background="#CDCDCD" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:orientation="horizontal">
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -334,11 +353,13 @@
                         app:layout_constraintBaseline_toBaselineOf="@+id/tv_initial_weight_num"
                         app:layout_constraintStart_toEndOf="@+id/tv_initial_weight_num" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <View
                     android:layout_width="1dp"
-                    android:layout_marginBottom="13dp"
                     android:layout_height="match_parent"
-                    android:background="#CDCDCD"/>
+                    android:layout_marginBottom="13dp"
+                    android:background="#CDCDCD" />
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -390,8 +411,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:visibility="gone"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"

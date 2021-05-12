@@ -10,10 +10,11 @@ import androidx.core.app.ActivityCompat
 
 object BleUtils {
 
-    fun isLocationEnabled(context: Context): Boolean {
+    fun isLocationEnabled2(context: Context): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
             locationManager != null && locationManager.isLocationEnabled
+
         } else {
             try {
                 val locationMode = Settings.Secure.getInt(context.contentResolver, Settings.Secure.LOCATION_MODE)
@@ -22,6 +23,12 @@ object BleUtils {
                 false
             }
         }
+    }
+
+    fun isLocationEnabled(context: Context): Boolean {
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        return isGpsEnabled
     }
 
     fun isLocationAllowed(ctx: Context): Boolean {

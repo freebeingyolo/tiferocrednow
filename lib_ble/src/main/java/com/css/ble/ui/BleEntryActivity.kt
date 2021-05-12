@@ -2,16 +2,21 @@ package com.css.ble.ui
 
 import android.bluetooth.BluetoothAdapter
 import android.content.*
+import android.location.LocationManager
 import android.os.Bundle
 import android.os.IBinder
 import androidx.lifecycle.ViewModelProvider
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.css.base.uibase.BaseActivity
 import com.css.ble.databinding.ActivityBleEntryBinding
+import com.css.ble.utils.BleUtils
 import com.css.ble.viewmodel.WeightBondVM
+import com.css.service.router.PATH_APP_BLE
 import com.pingwang.bluetoothlib.AILinkSDK
 import com.pingwang.bluetoothlib.server.ELinkBleServer
 import com.pingwang.bluetoothlib.utils.BleLog
 
+@Route(path = PATH_APP_BLE)
 class BleEntryActivity : BaseActivity<WeightBondVM, ActivityBleEntryBinding>() {
 
     private val mFhrSCon: ServiceConnection = object : ServiceConnection {
@@ -50,7 +55,12 @@ class BleEntryActivity : BaseActivity<WeightBondVM, ActivityBleEntryBinding>() {
         mViewBinding.lifecycleOwner = this
         mViewModel.bleEnabled.value = BluetoothAdapter.getDefaultAdapter().isEnabled
         val filter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
+        filter.addAction(LocationManager.PROVIDERS_CHANGED_ACTION)
         registerReceiver(receiver, filter)
+
+        mViewModel.bleEnabled.value = BluetoothAdapter.getDefaultAdapter().isEnabled()
+        mViewModel.locationOpened.value = BleUtils.isLocationEnabled(baseContext)
+        mViewModel.locationPermission.value = BleUtils.isLocationAllowed(baseContext)
     }
 
     private var receiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -61,6 +71,9 @@ class BleEntryActivity : BaseActivity<WeightBondVM, ActivityBleEntryBinding>() {
                         BluetoothAdapter.STATE_OFF -> mViewModel.bleEnabled.value = false
                         BluetoothAdapter.STATE_ON -> mViewModel.bleEnabled.value = true
                     }
+                }
+                LocationManager.PROVIDERS_CHANGED_ACTION -> {
+                    mViewModel.locationOpened.value = BleUtils.isLocationEnabled(context!!)
                 }
             }
         }
