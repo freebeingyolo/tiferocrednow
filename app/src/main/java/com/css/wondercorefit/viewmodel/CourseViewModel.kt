@@ -1,6 +1,7 @@
 package com.css.wondercorefit.viewmodel
 
 import com.css.base.uibase.viewmodel.BaseViewModel
+import com.css.wondercorefit.R
 
 object CourseViewModel : BaseViewModel() {
     const val url1 = "http://vfx.mtime.cn/Video/2020/08/24/mp4/200824095210276119.mp4"
@@ -28,4 +29,8 @@ object CourseViewModel : BaseViewModel() {
 
     val urls = arrayListOf(url1, url2, url3, url4, url5, url6, url7, url8, url9, url10)
     val name = arrayListOf(str1, str2, str3, str4, str5, str6, str7, str8, str9, str10)
+    val picture: IntArray = intArrayOf(R.mipmap.focused_settings, R.mipmap.focused_course,
+        R.mipmap.focused_home, R.mipmap.focused_mall, R.mipmap.focused_settings,
+        R.mipmap.focused_settings, R.mipmap.focused_course, R.mipmap.focused_home,
+        R.mipmap.focused_mall, R.mipmap.focused_settings)
 }
