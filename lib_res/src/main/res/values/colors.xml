@@ -16,5 +16,6 @@
     <color name="color_e5e5e5">#e5e5e5</color>
     <color name="tab_textcolor_focus">#212121</color>
     <color name="tab_textcolor_unfocus">#464646</color>
+    <color name="course_black">#FF333333</color>
 
 </resources>
