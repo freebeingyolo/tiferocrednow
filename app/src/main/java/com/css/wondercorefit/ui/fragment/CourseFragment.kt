@@ -1,11 +1,13 @@
 package com.css.wondercorefit.ui.fragment
 
 import android.annotation.SuppressLint
+import android.graphics.Outline
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewOutlineProvider
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
@@ -44,6 +46,7 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
         SystemBarHelper.immersiveStatusBar(activity, 0f)
         SystemBarHelper.setHeightAndPadding(activity, mViewBinding?.topView)
         initRecycle()
+
     }
 
     @SuppressLint("UseRequireInsteadOfGet")
@@ -133,6 +136,13 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
                         recyclePlayer.onItemClick(adapterPosition)
                     }
                 }
+                videoContainer.outlineProvider = object: ViewOutlineProvider() {
+                    override fun getOutline(view: View?, outline: Outline?) {
+                        Log.d("512" , "outlineProvider")
+                        outline?.setRoundRect(0, 0, view!!.width, view.height, 4f)
+                    }
+
+                }
             }
         }
 
@@ -153,6 +163,12 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
         override fun onBindViewHolder(holder: VideoHolder, position: Int) {
             holder.run {
                 videoPoster.setBackgroundResource(CourseViewModel.picture[position])
+                videoPoster.outlineProvider = object :ViewOutlineProvider() {
+                    override fun getOutline(view: View?, outline: Outline?) {
+                        outline?.setRoundRect(0, 0, view!!.width, view.height, 4f)
+                    }
+
+                }
                 videoTitle.text = CourseViewModel.name[position]
             }
 

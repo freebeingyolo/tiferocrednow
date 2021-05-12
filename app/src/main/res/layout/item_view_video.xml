@@ -14,7 +14,6 @@
            android:layout_width="158dp"
            android:layout_height="104dp"
            android:scaleType="centerCrop"
-           android:background="@drawable/video_background_style"
            />
 
        <TextView
@@ -30,6 +29,5 @@
         android:id="@+id/video_container"
         android:layout_width="158dp"
         android:layout_marginLeft="3dp"
-        android:layout_height="104dp"
-        android:background="@drawable/video_background_style"/>
+        android:layout_height="104dp"/>
 </FrameLayout>

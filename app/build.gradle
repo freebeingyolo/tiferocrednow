@@ -77,7 +77,6 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 //    implementation project(':lib_qrscan')
 
-
     kapt dep.arouter_compiler
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
