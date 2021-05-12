@@ -1,5 +1,6 @@
 package com.css.wondercorefit.ui.activity.setting
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -15,6 +16,8 @@ import com.css.base.view.ToolBarView
 import com.css.pickerview.builder.OptionsPickerBuilder
 import com.css.pickerview.listener.CustomListener
 import com.css.pickerview.view.OptionsPickerView
+import com.css.service.data.UserData
+import com.css.service.utils.WonderCoreCache
 import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.ActivityPersonInformationBinding
 
@@ -24,9 +27,14 @@ class PersonInformationActivity :
     var mSexPickerDialog: OptionsPickerView<String>? = null
     var mAgePickerDialog: OptionsPickerView<String>? = null
     var mStaturePickerDialog: OptionsPickerView<String>? = null
+    var mTargetWeightPickerDialog: OptionsPickerView<String>? = null
+    var mTargetStepPickerDialog: OptionsPickerView<String>? = null
     var mSexList = ArrayList<String>()
     var mAgeList = ArrayList<String>()
     var mStatureList = ArrayList<String>()
+    var mTargetWeightList = ArrayList<String>()
+    var mTargetStepList = ArrayList<String>()
+    lateinit var mUserData: UserData
 
     companion object {
         fun starActivity(context: Context) {
@@ -43,6 +51,23 @@ class PersonInformationActivity :
         mViewBinding.rlSex.setOnClickListener(this)
         mViewBinding.rlAge.setOnClickListener(this)
         mViewBinding.rlStature.setOnClickListener(this)
+        mViewBinding.rlTargetWeight.setOnClickListener(this)
+        mViewBinding.rlTargetStep.setOnClickListener(this)
+    }
+
+    @SuppressLint("SetTextI18n")
+    override fun initData() {
+        super.initData()
+        if (WonderCoreCache.getUserInfo() != null) {
+            mUserData = WonderCoreCache.getUserInfo()
+            mViewBinding.tvTargetWeight.text = mUserData.targetWeight+"kg"
+            mViewBinding.tvTargetStep.text = mUserData.targetStep+"步"
+            mViewBinding.tvStature.text = mUserData.stature+"cm"
+            mViewBinding.tvAge.text = mUserData.age+"岁"
+            mViewBinding.tvSex.text = mUserData.sex
+        } else {
+            mUserData = UserData()
+        }
     }
 
     override fun initViewModel(): DefaultViewModel =
@@ -65,6 +90,8 @@ class PersonInformationActivity :
             R.id.rl_sex -> showSexDialog()
             R.id.rl_age -> showAgeDialog()
             R.id.rl_stature -> showStatureDialog()
+            R.id.rl_target_weight -> showTargetWeightDialog()
+            R.id.rl_target_step -> showTargetStepDialog()
         }
     }
 
@@ -77,6 +104,8 @@ class PersonInformationActivity :
             ) { options1, options2, options3, v ->
                 var str = mSexList[options1]
                 mViewBinding.tvSex.text = str
+                mUserData.sex = str
+                WonderCoreCache.saveUserInfo(mUserData)
 
             }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
                 override fun customLayout(v: View?) {
@@ -114,7 +143,9 @@ class PersonInformationActivity :
                 this
             ) { options1, options2, options3, v ->
                 var str = mAgeList[options1]
-                mViewBinding.tvAge.text = str
+                mViewBinding.tvAge.text = str + "岁"
+                mUserData.age = str
+                WonderCoreCache.saveUserInfo(mUserData)
 
             }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
                 override fun customLayout(v: View?) {
@@ -133,7 +164,7 @@ class PersonInformationActivity :
 
             }).setLabels("岁", "", "")
                 .isCenterLabel(true)
-                .setSelectOptions(18)
+                .setSelectOptions(82)
                 .setLineSpacingMultiplier(3.0F)
                 .setTextColorCenter(Color.parseColor("#F2682A"))
                 .setOutSideCancelable(true)//点击外部dismiss default true
@@ -155,7 +186,9 @@ class PersonInformationActivity :
                 this
             ) { options1, options2, options3, v ->
                 var str = mStatureList[options1]
-                mViewBinding.tvStature.text = str
+                mViewBinding.tvStature.text = str + "cm"
+                mUserData.stature = str
+                WonderCoreCache.saveUserInfo(mUserData)
 
             }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
                 override fun customLayout(v: View?) {
@@ -186,4 +219,93 @@ class PersonInformationActivity :
             mStaturePickerDialog?.show()
         }
     }
+
+    private fun showTargetWeightDialog() {
+        if (mTargetWeightPickerDialog == null) {
+            for (index in 150 downTo 30) {
+                mTargetWeightList.add(index.toString())
+            }
+            mTargetWeightPickerDialog = OptionsPickerBuilder(
+                this
+            ) { options1, options2, options3, v ->
+                var str = mTargetWeightList[options1]
+                mViewBinding.tvTargetWeight.text = str + "kg"
+                mUserData.targetWeight = str
+                WonderCoreCache.saveUserInfo(mUserData)
+
+            }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
+                override fun customLayout(v: View?) {
+                    var title = v?.findViewById<TextView>(R.id.tv_title)
+                    var cancel = v?.findViewById<TextView>(R.id.btn_cancel)
+                    var submit = v?.findViewById<TextView>(R.id.btn_submit)
+                    title?.text = "目标体重"
+                    cancel?.setOnClickListener {
+                        mTargetWeightPickerDialog?.dismiss()
+                    }
+                    submit?.setOnClickListener {
+                        mTargetWeightPickerDialog?.returnData()
+                        mTargetWeightPickerDialog?.dismiss()
+                    }
+                }
+
+            }).setLabels("kg", "", "")
+                .isCenterLabel(true)
+                .setSelectOptions(80)
+                .setLineSpacingMultiplier(3.0F)
+                .setTextColorCenter(Color.parseColor("#F2682A"))
+                .setOutSideCancelable(true)//点击外部dismiss default true
+                .isDialog(false)//是否显示为对话框样式
+                .build()
+            mTargetWeightPickerDialog?.setPicker(mTargetWeightList)
+            mTargetWeightPickerDialog?.show()
+        } else {
+            mTargetWeightPickerDialog?.show()
+        }
+    }
+
+    private fun showTargetStepDialog() {
+        if (mTargetStepPickerDialog == null) {
+            for (index in 100000 downTo 1000) {
+                if (index % 1000 == 0) {
+                    mTargetStepList.add(index.toString())
+                }
+            }
+            mTargetStepPickerDialog = OptionsPickerBuilder(
+                this
+            ) { options1, options2, options3, v ->
+                var str = mTargetStepList[options1]
+                mViewBinding.tvTargetStep.text = str+"步"
+                mUserData.targetStep = str
+                WonderCoreCache.saveUserInfo(mUserData)
+
+            }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
+                override fun customLayout(v: View?) {
+                    var title = v?.findViewById<TextView>(R.id.tv_title)
+                    var cancel = v?.findViewById<TextView>(R.id.btn_cancel)
+                    var submit = v?.findViewById<TextView>(R.id.btn_submit)
+                    title?.text = "目标步数"
+                    cancel?.setOnClickListener {
+                        mTargetStepPickerDialog?.dismiss()
+                    }
+                    submit?.setOnClickListener {
+                        mTargetStepPickerDialog?.returnData()
+                        mTargetStepPickerDialog?.dismiss()
+                    }
+                }
+
+            }).setLabels("步", "", "")
+                .isCenterLabel(true)
+                .setSelectOptions(80)
+                .setLineSpacingMultiplier(3.0F)
+                .setTextColorCenter(Color.parseColor("#F2682A"))
+                .setOutSideCancelable(true)//点击外部dismiss default true
+                .isDialog(false)//是否显示为对话框样式
+                .build()
+            mTargetStepPickerDialog?.setPicker(mTargetStepList)
+            mTargetStepPickerDialog?.show()
+        } else {
+            mTargetStepPickerDialog?.show()
+        }
+    }
+
 }
