@@ -16,21 +16,20 @@ object CourseViewModel : BaseViewModel() {
     const val url10 = "http://vfx.mtime.cn/Video/2021/04/14/mp4/210414080153287160.mp4"
 //    const val url11 = R.raw.raw// Raw resource
 
-    const val str1 = "漫威混剪"
-    const val str2 = "圣母"
-    const val str3 = "复联 4"
-    const val str4 = "惊奇队长"
-    const val str5 = "游戏CG"
-    const val str6 = "看不见的客人"
-    const val str7 = "速度与激情9"
-    const val str8 = "2020时光大赏"
-    const val str9 = "无眠觉醒"
-    const val str10 = "死亡之师"
+    const val str1 = "热身运动"
+    const val str2 = "腹部卷曲运动"
+    const val str3 = "拉伸运动"
+    const val str4 = "背部拉伸运动"
+    const val str5 = "腿部放松运动"
+    const val str6 = "腰部运动"
+    const val str7 = "颈部放松运动"
+    const val str8 = "关节舒缓运动"
+    const val str9 = "全身运动"
+    const val str10 = "胸部拓展运动"
 
     val urls = arrayListOf(url1, url2, url3, url4, url5, url6, url7, url8, url9, url10)
     val name = arrayListOf(str1, str2, str3, str4, str5, str6, str7, str8, str9, str10)
-    val picture: IntArray = intArrayOf(R.mipmap.icon_focused_settings, R.mipmap.icon_focused_course,
-        R.mipmap.icon_focused_home, R.mipmap.icon_focused_mall, R.mipmap.icon_focused_settings,
-        R.mipmap.icon_focused_settings, R.mipmap.icon_focused_course, R.mipmap.icon_focused_home,
-        R.mipmap.icon_focused_mall, R.mipmap.icon_focused_settings)
+    val picture: IntArray = intArrayOf(R.mipmap.item1, R.mipmap.item2, R.mipmap.item3,
+        R.mipmap.item4, R.mipmap.item5, R.mipmap.item6, R.mipmap.item7, R.mipmap.item8,
+        R.mipmap.item9, R.mipmap.item10)
 }

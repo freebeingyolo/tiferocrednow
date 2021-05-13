@@ -21,5 +21,14 @@
         <attr name="barBackground" format="reference|color" />
     </declare-styleable>
 
+    <!--缩略图，窗口播放样式|圆角-->
+    <attr name="corner_radius" format="dimension" />
+    <declare-styleable name="GeneralRoundFrameLayout">
+        <attr name="corner_radius" />
+    </declare-styleable>
+    <declare-styleable name="GeneralRoundImageView">
+        <attr name="corner_radius" />
+    </declare-styleable>
+
 
 </resources>
