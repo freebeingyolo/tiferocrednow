@@ -132,8 +132,8 @@ class TodayStepService: Service(), Handler.Callback {
                     ConstantData.CHANNEL_NAME,
                     NotificationManager.IMPORTANCE_MIN
                 )
-            notificationChannel.enableLights(false)//如果使用中的设备支持通知灯，则说明此通知通道是否应显示灯
-            notificationChannel.setShowBadge(false)//是否显示角标
+            notificationChannel.enableLights(false) // 如果使用中的设备支持通知灯，则说明此通知通道是否应显示灯
+            notificationChannel.setShowBadge(false) // 是否显示角标
             notificationChannel.lockscreenVisibility = Notification.VISIBILITY_SECRET
             nm?.createNotificationChannel(notificationChannel)
             builder?.setChannelId(ConstantData.CHANNEL_ID)
@@ -141,32 +141,12 @@ class TodayStepService: Service(), Handler.Callback {
             builder = Notification.Builder(this.applicationContext)
         }
         builder!!.setPriority(Notification.PRIORITY_MIN)
-
-        val receiverName: String? = getReceiver(applicationContext)
-        var contentIntent = PendingIntent.getBroadcast(
+        var contentIntent = PendingIntent.getActivity(
             this,
-            BROADCAST_REQUEST_CODE,
-            Intent(),
-            PendingIntent.FLAG_UPDATE_CURRENT
+            0,
+            Intent("com.css.Notification.action"),
+            0
         )
-        if (!TextUtils.isEmpty(receiverName)) {
-            contentIntent = try {
-                PendingIntent.getBroadcast(
-                    this,
-                    BROADCAST_REQUEST_CODE,
-                    Intent(this, Class.forName(receiverName!!)),
-                    PendingIntent.FLAG_UPDATE_CURRENT
-                )
-            } catch (e: Exception) {
-                e.printStackTrace()
-                PendingIntent.getBroadcast(
-                    this,
-                    BROADCAST_REQUEST_CODE,
-                    Intent(),
-                    PendingIntent.FLAG_UPDATE_CURRENT
-                )
-            }
-        }
         builder!!.setContentIntent(contentIntent)
         val smallIcon: Int =
             getResources().getIdentifier("icon_step_small", "mipmap", getPackageName())
