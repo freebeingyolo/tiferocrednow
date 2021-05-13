@@ -143,12 +143,13 @@ class TodayStepService: Service(), Handler.Callback {
         builder!!.setPriority(Notification.PRIORITY_MIN)
 
         val receiverName: String? = getReceiver(applicationContext)
-        var contentIntent = PendingIntent.getBroadcast(
+        var contentIntent = PendingIntent.getActivity(
             this,
-            BROADCAST_REQUEST_CODE,
-            Intent(),
-            PendingIntent.FLAG_UPDATE_CURRENT
+            0,
+            Intent("com.css.Notification.action"),
+            0
         )
+        Log.d("513" , " receiverName  :   $receiverName")
         if (!TextUtils.isEmpty(receiverName)) {
             contentIntent = try {
                 PendingIntent.getBroadcast(
