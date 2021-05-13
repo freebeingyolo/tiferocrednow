@@ -1,9 +1,13 @@
 package com.css.ble.viewmodel
 
+import android.content.SharedPreferences
 import android.util.Log
+import androidx.annotation.RequiresPermission
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.blankj.utilcode.util.SPUtils
 import com.css.base.uibase.viewmodel.BaseViewModel
+import com.css.service.utils.WonderCoreCache
 import com.pingwang.bluetoothlib.BroadcastDataParsing
 import com.pingwang.bluetoothlib.bean.BleValueBean
 import com.pingwang.bluetoothlib.listener.OnCallbackBle
@@ -12,7 +16,7 @@ import com.pingwang.bluetoothlib.server.ELinkBleServer
 import com.pingwang.bluetoothlib.utils.BleStrUtils
 import com.pinwang.ailinkble.AiLinkPwdUtil
 
-class WeightBondVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastDataParsing {
+class WeightBondVM : BaseViewModel() {
 
     companion object {
         private val TianShengKey = intArrayOf(0x54493049, 0x4132794E, 0x53783148, 0x476c6531)
@@ -41,12 +45,13 @@ class WeightBondVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastDataParsin
     private val mOnScanFilterListener: OnScanFilterListener = object : OnScanFilterListener {
 
         override fun onFilter(bleValueBean: BleValueBean): Boolean {
-            Log.d(TAG, "bleValueBean:mac:${bleValueBean.mac},name:${bleValueBean.name}")
+            //Log.d(TAG, "bleValueBean:mac:${bleValueBean.mac},name:${bleValueBean.name}")
+            var mac = SPUtils.getInstance().getString("");
+
             return true
         }
 
         override fun onScanRecord(bleValueBean: BleValueBean) {
-
             val vid: Int
             if (bleValueBean.isBroadcastModule) {
                 val cid = bleValueBean.getCid()
@@ -86,7 +91,14 @@ class WeightBondVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastDataParsin
             }
         }
     }
-    private var mBroadcastDataParsing: BroadcastDataParsing? = null
+    private val mBroadcastDataParsing by lazy {
+        BroadcastDataParsing { status, tempUnit, weightUnit, weightDecimal, weightStatus, weightNegative, weight, adc, algorithmId, tempNegative, temp ->
+            Log.d(
+                TAG,
+                "status$status weight:$weight weightDecimal:$weightDecimal  weightUnit:$weightUnit  adc$adc  algorithmId$algorithmId"
+            )
+        }
+    }
 
     private fun onBroadCastData(
         mac: String?,
@@ -95,7 +107,7 @@ class WeightBondVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastDataParsin
         isAilink: Boolean
     ) {
         Log.d(TAG, "mac:$mac Hex的data:  $dataHexStr")
-        mBroadcastDataParsing?.dataParsing(data, isAilink)
+        mBroadcastDataParsing.dataParsing(data, isAilink)
     }
 
     private fun onErrorString(s: String) {
@@ -155,15 +167,17 @@ class WeightBondVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastDataParsin
         mBluetoothService = service
         mBluetoothService?.setOnScanFilterListener(mOnScanFilterListener)
         mBluetoothService?.setOnCallback(mOnCallbackBle)
-        mBroadcastDataParsing = BroadcastDataParsing(this)
     }
 
     fun onUnBindService() {
         mBluetoothService?.setOnScanFilterListener(null)
         mBluetoothService?.setOnCallback(null)
         mBluetoothService = null;
+
     }
 
+
+    @RequiresPermission(allOf = ["android.permission.BLUETOOTH_ADMIN", "android.permission.BLUETOOTH"])
     fun startScanBle(timeOut: Long = 0, decryptKey: IntArray = TianShengKey) {
         Log.d(TAG, "startScanBle")
         this.decryptKey = decryptKey
@@ -171,27 +185,7 @@ class WeightBondVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastDataParsin
     }
 
     fun stopScanBle() {
-
-    }
-
-    override fun getWeightData(
-        status: Int,
-        tempUnit: Int,
-        weightUnit: Int,
-        weightDecimal: Int,
-        weightStatus: Int,
-        weightNegative: Int,
-        weight: Int,
-        adc: Int,
-        algorithmId: Int,
-        tempNegative: Int,
-        temp: Int
-    ) {
-        Log.d(
-            TAG,
-            "status$status weight:$weight weightDecimal:$weightDecimal  weightUnit:$weightUnit  adc$adc  algorithmId$algorithmId"
-        )
-
+        this.mBluetoothService?.stopScan()
     }
 
 

@@ -9,4 +9,6 @@ data class UserData(
     var sensorSteps: Int = 0,
     var defaultSteps: Int = 0,
     var saveDate: String = "2021年5月12号"
-)
+) {
+    val setInt: Int = if (sex == "男") 0 else 1
+}

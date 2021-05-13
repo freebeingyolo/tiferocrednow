@@ -1,14 +1,51 @@
 package com.css.ble.utils
 
 import android.Manifest
+import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
 import androidx.core.app.ActivityCompat
+import java.lang.reflect.InvocationTargetException
+import java.lang.reflect.Method
 
 object BleUtils {
+
+    //绑定
+    fun createBond(bleDevice: BluetoothDevice): Boolean? {
+        var result = false
+        if (Build.VERSION.SDK_INT > 18) {
+            result = bleDevice.createBond()
+        } else {
+            try {
+                val createBond: Method = bleDevice.javaClass.getMethod("createBond")
+                val invoke = createBond.invoke(bleDevice) as Boolean
+                result = invoke
+            } catch (e: NoSuchMethodException) {
+                e.printStackTrace()
+            } catch (e: InvocationTargetException) {
+                e.printStackTrace()
+            } catch (e: IllegalAccessException) {
+                e.printStackTrace()
+            }
+        }
+        return result
+    }
+
+    //与设备解除配对
+    fun removeBond(bleDevice: BluetoothDevice): Boolean? {
+        var result = false
+        try {
+            val removeBond: Method = bleDevice.javaClass.getMethod("removeBond")
+            val returnValue = removeBond.invoke(bleDevice) as Boolean
+            result = returnValue
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return result
+    }
 
     fun isLocationEnabled2(context: Context): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {

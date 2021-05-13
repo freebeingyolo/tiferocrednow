@@ -9,9 +9,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.blankj.utilcode.constant.PermissionConstants
 import com.blankj.utilcode.util.PermissionUtils
+import com.blankj.utilcode.util.ToastUtils
 import com.css.base.uibase.BaseFragment
 import com.css.ble.databinding.FragmentWeightBoundBinding
 import com.css.ble.utils.BleUtils
@@ -57,12 +59,6 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBoundBinding
 
 
     private fun updateBleCondition() {
-
-        Log.d(
-            TAG, "bleEnabled:${mViewModel.bleEnabled.value}," +
-                    " locationAllowed: ${mViewModel.locationPermission.value}"
-                    + " locationOpened: ${mViewModel.locationOpened.value}"
-        )
         when {
             !mViewModel.bleEnabled.value!! -> {
                 mViewBinding!!.tips.text = "蓝牙未打开"
@@ -84,11 +80,13 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBoundBinding
         if (mViewModel.mBluetoothService != null && mViewModel.isBleEnvironmentOk) {
             Log.d(TAG, "mViewModel.bleService.isScanStatus:${mViewModel.mBluetoothService!!.isScanStatus()}")
             if (!mViewModel.mBluetoothService!!.isScanStatus()) {
-                mViewModel.startScanBle(10);
+                mViewModel.startScanBle(5);
             }
         } else {
+            ToastUtils.showShort("已经停止绑定设备，请检查蓝牙环境")
             mViewModel.stopScanBle()
         }
+
     }
 
     override fun onResume() {

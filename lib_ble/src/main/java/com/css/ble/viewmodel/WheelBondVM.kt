@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.css.base.uibase.viewmodel.BaseViewModel
+import com.css.service.data.BondDeviceData
+import com.css.service.utils.WonderCoreCache
 import com.pingwang.bluetoothlib.BroadcastDataParsing
 import com.pingwang.bluetoothlib.bean.BleValueBean
 import com.pingwang.bluetoothlib.listener.OnCallbackBle
@@ -27,18 +29,21 @@ class WheelBondVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastDataParsing
         discovered,
         bonded
     }
+
     var state: LiveData<State> = MutableLiveData<State>().apply { value = State.bonding }
 
 
     private val mOnScanFilterListener: OnScanFilterListener = object : OnScanFilterListener {
 
         override fun onFilter(bleValueBean: BleValueBean): Boolean {
+            var data = WonderCoreCache.getData(WonderCoreCache.BOND_WEIGHT_INFO, BondDeviceData::class.java)
             Log.d(TAG, "bleValueBean:mac:${bleValueBean.mac},name:${bleValueBean.name}")
-            return true
+            return if (data.mac.isNotEmpty()) {
+                data.mac == bleValueBean.mac
+            } else true
         }
 
         override fun onScanRecord(bleValueBean: BleValueBean) {
-
             val vid: Int
             if (bleValueBean.isBroadcastModule) {
                 val cid = bleValueBean.getCid()
@@ -92,6 +97,15 @@ class WheelBondVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastDataParsing
         data: ByteArray?,
         isAilink: Boolean
     ) {
+        var d = WonderCoreCache.getData(WonderCoreCache.BOND_WEIGHT_INFO, BondDeviceData::class.java)
+        if (d.mac == "") {
+            d.mac = mac!!
+            d.type = BondDeviceData.TYPE_WEIGHT
+            WonderCoreCache.saveData(WonderCoreCache.BOND_WEIGHT_INFO, d)
+        }else{
+
+            return
+        }
         Log.d(TAG, "mac:$mac Hex的data:  $dataHexStr")
         mBroadcastDataParsing?.dataParsing(data, isAilink)
     }
