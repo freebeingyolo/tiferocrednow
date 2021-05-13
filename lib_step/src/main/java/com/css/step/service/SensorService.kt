@@ -165,16 +165,19 @@ class SensorService : Service(), SensorEventListener {
      * 处理系统计步器数据
      */
     private fun saveStepData() {
-        Log.d(TAG, "addNewData   :   $currentDate     $systemSteps ")
+        Log.d(TAG, "addNewData   :   $currentDate     $systemSteps    $userData")
         var currentSteps: Int = userData.sensorSteps
         var defaultSteps = systemSteps - currentSteps
         if (currentSteps == 0) {
+            Log.d(TAG, "currentSteps == 0     :   $currentDate")
             defaultSteps = 0
         }
-        if (defaultSteps <= 0) {
+        if (defaultSteps < 0) {
+            Log.d(TAG, "defaultSteps < 0     :   $defaultSteps")
             defaultSteps = systemSteps
         }
         if (currentDate != userData.saveDate) {
+            Log.d(TAG, "currentDate != userData.saveDate     ")
             userData.defaultSteps = defaultSteps
             userData.saveDate = currentDate.toString()
         }
