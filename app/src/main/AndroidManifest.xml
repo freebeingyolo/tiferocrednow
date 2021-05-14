@@ -34,7 +34,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Wonder.Base">
-        <activity android:name=".ui.activity.binding.SearchDeviceActivity"></activity>
+        <activity android:name=".ui.activity.binding.SearchDeviceActivity" />
         <activity android:name=".ui.activity.index.ABRollerActivity" />
         <activity android:name=".ui.activity.index.BfsMeasureResultsActivity" />
         <activity android:name=".ui.activity.binding.BindingDeviceActivity" />

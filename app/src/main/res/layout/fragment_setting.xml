@@ -26,17 +26,24 @@
     <RelativeLayout
         android:id="@+id/rl_person_info"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-      >
+        android:layout_height="50dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center"
             android:layout_marginStart="15dp"
+            android:gravity="center"
             android:text="@string/person_information"
             android:textColor="@color/black"
             android:textSize="14sp" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="17dp"
+            android:src="@mipmap/icon_next" />
     </RelativeLayout>
 
     <View
@@ -49,8 +56,7 @@
     <RelativeLayout
         android:id="@+id/rl_about_us"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        >
+        android:layout_height="50dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -60,7 +66,16 @@
             android:text="@string/about_us"
             android:textColor="@color/black"
             android:textSize="15sp" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="17dp"
+            android:src="@mipmap/icon_next" />
     </RelativeLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

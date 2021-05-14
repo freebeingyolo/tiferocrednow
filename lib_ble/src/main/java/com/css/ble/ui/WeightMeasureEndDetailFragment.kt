@@ -17,9 +17,13 @@ import com.css.ble.viewmodel.WeightMeasureVM
  * @author yuedong
  * @date 2021-05-12
  */
-class WeightMeasureEndDetailFragment : BaseFragment<WeightMeasureVM, FragmentWeightMeasureEndDetailBinding>() {
+class WeightMeasureEndDetailFragment :
+    BaseFragment<WeightMeasureVM, FragmentWeightMeasureEndDetailBinding>() {
 
-    override fun initViewBinding(inflater: LayoutInflater, viewGroup: ViewGroup?): FragmentWeightMeasureEndDetailBinding {
+    override fun initViewBinding(
+        inflater: LayoutInflater,
+        viewGroup: ViewGroup?
+    ): FragmentWeightMeasureEndDetailBinding {
         return FragmentWeightMeasureEndDetailBinding.inflate(layoutInflater, viewGroup, false)
     }
 
@@ -30,14 +34,19 @@ class WeightMeasureEndDetailFragment : BaseFragment<WeightMeasureVM, FragmentWei
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val datas = mViewModel.getBodyFatDataList()
-        mViewBinding ?.apply {
+        mViewBinding?.apply {
             lv.layoutManager = LinearLayoutManager(requireContext())
-            lv.adapter = object : BaseBindingAdapter<Map<String,Any?>,LayoutWeightMeasureEndDetailItemBinding>(datas){
+            lv.adapter = object :
+                BaseBindingAdapter<Map<String, Any?>, LayoutWeightMeasureEndDetailItemBinding>(datas) {
                 override fun getLayoutResId(viewType: Int): Int {
                     return R.layout.layout_weight_measure_end_detail_item
                 }
 
-                override fun onBindItem(binding: LayoutWeightMeasureEndDetailItemBinding, item: Map<String, Any?>, position: Int) {
+                override fun onBindItem(
+                    binding: LayoutWeightMeasureEndDetailItemBinding,
+                    item: Map<String, Any?>,
+                    position: Int
+                ) {
                     binding.apply {
                         tv1.text = item["key"].toString();
                         tv2.text = item["judge"].toString();
@@ -48,7 +57,6 @@ class WeightMeasureEndDetailFragment : BaseFragment<WeightMeasureVM, FragmentWei
             }
         }
     }
-
 
 
 }
