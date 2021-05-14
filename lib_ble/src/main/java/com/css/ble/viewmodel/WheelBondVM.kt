@@ -102,9 +102,8 @@ class WheelBondVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastDataParsing
             d.mac = mac
             d.manufacturerDataHex = dataHexStr
             d.type = BondDeviceData.TYPE_WEIGHT
-            WonderCoreCache.saveData(WonderCoreCache.BOND_WEIGHT_INFO, d)
-        } else {
 
+        } else {
             return
         }
         Log.d(TAG, "mac:$mac Hex的data:  $dataHexStr")

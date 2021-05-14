@@ -9,7 +9,7 @@ import com.google.gson.Gson
 class WonderCoreCache {
     @StringDef(
         USER_INFO,
-        BOND_WEIGHT_INFO,//
+        BOND_WEIGHT_INFO,
         BOND_WHEEL_INFO
     )
     @kotlin.annotation.Retention(AnnotationRetention.SOURCE)
@@ -20,7 +20,6 @@ class WonderCoreCache {
         const val BOND_WEIGHT_INFO = "BOND_WEIGHT_INFO" //体脂秤
         const val BOND_WHEEL_INFO = "BOND_WHEEL_INFO" //健腹轮
         const val USER_INFO = "userinfo"
-
 
         val mGson = Gson()
 
@@ -57,8 +56,11 @@ class WonderCoreCache {
             }
             return t
         }
-    }
 
+        fun removeKey(@CacheKey k: String) {
+            SPUtils.getInstance().remove(k)
+        }
+    }
 
 
 }
