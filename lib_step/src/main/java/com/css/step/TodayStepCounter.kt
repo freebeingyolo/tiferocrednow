@@ -10,6 +10,7 @@ import android.hardware.SensorEventListener
 import android.os.PowerManager
 import android.os.PowerManager.WakeLock
 import android.os.SystemClock
+import android.util.Log
 import com.css.step.service.TodayStepService
 import com.css.step.utils.Logger
 import com.css.step.utils.OnStepCounterListener

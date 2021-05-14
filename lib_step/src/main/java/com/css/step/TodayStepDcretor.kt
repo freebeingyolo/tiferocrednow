@@ -96,7 +96,7 @@ class TodayStepDcretor: SensorEventListener {
     constructor(mContext: Context?, mOnStepCounterListener: OnStepCounterListener?) {
         this.mOnStepCounterListener = mOnStepCounterListener
         this.mContext = mContext
-        CURRENT_SETP = mContext?.let { PreferencesHelper().getCurrentStep(it) } as Int
+        CURRENT_SETP = mContext?.let { PreferencesHelper().getCurrentStep(it).toInt() }!!
         mTodayDate = PreferencesHelper().getStepToday(mContext!!)
         dateChangeCleanStep()
         initBroadcastReceiver()
@@ -338,7 +338,7 @@ class TodayStepDcretor: SensorEventListener {
     }
 
     fun getCurrentStep(): Int {
-        CURRENT_SETP = mContext?.let { PreferencesHelper().getCurrentStep(it) } as Int
+        CURRENT_SETP = mContext?.let { PreferencesHelper().getCurrentStep(it).toInt() }!!
         return CURRENT_SETP
     }
 
