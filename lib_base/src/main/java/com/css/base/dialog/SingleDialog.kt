@@ -10,10 +10,9 @@ import androidx.annotation.ColorRes
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import com.blankj.utilcode.util.SizeUtils
-import com.yxsh.uibase.R
-import com.yxsh.uibase.dialog.inner.DialogClickListener
-import com.yxsh.uibase.uicore.utils.UICoreConfig
-import com.yxsh.uibase.utils.DoubleClickUtils
+import com.css.base.R
+import com.css.base.dialog.inner.DialogClickListener
+import com.css.service.utils.DoubleClickUtils
 import razerdp.basepopup.BasePopupWindow
 
 /**
@@ -38,7 +37,6 @@ class SingleDialog : BasePopupWindow, View.OnClickListener {
         tvTitle = findViewById(R.id.tv_title)
         tvContent = findViewById(R.id.tv_content)
         tvOk = findViewById(R.id.tv_ok)
-        tvOk.setTextColor(ContextCompat.getColor(context, UICoreConfig.defaultThemeColor))
         tvOk.setOnClickListener(this)
     }
 
