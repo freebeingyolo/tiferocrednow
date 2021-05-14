@@ -143,7 +143,14 @@
         android:layout_marginBottom="17dp"
         android:background="@drawable/bg_while_radius4"
         android:padding="15dp">
-
+        <com.css.base.view.ProgressView
+            android:id="@+id/pb_step"
+            android:layout_width="220dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="82dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
         <TextView
             android:id="@+id/tv_step_num"
             android:layout_width="wrap_content"
@@ -179,17 +186,7 @@
             app:layout_constraintStart_toStartOf="@+id/pb_step"
             app:layout_constraintTop_toBottomOf="@+id/tv_step_num" />
 
-        <ProgressBar
-            android:id="@+id/pb_step"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="220dp"
-            android:layout_height="200dp"
-            android:layout_marginTop="82dp"
-            android:max="100"
-            android:progress="70"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+
 
         <LinearLayout
             android:layout_width="match_parent"
