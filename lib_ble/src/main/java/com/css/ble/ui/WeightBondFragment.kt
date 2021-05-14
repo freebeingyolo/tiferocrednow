@@ -22,6 +22,7 @@ import com.css.base.utils.FragmentStarter
 import com.css.ble.R
 import com.css.ble.databinding.FragmentWeightBoundBinding
 import com.css.ble.databinding.LayoutFindbonddeviceBinding
+import com.css.ble.databinding.LayoutSearchTimeoutBinding
 import com.css.ble.databinding.LayoutWeightMeasureEndDetailItemBinding
 import com.css.ble.utils.BleUtils
 import com.css.ble.viewmodel.WeightBondVM
@@ -57,6 +58,18 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBoundBinding
         super.initView(savedInstanceState)
         mViewBinding?.apply { tips.setOnClickListener { tipsClick(it) } }
         checkAndRequestBleEnv()
+
+        if (mViewModel.cachedData.mac.isNullOrEmpty()) {
+
+        }
+    }
+
+    fun toDeviceShow() {
+
+    }
+
+    fun toBondMain() {
+
     }
 
     override fun registorUIChangeLiveDataCallBack() {
@@ -82,11 +95,11 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBoundBinding
         mViewModel.bondData.observe(viewLifecycleOwner) {
             ToastUtils.showShort("得到设备数据：${it.weight} ${it.adc}")
             mViewBinding!!.tips.text = it.weight.toString()
-            var childViews = Array(mViewBinding!!.vgBonding.childCount) {
-                mViewBinding!!.vgBonding.getChildAt(it)
-            }
-            mViewBinding!!.vgBonding.removeAllViews()
             mViewBinding!!.vgBonding.apply {
+                var childViews = Array(childCount) {
+                    getChildAt(it)
+                }
+                removeAllViews()
                 var v: LayoutFindbonddeviceBinding = DataBindingUtil.inflate(layoutInflater, R.layout.layout_findbonddevice, this, false)
                 v.mac.text = mViewModel.bondDevice.value!!.mac
                 v.weight.text = it.weight.toString() + "-" + it.weightUnit.toString()
@@ -97,13 +110,14 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBoundBinding
                         BondDeviceData.TYPE_WEIGHT
                     )
                     WonderCoreCache.saveData(WonderCoreCache.BOND_WEIGHT_INFO, d)
-                    FragmentStarter.goToFragment(requireActivity(), DeviceListFragment::class.java)
+                    onBackPressed()
                 }
                 v.research.setOnClickListener {
                     mViewBinding!!.vgBonding.removeAllViews()
                     for (v in childViews) {
                         mViewBinding!!.vgBonding.addView(v)
                     }
+                    startScan()
                 }
                 addView(v.root)
             }
@@ -120,11 +134,24 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBoundBinding
     }
 
     private fun onScanTimeOut() {
-        //TODO 跳转到超时界面
-        //mHandler.postDelayed({ startScan() }, 200)
         ToastUtils.showShort("onScanTimeOut")
-        Log.d(TAG, "===onScanTimeOut===${Looper.myLooper() == Looper.getMainLooper()}")
-        //mHandler.postDelayed({  mViewModel.startScanBle(20000)}, 200)
+        mViewBinding!!.vgBonding.apply {
+            var childViews = Array(childCount) {
+                getChildAt(it)
+            }
+            removeAllViews()
+            var v: LayoutSearchTimeoutBinding = DataBindingUtil.inflate(layoutInflater, R.layout.layout_search_timeout, this, false)
+            v.research.setOnClickListener {
+                mViewBinding!!.vgBonding.removeAllViews()
+                for (v in childViews) {
+                    mViewBinding!!.vgBonding.addView(v)
+                }
+                mViewBinding!!.tips.text = ""
+                mViewBinding!!.content.text = ""
+                startScan()
+            }
+            addView(v.root)
+        }
     }
 
     private fun updateBleCondition() {
@@ -148,14 +175,16 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBoundBinding
         }
         if (mViewModel.isBleEnvironmentOk) {
             Log.d(TAG, "mViewModel.bleService.isScanStatus:${mViewModel.mBluetoothService!!.isScanStatus()}")
-            if (!mViewModel.mBluetoothService!!.isScanStatus()) {
-                mViewModel.startScanBle(0 * 1000);
-            }
+            startScan()
         } else {
             ToastUtils.showShort("已经停止绑定设备，请检查蓝牙环境")
             mViewModel.stopScanBle()
         }
 
+    }
+
+    fun startScan() {
+        mViewModel.startScanBle(10 * 1000);
     }
 
 

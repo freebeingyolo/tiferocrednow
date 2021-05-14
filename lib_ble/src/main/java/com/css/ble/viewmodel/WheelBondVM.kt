@@ -32,11 +32,14 @@ class WheelBondVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastDataParsing
 
     var state: LiveData<State> = MutableLiveData<State>().apply { value = State.bonding }
 
+    val deviceData: BondDeviceData
+        get() = WonderCoreCache.getData(WonderCoreCache.BOND_WHEEL_INFO, BondDeviceData::class.java)
+
 
     private val mOnScanFilterListener: OnScanFilterListener = object : OnScanFilterListener {
 
         override fun onFilter(bleValueBean: BleValueBean): Boolean {
-            var data = WonderCoreCache.getData(WonderCoreCache.BOND_WEIGHT_INFO, BondDeviceData::class.java)
+            var data = deviceData
             Log.d(TAG, "bleValueBean:mac:${bleValueBean.mac},name:${bleValueBean.name}")
             return if (data.mac.isNotEmpty()) {
                 data.mac == bleValueBean.mac

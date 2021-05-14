@@ -15,6 +15,8 @@ import com.css.ble.databinding.LayoutDeviceItemBinding
 import com.css.ble.ui.view.SpaceItemDecoration
 import com.css.ble.viewmodel.DeviceListVM.DeviceInfo
 import com.css.ble.viewmodel.DeviceListVM
+import com.css.service.data.BondDeviceData
+import com.css.service.utils.WonderCoreCache
 
 class DeviceListFragment : BaseFragment<DeviceListVM, FragmentDeviceListBinding>() {
     companion object {
@@ -48,7 +50,12 @@ class DeviceListFragment : BaseFragment<DeviceListVM, FragmentDeviceListBinding>
                     position: Int,
                     deviceInfo: DeviceInfo
                 ) {
-                    startFragment(WeightBondFragment.newInstance())
+                    var d = WonderCoreCache.getData(WonderCoreCache.BOND_WEIGHT_INFO, BondDeviceData::class.java)
+                    if (d.mac.isNullOrEmpty()) {
+                        startFragment(WeightBondFragment.newInstance())
+                    } else {
+                        startFragment(WeightBondedFragment.newInstance())
+                    }
                 }
             }
             addItemDecoration(SpaceItemDecoration(30))

@@ -44,6 +44,10 @@ class WeightBondVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastDataParsin
         bonded
     }
 
+    val cachedData: BondDeviceData
+        get() = WonderCoreCache.getData(WonderCoreCache.BOND_WEIGHT_INFO, BondDeviceData::class.java)
+
+
     val state: MutableLiveData<State> by lazy { MutableLiveData<State>().apply { value = State.bonding } }
 
 
@@ -51,7 +55,7 @@ class WeightBondVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastDataParsin
 
         override fun onFilter(bleValueBean: BleValueBean): Boolean {
             //Log.d(TAG, "bleValueBean:mac:${bleValueBean.mac},name:${bleValueBean.name}")
-            var d: BondDeviceData = WonderCoreCache.getData(WonderCoreCache.BOND_WEIGHT_INFO, BondDeviceData::class.java)
+            var d: BondDeviceData = cachedData
             return if (d.mac.isNullOrEmpty()) true else d.mac == bleValueBean.mac
         }
 
