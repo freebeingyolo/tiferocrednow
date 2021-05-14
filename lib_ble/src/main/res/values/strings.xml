@@ -1,4 +1,8 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="device_name">设备名称</string>
+    <string name="device_model">设备型号</string>
+    <string name="firmware_version">固件版本</string>
+    <string name="delete_device">删除设备</string>
 </resources>
