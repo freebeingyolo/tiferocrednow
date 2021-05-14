@@ -8,6 +8,7 @@ import android.os.IBinder
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.css.base.uibase.BaseActivity
+import com.css.ble.R
 import com.css.ble.databinding.ActivityBleEntryBinding
 import com.css.ble.utils.BleUtils
 import com.css.ble.viewmodel.WeightBondVM
@@ -43,6 +44,7 @@ class BleEntryActivity : BaseActivity<WeightBondVM, ActivityBleEntryBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setWhiteFakeStatus(R.id.container, false)
         AILinkSDK.getInstance().init(this)
         BleLog.init(true)
         val bindIntent = Intent(this@BleEntryActivity, ELinkBleServer::class.java)

@@ -24,7 +24,10 @@ class DeviceListFragment : BaseFragment<DeviceListVM, FragmentDeviceListBinding>
 
     lateinit var mAdapter: RecycleViewAdapter
 
-    override fun initViewBinding(inflater: LayoutInflater, viewGroup: ViewGroup?): FragmentDeviceListBinding {
+    override fun initViewBinding(
+        inflater: LayoutInflater,
+        viewGroup: ViewGroup?
+    ): FragmentDeviceListBinding {
         return FragmentDeviceListBinding.inflate(layoutInflater, viewGroup, false)
     }
 
@@ -32,8 +35,9 @@ class DeviceListFragment : BaseFragment<DeviceListVM, FragmentDeviceListBinding>
         return ViewModelProvider(requireActivity()).get(DeviceListVM::class.java)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun initView(savedInstanceState: Bundle?) {
+        super.initView(savedInstanceState)
+        mViewBinding!!.toolBarView.setCenterText("绑定设备")
         mViewBinding!!.model = mViewModel
         mViewBinding!!.lifecycleOwner = viewLifecycleOwner
         mViewBinding?.lv!!.apply {
@@ -53,13 +57,15 @@ class DeviceListFragment : BaseFragment<DeviceListVM, FragmentDeviceListBinding>
             adapter = mAdapter
             //addItemDecoration(DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL))
         }
+    }
+    override fun registorUIChangeLiveDataCallBack() {
+        super.registorUIChangeLiveDataCallBack()
         mViewModel._deviceInfos.observe(viewLifecycleOwner, {
             Log.d(TAG, "mViewModel._deviceInfos：$it")
             mAdapter.mList = it
             mAdapter.notifyDataSetChanged()
         })
     }
-
     class RecycleViewAdapter : RecyclerView.Adapter<RecycleViewAdapter.MyViewHolder>() {
         var mList: List<DeviceInfo>? = null
         var itemClickListener: onItemClickListener? = null
@@ -69,7 +75,11 @@ class DeviceListFragment : BaseFragment<DeviceListVM, FragmentDeviceListBinding>
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-            var view = LayoutDeviceItemBinding.inflate(LayoutInflater.from(parent.context), parent, false).root
+            var view = LayoutDeviceItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            ).root
             return MyViewHolder(view)
         }
 

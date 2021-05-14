@@ -1,42 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <data >
+    <data>
 
     </data>
 
     <LinearLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
+        android:paddingBottom="37dp"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
             android:text="蓝牙智能秤"
-            android:textSize="26sp" />
+            android:textSize="13sp" />
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="10dp" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_width="198dp"
+            android:layout_height="154dp"
+            android:layout_marginTop="10dp"
+
             android:background="@drawable/ble_device_icon_frame"
-            android:paddingStart="20dp"
-            android:paddingTop="10dp"
-            android:paddingEnd="20dp"
-            android:paddingBottom="10dp">
+            android:gravity="center">
 
             <ImageView
                 android:id="@+id/icon"
                 android:layout_width="139dp"
                 android:layout_height="139dp"
-                android:layout_gravity="center"
                 android:src="@mipmap/icon_weight" />
         </LinearLayout>
     </LinearLayout>

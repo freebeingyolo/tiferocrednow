@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -17,7 +18,20 @@
         android:orientation="vertical"
         tools:context=".ui.DeviceListFragment">
 
-        <include layout="@layout/include_common_white_toolbar" />
+        <com.css.base.view.ToolBarView
+            android:id="@+id/toolBarView"
+            style="@style/base_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/common_toolbar_height"
+            android:background="@color/white"
+            android:minHeight="44dp"
+            android:navigationIcon="@null"
+            app:centerText=""
+            app:centerTextColor="@color/common_black_color"
+            app:leftImageView="@drawable/ic_common_back_black"
+            app:popupTheme="@style/popup_theme"
+            app:rightTextColor="@color/common_black_color"
+            app:showBottomLine="false" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/lv"

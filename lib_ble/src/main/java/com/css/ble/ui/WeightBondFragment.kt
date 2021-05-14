@@ -53,14 +53,17 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBoundBinding
         return ViewModelProvider(requireActivity()).get(WeightBondVM::class.java)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun initView(savedInstanceState: Bundle?) {
+        super.initView(savedInstanceState)
         mViewBinding?.apply { tips.setOnClickListener { tipsClick(it) } }
-        observerVM()
         checkAndRequestBleEnv()
     }
 
-    fun observerVM() {
+    override fun registorUIChangeLiveDataCallBack() {
+        super.registorUIChangeLiveDataCallBack()
+        observerVM()
+    }
+   private fun observerVM() {
         mViewModel.bleEnabled.observe(viewLifecycleOwner) {
             updateBleCondition()
         }

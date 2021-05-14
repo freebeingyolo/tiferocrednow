@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -16,7 +17,20 @@
         android:background="@color/white"
         android:orientation="vertical">
 
-        <include layout="@layout/include_common_white_toolbar" />
+        <com.css.base.view.ToolBarView
+            android:id="@+id/toolBarView"
+            style="@style/base_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/common_toolbar_height"
+            android:background="@color/white"
+            android:minHeight="44dp"
+            android:navigationIcon="@null"
+            app:centerText=""
+            app:centerTextColor="@color/common_black_color"
+            app:leftImageView="@drawable/ic_common_back_black"
+            app:popupTheme="@style/popup_theme"
+            app:rightTextColor="@color/common_black_color"
+            app:showBottomLine="false" />
 
         <RelativeLayout
             android:id="@+id/vg_bonding"
@@ -33,33 +47,33 @@
                 android:text="蓝牙ok"
                 android:textSize="20sp" />
 
-            <RelativeLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
 
                 <ImageView
                     android:id="@+id/anim_weight_guide"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_above="@+id/content"
+                    android:layout_width="225dp"
+                    android:layout_height="225dp"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="20dp"
-                    android:src="@mipmap/icon_weight" />
+                    android:src="@mipmap/icon_bound_img" />
 
                 <TextView
                     android:id="@+id/content"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true"
                     android:layout_marginStart="15dp"
                     android:layout_marginEnd="15dp"
                     android:layout_marginBottom="30dp"
                     android:text="持续轻踩，保持常量"
-                    android:textSize="30sp" />
+                    android:textSize="13sp" />
 
-            </RelativeLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
         </RelativeLayout>
 
 

@@ -20,7 +20,7 @@ class DeviceListVM : BaseViewModel() {
         thread(true) {
             var d = DeviceInfo("体脂秤", R.mipmap.icon_weight)
             _deviceInfos.value!!.add(d)
-            d = DeviceInfo("健腹轮", R.mipmap.icon_weight)
+            d = DeviceInfo("健腹轮", R.mipmap.icon_abroller)
             _deviceInfos.value!!.add(d)
             _deviceInfos.postValue(_deviceInfos.value)
         }
