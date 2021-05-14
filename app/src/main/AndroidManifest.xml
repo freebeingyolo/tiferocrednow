@@ -53,7 +53,14 @@
             android:name=".ui.activity.MainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:screenOrientation="portrait"
-            android:theme="@style/FullScreenTheme" />
+            android:launchMode="singleTop"
+            android:theme="@style/FullScreenTheme" >
+            <intent-filter>
+                <action android:name="com.css.Notification.action"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+
+        </activity>
     </application>
 
 </manifest>
