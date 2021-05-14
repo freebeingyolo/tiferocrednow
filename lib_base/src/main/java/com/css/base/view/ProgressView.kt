@@ -65,9 +65,7 @@ class ProgressView : View {
     fun setProgress(progress: Float) {
         mProgress = progress
         animator = ObjectAnimator.ofFloat(this, "progress", 0f, mProgress)!!
-        Log.v("suisui"," setProgress() 了")
         invalidate()
-        Log.v("suisui"," invalidate() 了")
     }
 
     override fun onAttachedToWindow() {
@@ -94,8 +92,6 @@ class ProgressView : View {
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        Log.v("suisui"," onDraw() 了")
-        Log.v("suisui"," progress=$mProgress")
         //画圆
         val oval1 = RectF(0f, 0f, sideLength.toFloat(), sideLength.toFloat()) //绘制区域
         canvas.drawArc(oval1, 135f, 270f, true, quenLinePaint!!) //绘制圆弧从135度开始绘制270度
