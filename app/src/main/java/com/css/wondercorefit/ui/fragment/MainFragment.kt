@@ -24,7 +24,7 @@ import com.css.wondercorefit.databinding.FragmentMainBinding
 import com.css.wondercorefit.viewmodel.MainViewModel
 
 
-class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>() {
+class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnClickListener {
     private val TAG = "MainFragment"
 
     private lateinit var iSportStepInterface: ISportStepInterface
@@ -40,6 +40,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>() {
         startSensorService()
         startStep()
         initClickListenr()
+        mViewBinding?.pbStep?.setProgress(50f)
     }
 
     private fun initClickListenr() {
@@ -154,4 +155,9 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>() {
         inflater: LayoutInflater,
         viewGroup: ViewGroup?
     ): FragmentMainBinding = FragmentMainBinding.inflate(inflater, viewGroup, false)
+
+    override fun onClick(v: View) {
+       when(v.id){
+       }
+    }
 }

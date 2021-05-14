@@ -43,5 +43,5 @@ ext {
             arouter              : 'com.alibaba:arouter-api:1.5.1',
             arouter_compiler     : 'com.alibaba:arouter-compiler:1.5.1'
     ]
-    isDebugType = true
+    isDebugType = false
 }
