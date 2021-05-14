@@ -19,7 +19,6 @@ import com.css.service.data.UserData
 import com.css.service.utils.WonderCoreCache
 import com.css.step.R
 import com.css.step.data.ConstantData
-import com.css.step.data.StepEntity
 import com.css.step.utils.TimeUtil
 
 class SensorService : Service(), SensorEventListener {

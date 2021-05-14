@@ -68,6 +68,7 @@ class SplashActivity : BaseActivity<SplashViewModel,ActivitySplashBinding>() {
     }
 
     private fun checkBodySensorPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             if (ContextCompat.checkSelfPermission(
                     this,
                     Manifest.permission.ACTIVITY_RECOGNITION
@@ -87,6 +88,7 @@ class SplashActivity : BaseActivity<SplashViewModel,ActivitySplashBinding>() {
                     Toast.makeText(this, "请允许获取健身运动信息，不然无法为你计步哦~", Toast.LENGTH_SHORT).show()
                 }
             }
+        }
         start()
     }
 
