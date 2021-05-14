@@ -10,7 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.alibaba.android.arouter.launcher.ARouter
 import com.css.base.uibase.BaseFragment
+import com.css.service.router.ARouterUtil
+import com.css.service.router.PATH_APP_BLE
 import com.css.service.utils.SystemBarHelper
 import com.css.step.ISportStepInterface
 import com.css.step.TodayStepManager
@@ -36,6 +39,15 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>() {
         SystemBarHelper.setHeightAndPadding(activity, mViewBinding?.topView)
         startSensorService()
         startStep()
+        initClickListenr()
+    }
+
+    private fun initClickListenr() {
+        mViewBinding!!.addBleDevice.setOnClickListener {
+            ARouter.getInstance()
+                .build(PATH_APP_BLE)
+                .navigation()
+        }
     }
 
     private fun startSensorService() {

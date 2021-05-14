@@ -7,7 +7,7 @@ import androidx.annotation.IntDef
  * @date 2021-05-13
  */
 
-class BondDeviceData(var mac: String, @DeviceType var type: Int) : BaseData() {
+class BondDeviceData(var mac: String,var manufacturerDataHex:String, @DeviceType var type: Int) : BaseData() {
 
     companion object {
         const val TYPE_WEIGHT = 0

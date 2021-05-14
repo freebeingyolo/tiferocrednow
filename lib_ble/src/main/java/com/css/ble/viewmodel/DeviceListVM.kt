@@ -1,9 +1,9 @@
 package com.css.ble.viewmodel
 
+import androidx.annotation.DrawableRes
 import androidx.lifecycle.MutableLiveData
 import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.ble.R
-import com.css.ble.bean.DeviceInfo
 import kotlin.concurrent.thread
 
 class DeviceListVM : BaseViewModel() {
@@ -26,6 +26,9 @@ class DeviceListVM : BaseViewModel() {
         }
     }
 
-
+    data class DeviceInfo(
+        val name: String,
+        @DrawableRes val icon: Int
+    )
 }
 

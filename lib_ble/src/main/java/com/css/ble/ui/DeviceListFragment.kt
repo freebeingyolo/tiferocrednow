@@ -10,11 +10,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.css.base.uibase.BaseFragment
-import com.css.ble.R
-import com.css.ble.bean.DeviceInfo
 import com.css.ble.databinding.FragmentDeviceListBinding
 import com.css.ble.databinding.LayoutDeviceItemBinding
 import com.css.ble.ui.view.SpaceItemDecoration
+import com.css.ble.viewmodel.DeviceListVM.DeviceInfo
 import com.css.ble.viewmodel.DeviceListVM
 
 class DeviceListFragment : BaseFragment<DeviceListVM, FragmentDeviceListBinding>() {

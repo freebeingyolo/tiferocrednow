@@ -18,42 +18,50 @@
 
         <include layout="@layout/include_common_white_toolbar" />
 
-        <TextView
-            android:id="@+id/tips"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:text="蓝牙ok"
-            android:textSize="20sp" />
-
         <RelativeLayout
+            android:id="@+id/vg_bonding"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/anim_weight_guide"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_above="@+id/content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:src="@mipmap/icon_weight" />
-
             <TextView
-                android:id="@+id/content"
-                android:layout_width="wrap_content"
+                android:id="@+id/tips"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginBottom="30dp"
-                android:text="持续轻踩，保持常量"
-                android:textSize="30sp" />
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="蓝牙ok"
+                android:textSize="20sp" />
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/anim_weight_guide"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_above="@+id/content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:src="@mipmap/icon_weight" />
+
+                <TextView
+                    android:id="@+id/content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="30dp"
+                    android:text="持续轻踩，保持常量"
+                    android:textSize="30sp" />
+
+            </RelativeLayout>
         </RelativeLayout>
+
+
     </LinearLayout>
 </layout>

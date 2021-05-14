@@ -4,6 +4,8 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,6 +20,7 @@ import com.css.base.uibase.BaseFragment
 import com.css.ble.databinding.FragmentWeightBoundBinding
 import com.css.ble.utils.BleUtils
 import com.css.ble.viewmodel.WeightBondVM
+import com.pingwang.bluetoothlib.server.ELinkBleServer
 
 
 /**
@@ -31,6 +34,7 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBoundBinding
         fun newInstance() = WeightBondFragment()
         const val GPS_REQUEST_CODE = 100;
     }
+    private var mHandler : Handler = Handler(Looper.getMainLooper())
 
     override fun initViewBinding(inflater: LayoutInflater, viewGroup: ViewGroup?): FragmentWeightBoundBinding {
 
@@ -43,7 +47,7 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBoundBinding
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d(TAG,"==="+parentFragmentManager.backStackEntryCount)
+        Log.d(TAG, "===" + parentFragmentManager.backStackEntryCount)
         mViewBinding?.apply { tips.setOnClickListener { tipsClick(it) } }
         mViewModel.bleEnabled.observe(viewLifecycleOwner) {
             updateBleCondition()
@@ -55,6 +59,21 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBoundBinding
             updateBleCondition()
         }
 
+        mViewModel.bondDevice.observe(viewLifecycleOwner) {
+            ToastUtils.showShort("发现一台设备：")
+            mViewBinding!!.content.text = it.mac + "||" + it.manifactureHex
+        }
+        mViewModel.bondData.observe(viewLifecycleOwner) {
+            ToastUtils.showShort("发现一台设备：")
+            mViewBinding!!.tips.text = it.weight.toString()
+        }
+        mViewModel.state.observe(viewLifecycleOwner) {
+            when (it) {
+                WeightBondVM.State.bondingTimeOut -> {
+
+                }
+            }
+        }
     }
 
 
@@ -80,13 +99,17 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBoundBinding
         if (mViewModel.mBluetoothService != null && mViewModel.isBleEnvironmentOk) {
             Log.d(TAG, "mViewModel.bleService.isScanStatus:${mViewModel.mBluetoothService!!.isScanStatus()}")
             if (!mViewModel.mBluetoothService!!.isScanStatus()) {
-                mViewModel.startScanBle(5);
+                startScan()
             }
         } else {
             ToastUtils.showShort("已经停止绑定设备，请检查蓝牙环境")
             mViewModel.stopScanBle()
         }
 
+    }
+
+    fun startScan() {
+        mViewModel.startScanBle(10);
     }
 
     override fun onResume() {

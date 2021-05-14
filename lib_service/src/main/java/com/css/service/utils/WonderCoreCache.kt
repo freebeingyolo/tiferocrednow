@@ -6,10 +6,10 @@ import com.css.service.data.BaseData
 import com.css.service.data.UserData
 import com.google.gson.Gson
 
-class WonderCoreCache(Bond_INFO: String) {
+class WonderCoreCache {
     @StringDef(
         USER_INFO,
-        BOND_WHEEL_INFO,
+        BOND_WEIGHT_INFO,//
         BOND_WHEEL_INFO
     )
     @kotlin.annotation.Retention(AnnotationRetention.SOURCE)
@@ -17,8 +17,8 @@ class WonderCoreCache(Bond_INFO: String) {
 
 
     companion object {
-        const val BOND_WEIGHT_INFO = "BOND_WEIGHT_INFO"
-        const val BOND_WHEEL_INFO = "BOND_WHEEL_INFO"
+        const val BOND_WEIGHT_INFO = "BOND_WEIGHT_INFO" //体脂秤
+        const val BOND_WHEEL_INFO = "BOND_WHEEL_INFO" //健腹轮
         const val USER_INFO = "userinfo"
 
 
@@ -51,7 +51,6 @@ class WonderCoreCache(Bond_INFO: String) {
             var info = SPUtils.getInstance().getString(k)
             var t = if (info.isNullOrEmpty()) {
                 var t2 = cls.newInstance()
-                saveData(k, t2)
                 t2
             } else {
                 mGson.fromJson(info, cls)

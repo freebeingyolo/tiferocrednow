@@ -1,13 +1,13 @@
 package com.css.ble.viewmodel
 
-import android.content.SharedPreferences
+import android.os.Looper
 import android.util.Log
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.SPUtils
 import com.css.base.uibase.viewmodel.BaseViewModel
-import com.css.service.utils.WonderCoreCache
+import com.css.ble.bean.WeightBondData
 import com.pingwang.bluetoothlib.BroadcastDataParsing
 import com.pingwang.bluetoothlib.bean.BleValueBean
 import com.pingwang.bluetoothlib.listener.OnCallbackBle
@@ -16,7 +16,7 @@ import com.pingwang.bluetoothlib.server.ELinkBleServer
 import com.pingwang.bluetoothlib.utils.BleStrUtils
 import com.pinwang.ailinkble.AiLinkPwdUtil
 
-class WeightBondVM : BaseViewModel() {
+class WeightBondVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastDataParsing {
 
     companion object {
         private val TianShengKey = intArrayOf(0x54493049, 0x4132794E, 0x53783148, 0x476c6531)
@@ -27,17 +27,22 @@ class WeightBondVM : BaseViewModel() {
     var locationPermission: MutableLiveData<Boolean> = MutableLiveData<Boolean>().also { it.value = false }
     var locationOpened: MutableLiveData<Boolean> = MutableLiveData<Boolean>().also { it.value = false }
     val isBleEnvironmentOk get() = bleEnabled.value!! && locationPermission.value!! && locationOpened.value!!
+    val bondData: MutableLiveData<WeightBondData> by lazy { MutableLiveData<WeightBondData>().apply { value = WeightBondData() } }
+    val bondDevice: MutableLiveData<BondDeviceInfo> by lazy { MutableLiveData<BondDeviceInfo>().apply { value = BondDeviceInfo() } }
+
+    private val mBroadcastDataParsing by lazy { BroadcastDataParsing(this) }
 
     var mBluetoothService: ELinkBleServer? = null
     private var decryptKey: IntArray = TianShengKey
 
     enum class State {
         bonding,
+        bondingTimeOut,
         discovered,
         bonded
     }
 
-    private var _state: LiveData<State> = MutableLiveData<State>().apply { value = State.bonding }
+    private var _state: MutableLiveData<State> = MutableLiveData<State>().apply { value = State.bonding }
 
     val state: LiveData<State>
         get() = _state
@@ -47,7 +52,6 @@ class WeightBondVM : BaseViewModel() {
         override fun onFilter(bleValueBean: BleValueBean): Boolean {
             //Log.d(TAG, "bleValueBean:mac:${bleValueBean.mac},name:${bleValueBean.name}")
             var mac = SPUtils.getInstance().getString("");
-
             return true
         }
 
@@ -82,8 +86,8 @@ class WeightBondVM : BaseViewModel() {
             } else {
                 val manufacturerDatax = bleValueBean.manufacturerData
                 if (manufacturerDatax != null && manufacturerDatax.size >= 15) {
-                    vid = (manufacturerDatax[6].toInt() and 255) shl 8 or manufacturerDatax[7].toInt() and 255
-                    if (vid == 2) {
+                    vid = (manufacturerDatax[6].toInt() and 255) shl 8 or (manufacturerDatax[7].toInt() and 255)
+                    if (vid == 2) {//匹配成功
                         val hex = BleStrUtils.byte2HexStr(manufacturerDatax)
                         this@WeightBondVM.onBroadCastData(bleValueBean.mac, hex, manufacturerDatax, false)
                     }
@@ -91,14 +95,7 @@ class WeightBondVM : BaseViewModel() {
             }
         }
     }
-    private val mBroadcastDataParsing by lazy {
-        BroadcastDataParsing { status, tempUnit, weightUnit, weightDecimal, weightStatus, weightNegative, weight, adc, algorithmId, tempNegative, temp ->
-            Log.d(
-                TAG,
-                "status$status weight:$weight weightDecimal:$weightDecimal  weightUnit:$weightUnit  adc$adc  algorithmId$algorithmId"
-            )
-        }
-    }
+
 
     private fun onBroadCastData(
         mac: String?,
@@ -106,8 +103,34 @@ class WeightBondVM : BaseViewModel() {
         data: ByteArray?,
         isAilink: Boolean
     ) {
-        Log.d(TAG, "mac:$mac Hex的data:  $dataHexStr")
+        Log.d(TAG, "mac:$mac Hex的data:  $dataHexStr " + (Looper.myLooper() == Looper.getMainLooper()))
+        bondDevice.value!!.apply {
+            this.mac = mac
+            this.manifactureHex = dataHexStr
+            bondDevice.value = bondDevice.value
+        }
         mBroadcastDataParsing.dataParsing(data, isAilink)
+    }
+
+    override fun getWeightData(
+        status: Int,
+        tempUnit: Int,
+        weightUnit: Int,
+        weightDecimal: Int,
+        weightStatus: Int,
+        weightNegative: Int,
+        weight: Int,
+        adc: Int,
+        algorithmId: Int,
+        tempNegative: Int,
+        temp: Int
+    ) {
+        bondData.value?.apply {
+            setValue(
+                status, tempUnit, weightUnit, weightDecimal, weightStatus, weightNegative, weight, adc, algorithmId, tempNegative, temp
+            )
+            bondData.value = bondData.value
+        }
     }
 
     private fun onErrorString(s: String) {
@@ -124,44 +147,6 @@ class WeightBondVM : BaseViewModel() {
         return sum
     }
 
-    private val mOnCallbackBle: OnCallbackBle = object : OnCallbackBle {
-
-        override fun onScanTimeOut() {
-            Log.d(TAG, "onScanTimeOut")
-        }
-
-        override fun onConnectionSuccess(mac: String?) {
-            Log.d(TAG, "onConnectionSuccess:${mac}")
-        }
-
-        override fun onServicesDiscovered(mac: String?) {
-            Log.d(TAG, "onServicesDiscovered:${mac}")
-        }
-
-        override fun onDisConnected(mac: String?, code: Int) {
-            Log.d(TAG, "onDisConnected:${mac}")
-        }
-
-        override fun onScanning(data: BleValueBean?) {
-            Log.d(TAG, "onDisConnected:${data?.mac},${data?.name}")
-        }
-
-        override fun onConnecting(mac: String?) {
-            Log.d(TAG, "onDisConnected:${mac}")
-        }
-
-        override fun onStartScan() {
-            Log.d(TAG, "onStartScan:")
-        }
-
-        override fun bleOpen() {
-            Log.d(TAG, "bleOpen:")
-        }
-
-        override fun bleClose() {
-            Log.d(TAG, "bleClose:")
-        }
-    }
 
     fun onBindService(service: ELinkBleServer) {
         mBluetoothService = service
@@ -173,22 +158,31 @@ class WeightBondVM : BaseViewModel() {
         mBluetoothService?.setOnScanFilterListener(null)
         mBluetoothService?.setOnCallback(null)
         mBluetoothService = null;
-
     }
 
 
     @RequiresPermission(allOf = ["android.permission.BLUETOOTH_ADMIN", "android.permission.BLUETOOTH"])
-    fun startScanBle(timeOut: Long = 0, decryptKey: IntArray = TianShengKey) {
+    fun startScanBle(timeOut: Long) {
         Log.d(TAG, "startScanBle")
-        this.decryptKey = decryptKey
         this.mBluetoothService?.scanLeDevice(timeOut)
+    }
+
+    private val mOnCallbackBle: OnCallbackBle = object : OnCallbackBle {
+        override fun onScanTimeOut() {
+            super.onScanTimeOut()
+            _state.value = State.bondingTimeOut
+            _state = _state
+        }
     }
 
     fun stopScanBle() {
         this.mBluetoothService?.stopScan()
     }
 
-
+    class BondDeviceInfo {
+        var mac: String? = null
+        var manifactureHex: String? = null;
+    }
 }
 
 

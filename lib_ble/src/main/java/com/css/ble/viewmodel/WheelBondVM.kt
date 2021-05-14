@@ -92,17 +92,18 @@ class WheelBondVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastDataParsing
 
 
     private fun onBroadCastData(
-        mac: String?,
-        dataHexStr: String?,
-        data: ByteArray?,
+        mac: String,
+        dataHexStr: String,
+        data: ByteArray,
         isAilink: Boolean
     ) {
         var d = WonderCoreCache.getData(WonderCoreCache.BOND_WEIGHT_INFO, BondDeviceData::class.java)
         if (d.mac == "") {
-            d.mac = mac!!
+            d.mac = mac
+            d.manufacturerDataHex = dataHexStr
             d.type = BondDeviceData.TYPE_WEIGHT
             WonderCoreCache.saveData(WonderCoreCache.BOND_WEIGHT_INFO, d)
-        }else{
+        } else {
 
             return
         }
