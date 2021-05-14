@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.css.base.uibase.BaseFragment
@@ -36,14 +37,15 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>() {
         SystemBarHelper.setHeightAndPadding(activity, mViewBinding?.topView)
         startSensorService()
         startStep()
+        mViewBinding?.pbStep?.setProgress(30f)
     }
 
     private fun startSensorService() {
         val intentSensor = Intent(activity, SensorService::class.java)
         if (Build.VERSION.SDK_INT >= 26) {
-            activity?.startForegroundService(intentSensor);
+            activity?.startForegroundService(intentSensor)
         } else {
-            activity?.startService(intentSensor);
+            activity?.startService(intentSensor)
         }
     }
 
@@ -53,9 +55,9 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>() {
         //开启计步Service，同时绑定Activity进行aidl通信
         val intentSteps = Intent(activity, TodayStepService::class.java)
         if (Build.VERSION.SDK_INT >= 26) {
-            activity?.startForegroundService(intentSteps);
+            activity?.startForegroundService(intentSteps)
         } else {
-            activity?.startService(intentSteps);
+            activity?.startService(intentSteps)
         }
         activity?.bindService(intentSteps, object : ServiceConnection {
             override fun onServiceConnected(name: ComponentName, service: IBinder) {
@@ -112,7 +114,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>() {
                     if (null != iSportStepInterface) {
                         var step: Int = 0
                         try {
-                            step = iSportStepInterface!!.todaySportStepArray
+                            step = iSportStepInterface.todaySportStepArray
                             Log.d(TAG, " refresh UI in 5000 ms  :   ")
                             updataValues(step)
                         } catch (e: RemoteException) {
