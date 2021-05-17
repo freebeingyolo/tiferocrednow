@@ -3,6 +3,7 @@
 
     <declare-styleable name="toolbarView">
         <attr name="leftImageView" format="reference" />
+        <attr name="leftText" format="string|reference" />
         <attr name="centerText" format="string|reference" />
         <attr name="centerTextColor" format="color" />
         <attr name="centerTextSize" format="dimension" />

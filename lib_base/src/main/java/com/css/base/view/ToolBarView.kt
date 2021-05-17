@@ -1,6 +1,7 @@
 package com.css.base.view
 
 import android.content.Context
+import android.database.DatabaseUtils
 import android.graphics.Bitmap
 import android.text.TextUtils
 import android.util.AttributeSet
@@ -19,6 +20,8 @@ import androidx.core.content.ContextCompat
 import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.SizeUtils
 import com.css.base.R
+import com.css.base.databinding.PopupCommonEditBinding
+import com.css.base.databinding.ViewToolbarBinding
 import com.css.base.uibase.inner.OnToolBarClickListener
 
 import java.io.Serializable
@@ -35,7 +38,7 @@ class ToolBarView @JvmOverloads constructor(context: Context, attrs: AttributeSe
     }
 
     enum class ViewType {
-        LEFT_IMAGE, CENTER_TEXT, RIGHT_TEXT, RIGHT_IMAGE
+        LEFT_IMAGE, LEFT_TEXT, CENTER_TEXT, RIGHT_TEXT, RIGHT_IMAGE
     }
 
     private var imgLeft: AppCompatImageView
@@ -43,6 +46,7 @@ class ToolBarView @JvmOverloads constructor(context: Context, attrs: AttributeSe
     private var tvRight: AppCompatTextView
     private var imgRight: AppCompatImageView
     private var bottomLine: View
+    private var binding: ViewToolbarBinding
 
     private var listener: OnToolBarClickListener? = object : OnToolBarClickListener {
         override fun onClickToolBarView(view: View, event: ViewType) {
@@ -58,8 +62,11 @@ class ToolBarView @JvmOverloads constructor(context: Context, attrs: AttributeSe
     }
 
     init {
-        val view = LayoutInflater.from(context).inflate(R.layout.view_toolbar, this, true)
+        binding = ViewToolbarBinding.inflate(LayoutInflater.from(context),this)
+        val view = binding.root
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.toolbarView)
+        val leftTvStr1 = typedArray.getString(R.styleable.toolbarView_leftText)
+        val leftTvStr2 = typedArray.getResourceId(R.styleable.toolbarView_leftText, 0)
         val centerTvStr1 = typedArray.getString(R.styleable.toolbarView_centerText)
         val centerTvStr2 = typedArray.getResourceId(R.styleable.toolbarView_centerText, 0)
         val centerTvColor1 = typedArray.getColor(R.styleable.toolbarView_centerTextColor, 0)
@@ -88,6 +95,12 @@ class ToolBarView @JvmOverloads constructor(context: Context, attrs: AttributeSe
         imgRight.setOnClickListener(this)
 
         showLine(showBottomLine)
+        //left text view
+        if (!TextUtils.isEmpty(leftTvStr1)) {
+            setText(ViewType.LEFT_TEXT, leftTvStr1)
+        } else if (leftTvStr2 != 0) {
+            setText(ViewType.LEFT_TEXT, context.resources.getString(leftTvStr2))
+        }
 
         //center text view
         if (!TextUtils.isEmpty(centerTvStr1)) {
@@ -169,19 +182,21 @@ class ToolBarView @JvmOverloads constructor(context: Context, attrs: AttributeSe
     }
 
     private fun getView(viewType: ViewType): View? {
-        when (viewType) {
-            ViewType.LEFT_IMAGE -> return imgLeft
-            ViewType.CENTER_TEXT -> return tvCenter
-            ViewType.RIGHT_IMAGE -> return imgRight
-            ViewType.RIGHT_TEXT -> return tvRight
-            else -> return View(context)
-        }
+        var map = mapOf(
+            ViewType.LEFT_IMAGE to imgLeft,
+            ViewType.LEFT_TEXT to binding.tvLeft,
+            ViewType.CENTER_TEXT to tvCenter,
+            ViewType.RIGHT_IMAGE to imgRight,
+            ViewType.RIGHT_TEXT to tvRight,
+        )
+        return map[viewType];
     }
 
     fun setToolBarViewVisible(isVisible: Boolean, vararg events: ViewType): ToolBarView {
         for (event in events) {
             when (event) {
                 ViewType.LEFT_IMAGE -> setLeftImageVisible(isVisible)
+                ViewType.LEFT_TEXT -> setVisible(event, isVisible)
                 ViewType.CENTER_TEXT -> setCenterTextVisible(isVisible)
                 ViewType.RIGHT_TEXT -> setRightTextVisible(isVisible)
                 ViewType.RIGHT_IMAGE -> setRightImageVisible(isVisible)
@@ -213,6 +228,26 @@ class ToolBarView @JvmOverloads constructor(context: Context, attrs: AttributeSe
     private fun setVisible(type: ViewType, isVisible: Boolean) {
         val view = getView(type)
         view?.visibility = if (isVisible) View.VISIBLE else View.GONE
+    }
+
+    fun setLeftText(@StringRes resId: Int): ToolBarView {
+        setText(ViewType.LEFT_TEXT, context.resources.getText(resId).toString())
+        return this
+    }
+
+    fun setLeftText(text: String?): ToolBarView {
+        setText(ViewType.LEFT_TEXT, text)
+        return this
+    }
+
+    fun setLeftTextColor(@ColorRes color: Int): ToolBarView {
+        setTextColor(ViewType.LEFT_TEXT, color)
+        return this
+    }
+
+    fun setLeftTextColorInt(@ColorInt color: Int): ToolBarView {
+        setTextColorInt(ViewType.LEFT_TEXT, color)
+        return this
     }
 
     fun setCenterText(@StringRes resId: Int): ToolBarView {

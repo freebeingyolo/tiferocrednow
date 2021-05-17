@@ -81,6 +81,8 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
 
     }
 
+    override fun enabledVisibleToolBar() = false
+
     /**
      * 注册ViewModel与View的契约UI回调事件
      */
@@ -293,11 +295,7 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
 
     //------------------toolbar start setting-----------------------------------
 
-    override fun initCommonToolBarBg(): ToolBarView.ToolBarBg {
-        return ToolBarView.ToolBarBg.WHITE
-    }
-
-    protected open fun hasCommonToolBar(): Boolean {
+    override fun hasCommonToolBar(): Boolean {
         return mToolbarView != null
     }
 
@@ -314,113 +312,7 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
         setToolBarViewVisible(enabledDefaultBack(), ToolBarView.ViewType.LEFT_IMAGE)
     }
 
-    override fun setToolBarTitle(title: String): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setCenterText(title)
-        } else {
-            return null
-        }
-    }
-
-    override fun setToolBarTitle(@StringRes idRes: Int): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setCenterText(idRes)
-        } else {
-            return null
-        }
-    }
-
-    override fun setToolBarTitleColor(@ColorRes resId: Int): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setCenterTextColor(resId)
-        } else {
-            return null
-        }
-    }
-
-    override fun setToolBarTitleColorInt(@ColorInt resId: Int): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setCenterTextColorInt(resId)
-        } else {
-            return null
-        }
-    }
-
-    override fun setRightImageScaleType(scaleType: ImageView.ScaleType): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setRightImageScaleType(scaleType)
-        } else {
-            return null
-        }
-    }
-
-    override fun setRightImage(bm: Bitmap): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setRightImage(bm)
-        } else {
-            return null
-        }
-    }
-
-    override fun setToolBarRightImage(@DrawableRes drawable: Int): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setRightImage(drawable)
-        } else {
-            return null
-        }
-    }
-
-    override fun setToolBarRightText(@StringRes resId: Int): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setRightText(resId)
-        } else {
-            return null
-        }
-    }
-
-    override fun setToolBarRightText(text: String): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setRightText(text)
-        } else {
-            return null
-        }
-    }
-
-    override fun setToolBarRightTextColor(@ColorRes resId: Int): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setRightTextColor(resId)
-        } else {
-            return null
-        }
-    }
-
-    override fun setToolBarRightTextColorInt(@ColorInt resId: Int): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setRightTextColorInt(resId)
-        } else {
-            return null
-        }
-    }
-
-    override fun setToolBarBottomLineVisible(isVisible: Boolean): ToolBarView? {
-        return if (hasCommonToolBar()) {
-            getCommonToolBarView()?.showBottomLine(isVisible)
-        } else null
-    }
-
-    override fun setToolBarViewVisible(
-        isVisible: Boolean,
-        vararg events: ToolBarView.ViewType
-    ): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setToolBarViewVisible(isVisible, *events)
-        } else {
-            return null
-        }
-    }
-
-
-    protected open fun getCommonToolBarView(): ToolBarView? {
+    override fun getCommonToolBarView(): ToolBarView? {
         return mToolbarView
     }
 

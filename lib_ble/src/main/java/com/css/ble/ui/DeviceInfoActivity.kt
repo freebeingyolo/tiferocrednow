@@ -19,7 +19,6 @@ class DeviceInfoActivity : BaseActivity<DefaultViewModel, ActivityDeviceInfoBind
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        setWhiteFakeStatus(R.id.ll_parent, false)
         mViewBinding.rlDeviceName.setOnClickListener(this)
     }
 

@@ -28,7 +28,7 @@ class SearchDeviceActivity : BaseActivity<DefaultViewModel, ActivitySearchDevice
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        setWhiteFakeStatus(R.id.ll_parent, false)
+
         mViewBinding.toolBarView.setCenterText("测量结果")
         mViewBinding.toolBarView.setToolBarClickListener(this)
     }

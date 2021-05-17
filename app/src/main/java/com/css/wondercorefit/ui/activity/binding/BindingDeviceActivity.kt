@@ -24,7 +24,7 @@ class BindingDeviceActivity : BaseActivity<DefaultViewModel, ActivityBindingDevi
     }
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        setWhiteFakeStatus(R.id.ll_parent, false)
+
         mViewBinding.toolBarView.setCenterText("绑定设备")
         mViewBinding.toolBarView.setToolBarClickListener(this)
     }

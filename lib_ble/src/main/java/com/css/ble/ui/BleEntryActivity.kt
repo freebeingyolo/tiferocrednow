@@ -41,7 +41,7 @@ class BleEntryActivity : BaseActivity<WeightBondVM, ActivityBleEntryBinding>() {
     }
 
     override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): ActivityBleEntryBinding {
-        return ActivityBleEntryBinding.inflate(layoutInflater,parent,false)
+        return ActivityBleEntryBinding.inflate(layoutInflater, parent, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

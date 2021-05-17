@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.css.base.uibase.BaseFragment
+import com.css.base.view.ToolBarView
 import com.css.ble.databinding.FragmentDeviceListBinding
 import com.css.ble.databinding.LayoutDeviceItemBinding
 import com.css.ble.ui.view.SpaceItemDecoration
@@ -39,8 +40,6 @@ class DeviceListFragment : BaseFragment<DeviceListVM, FragmentDeviceListBinding>
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        mViewBinding!!.toolBarView.setCenterText("绑定设备")
-        mViewBinding!!.model = mViewModel
         mViewBinding!!.lifecycleOwner = viewLifecycleOwner
         mViewBinding?.lv!!.apply {
             mAdapter = RecycleViewAdapter()
@@ -65,6 +64,7 @@ class DeviceListFragment : BaseFragment<DeviceListVM, FragmentDeviceListBinding>
             //addItemDecoration(DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL))
         }
     }
+
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
         mViewModel._deviceInfos.observe(viewLifecycleOwner, {
@@ -73,6 +73,7 @@ class DeviceListFragment : BaseFragment<DeviceListVM, FragmentDeviceListBinding>
             mAdapter.notifyDataSetChanged()
         })
     }
+
     class RecycleViewAdapter : RecyclerView.Adapter<RecycleViewAdapter.MyViewHolder>() {
         var mList: List<DeviceInfo>? = null
         var itemClickListener: onItemClickListener? = null

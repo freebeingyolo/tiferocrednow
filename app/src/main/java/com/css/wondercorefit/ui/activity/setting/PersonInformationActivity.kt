@@ -47,7 +47,7 @@ class PersonInformationActivity :
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        setWhiteFakeStatus(R.id.ll_parent, false)
+
         mViewBinding.toolBarView.setCenterText("个人信息")
         mViewBinding.toolBarView.setToolBarClickListener(this)
         mViewBinding.rlSex.setOnClickListener(this)

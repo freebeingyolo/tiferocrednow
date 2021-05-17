@@ -109,6 +109,8 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
 
     abstract fun initViewBinding(inflater: LayoutInflater, viewGroup: ViewGroup?): VB
 
+    override fun enabledVisibleToolBar() = true
+
     override fun onCreateView(
         inflater: LayoutInflater,
         viewGroup: ViewGroup?,
@@ -159,7 +161,7 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
         setToolBarViewVisible(enabledDefaultBack(), ToolBarView.ViewType.LEFT_IMAGE)
     }
 
-    protected open fun hasCommonToolBar(): Boolean {
+    override fun hasCommonToolBar(): Boolean {
         return mCommonToolbarView != null
     }
 
@@ -172,111 +174,6 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
         return getCustomToolBarLayoutResId() != 0
     }
 
-    override fun setToolBarTitle(title: String): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setCenterText(title)
-        } else {
-            return null
-        }
-    }
-
-    override fun setToolBarTitle(@StringRes resId: Int): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setCenterText(resId)
-        } else {
-            return null
-        }
-    }
-
-    override fun setToolBarTitleColor(@ColorRes resId: Int): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setCenterTextColor(resId)
-        } else {
-            return null
-        }
-    }
-
-    override fun setToolBarTitleColorInt(@ColorInt resId: Int): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setCenterTextColorInt(resId)
-        } else {
-            return null
-        }
-    }
-
-    override fun setRightImageScaleType(scaleType: ImageView.ScaleType): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setRightImageScaleType(scaleType)
-        } else {
-            return null
-        }
-    }
-
-    override fun setRightImage(bm: Bitmap): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setRightImage(bm)
-        } else {
-            return null
-        }
-    }
-
-    override fun setToolBarRightImage(@DrawableRes drawable: Int): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setRightImage(drawable)
-        } else {
-            return null
-        }
-    }
-
-    override fun setToolBarRightText(@StringRes resId: Int): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setRightText(resId)
-        } else {
-            return null
-        }
-    }
-
-    override fun setToolBarRightText(text: String): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setRightText(text)
-        } else {
-            return null
-        }
-    }
-
-    override fun setToolBarRightTextColor(@ColorRes resId: Int): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setRightTextColor(resId)
-        } else {
-            return null
-        }
-    }
-
-    override fun setToolBarRightTextColorInt(@ColorInt resId: Int): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setRightTextColorInt(resId)
-        } else {
-            return null
-        }
-    }
-
-    override fun setToolBarBottomLineVisible(isVisible: Boolean): ToolBarView? {
-        return if (hasCommonToolBar()) {
-            getCommonToolBarView()?.showBottomLine(isVisible)
-        } else null
-    }
-
-    override fun setToolBarViewVisible(
-        isVisible: Boolean,
-        vararg events: ToolBarView.ViewType
-    ): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setToolBarViewVisible(isVisible, *events)
-        } else {
-            return null
-        }
-    }
-
     /**
      * 顶部toolbar，自定义view或通用toolbar
      *
@@ -286,7 +183,7 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
         return mTopBarView
     }
 
-    protected open fun getCommonToolBarView(): ToolBarView? {
+    override fun getCommonToolBarView(): ToolBarView? {
         return mCommonToolbarView
     }
 
