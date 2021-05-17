@@ -39,6 +39,7 @@ class DeviceListFragment : BaseFragment<DeviceListVM, FragmentDeviceListBinding>
         return ViewModelProvider(requireActivity()).get(DeviceListVM::class.java)
     }
 
+    override fun enabledVisibleToolBar(): Boolean = true
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         setToolBarLeftTitle("绑定设备")
