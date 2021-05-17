@@ -9,8 +9,6 @@ import androidx.annotation.StringRes
  */
 interface ICoreView {
 
-
-
     /**
      * 吐司
      */

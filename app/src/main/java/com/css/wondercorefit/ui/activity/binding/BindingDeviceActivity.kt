@@ -3,7 +3,9 @@ package com.css.wondercorefit.ui.activity.binding
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.css.base.uibase.BaseActivity
 import com.css.base.uibase.inner.OnToolBarClickListener
@@ -30,8 +32,8 @@ class BindingDeviceActivity : BaseActivity<DefaultViewModel, ActivityBindingDevi
     override fun initViewModel(): DefaultViewModel =
         ViewModelProvider(this).get(DefaultViewModel::class.java)
 
-    override fun initViewBinding(): ActivityBindingDeviceBinding =
-        ActivityBindingDeviceBinding.inflate(layoutInflater)
+    override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): ActivityBindingDeviceBinding =
+        ActivityBindingDeviceBinding.inflate(layoutInflater,parent,false)
 
     override fun onClickToolBarView(view: View, event: ToolBarView.ViewType) {
         when (event) {

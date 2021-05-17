@@ -5,8 +5,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.view.View
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -15,14 +15,14 @@ import androidx.lifecycle.ViewModelProvider
 import com.blankj.utilcode.constant.PermissionConstants
 import com.blankj.utilcode.util.PermissionUtils
 import com.css.base.uibase.BaseActivity
-import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.ActivitySplashBinding
 import com.css.wondercorefit.viewmodel.SplashViewModel
 
-class SplashActivity : BaseActivity<SplashViewModel,ActivitySplashBinding>() {
+class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
+
     }
 
 
@@ -42,10 +42,12 @@ class SplashActivity : BaseActivity<SplashViewModel,ActivitySplashBinding>() {
         startActivity(intent)
         finish()
     }
+
     override fun onStart() {
         super.onStart()
-            checkStoragePermission()
+        checkStoragePermission()
     }
+
     private fun checkStoragePermission() {
         val permission = PermissionConstants.STORAGE
         PermissionUtils.permission(permission)
@@ -112,9 +114,11 @@ class SplashActivity : BaseActivity<SplashViewModel,ActivitySplashBinding>() {
             })
             .request()
     }
+
     private fun start() {
         mViewModel.downTimeNormalTask(2)
     }
 
-    override fun initViewBinding(): ActivitySplashBinding = ActivitySplashBinding.inflate(layoutInflater)
+    override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): ActivitySplashBinding =
+        ActivitySplashBinding.inflate(layoutInflater,parent,false)
 }

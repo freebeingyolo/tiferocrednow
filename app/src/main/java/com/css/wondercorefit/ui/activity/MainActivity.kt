@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.os.RemoteException
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
@@ -116,6 +118,6 @@ class MainActivity : BaseActivity<DefaultViewModel, ActivityMainBinding>() {
         return null
     }
 
-    override fun initViewBinding(): ActivityMainBinding =
-        ActivityMainBinding.inflate(layoutInflater)
+    override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): ActivityMainBinding =
+        ActivityMainBinding.inflate(layoutInflater,parent,false)
 }

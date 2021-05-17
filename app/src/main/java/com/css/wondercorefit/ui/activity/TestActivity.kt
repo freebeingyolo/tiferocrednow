@@ -2,7 +2,9 @@ package com.css.wondercorefit.ui.activity
 
 import android.app.Activity
 import android.content.Intent
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.blankj.utilcode.util.LogUtils
@@ -35,6 +37,6 @@ class TestActivity : BaseActivity<TestViewModel, ActivityTestActvityBinding>() {
         return ViewModelProvider(this).get(TestViewModel::class.java)
     }
 
-    override fun initViewBinding(): ActivityTestActvityBinding =
-        ActivityTestActvityBinding.inflate(layoutInflater)
+    override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): ActivityTestActvityBinding =
+        ActivityTestActvityBinding.inflate(layoutInflater,parent,false)
 }

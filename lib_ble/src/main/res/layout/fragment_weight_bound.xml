@@ -3,34 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <variable
-            name="model"
-            type="com.css.ble.viewmodel.WeightBondVM" />
-    </data>
-
     <LinearLayout
         android:id="@+id/ll_base_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
         android:orientation="vertical">
-
-        <com.css.base.view.ToolBarView
-            android:id="@+id/toolBarView"
-            style="@style/base_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/common_toolbar_height"
-            android:background="@color/white"
-            android:minHeight="44dp"
-            android:navigationIcon="@null"
-            app:centerText=""
-            app:centerTextColor="@color/common_black_color"
-            app:leftImageView="@drawable/ic_common_back_black"
-            app:popupTheme="@style/popup_theme"
-            app:rightTextColor="@color/common_black_color"
-            app:showBottomLine="false" />
 
         <RelativeLayout
             android:id="@+id/vg_bonding"
@@ -42,7 +20,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="10dp"
                 android:gravity="center"
                 android:text="蓝牙ok"
                 android:textSize="20sp" />
@@ -75,7 +52,6 @@
 
             </androidx.appcompat.widget.LinearLayoutCompat>
         </RelativeLayout>
-
 
     </LinearLayout>
 </layout>

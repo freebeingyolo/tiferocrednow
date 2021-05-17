@@ -21,5 +21,4 @@ class WheelMeasureEndFragment : BaseFragment<WheelMeasureVM, FragmentWheelMeasur
         return ViewModelProvider(requireActivity()).get(WheelMeasureVM::class.java)
     }
 
-
 }

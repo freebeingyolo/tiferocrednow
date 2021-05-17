@@ -140,7 +140,7 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBoundBinding
                 getChildAt(it)
             }
             removeAllViews()
-            var v: LayoutSearchTimeoutBinding = DataBindingUtil.inflate(layoutInflater, R.layout.layout_search_timeout, this, false)
+            var v: LayoutSearchTimeoutBinding = LayoutSearchTimeoutBinding.inflate(layoutInflater, this, false)
             v.research.setOnClickListener {
                 mViewBinding!!.vgBonding.removeAllViews()
                 for (v in childViews) {

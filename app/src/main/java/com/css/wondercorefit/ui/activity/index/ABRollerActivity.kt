@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.css.base.uibase.BaseActivity
 import com.css.base.uibase.inner.OnToolBarClickListener
@@ -31,8 +33,8 @@ class ABRollerActivity : BaseActivity<DefaultViewModel, ActivityAbrollerBinding>
     override fun initViewModel(): DefaultViewModel =
         ViewModelProvider(this).get(DefaultViewModel::class.java)
 
-    override fun initViewBinding(): ActivityAbrollerBinding =
-        ActivityAbrollerBinding.inflate(layoutInflater)
+    override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): ActivityAbrollerBinding =
+        ActivityAbrollerBinding.inflate(layoutInflater,parent,false)
 
     override fun onClickToolBarView(view: View, event: ToolBarView.ViewType) {
         when (event) {

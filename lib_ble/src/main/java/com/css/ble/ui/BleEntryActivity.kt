@@ -5,6 +5,8 @@ import android.content.*
 import android.location.LocationManager
 import android.os.Bundle
 import android.os.IBinder
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.css.base.uibase.BaseActivity
@@ -38,8 +40,8 @@ class BleEntryActivity : BaseActivity<WeightBondVM, ActivityBleEntryBinding>() {
         return ViewModelProvider(this).get(WeightBondVM::class.java)
     }
 
-    override fun initViewBinding(): ActivityBleEntryBinding {
-        return ActivityBleEntryBinding.inflate(layoutInflater)
+    override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): ActivityBleEntryBinding {
+        return ActivityBleEntryBinding.inflate(layoutInflater,parent,false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

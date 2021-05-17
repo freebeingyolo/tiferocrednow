@@ -10,6 +10,8 @@ import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
@@ -138,6 +140,6 @@ class QrScanActivity : BaseActivity<QrScanViewModel, ActivityQrscanMainBinding>(
         return ViewModelProvider(this).get(QrScanViewModel::class.java)
     }
 
-    override fun initViewBinding(): ActivityQrscanMainBinding =
-        ActivityQrscanMainBinding.inflate(layoutInflater)
+    override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): ActivityQrscanMainBinding =
+        ActivityQrscanMainBinding.inflate(layoutInflater,parent,false)
 }

@@ -1,7 +1,9 @@
 package com.css.ble.ui
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
@@ -24,8 +26,8 @@ class DeviceInfoActivity : BaseActivity<DefaultViewModel, ActivityDeviceInfoBind
     override fun initViewModel(): DefaultViewModel =
         ViewModelProvider(this).get(DefaultViewModel::class.java)
 
-    override fun initViewBinding(): ActivityDeviceInfoBinding =
-        ActivityDeviceInfoBinding.inflate(layoutInflater)
+    override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): ActivityDeviceInfoBinding =
+        ActivityDeviceInfoBinding.inflate(layoutInflater,parent,false)
 
     override fun onClickToolBarView(view: View, event: ToolBarView.ViewType) {
         when (event) {
