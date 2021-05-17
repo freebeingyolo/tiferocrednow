@@ -59,6 +59,7 @@ dependencies {
 //    implementation fileTree(includes: ['*.jar'],dir:"libs")
     implementation project(':lib_base')
     implementation 'com.google.android.material:material:1.2.1'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     kapt dep.arouter_compiler
 
     implementation(name: "bluetoothlib_ts_1.0.3", ext: "aar")

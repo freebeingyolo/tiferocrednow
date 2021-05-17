@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.WeightBondActivity">
     <LinearLayout
         android:id="@+id/ll_base_root"
         android:layout_width="match_parent"
@@ -47,11 +49,11 @@
                     android:layout_marginStart="15dp"
                     android:layout_marginEnd="15dp"
                     android:layout_marginBottom="30dp"
-                    android:text="持续轻踩，保持常量"
+                    android:text="请持续轻踩，并保持屏幕常亮"
                     android:textSize="13sp" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
         </RelativeLayout>
 
     </LinearLayout>
-</layout>
+</androidx.constraintlayout.widget.ConstraintLayout>

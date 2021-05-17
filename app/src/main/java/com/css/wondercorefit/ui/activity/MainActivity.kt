@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.css.base.uibase.BaseActivity
 import com.css.base.uibase.viewmodel.DefaultViewModel
+import com.css.base.view.ToolBarView
 import com.css.service.inner.BaseInner
 import com.css.service.router.PATH_APP_MAIN
 import com.css.step.ISportStepInterface
@@ -34,13 +35,18 @@ class MainActivity : BaseActivity<DefaultViewModel, ActivityMainBinding>() {
     override fun initViewModel(): DefaultViewModel =
         ViewModelProvider(this).get(DefaultViewModel::class.java)
 
+    override fun initCommonToolBarBg(): ToolBarView.ToolBarBg {
+        return ToolBarView.ToolBarBg.WHITE
+    }
+
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        setWhiteFakeStatus(R.id.cl_parent, false)
+
         initTablayout()
         startStep()
     }
 
+    override fun enabledVisibleToolBar(): Boolean = false
     private fun initTablayout() {
         mTabMainFragment = MainFragment()
         mTabCourseFragment = CourseFragment()
@@ -118,6 +124,9 @@ class MainActivity : BaseActivity<DefaultViewModel, ActivityMainBinding>() {
         return null
     }
 
-    override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): ActivityMainBinding =
-        ActivityMainBinding.inflate(layoutInflater,parent,false)
+    override fun initViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?
+    ): ActivityMainBinding =
+        ActivityMainBinding.inflate(layoutInflater, parent, false)
 }

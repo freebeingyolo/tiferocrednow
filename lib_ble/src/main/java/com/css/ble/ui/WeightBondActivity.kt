@@ -1,62 +1,52 @@
 package com.css.ble.ui
 
 import android.bluetooth.BluetoothAdapter
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.blankj.utilcode.constant.PermissionConstants
 import com.blankj.utilcode.util.PermissionUtils
 import com.blankj.utilcode.util.ToastUtils
-import com.css.base.uibase.BaseFragment
-import com.css.base.utils.FragmentStarter
+import com.css.base.uibase.BaseActivity
 import com.css.ble.R
-import com.css.ble.databinding.FragmentWeightBoundBinding
+import com.css.ble.databinding.ActivityWeightBondBinding
 import com.css.ble.databinding.LayoutFindbonddeviceBinding
 import com.css.ble.databinding.LayoutSearchTimeoutBinding
-import com.css.ble.databinding.LayoutWeightMeasureEndDetailItemBinding
 import com.css.ble.utils.BleUtils
 import com.css.ble.viewmodel.WeightBondVM
 import com.css.service.data.BondDeviceData
 import com.css.service.utils.WonderCoreCache
-import com.pingwang.bluetoothlib.server.ELinkBleServer
 
-
-/**
- * @author yuedong
- * @date 2021-05-12
- */
-class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBoundBinding>() {
-
+class WeightBondActivity : BaseActivity<WeightBondVM, ActivityWeightBondBinding>() {
     companion object {
-        val TAG: String? = "WeightBondFragment"
-        fun newInstance() = WeightBondFragment()
+        const val TAG: String = "WeightBondFragment"
         const val GPS_REQUEST_CODE = 100;
+
+        fun starActivity(context: Context) {
+            val intent = Intent(context, WeightBondActivity::class.java)
+            context.startActivity(intent)
+        }
     }
 
-    private var mHandler: Handler = Handler(Looper.getMainLooper())
-
-    override fun initViewBinding(inflater: LayoutInflater, viewGroup: ViewGroup?): FragmentWeightBoundBinding {
-
-        return FragmentWeightBoundBinding.inflate(layoutInflater, viewGroup, false)
-    }
-
-    override fun initViewModel(): WeightBondVM {
-        return ViewModelProvider(requireActivity()).get(WeightBondVM::class.java)
+    override fun enabledVisibleToolBar(): Boolean {
+        return true
     }
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        mViewBinding?.apply { tips.setOnClickListener { tipsClick(it) } }
+        setToolBarLeftTitle("蓝牙体脂秤")
+        mViewBinding?.apply {
+            tips.setOnClickListener { tipsClick(it) }
+        }
+
         checkAndRequestBleEnv()
 
         if (mViewModel.cachedData.mac.isNullOrEmpty()) {
@@ -64,35 +54,28 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBoundBinding
         }
     }
 
-    fun toDeviceShow() {
-
-    }
-
-    fun toBondMain() {
-
-    }
-
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
         observerVM()
     }
-   private fun observerVM() {
-        mViewModel.bleEnabled.observe(viewLifecycleOwner) {
+
+    private fun observerVM() {
+        mViewModel.bleEnabled.observe(this) {
             updateBleCondition()
         }
-        mViewModel.locationPermission.observe(viewLifecycleOwner) {
+        mViewModel.locationPermission.observe(this) {
             updateBleCondition()
         }
-        mViewModel.locationOpened.observe(viewLifecycleOwner) {
+        mViewModel.locationOpened.observe(this) {
             updateBleCondition()
         }
 
-        mViewModel.bondDevice.observe(viewLifecycleOwner) {
+        mViewModel.bondDevice.observe(this) {
             ToastUtils.showShort("发现一台设备：" + it.mac)
-            mViewBinding!!.content.text = it.mac + "||" + it.manifactureHex
+            mViewBinding.content.text = it.mac + "||" + it.manifactureHex
         }
 
-        mViewModel.bondData.observe(viewLifecycleOwner) {
+        mViewModel.bondData.observe(this) {
             ToastUtils.showShort("得到设备数据：${it.weight} ${it.adc}")
             mViewBinding!!.tips.text = it.weight.toString()
             mViewBinding!!.vgBonding.apply {
@@ -100,7 +83,12 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBoundBinding
                     getChildAt(it)
                 }
                 removeAllViews()
-                var v: LayoutFindbonddeviceBinding = DataBindingUtil.inflate(layoutInflater, R.layout.layout_findbonddevice, this, false)
+                var v: LayoutFindbonddeviceBinding = DataBindingUtil.inflate(
+                    layoutInflater,
+                    R.layout.layout_findbonddevice,
+                    this,
+                    false
+                )
                 v.mac.text = mViewModel.bondDevice.value!!.mac
                 v.weight.text = it.weight.toString() + "-" + it.weightUnit.toString()
                 v.bond.setOnClickListener {
@@ -126,7 +114,7 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBoundBinding
             mViewModel.stopScanBle()
         }
 
-        mViewModel.state.observe(viewLifecycleOwner) {
+        mViewModel.state.observe(this) {
             when (it) {
                 WeightBondVM.State.bondingTimeOut -> onScanTimeOut()
             }
@@ -140,7 +128,8 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBoundBinding
                 getChildAt(it)
             }
             removeAllViews()
-            var v: LayoutSearchTimeoutBinding = LayoutSearchTimeoutBinding.inflate(layoutInflater, this, false)
+            var v: LayoutSearchTimeoutBinding =
+                LayoutSearchTimeoutBinding.inflate(layoutInflater, this, false)
             v.research.setOnClickListener {
                 mViewBinding!!.vgBonding.removeAllViews()
                 for (v in childViews) {
@@ -174,7 +163,10 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBoundBinding
             }
         }
         if (mViewModel.isBleEnvironmentOk) {
-            Log.d(TAG, "mViewModel.bleService.isScanStatus:${mViewModel.mBluetoothService!!.isScanStatus()}")
+            Log.d(
+                TAG,
+                "mViewModel.bleService.isScanStatus:${mViewModel.mBluetoothService!!.isScanStatus()}"
+            )
             startScan()
         } else {
             ToastUtils.showShort("已经停止绑定设备，请检查蓝牙环境")
@@ -208,7 +200,10 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBoundBinding
                         mViewModel.locationPermission.value = true
                     }
 
-                    override fun onDenied(deniedForever: MutableList<String>, denied: MutableList<String>) {
+                    override fun onDenied(
+                        deniedForever: MutableList<String>,
+                        denied: MutableList<String>
+                    ) {
                         mViewModel.locationPermission.value = false
                     }
                 })
@@ -226,7 +221,7 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBoundBinding
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             GPS_REQUEST_CODE -> {
-                mViewModel.locationOpened.value = BleUtils.isLocationEnabled(requireContext())
+                mViewModel.locationOpened.value = BleUtils.isLocationEnabled(this)
             }
         }
     }
@@ -234,5 +229,16 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBoundBinding
     fun openGPSSEtting() {
         val intent: Intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
         startActivityForResult(intent, GPS_REQUEST_CODE)
+    }
+
+    override fun initViewModel(): WeightBondVM =
+        ViewModelProvider(this).get(WeightBondVM::class.java)
+
+
+    override fun initViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?
+    ): ActivityWeightBondBinding {
+        return ActivityWeightBondBinding.inflate(layoutInflater, parent, false)
     }
 }

@@ -78,7 +78,33 @@ interface IToolbarView {
             return null
         }
     }
+    /**
+     * enabledCommonToolBar 为true时有效。
+     * 设置中心title
+     *
+     * @param title
+     */
+    fun setToolBarLeftTitle(title: String): ToolBarView? {
+        if (hasCommonToolBar()) {
+            return getCommonToolBarView()?.setLeftText(title)
+        } else {
+            return null
+        }
+    }
 
+    /**
+     * enabledCommonToolBar 为true时有效。
+     * 设置中心title
+     *
+     * @param resId
+     */
+    fun setToolBarLeftTitle(@StringRes resId: Int): ToolBarView? {
+        if (hasCommonToolBar()) {
+            return getCommonToolBarView()?.setLeftText(resId)
+        } else {
+            return null
+        }
+    }
     fun hasCommonToolBar(): Boolean
 
     fun getCommonToolBarView(): ToolBarView?

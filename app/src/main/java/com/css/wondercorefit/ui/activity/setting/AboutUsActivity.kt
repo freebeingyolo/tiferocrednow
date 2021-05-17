@@ -23,10 +23,11 @@ class AboutUsActivity : BaseActivity<DefaultViewModel, ActivityAboutUsBinding>()
             context.startActivity(intent)
         }
     }
-
+    override fun initCommonToolBarBg(): ToolBarView.ToolBarBg {
+        return ToolBarView.ToolBarBg.WHITE
+    }
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        setWhiteFakeStatus(R.id.ll_parent,false)
         mViewBinding.toolBarView.setCenterText("关于我们")
         mViewBinding.toolBarView.setToolBarClickListener(this)
     }

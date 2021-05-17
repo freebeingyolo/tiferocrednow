@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.css.base.uibase.BaseFragment
 import com.css.base.view.ToolBarView
+import com.css.ble.R
 import com.css.ble.databinding.FragmentDeviceListBinding
 import com.css.ble.databinding.LayoutDeviceItemBinding
 import com.css.ble.ui.view.SpaceItemDecoration
@@ -40,18 +41,23 @@ class DeviceListFragment : BaseFragment<DeviceListVM, FragmentDeviceListBinding>
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
+        setToolBarLeftTitle("绑定设备")
         mViewBinding!!.lifecycleOwner = viewLifecycleOwner
         mViewBinding?.lv!!.apply {
             mAdapter = RecycleViewAdapter()
             mAdapter.itemClickListener = object : RecycleViewAdapter.onItemClickListener {
                 override fun onItemClick(
+
                     holder: RecycleViewAdapter.MyViewHolder,
                     position: Int,
                     deviceInfo: DeviceInfo
                 ) {
-                    var d = WonderCoreCache.getData(WonderCoreCache.BOND_WEIGHT_INFO, BondDeviceData::class.java)
+                    var d = WonderCoreCache.getData(
+                        WonderCoreCache.BOND_WEIGHT_INFO,
+                        BondDeviceData::class.java
+                    )
                     if (d.mac.isNullOrEmpty()) {
-                        startFragment(WeightBondFragment.newInstance())
+                        activity?.let { WeightBondActivity.starActivity(it) }
                     } else {
                         startFragment(WeightBondedFragment.newInstance())
                     }

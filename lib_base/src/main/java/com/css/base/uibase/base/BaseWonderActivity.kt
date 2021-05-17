@@ -10,10 +10,7 @@ import android.view.*
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.annotation.ColorInt
-import androidx.annotation.ColorRes
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
+import androidx.annotation.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.contains
 import androidx.lifecycle.Observer
@@ -26,6 +23,7 @@ import com.css.base.R
 import com.css.base.uibase.inner.IBaseView
 import com.css.base.uibase.inner.OnToolBarClickListener
 import com.css.base.uibase.viewmodel.BaseViewModel
+import com.css.base.utils.FragmentStarter
 import com.css.base.utils.OSUtils
 import com.css.base.view.ToolBarView
 
@@ -154,14 +152,15 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
     abstract fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): VB
 
     private fun initContentView() {
-        if(mRootView == null){
+        if (mRootView == null) {
             //根布局
             mRootView = LayoutInflater.from(this).inflate(R.layout.activity_base, null, false)
             //toolbar容器
             val toolbarVs = mRootView!!.findViewById<ViewStub>(R.id.vs_toolbar)
             //子布局容器
             if (enabledVisibleToolBar()) {
-                val toolbarId = if (isShowCustomToolbar()) getCustomToolBarLayoutResId() else getToolBarLayoutResId()
+                val toolbarId =
+                    if (isShowCustomToolbar()) getCustomToolBarLayoutResId() else getToolBarLayoutResId()
                 //toolbar资源id
                 toolbarVs.layoutResource = toolbarId
                 //填充toolbar
@@ -171,8 +170,8 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
             mChildContainerLayout!!.apply {
                 //子布局
                 mViewBinding = initViewBinding(layoutInflater, mChildContainerLayout)
-                if (!contains(mViewBinding!!.root)) {
-                    addView(mViewBinding!!.root)
+                if (!contains(mViewBinding.root)) {
+                    addView(mViewBinding.root)
                 }
             }
         }
@@ -207,7 +206,18 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
     private var mCloseWarned = false
 
     private fun back() {
+        var enableBackPressed = true
+        //说明，只有当通过pushFragmentToBackStack方式调用，才会回调processBackPressed方法。
+        if (mCurrentFragment != null) {
+            enableBackPressed = !mCurrentFragment!!.processBackPressed()
+        }
+        log(" getBackStackEntryCount  " + supportFragmentManager.backStackEntryCount + "   " + enableBackPressed + ";mCurrentFragment:" + mCurrentFragment)
+
+        if (!enableBackPressed) {
+            return
+        }
         val cnt = supportFragmentManager.backStackEntryCount
+        LogUtils.vTag("suisui", "cnt=$cnt")
         if (cnt < 1 && isTaskRoot) {
             val closeWarningHint = "再按一次退出程序"
             if (!mCloseWarned && !TextUtils.isEmpty(closeWarningHint)) {
@@ -350,6 +360,10 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
                     R.id.ll_base_root,
                     enbaleFixImmersionAndEditBug()
                 )
+                ToolBarView.ToolBarBg.GRAY -> setGrayFakeStatus(
+                    R.id.ll_base_root,
+                    enbaleFixImmersionAndEditBug()
+                )
             }
         } else {
             setTransparentStatus(R.id.ll_base_root, enbaleFixImmersionAndEditBug())
@@ -367,7 +381,9 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
         )
         OSUtils.fixWhiteStatusbarBug(this)
     }
-
+    open fun setGrayFakeStatus(contentParentViewId: Int, enbaleFixImmersionAndEditBug: Boolean) {
+        setFakeStatus(contentParentViewId, true, 0, R.color.common_gray_color, enbaleFixImmersionAndEditBug)
+    }
     open fun setTransparentStatus(contentParentViewId: Int, enbaleFixImmersionAndEditBug: Boolean) {
         val parentView = findViewById<View>(contentParentViewId)
         if (parentView != null) {
@@ -421,6 +437,54 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
     override fun getRootView(): View {
         return mRootView!!
     }
+    //--------------------- control fragment start --------------------------
 
+    private var mCurrentFragment: BaseWonderFragment<*,*>? = null
+
+    open fun getCurrentFragment(): BaseWonderFragment<*,*>? {
+        return mCurrentFragment
+    }
+
+    /**
+     * 添加到 stack中
+     *
+     * @param containerId
+     * @param cls
+     * @param data
+     */
+    open fun pushFragmentToBackStack(@IdRes containerId: Int, cls: Class<out BaseWonderFragment<*,*>>?, data: Any?) {
+            mCurrentFragment = FragmentStarter.pushFragmentToBackStack(this, containerId, cls, data, true)
+            mCloseWarned = false
+
+    }
+
+    open fun pushFragmentToBackStack(cls: Class<out BaseWonderFragment<*,*>>?, data: Any?) {
+        pushFragmentToBackStack(getFragmentContainerId(), cls, data)
+    }
+
+    open fun popTopFragment(data: Any?) {
+        val fm = supportFragmentManager
+        fm.popBackStackImmediate()
+        if (tryToUpdateCurrentAfterPop() && mCurrentFragment != null) {
+            mCurrentFragment!!.onBackWithData(data)
+        }
+    }
+
+    private fun tryToUpdateCurrentAfterPop(): Boolean {
+        val fm = supportFragmentManager
+        val cnt = fm.backStackEntryCount
+        if (cnt > 0) {
+            val name = fm.getBackStackEntryAt(cnt - 1).name
+            val fragment = fm.findFragmentByTag(name)
+            if (fragment != null && fragment is BaseWonderFragment<*,*>) {
+                mCurrentFragment = fragment
+            }
+            return true
+        }
+        return false
+    }
+    protected open fun getFragmentContainerId(): Int {
+        return 0
+    }
 }
 

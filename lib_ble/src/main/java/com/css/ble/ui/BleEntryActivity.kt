@@ -10,11 +10,13 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.css.base.uibase.BaseActivity
+import com.css.base.view.ToolBarView
 import com.css.ble.R
 import com.css.ble.databinding.ActivityBleEntryBinding
 import com.css.ble.utils.BleUtils
 import com.css.ble.viewmodel.WeightBondVM
 import com.css.service.router.PATH_APP_BLE
+import com.css.service.utils.SystemBarHelper
 import com.pingwang.bluetoothlib.AILinkSDK
 import com.pingwang.bluetoothlib.server.ELinkBleServer
 import com.pingwang.bluetoothlib.utils.BleLog
@@ -36,38 +38,53 @@ class BleEntryActivity : BaseActivity<WeightBondVM, ActivityBleEntryBinding>() {
 
     }
 
-    override fun initViewModel(): WeightBondVM {
-        return ViewModelProvider(this).get(WeightBondVM::class.java)
+    override fun enabledVisibleToolBar(): Boolean = false
+
+    override fun initCommonToolBarBg(): ToolBarView.ToolBarBg {
+        return ToolBarView.ToolBarBg.WHITE
     }
 
-    override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): ActivityBleEntryBinding {
-        return ActivityBleEntryBinding.inflate(layoutInflater, parent, false)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setWhiteFakeStatus(R.id.container, false)
+    override fun initView(savedInstanceState: Bundle?) {
+        super.initView(savedInstanceState)
         AILinkSDK.getInstance().init(this)
         BleLog.init(true)
         val bindIntent = Intent(this@BleEntryActivity, ELinkBleServer::class.java)
         bindService(bindIntent, mFhrSCon, Context.BIND_AUTO_CREATE)
 
-        mViewBinding.lifecycleOwner = this
         mViewModel.bleEnabled.value = BluetoothAdapter.getDefaultAdapter().isEnabled
         val filter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
         filter.addAction(LocationManager.PROVIDERS_CHANGED_ACTION)
         registerReceiver(receiver, filter)
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.content, DeviceListFragment.newInstance()).commit()
+    }
 
+    override fun initData() {
+        super.initData()
         mViewModel.bleEnabled.value = BluetoothAdapter.getDefaultAdapter().isEnabled()
         mViewModel.locationOpened.value = BleUtils.isLocationEnabled(baseContext)
         mViewModel.locationPermission.value = BleUtils.isLocationAllowed(baseContext)
+    }
+
+    override fun initViewModel(): WeightBondVM {
+        return ViewModelProvider(this).get(WeightBondVM::class.java)
+    }
+
+    override fun initViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?
+    ): ActivityBleEntryBinding {
+        return ActivityBleEntryBinding.inflate(layoutInflater, parent, false)
     }
 
     private var receiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent!!.action) {
                 BluetoothAdapter.ACTION_STATE_CHANGED -> {
-                    when (intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR)) {
+                    when (intent.getIntExtra(
+                        BluetoothAdapter.EXTRA_STATE,
+                        BluetoothAdapter.ERROR
+                    )) {
                         BluetoothAdapter.STATE_OFF -> mViewModel.bleEnabled.value = false
                         BluetoothAdapter.STATE_ON -> mViewModel.bleEnabled.value = true
                     }

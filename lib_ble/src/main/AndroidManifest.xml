@@ -12,7 +12,10 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application>
-        <activity android:name=".ui.DeviceInfoActivity"></activity>
+        <activity android:name=".ui.WeightBondActivity"></activity>
+        <activity android:name=".ui.WeightMeasureDoingActivity" />
+        <activity android:name=".ui.DeviceInfoActivity" />
+        <activity android:name=".ui.WeightMeasureBeginActivity" />
         <activity
             android:name=".ui.BleEntryActivity"
             android:launchMode="singleTop"

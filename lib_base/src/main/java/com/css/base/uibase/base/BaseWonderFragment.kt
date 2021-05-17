@@ -109,7 +109,7 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
 
     abstract fun initViewBinding(inflater: LayoutInflater, viewGroup: ViewGroup?): VB
 
-    override fun enabledVisibleToolBar() = true
+    override fun enabledVisibleToolBar() = false
 
     override fun onCreateView(
         inflater: LayoutInflater,

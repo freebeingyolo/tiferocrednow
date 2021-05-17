@@ -34,7 +34,7 @@ class ToolBarView @JvmOverloads constructor(context: Context, attrs: AttributeSe
     Toolbar(context, attrs, defStyleAttr), View.OnClickListener {
 
     enum class ToolBarBg : Serializable {
-        GRA_YELLOW/*渐变黄*/, GRA_RED/*渐变红*/, YELLOW/*黄色*/, RED/*红色*/, WHITE/*白色*/, GRAY/*灰色*/, PURPLE/*紫色*/, BLACK/*黑色*/, ORANGE/*橙色*/
+         WHITE/*白色*/, GRAY/*灰色*/
     }
 
     enum class ViewType {

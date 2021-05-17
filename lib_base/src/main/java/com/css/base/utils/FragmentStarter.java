@@ -64,7 +64,7 @@ public class FragmentStarter {
     }
 
     public static void startFragment(Fragment fromFragment, Fragment toFragment, String tag) {
-        FragmentTransaction fragmentTransaction = fromFragment.getFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = fromFragment.getParentFragmentManager().beginTransaction();
         fragmentTransaction.hide(fromFragment).add(android.R.id.content, toFragment, tag);
         fragmentTransaction.addToBackStack(tag);
         fragmentTransaction.commitAllowingStateLoss();
