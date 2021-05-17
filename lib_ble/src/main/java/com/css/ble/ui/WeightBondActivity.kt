@@ -1,10 +1,11 @@
 package com.css.ble.ui
 
 import android.bluetooth.BluetoothAdapter
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.graphics.Color
+import android.location.LocationManager
 import android.os.Bundle
+import android.os.IBinder
 import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
@@ -24,6 +25,9 @@ import com.css.ble.utils.BleUtils
 import com.css.ble.viewmodel.WeightBondVM
 import com.css.service.data.BondDeviceData
 import com.css.service.utils.WonderCoreCache
+import com.pingwang.bluetoothlib.AILinkSDK
+import com.pingwang.bluetoothlib.server.ELinkBleServer
+import com.pingwang.bluetoothlib.utils.BleLog
 
 class WeightBondActivity : BaseActivity<WeightBondVM, ActivityWeightBondBinding>() {
     companion object {
@@ -40,9 +44,24 @@ class WeightBondActivity : BaseActivity<WeightBondVM, ActivityWeightBondBinding>
         return true
     }
 
+    override fun initData() {
+        super.initData()
+        mViewModel.bleEnabled.value = BluetoothAdapter.getDefaultAdapter().isEnabled
+        mViewModel.locationOpened.value = BleUtils.isLocationEnabled(baseContext)
+        mViewModel.locationPermission.value = BleUtils.isLocationAllowed(baseContext)
+    }
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
+        AILinkSDK.getInstance().init(this)
+        BleLog.init(true)
+        val bindIntent = Intent(this, ELinkBleServer::class.java)
+        bindService(bindIntent, mFhrSCon, Context.BIND_AUTO_CREATE)
+        val filter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
+        filter.addAction(LocationManager.PROVIDERS_CHANGED_ACTION)
+        registerReceiver(receiver, filter)
+
         setToolBarLeftTitle("蓝牙体脂秤")
+
         mViewBinding?.apply {
             tips.setOnClickListener { tipsClick(it) }
         }
@@ -240,5 +259,43 @@ class WeightBondActivity : BaseActivity<WeightBondVM, ActivityWeightBondBinding>
         parent: ViewGroup?
     ): ActivityWeightBondBinding {
         return ActivityWeightBondBinding.inflate(layoutInflater, parent, false)
+    }
+
+    private var receiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            when (intent!!.action) {
+                BluetoothAdapter.ACTION_STATE_CHANGED -> {
+                    when (intent.getIntExtra(
+                        BluetoothAdapter.EXTRA_STATE,
+                        BluetoothAdapter.ERROR
+                    )) {
+                        BluetoothAdapter.STATE_OFF -> mViewModel.bleEnabled.value = false
+                        BluetoothAdapter.STATE_ON -> mViewModel.bleEnabled.value = true
+                    }
+                }
+                LocationManager.PROVIDERS_CHANGED_ACTION -> {
+                    mViewModel.locationOpened.value = BleUtils.isLocationEnabled(context!!)
+                }
+            }
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (isFinishing) unregisterReceiver(receiver)
+    }
+
+    private val mFhrSCon: ServiceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName, service: IBinder) {
+            BleLog.d(TAG, "服务与界面建立连接成功")
+            val mBluetoothService = (service as ELinkBleServer.BluetoothBinder).service
+            mViewModel.onBindService(mBluetoothService)
+        }
+
+        override fun onServiceDisconnected(name: ComponentName) {
+            BleLog.d(TAG, "服务与界面连接断开")
+            mViewModel.onUnBindService()
+        }
+
     }
 }

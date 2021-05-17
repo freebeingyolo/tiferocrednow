@@ -21,7 +21,7 @@ class WeightBondVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastDataParsin
 
     companion object {
         private val TianShengKey = intArrayOf(0x54493049, 0x4132794E, 0x53783148, 0x476c6531)
-        private val TAG: String? = "WeightBondFragment"
+        private const val TAG: String = "WeightBondActivity"
     }
 
     val bleEnabled: MutableLiveData<Boolean> = MutableLiveData<Boolean>().also { it.value = false }
