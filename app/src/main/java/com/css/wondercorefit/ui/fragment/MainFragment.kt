@@ -8,13 +8,16 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.launcher.ARouter
 import com.css.base.uibase.BaseFragment
-import com.css.service.router.ARouterUtil
+import com.css.ble.ui.WeightBondActivity
+import com.css.service.data.UserData
 import com.css.service.router.PATH_APP_BLE
 import com.css.service.utils.SystemBarHelper
+import com.css.service.utils.WonderCoreCache
 import com.css.step.ISportStepInterface
 import com.css.step.TodayStepManager
 import com.css.step.service.SensorService
@@ -24,7 +27,7 @@ import com.css.wondercorefit.databinding.FragmentMainBinding
 import com.css.wondercorefit.viewmodel.MainViewModel
 
 
-class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnClickListener {
+class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnClickListener,View.OnLongClickListener {
     private val TAG = "MainFragment"
 
     private lateinit var iSportStepInterface: ISportStepInterface
@@ -32,15 +35,43 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnC
     private val mDelayHandler = Handler(TodayStepCounterCall())
     private val REFRESH_STEP_WHAT = 0
     private val TIME_INTERVAL_REFRESH: Long = 1000
+    private lateinit var targetStep:String
+    private var currentStep:Int = 0
+    private var result:Float = 0.0f
+    private lateinit var userData: UserData
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         SystemBarHelper.immersiveStatusBar(activity, 0f)
         SystemBarHelper.setHeightAndPadding(activity, mViewBinding?.topView)
+        initdeviceWidget()
         startSensorService()
         startStep()
         initClickListenr()
-        mViewBinding?.pbStep?.setProgress(50f)
+        initProgressRate()
+    }
+
+    private fun initProgressRate() {
+        userData = WonderCoreCache.getUserInfo()
+        targetStep = userData.targetStep
+        mViewBinding!!.tvTodayStepTarget.text = "目标 " + targetStep
+        currentStep = userData.todaySteps
+        result = ((currentStep*100)/targetStep.toInt()).toFloat()
+        Log.d(TAG,"ProgressInformation   :  $currentStep    $targetStep    $result")
+        mViewBinding?.pbStep?.setProgress(result)
+    }
+
+    private fun initdeviceWidget() {
+        mViewBinding!!.bleScale.setOnLongClickListener(this)
+        mViewBinding!!.bleWheel.setOnLongClickListener(this)
+        mViewBinding!!.bleScale.setOnClickListener {
+            var intentScale = Intent (activity , WeightBondActivity::class.java)
+            startActivity(intentScale)
+        }
+        mViewBinding!!.bleWheel.setOnClickListener {
+//            var intentScale = Intent (activity , WeightBondActivity::class.java)
+//            startActivity(intentScale)
+        }
     }
 
     private fun initClickListenr() {
@@ -104,6 +135,8 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnC
         }
         mViewBinding?.tvWalkingDistanceNum?.text = getDistanceByStep(realSteps.toLong())
         mViewBinding?.tvCalorieConsumptionNum?.text = getCalorieByStep(realSteps.toLong())
+        result = ((realSteps*100)/targetStep.toInt()).toFloat()
+        mViewBinding?.pbStep?.setProgress(result)
     }
 
     // 公里计算公式
@@ -123,17 +156,16 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnC
 
                     //每隔500毫秒获取一次计步数据刷新UI
                     if (null != iSportStepInterface) {
-                        var step: Int = 0
                         try {
-                            step = iSportStepInterface.todaySportStepArray
-                            Log.d(TAG, " refresh UI in 5000 ms  :   ")
-                            updataValues(step)
+                            stepArray = iSportStepInterface.todaySportStepArray
+                            Log.d(TAG, " refresh UI in 500 ms  :   ")
+                            updataValues(stepArray)
                         } catch (e: RemoteException) {
                             e.printStackTrace()
                         }
-                        Log.d(TAG, " stepArray  :  $stepArray    step   :   $step ")
-                        if (stepArray != step) {
-                            stepArray = step
+                        Log.d(TAG, " stepArray  :  $stepArray    step   :   $stepArray ")
+                        if (stepArray != stepArray) {
+                            stepArray = stepArray
 //                            updateStepCount(stepArray)
                         }
                     }
@@ -159,5 +191,21 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnC
     override fun onClick(v: View) {
        when(v.id){
        }
+    }
+
+    override fun onLongClick(view: View?): Boolean {
+        Log.d(TAG , "onLongClick   :  ${view.toString()}")
+        when (view?.id) {
+            R.id.ble_scale -> Toast.makeText(activity,"长按体脂秤收到" , Toast.LENGTH_SHORT).show()
+            R.id.ble_wheel ->  Toast.makeText(activity,"长按健腹轮收到" , Toast.LENGTH_SHORT).show()
+            else -> {
+            }
+        }
+        return true
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        initProgressRate()
     }
 }

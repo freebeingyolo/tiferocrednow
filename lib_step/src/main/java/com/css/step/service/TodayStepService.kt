@@ -174,6 +174,8 @@ class TodayStepService: Service(), Handler.Callback {
         startForeground(R.string.app_name, notification)
         nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
         nm!!.notify(R.string.app_name, notification)
+        userData.todaySteps = currentStep
+        WonderCoreCache.saveUserInfo(userData)
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -308,6 +310,8 @@ class TodayStepService: Service(), Handler.Callback {
         builder!!.setContentText("步行 $km km    消耗 $calorie kcal")
         notification = builder!!.build()
         nm!!.notify(R.string.app_name, notification)
+        userData.todaySteps = realSteps
+        WonderCoreCache.saveUserInfo(userData)
     }
 
     private fun isStepCounter(): Boolean {

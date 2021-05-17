@@ -44,7 +44,6 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
         SystemBarHelper.immersiveStatusBar(activity, 0f)
         SystemBarHelper.setHeightAndPadding(activity, mViewBinding?.topView)
         initRecycle()
-
     }
 
     @SuppressLint("UseRequireInsteadOfGet")

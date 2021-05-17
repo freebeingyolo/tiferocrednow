@@ -29,6 +29,9 @@
     <declare-styleable name="GeneralRoundImageView">
         <attr name="corner_radius" />
     </declare-styleable>
+    <declare-styleable name="GeneralRoundRelativeLayout">
+        <attr name="corner_radius" />
+    </declare-styleable>
 
 
 </resources>

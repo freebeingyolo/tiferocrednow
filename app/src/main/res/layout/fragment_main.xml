@@ -143,6 +143,129 @@
         android:layout_marginBottom="17dp"
         android:background="@drawable/bg_while_radius4"
         android:padding="15dp">
+        <TextView
+            android:id="@+id/device_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="我的设备"
+            android:textSize="12sp"
+            android:textColor="@color/text_color"
+            tools:ignore="MissingConstraints" />
+        <LinearLayout
+            app:layout_constraintTop_toBottomOf="@id/device_text"
+            android:layout_height="61dp"
+            android:layout_width="match_parent"
+            tools:ignore="MissingConstraints"
+            android:orientation="horizontal"
+            >
+            <com.css.wondercorefit.widget.GeneralRoundRelativeLayout
+                android:id="@+id/ble_scale"
+                android:layout_marginTop="6dp"
+                android:layout_height="50dp"
+                android:layout_width="wrap_content"
+                app:corner_radius="3dp">
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="#FFE0E0E0" />
+                <View
+                    android:layout_width="150dp"
+                    android:layout_height="1dp"
+                    android:background="#FFE0E0E0" />
+                <TextView
+                    android:id="@+id/cheng"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:textSize="15sp"
+                    android:layout_marginTop="10dp"
+                    android:text="蓝牙体脂秤"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/text_color"
+                    />
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:textSize="12sp"
+                    android:text="未连接"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/text_color"
+                    android:layout_below="@id/cheng"
+                    />
+                <ImageView
+                    android:id="@+id/cheng_image"
+                    android:layout_marginLeft="14dp"
+                    android:layout_toRightOf="@id/cheng"
+                    android:layout_height="50dp"
+                    android:layout_width="50dp"
+                    android:src="@mipmap/ic_launcher"
+                    />
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_toRightOf="@id/cheng_image"
+                    android:background="#FFE0E0E0" />
+                <View
+                    android:layout_width="150dp"
+                    android:layout_height="1dp"
+                    android:background="#FFE0E0E0"
+                    android:layout_alignParentBottom="true"
+                    />
+            </com.css.wondercorefit.widget.GeneralRoundRelativeLayout>
+            <com.css.wondercorefit.widget.GeneralRoundRelativeLayout
+                android:id="@+id/ble_wheel"
+                android:layout_marginTop="6dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                app:corner_radius="3dp">
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="#FFE0E0E0" />
+                <View
+                    android:layout_width="150dp"
+                    android:layout_height="1dp"
+                    android:background="#FFE0E0E0" />
+                <TextView
+                    android:id="@+id/lun"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:textSize="15sp"
+                    android:layout_marginTop="10dp"
+                    android:text="蓝牙健腹轮"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/text_color"
+                    />
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:textSize="12sp"
+                    android:text="未连接"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/text_color"
+                    android:layout_below="@id/lun"
+                    />
+                <ImageView
+                    android:layout_marginLeft="14dp"
+                    android:layout_toRightOf="@id/lun"
+                    android:layout_height="50dp"
+                    android:layout_width="50dp"
+                    android:src="@mipmap/ic_launcher"
+                    />
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_toRightOf="@id/cheng_image"
+                    android:background="#FFE0E0E0" />
+                <View
+                    android:layout_width="150dp"
+                    android:layout_height="1dp"
+                    android:background="#FFE0E0E0"
+                    android:layout_alignParentBottom="true"
+                    />
+            </com.css.wondercorefit.widget.GeneralRoundRelativeLayout>
+
+        </LinearLayout>
         <com.css.base.view.ProgressView
             android:id="@+id/pb_step"
             android:layout_width="220dp"
