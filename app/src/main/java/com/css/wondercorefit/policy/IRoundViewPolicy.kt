@@ -4,9 +4,9 @@ import android.graphics.Canvas
 
 /**
  * 圆角策略接口
- * @author minminaya
- * @email minminaya@gmail.com
- * @time Created by 2019/6/8 0:27
+ * @author chenPan
+ *
+ * @time Created by 2021/05/18
  *
  */
 interface IRoundViewPolicy {

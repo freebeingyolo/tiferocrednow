@@ -158,26 +158,22 @@
             tools:ignore="MissingConstraints"
             android:orientation="horizontal"
             >
-            <com.css.wondercorefit.widget.GeneralRoundRelativeLayout
+            <androidx.cardview.widget.CardView
                 android:id="@+id/ble_scale"
                 android:layout_marginTop="6dp"
-                android:layout_height="50dp"
-                android:layout_width="wrap_content"
-                app:corner_radius="3dp">
+                android:layout_height="54dp"
+                android:layout_width="150dp"
+                app:cardCornerRadius="5dp">
+
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
                     android:background="#FFE0E0E0" />
-                <View
-                    android:layout_width="150dp"
-                    android:layout_height="1dp"
-                    android:background="#FFE0E0E0" />
                 <TextView
-                    android:id="@+id/cheng"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:textSize="15sp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="12dp"
                     android:text="蓝牙体脂秤"
                     android:layout_marginLeft="10dp"
                     android:textColor="@color/text_color"
@@ -189,49 +185,28 @@
                     android:text="未连接"
                     android:layout_marginLeft="10dp"
                     android:textColor="@color/text_color"
-                    android:layout_below="@id/cheng"
+                    android:layout_marginTop="30dp"
                     />
+
                 <ImageView
-                    android:id="@+id/cheng_image"
-                    android:layout_marginLeft="14dp"
-                    android:layout_toRightOf="@id/cheng"
-                    android:layout_height="50dp"
+                    android:layout_marginTop="2dp"
                     android:layout_width="50dp"
-                    android:src="@mipmap/ic_launcher"
-                    />
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:layout_toRightOf="@id/cheng_image"
-                    android:background="#FFE0E0E0" />
-                <View
-                    android:layout_width="150dp"
-                    android:layout_height="1dp"
-                    android:background="#FFE0E0E0"
-                    android:layout_alignParentBottom="true"
-                    />
-            </com.css.wondercorefit.widget.GeneralRoundRelativeLayout>
-            <com.css.wondercorefit.widget.GeneralRoundRelativeLayout
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="95dp"
+                    android:src="@mipmap/ic_launcher" />
+            </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView
                 android:id="@+id/ble_wheel"
                 android:layout_marginTop="6dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="10dp"
-                android:layout_width="wrap_content"
-                app:corner_radius="3dp">
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="#FFE0E0E0" />
-                <View
-                    android:layout_width="150dp"
-                    android:layout_height="1dp"
-                    android:background="#FFE0E0E0" />
+                android:layout_height="54dp"
+                android:layout_marginLeft="8dp"
+                android:layout_width="150dp"
+                app:cardCornerRadius="5dp">
                 <TextView
-                    android:id="@+id/lun"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:textSize="15sp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="12dp"
                     android:text="蓝牙健腹轮"
                     android:layout_marginLeft="10dp"
                     android:textColor="@color/text_color"
@@ -243,27 +218,22 @@
                     android:text="未连接"
                     android:layout_marginLeft="10dp"
                     android:textColor="@color/text_color"
-                    android:layout_below="@id/lun"
+                    android:layout_marginTop="30dp"
                     />
+
                 <ImageView
-                    android:layout_marginLeft="14dp"
-                    android:layout_toRightOf="@id/lun"
-                    android:layout_height="50dp"
+                    android:layout_marginTop="2dp"
                     android:layout_width="50dp"
-                    android:src="@mipmap/ic_launcher"
-                    />
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="95dp"
+                    android:src="@mipmap/ic_launcher" />
+
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:layout_toRightOf="@id/cheng_image"
+                    android:layout_marginEnd="0dp"
                     android:background="#FFE0E0E0" />
-                <View
-                    android:layout_width="150dp"
-                    android:layout_height="1dp"
-                    android:background="#FFE0E0E0"
-                    android:layout_alignParentBottom="true"
-                    />
-            </com.css.wondercorefit.widget.GeneralRoundRelativeLayout>
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
         <com.css.base.view.ProgressView

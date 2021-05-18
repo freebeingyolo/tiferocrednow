@@ -7,9 +7,9 @@ import android.view.View
 
 /**
  * 通用圆角布局18、19、20版本策略
- * @author minminaya
- * @email minminaya@gmail.com
- * @time Created by 2019/6/8 0:26
+ * @author chenPan
+ *
+ * @time Created by 2021/05/18
  *
  */
 class GeneralRoundView18Policy(

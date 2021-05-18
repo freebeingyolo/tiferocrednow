@@ -8,9 +8,9 @@ import android.view.View
 
 /**
  * 通用圆角布局实现类
- * @author minminaya
- * @email minminaya@gmail.com
- * @time Created by 2019/6/7 21:54
+ * @author chenPan
+ *
+ * @time Created by 2021/05/18
  *
  */
 class GeneralRoundViewImpl(view: View, context: Context, attributeSet: AttributeSet?, attrs: IntArray, attrIndex: Int) :

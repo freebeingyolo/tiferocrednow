@@ -12,6 +12,7 @@ import android.os.IBinder
 import android.os.Message
 import android.util.Log
 import com.css.service.data.StepData
+import com.css.service.data.UserData
 import com.css.service.utils.WonderCoreCache
 import com.css.step.*
 import com.css.step.data.ConstantData
@@ -174,8 +175,8 @@ class TodayStepService : Service(), Handler.Callback {
         startForeground(R.string.app_name, notification)
         nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
         nm!!.notify(R.string.app_name, notification)
-        userData.todaySteps = currentStep
-        WonderCoreCache.saveUserInfo(userData)
+        stepData.todaySteps = currentStep
+        WonderCoreCache.saveData(WonderCoreCache.STEP_DATA,stepData)
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -310,8 +311,8 @@ class TodayStepService : Service(), Handler.Callback {
         builder!!.setContentText("步行 $km km    消耗 $calorie kcal")
         notification = builder!!.build()
         nm!!.notify(R.string.app_name, notification)
-        userData.todaySteps = realSteps
-        WonderCoreCache.saveUserInfo(userData)
+        stepData.todaySteps = realSteps
+        WonderCoreCache.saveData(WonderCoreCache.STEP_DATA, stepData)
     }
 
     private fun isStepCounter(): Boolean {

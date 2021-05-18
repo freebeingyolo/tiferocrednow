@@ -13,5 +13,6 @@ data class UserData(
 data class StepData(
     var sensorSteps: Int = 0,
     var defaultSteps: Int = 0,
+    var todaySteps: Int = 0,
     var saveDate: String = ""
 )

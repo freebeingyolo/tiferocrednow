@@ -2,9 +2,9 @@ package com.css.wondercorefit.policy
 
 /**
  * 通用圆角布局抽象接口
- * @author minminaya
- * @email minminaya@gmail.com
- * @time Created by 2019/6/7 21:51
+ * @author chenPan
+ *
+ * @time Created by 2021/05/18
  *
  */
 interface IRoundView {

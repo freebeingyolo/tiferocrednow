@@ -13,9 +13,9 @@ import com.css.wondercorefit.policy.IRoundView
 
 /**
  * GeneralRoundRelativeLayout
- * @author minminaya
- * @email minminaya@gmail.com
- * @time Created by 2019/6/8 0:30
+ * @author chenPan
+ *
+ * @time Created by 2021/05/18
  *
  */
 class GeneralRoundRelativeLayout : RelativeLayout, IRoundView {
@@ -27,7 +27,11 @@ class GeneralRoundRelativeLayout : RelativeLayout, IRoundView {
         init(this, context, attrs)
     }
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
         init(this, context, attrs)
     }
 

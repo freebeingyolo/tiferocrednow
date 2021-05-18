@@ -10,9 +10,9 @@ import android.view.ViewOutlineProvider
 
 /**
  * 通用圆角布局L版本以上策略
- * @author minminaya
- * @email minminaya@gmail.com
- * @time Created by 2019/6/8 0:27
+ * @author chenPan
+ *
+ * @time Created by 2021/05/18
  *
  */
 class GeneralRoundView21Policy(

@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.launcher.ARouter
 import com.css.base.uibase.BaseFragment
 import com.css.ble.ui.WeightBondActivity
+import com.css.service.data.StepData
 import com.css.service.data.UserData
 import com.css.service.router.PATH_APP_BLE
 import com.css.service.utils.SystemBarHelper
@@ -39,6 +40,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnC
     private var currentStep:Int = 0
     private var result:Float = 0.0f
     private lateinit var userData: UserData
+    private lateinit var stepData: StepData
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
@@ -53,9 +55,10 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnC
 
     private fun initProgressRate() {
         userData = WonderCoreCache.getUserInfo()
+        stepData = WonderCoreCache.getData(WonderCoreCache.STEP_DATA, StepData::class.java)
         targetStep = userData.targetStep
         mViewBinding!!.tvTodayStepTarget.text = "目标 " + targetStep
-        currentStep = userData.todaySteps
+        currentStep = stepData.todaySteps
         result = ((currentStep*100)/targetStep.toInt()).toFloat()
         Log.d(TAG,"ProgressInformation   :  $currentStep    $targetStep    $result")
         mViewBinding?.pbStep?.setProgress(result)

@@ -7,9 +7,9 @@ import com.css.wondercorefit.utils.dip2px
 
 /**
  * 圆角策略抽象类
- * @author minminaya
- * @email minminaya@gmail.com
- * @time Created by 2019/6/8 0:27
+ * @author chenPan
+ *
+ * @time Created by 2021/05/18
  *
  */
 abstract class AbsRoundViewPolicy(

@@ -13,9 +13,9 @@ import com.css.wondercorefit.policy.IRoundView
 
 /**
  * GeneralRoundFrameLayout
- * @author minminaya
- * @email minminaya@gmail.com
- * @time Created by 2019/6/8 0:30
+ * @author chenPan
+ *
+ * @time Created by 2021/05/18
  *
  */
 class GeneralRoundFrameLayout : FrameLayout, IRoundView {
