@@ -1,8 +1,8 @@
 package com.css.service.utils
 
+import android.util.Log
 import androidx.annotation.StringDef
 import com.blankj.utilcode.util.SPUtils
-import com.css.service.data.BaseData
 import com.css.service.data.UserData
 import com.google.gson.Gson
 
@@ -10,7 +10,8 @@ class WonderCoreCache {
     @StringDef(
         USER_INFO,
         BOND_WEIGHT_INFO,
-        BOND_WHEEL_INFO
+        BOND_WHEEL_INFO,
+        STEP_DATA
     )
     @kotlin.annotation.Retention(AnnotationRetention.SOURCE)
     annotation class CacheKey
@@ -19,7 +20,8 @@ class WonderCoreCache {
     companion object {
         const val BOND_WEIGHT_INFO = "BOND_WEIGHT_INFO" //体脂秤
         const val BOND_WHEEL_INFO = "BOND_WHEEL_INFO" //健腹轮
-        const val USER_INFO = "userinfo"
+        const val USER_INFO = "user_info"
+        const val STEP_DATA = "stepdata"
 
         val mGson = Gson()
 
@@ -29,16 +31,15 @@ class WonderCoreCache {
         }
 
         fun getUserInfo(): UserData {
-            var userData: UserData = if (!SPUtils.getInstance().getString(USER_INFO).isNullOrEmpty()) {
-                mGson.fromJson(
-                    SPUtils.getInstance().getString(USER_INFO),
-                    UserData::
-                    class.java
-                )
+            Log.v("suisui",
+                "SPUtils.getInstance().getString(USER_INFO)" + SPUtils.getInstance()
+                    .getString(USER_INFO)
+            )
+            return if (!SPUtils.getInstance().getString(USER_INFO).isNullOrEmpty()) {
+                mGson.fromJson(SPUtils.getInstance().getString(USER_INFO), UserData::class.java)
             } else {
                 UserData()
             }
-            return userData
         }
 
         fun <T> saveData(@CacheKey k: String, d: T) {

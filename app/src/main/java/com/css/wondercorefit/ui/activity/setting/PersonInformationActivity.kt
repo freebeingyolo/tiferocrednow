@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
+import com.blankj.utilcode.util.LogUtils
 
 import com.css.base.uibase.BaseActivity
 import com.css.base.uibase.inner.OnToolBarClickListener
@@ -24,7 +25,7 @@ import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.ActivityPersonInformationBinding
 
 class PersonInformationActivity :
-    BaseActivity<DefaultViewModel, ActivityPersonInformationBinding>(), OnToolBarClickListener,
+    BaseActivity<DefaultViewModel, ActivityPersonInformationBinding>(),
     View.OnClickListener {
     var mSexPickerDialog: OptionsPickerView<String>? = null
     var mAgePickerDialog: OptionsPickerView<String>? = null
@@ -45,11 +46,14 @@ class PersonInformationActivity :
         }
     }
 
+    override fun enabledVisibleToolBar(): Boolean {
+        return true
+    }
+
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
 
-        mViewBinding.toolBarView.setCenterText("个人信息")
-        mViewBinding.toolBarView.setToolBarClickListener(this)
+       setToolBarLeftTitle("个人信息")
         mViewBinding.rlSex.setOnClickListener(this)
         mViewBinding.rlAge.setOnClickListener(this)
         mViewBinding.rlStature.setOnClickListener(this)
@@ -60,32 +64,23 @@ class PersonInformationActivity :
     @SuppressLint("SetTextI18n")
     override fun initData() {
         super.initData()
-        if (WonderCoreCache.getUserInfo() != null) {
-            mUserData = WonderCoreCache.getUserInfo()
-            mViewBinding.tvTargetWeight.text = mUserData.targetWeight+"kg"
-            mViewBinding.tvTargetStep.text = mUserData.targetStep+"步"
-            mViewBinding.tvStature.text = mUserData.stature+"cm"
-            mViewBinding.tvAge.text = mUserData.age+"岁"
-            mViewBinding.tvSex.text = mUserData.sex
-        } else {
-            mUserData = UserData()
-        }
+        mUserData = WonderCoreCache.getUserInfo()
+        mViewBinding.tvTargetWeight.text = mUserData.targetWeight + "kg"
+        mViewBinding.tvTargetStep.text = mUserData.targetStep + "步"
+        mViewBinding.tvStature.text = mUserData.stature + "cm"
+        mViewBinding.tvAge.text = mUserData.age + "岁"
+        mViewBinding.tvSex.text = mUserData.sex
+
     }
 
     override fun initViewModel(): DefaultViewModel =
         ViewModelProvider(this).get(DefaultViewModel::class.java)
 
-    override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): ActivityPersonInformationBinding =
-        ActivityPersonInformationBinding.inflate(layoutInflater,parent,false)
-
-    override fun onClickToolBarView(view: View, event: ToolBarView.ViewType) {
-        when (event) {
-            //支持默认返回按钮和事件
-            ToolBarView.ViewType.LEFT_IMAGE -> {
-                finishAc()
-            }
-        }
-    }
+    override fun initViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?
+    ): ActivityPersonInformationBinding =
+        ActivityPersonInformationBinding.inflate(layoutInflater, parent, false)
 
     override fun onClick(v: View) {
         when (v.id) {
@@ -106,8 +101,10 @@ class PersonInformationActivity :
             ) { options1, options2, options3, v ->
                 var str = mSexList[options1]
                 mViewBinding.tvSex.text = str
+                mUserData = WonderCoreCache.getUserInfo()
                 mUserData.sex = str
                 WonderCoreCache.saveUserInfo(mUserData)
+                LogUtils.vTag("suisui", "str=$str")
 
             }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
                 override fun customLayout(v: View?) {
@@ -146,6 +143,7 @@ class PersonInformationActivity :
             ) { options1, options2, options3, v ->
                 var str = mAgeList[options1]
                 mViewBinding.tvAge.text = str + "岁"
+                mUserData = WonderCoreCache.getUserInfo()
                 mUserData.age = str
                 WonderCoreCache.saveUserInfo(mUserData)
 
@@ -189,6 +187,7 @@ class PersonInformationActivity :
             ) { options1, options2, options3, v ->
                 var str = mStatureList[options1]
                 mViewBinding.tvStature.text = str + "cm"
+                mUserData = WonderCoreCache.getUserInfo()
                 mUserData.stature = str
                 WonderCoreCache.saveUserInfo(mUserData)
 
@@ -232,6 +231,7 @@ class PersonInformationActivity :
             ) { options1, options2, options3, v ->
                 var str = mTargetWeightList[options1]
                 mViewBinding.tvTargetWeight.text = str + "kg"
+                mUserData = WonderCoreCache.getUserInfo()
                 mUserData.targetWeight = str
                 WonderCoreCache.saveUserInfo(mUserData)
 
@@ -276,7 +276,8 @@ class PersonInformationActivity :
                 this
             ) { options1, options2, options3, v ->
                 var str = mTargetStepList[options1]
-                mViewBinding.tvTargetStep.text = str+"步"
+                mViewBinding.tvTargetStep.text = str + "步"
+                mUserData = WonderCoreCache.getUserInfo()
                 mUserData.targetStep = str
                 WonderCoreCache.saveUserInfo(mUserData)
 

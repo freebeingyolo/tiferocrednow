@@ -8,21 +8,6 @@
     android:orientation="vertical"
     tools:context=".ui.activity.setting.PersonInformationActivity">
 
-    <com.css.base.view.ToolBarView
-        android:id="@+id/toolBarView"
-        style="@style/base_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/common_toolbar_height"
-        android:background="@android:color/white"
-        android:minHeight="44dp"
-        android:navigationIcon="@null"
-        app:centerText=""
-        app:centerTextColor="@color/common_black_color"
-        app:leftImageView="@drawable/ic_common_back_black"
-        app:popupTheme="@style/popup_theme"
-        app:rightTextColor="@color/common_black_color"
-        app:showBottomLine="false" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -55,7 +40,6 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="23dp"
-            android:text="女"
             android:textColor="@color/black"
             android:textSize="14sp" />
 
@@ -96,7 +80,6 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="23dp"
-            android:text="18岁"
             android:textColor="@color/black"
             android:textSize="14sp" />
 
@@ -137,7 +120,6 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="23dp"
-            android:text="168"
             android:textColor="@color/black"
             android:textSize="14sp" />
 
@@ -188,7 +170,6 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="23dp"
-            android:text="48kg"
             android:textColor="@color/black"
             android:textSize="14sp" />
 
@@ -229,7 +210,6 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="23dp"
-            android:text="8000"
             android:textColor="@color/black"
             android:textSize="14sp" />
 

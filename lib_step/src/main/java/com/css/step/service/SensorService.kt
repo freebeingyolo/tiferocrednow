@@ -15,7 +15,7 @@ import android.hardware.SensorManager
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
-import com.css.service.data.UserData
+import com.css.service.data.StepData
 import com.css.service.utils.WonderCoreCache
 import com.css.step.R
 import com.css.step.data.ConstantData
@@ -26,14 +26,17 @@ class SensorService : Service(), SensorEventListener {
 
     //传感器
     private var sensorManager: SensorManager? = null
+
     //系统计步器步数
     private var systemSteps: Int = 0
+
     //广播接收
     private var mInfoReceiver: BroadcastReceiver? = null
+
     //当前日期
     private var currentDate: String? = null
 
-    private lateinit var userData: UserData
+    private lateinit var stepData: StepData
 
 
     override fun onCreate() {
@@ -44,12 +47,18 @@ class SensorService : Service(), SensorEventListener {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         // -------------适配 8.0 service------------------
-        var notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        var notificationManager: NotificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         var mChannel: NotificationChannel?
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            mChannel = NotificationChannel(ConstantData.CHANNEL_ID, ConstantData.CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH)
+            mChannel = NotificationChannel(
+                ConstantData.CHANNEL_ID,
+                ConstantData.CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_HIGH
+            )
             notificationManager.createNotificationChannel(mChannel)
-            var notification: Notification = Notification.Builder(getApplicationContext(), ConstantData.CHANNEL_ID).build()
+            var notification: Notification =
+                Notification.Builder(getApplicationContext(), ConstantData.CHANNEL_ID).build()
             startForeground(R.string.app_name, notification);
         }
         return START_STICKY
@@ -104,7 +113,7 @@ class SensorService : Service(), SensorEventListener {
      * 初始化当天数据
      */
     private fun initTodayData() {
-        userData = WonderCoreCache.getUserInfo()
+        stepData = WonderCoreCache.getData(WonderCoreCache.STEP_DATA, StepData::class.java)
         //获取当前时间
         currentDate = TimeUtil.getCurrentDate()
         Thread(Runnable { getStepDetector() }).start()
@@ -153,7 +162,7 @@ class SensorService : Service(), SensorEventListener {
 
     override fun onSensorChanged(event: SensorEvent?) {
         systemSteps = event!!.values[0].toInt()
-        Log.d(TAG,"onSensorChanged  ： $systemSteps")
+        Log.d(TAG, "onSensorChanged  ： $systemSteps")
         saveStepData()
     }
 
@@ -164,8 +173,8 @@ class SensorService : Service(), SensorEventListener {
      * 处理系统计步器数据
      */
     private fun saveStepData() {
-        Log.d(TAG, "addNewData   :   $currentDate     $systemSteps    $userData")
-        var currentSteps: Int = userData.sensorSteps
+        Log.d(TAG, "addNewData   :   $currentDate     $systemSteps    $stepData")
+        var currentSteps: Int = stepData.sensorSteps
         var defaultSteps = systemSteps - currentSteps
         if (currentSteps == 0) {
             Log.d(TAG, "currentSteps == 0     :   $currentDate")
@@ -175,17 +184,17 @@ class SensorService : Service(), SensorEventListener {
             Log.d(TAG, "defaultSteps < 0     :   $defaultSteps")
             defaultSteps = systemSteps
         }
-        if (currentDate != userData.saveDate) {
+        if (currentDate != stepData.saveDate) {
             Log.d(TAG, "currentDate != userData.saveDate     ")
-            userData.defaultSteps = defaultSteps
-            userData.saveDate = currentDate.toString()
+            stepData.defaultSteps = defaultSteps
+            stepData.saveDate = currentDate.toString()
         }
-        userData.sensorSteps = systemSteps
-        WonderCoreCache.saveUserInfo(userData)
+        stepData.sensorSteps = systemSteps
+        WonderCoreCache.saveData(WonderCoreCache.STEP_DATA, stepData)
     }
 
     override fun onDestroy() {
-        Log.d(TAG,"onDestroy")
+        Log.d(TAG, "onDestroy")
         stopForeground(true)
         unregisterReceiver(mInfoReceiver)
     }

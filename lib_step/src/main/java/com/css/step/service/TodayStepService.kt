@@ -10,16 +10,14 @@ import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Message
-import android.text.TextUtils
 import android.util.Log
-import com.css.service.data.UserData
+import com.css.service.data.StepData
 import com.css.service.utils.WonderCoreCache
 import com.css.step.*
 import com.css.step.data.ConstantData
 import com.css.step.data.TodayStepData
 import com.css.step.utils.Logger
 import com.css.step.utils.OnStepCounterListener
-import com.css.step.utils.TimeUtil
 import com.css.step.utils.TodayStepDBHelper
 import org.json.JSONArray
 import org.json.JSONException
@@ -28,7 +26,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class TodayStepService: Service(), Handler.Callback {
+class TodayStepService : Service(), Handler.Callback {
     private val TAG = "TodayStepService"
 
     //保存数据库频率
@@ -37,11 +35,13 @@ class TodayStepService: Service(), Handler.Callback {
 
     //当前日期
     private var currentDate: String? = null
+
     //昨天日期
     private var yesterdayDate: String? = null
+
     //当前步数
     private var currentStep: Int = 0
-    private lateinit var userData: UserData
+    private lateinit var stepData: StepData
 
     //传感器的采样周期，这里使用SensorManager.SENSOR_DELAY_FASTEST，如果使用SENSOR_DELAY_UI会导致部分手机后台清理内存之后传感器不记步
     private val SAMPLING_PERIOD_US = SensorManager.SENSOR_DELAY_FASTEST
@@ -88,11 +88,11 @@ class TodayStepService: Service(), Handler.Callback {
 
     override fun onCreate() {
         super.onCreate()
-        userData = WonderCoreCache.getUserInfo()
+        stepData = WonderCoreCache.getData(WonderCoreCache.STEP_DATA, StepData::class.java)
         mTodayStepDBHelper = TodayStepDBHelper(applicationContext)
         sensorManager = this
             .getSystemService(Context.SENSOR_SERVICE) as SensorManager?
-        initNotification(currentTimeSportStep  + defaultSteps())
+        initNotification(currentTimeSportStep + defaultSteps())
 
     }
 
@@ -331,7 +331,7 @@ class TodayStepService: Service(), Handler.Callback {
     }
 
 
-    inner class mIBinder : ISportStepInterface.Stub(){
+    inner class mIBinder : ISportStepInterface.Stub() {
         val SPORT_DATE = "sportDate"
         val STEP_NUM = "stepNum"
         val DISTANCE = "km"
@@ -341,46 +341,47 @@ class TodayStepService: Service(), Handler.Callback {
         }
 
         override fun getTodaySportStepArray(): Int {
-                if (null != mTodayStepDBHelper) {
-                    val todayStepDataArrayList: List<TodayStepData>? =
-                        mTodayStepDBHelper!!.getQueryAll()
-                    if (null == todayStepDataArrayList || 0 == todayStepDataArrayList.size) {
-                        return defaultSteps()
-                    }
-                    val jsonArray = JSONArray()
-                    for (i in todayStepDataArrayList.indices) {
-                        val todayStepData: TodayStepData = todayStepDataArrayList[i]
-                        try {
-                            val subObject = JSONObject()
-                            subObject.put(
-                                TodayStepDBHelper(applicationContext).TODAY,
-                                todayStepData.getToday()
-                            )
-                            subObject.put(SPORT_DATE, todayStepData.getDate())
-                            subObject.put(STEP_NUM, todayStepData.getStep())
-                            subObject.put(DISTANCE, (todayStepData.getStep()))
-                            subObject.put(CALORIE, getCalorieByStep(todayStepData.getStep()))
-                            jsonArray.put(subObject)
-                        } catch (e: JSONException) {
-                            e.printStackTrace()
-                        }
-                    }
-                    Logger().e(TAG, jsonArray.toString())
-//                    initNotification(defaultSteps() + todayStepDataArrayList[todayStepDataArrayList.size - 1].getStep().toInt())
-                    //仅返回步数信息
-                    return defaultSteps() + todayStepDataArrayList[todayStepDataArrayList.size - 1].getStep().toInt()
-
-                    // 返回所有信息jsonArray
-                    //return jsonArray.toString()
+            if (null != mTodayStepDBHelper) {
+                val todayStepDataArrayList: List<TodayStepData>? =
+                    mTodayStepDBHelper!!.getQueryAll()
+                if (null == todayStepDataArrayList || 0 == todayStepDataArrayList.size) {
+                    return defaultSteps()
                 }
+                val jsonArray = JSONArray()
+                for (i in todayStepDataArrayList.indices) {
+                    val todayStepData: TodayStepData = todayStepDataArrayList[i]
+                    try {
+                        val subObject = JSONObject()
+                        subObject.put(
+                            TodayStepDBHelper(applicationContext).TODAY,
+                            todayStepData.getToday()
+                        )
+                        subObject.put(SPORT_DATE, todayStepData.getDate())
+                        subObject.put(STEP_NUM, todayStepData.getStep())
+                        subObject.put(DISTANCE, (todayStepData.getStep()))
+                        subObject.put(CALORIE, getCalorieByStep(todayStepData.getStep()))
+                        jsonArray.put(subObject)
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
+                    }
+                }
+                Logger().e(TAG, jsonArray.toString())
+//                    initNotification(defaultSteps() + todayStepDataArrayList[todayStepDataArrayList.size - 1].getStep().toInt())
+                //仅返回步数信息
+                return defaultSteps() + todayStepDataArrayList[todayStepDataArrayList.size - 1].getStep()
+                    .toInt()
 
-                return 0
+                // 返回所有信息jsonArray
+                //return jsonArray.toString()
             }
+
+            return 0
+        }
 
     }
 
     private fun defaultSteps(): Int {
-        return userData.defaultSteps
+        return stepData.defaultSteps
     }
 
     // 公里计算公式

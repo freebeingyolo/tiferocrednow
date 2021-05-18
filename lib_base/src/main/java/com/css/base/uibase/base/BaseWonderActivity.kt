@@ -217,7 +217,6 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
             return
         }
         val cnt = supportFragmentManager.backStackEntryCount
-        LogUtils.vTag("suisui", "cnt=$cnt")
         if (cnt < 1 && isTaskRoot) {
             val closeWarningHint = "再按一次退出程序"
             if (!mCloseWarned && !TextUtils.isEmpty(closeWarningHint)) {
