@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.*
 import android.util.Log
+import android.view.Display
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -199,12 +200,36 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnC
     override fun onLongClick(view: View?): Boolean {
         Log.d(TAG , "onLongClick   :  ${view.toString()}")
         when (view?.id) {
-            R.id.ble_scale -> Toast.makeText(activity,"长按体脂秤收到" , Toast.LENGTH_SHORT).show()
-            R.id.ble_wheel ->  Toast.makeText(activity,"长按健腹轮收到" , Toast.LENGTH_SHORT).show()
+            R.id.ble_scale -> deleteWeight()
+            R.id.ble_wheel -> deleteWheel()
             else -> {
             }
         }
         return true
+    }
+
+    private fun deleteWeight() {
+        mViewBinding!!.deleteWeight.visibility = View.VISIBLE
+        mViewBinding!!.deleteWeight.setOnClickListener {
+            mViewBinding!!.deviceWeight.visibility = View.GONE
+            mViewBinding!!.addDeviceWeight.visibility = View.VISIBLE
+            deleteDevice()
+        }
+        Toast.makeText(activity,"长按体脂秤收到" , Toast.LENGTH_SHORT).show()
+    }
+
+    private fun deleteWheel() {
+        mViewBinding!!.deleteWheel?.visibility = View.VISIBLE
+        mViewBinding!!.deleteWheel.setOnClickListener {
+            mViewBinding!!.deviceWheel.visibility = View.GONE
+            mViewBinding!!.addDeviceWheel.visibility = View.VISIBLE
+            deleteDevice()
+        }
+        Toast.makeText(activity,"长按健腹轮收到" , Toast.LENGTH_SHORT).show()
+    }
+
+    private fun deleteDevice() {
+        Toast.makeText(activity,"删除设备成功" , Toast.LENGTH_SHORT).show()
     }
 
     override fun onHiddenChanged(hidden: Boolean) {

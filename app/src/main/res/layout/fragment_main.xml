@@ -151,6 +151,7 @@
             android:textSize="12sp"
             android:textColor="@color/text_color"
             tools:ignore="MissingConstraints" />
+
         <LinearLayout
             app:layout_constraintTop_toBottomOf="@id/device_text"
             android:layout_height="61dp"
@@ -164,12 +165,28 @@
                 android:layout_height="54dp"
                 android:layout_width="150dp"
                 app:cardCornerRadius="5dp">
-
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
                     android:background="#FFE0E0E0" />
+                <RelativeLayout
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent">
                 <TextView
+                    android:id="@+id/add_device_weight"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="+ 添加设备"
+                    android:visibility="gone"
+                    android:layout_centerInParent="true"
+                    />
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/device_weight"
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent">
+                <TextView
+                    android:id="@+id/weight_device_name"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:textSize="15sp"
@@ -189,12 +206,22 @@
                     />
 
                 <ImageView
-                    android:layout_marginTop="2dp"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginLeft="95dp"
-                    android:src="@mipmap/ic_launcher" />
+                    android:layout_marginTop="5dp"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginLeft="94dp"
+                    android:src="@mipmap/card_weight" />
+                <ImageView
+                    android:id="@+id/delete_weight"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@mipmap/card_delete"
+                    android:visibility="gone"
+                    android:layout_marginLeft="136dp"
+                    tools:ignore="MissingConstraints" />
+                </RelativeLayout>
             </androidx.cardview.widget.CardView>
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/ble_wheel"
                 android:layout_marginTop="6dp"
@@ -202,6 +229,22 @@
                 android:layout_marginLeft="8dp"
                 android:layout_width="150dp"
                 app:cardCornerRadius="5dp">
+                <RelativeLayout
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent">
+                    <TextView
+                        android:id="@+id/add_device_wheel"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:text="+ 添加设备"
+                        android:visibility="gone"
+                        android:layout_centerInParent="true"
+                        />
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/device_wheel"
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent">
                 <TextView
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
@@ -226,8 +269,16 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginLeft="95dp"
-                    android:src="@mipmap/ic_launcher" />
-
+                    android:src="@mipmap/card_wheel" />
+                <ImageView
+                    android:id="@+id/delete_wheel"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:visibility="gone"
+                    android:src="@mipmap/card_delete"
+                    android:layout_marginLeft="136dp"
+                    tools:ignore="MissingConstraints" />
+                </RelativeLayout>
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
