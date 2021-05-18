@@ -43,7 +43,6 @@ class MainActivity : BaseActivity<DefaultViewModel, ActivityMainBinding>() {
         super.initView(savedInstanceState)
 
         initTablayout()
-        startStep()
     }
 
     override fun enabledVisibleToolBar(): Boolean = false
@@ -84,11 +83,6 @@ class MainActivity : BaseActivity<DefaultViewModel, ActivityMainBinding>() {
             changeFragment(it)
         })
 
-    }
-
-    private fun startStep() {
-        TodayStepManager().init(application)
-        //开启计步Service，同时绑定Activity进行aidl通信
     }
 
     private fun changeFragment(tabIndex: Int) {
