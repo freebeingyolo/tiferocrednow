@@ -1,11 +1,11 @@
 package com.css.wondercorefit.ui.fragment
 
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.*
 import android.util.Log
-import android.view.Display
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -61,7 +61,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnC
         mViewBinding!!.tvTodayStepTarget.text = "目标 " + targetStep
         currentStep = stepData.todaySteps
         result = ((currentStep*100)/targetStep.toInt()).toFloat()
-        Log.d(TAG,"ProgressInformation   :  $currentStep    $targetStep    $result")
+        Log.d(TAG, "ProgressInformation   :  $currentStep    $targetStep    $result")
         mViewBinding?.pbStep?.setProgress(result)
     }
 
@@ -69,7 +69,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnC
         mViewBinding!!.bleScale.setOnLongClickListener(this)
         mViewBinding!!.bleWheel.setOnLongClickListener(this)
         mViewBinding!!.bleScale.setOnClickListener {
-            var intentScale = Intent (activity , WeightBondActivity::class.java)
+            var intentScale = Intent(activity, WeightBondActivity::class.java)
             startActivity(intentScale)
         }
         mViewBinding!!.bleWheel.setOnClickListener {
@@ -198,7 +198,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnC
     }
 
     override fun onLongClick(view: View?): Boolean {
-        Log.d(TAG , "onLongClick   :  ${view.toString()}")
+        Log.d(TAG, "onLongClick   :  ${view.toString()}")
         when (view?.id) {
             R.id.ble_scale -> deleteWeight()
             R.id.ble_wheel -> deleteWheel()
@@ -210,26 +210,39 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnC
 
     private fun deleteWeight() {
         mViewBinding!!.deleteWeight.visibility = View.VISIBLE
+        val vibrator = activity?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        vibrator.vibrate(100)
+        val handler = Handler()
+        handler.postDelayed({
+            mViewBinding!!.deleteWeight.visibility = View.GONE
+        }, 3000) //3000毫秒后执行
+
         mViewBinding!!.deleteWeight.setOnClickListener {
             mViewBinding!!.deviceWeight.visibility = View.GONE
             mViewBinding!!.addDeviceWeight.visibility = View.VISIBLE
             deleteDevice()
         }
-        Toast.makeText(activity,"长按体脂秤收到" , Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity, "长按体脂秤收到", Toast.LENGTH_SHORT).show()
     }
 
     private fun deleteWheel() {
         mViewBinding!!.deleteWheel?.visibility = View.VISIBLE
+        val vibrator = activity?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        vibrator.vibrate(100)
+        val handler = Handler()
+        handler.postDelayed({
+            mViewBinding!!.deleteWheel.visibility = View.GONE
+        }, 3000) //3000毫秒后执行
         mViewBinding!!.deleteWheel.setOnClickListener {
             mViewBinding!!.deviceWheel.visibility = View.GONE
             mViewBinding!!.addDeviceWheel.visibility = View.VISIBLE
             deleteDevice()
         }
-        Toast.makeText(activity,"长按健腹轮收到" , Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity, "长按健腹轮收到", Toast.LENGTH_SHORT).show()
     }
 
     private fun deleteDevice() {
-        Toast.makeText(activity,"删除设备成功" , Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity, "删除设备成功", Toast.LENGTH_SHORT).show()
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
