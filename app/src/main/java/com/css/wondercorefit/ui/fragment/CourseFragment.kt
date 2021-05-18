@@ -1,6 +1,7 @@
 package com.css.wondercorefit.ui.fragment
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -54,7 +55,10 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
         mViewBinding?.courseRecycle?.adapter = recyclerAdapter
         recyclePlayer = ListPlayer(LitePlayerView(context!!)).apply {
             displayProgress(true)
-            setProgressColor(resources.getColor(R.color.colorAccent), resources.getColor(R.color.colorPrimaryDark))
+            setProgressColor(
+                Color.parseColor("#D81BA2"),
+                Color.parseColor("#33618A")
+            )
             attachOverlay(LoadingOverlay(context!!))
             attachMediaController(LiteMediaController(context!!))
             attachGestureController(LiteGestureController(context!!).apply {
@@ -76,7 +80,7 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
                 }
 
                 override fun onAttachItemView(newPosition: Int) {
-                    Log.d(TAG,"attach item: $newPosition")
+                    Log.d(TAG, "attach item: $newPosition")
                     lastPlayerHolder?.let {
                         it.videoPoster.visibility = View.INVISIBLE
                     }
@@ -99,7 +103,13 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
                 return DataSource(VideoCacheHelper.url(recyclerAdapter.getVideoUrl(position)))
             }
         }
-        mViewBinding?.let { recyclePlayer.attachToRecyclerView(it.courseRecycle, false, videoScrollListener) }
+        mViewBinding?.let {
+            recyclePlayer.attachToRecyclerView(
+                it.courseRecycle,
+                false,
+                videoScrollListener
+            )
+        }
 
         mViewBinding?.courseRecycle?.apply {
             adapter = recyclerAdapter
@@ -116,9 +126,10 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
     override fun initViewBinding(
         inflater: LayoutInflater,
         viewGroup: ViewGroup?
-    ): FragmentCourseBinding=FragmentCourseBinding.inflate(inflater, viewGroup, false)
+    ): FragmentCourseBinding = FragmentCourseBinding.inflate(inflater, viewGroup, false)
 
-    override fun initViewModel(): DefaultViewModel=   ViewModelProvider(this).get(DefaultViewModel::class.java)
+    override fun initViewModel(): DefaultViewModel =
+        ViewModelProvider(this).get(DefaultViewModel::class.java)
 
     inner class RecycleAdapter : RecyclerView.Adapter<RecycleAdapter.VideoHolder>() {
 
@@ -126,10 +137,11 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
             val videoTitle: TextView = itemView.findViewById(R.id.video_index)
             val videoPoster: ImageView = itemView.findViewById(R.id.video_poster)
             val videoContainer: FrameLayout = itemView.findViewById(R.id.video_container)
+
             init {
                 itemView.setOnClickListener {
                     if (!isAutoPlay) {
-                        recyclePlayer.onItemClick(adapterPosition)
+                        recyclePlayer.onItemClick(bindingAdapterPosition)
                     }
                 }
             }
