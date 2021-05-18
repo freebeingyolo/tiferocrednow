@@ -38,100 +38,170 @@
             android:background="@mipmap/icon" />
     </RelativeLayout>
 
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/bg_while_radius4"
+        android:orientation="vertical"
+        android:paddingBottom="10dp">
 
-    <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginStart="10dp"-->
-    <!--        android:layout_marginTop="50dp"-->
-    <!--        android:layout_marginEnd="10dp"-->
-    <!--        android:background="@drawable/bg_while_radius4">-->
+        <TextView
+            android:id="@+id/device_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:text="我的设备"
+            android:textColor="@color/text_color"
+            android:textSize="12sp"
+            tools:ignore="MissingConstraints" />
 
-    <!--        <TextView-->
-    <!--            android:id="@+id/tv_weight"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:text="50.8"-->
-    <!--            android:textColor="@color/black"-->
-    <!--            android:textSize="25sp"-->
-    <!--            android:textStyle="bold"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintStart_toStartOf="parent"-->
-    <!--            app:layout_constraintTop_toTopOf="parent"-->
-    <!--            tools:text="50.8" />-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="61dp"
+            android:layout_marginTop="6dp"
 
-    <!--        <TextView-->
-    <!--            android:id="@+id/tv_weight_unit"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:text="@string/kg"-->
-    <!--            android:textColor="@color/black"-->
-    <!--            android:textStyle="bold"-->
-    <!--            app:layout_constraintBaseline_toBaselineOf="@+id/tv_weight"-->
-    <!--            app:layout_constraintStart_toEndOf="@+id/tv_weight" />-->
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/device_text">
 
-    <!--        <TextView-->
-    <!--            android:id="@+id/tv_somatotype"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:text="偏瘦"-->
-    <!--            android:textColor="@color/black"-->
-    <!--            android:textSize="14sp"-->
-    <!--            app:layout_constraintBaseline_toBaselineOf="@+id/tv_weight"-->
-    <!--            app:layout_constraintEnd_toStartOf="@+id/tv_weight"-->
-    <!--            app:layout_constraintStart_toStartOf="parent"-->
-    <!--            tools:text="偏瘦" />-->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/ble_scale"
+                android:layout_width="0dp"
+                android:layout_height="54dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="1dp"
+                android:layout_weight="1"
+                app:cardCornerRadius="5dp">
 
-    <!--        <TextView-->
-    <!--            android:id="@+id/tv_body_fat_mass"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:text="21%"-->
-    <!--            android:textColor="@color/black"-->
-    <!--            android:textSize="14sp"-->
-    <!--            app:layout_constraintBaseline_toBaselineOf="@+id/tv_weight"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintStart_toEndOf="@+id/tv_weight"-->
-    <!--            tools:text="21%" />-->
 
-    <!--        <ProgressBar-->
-    <!--            android:id="@+id/pb_weight"-->
-    <!--            style="?android:attr/progressBarStyleHorizontal"-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginStart="25dp"-->
-    <!--            android:layout_marginTop="30dp"-->
-    <!--            android:layout_marginEnd="25dp"-->
-    <!--            android:max="100"-->
-    <!--            android:progress="50"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintStart_toStartOf="parent"-->
-    <!--            app:layout_constraintTop_toBottomOf="@id/tv_weight" />-->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-    <!--        <TextView-->
-    <!--            android:id="@+id/tv_inception_weight"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginStart="15dp"-->
-    <!--            android:layout_marginTop="10dp"-->
-    <!--            android:text="初始体重：52kg"-->
-    <!--            android:textColor="@color/black"-->
-    <!--            android:textSize="12sp"-->
-    <!--            app:layout_constraintStart_toStartOf="parent"-->
-    <!--            app:layout_constraintTop_toBottomOf="@+id/pb_weight" />-->
+                    <TextView
+                        android:id="@+id/add_device_weight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="+ 添加设备"
+                        android:visibility="gone" />
+                </RelativeLayout>
 
-    <!--        <TextView-->
-    <!--            android:id="@+id/tv_target_weight"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginTop="10dp"-->
-    <!--            android:layout_marginEnd="15dp"-->
-    <!--            android:text="初始体重：52kg"-->
-    <!--            android:textColor="@color/black"-->
-    <!--            android:textSize="12sp"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintTop_toBottomOf="@+id/pb_weight" />-->
-    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+                <RelativeLayout
+                    android:id="@+id/device_weight"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/weight_device_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="12dp"
+                        android:text="蓝牙体脂秤"
+                        android:textColor="@color/text_color"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="30dp"
+                        android:text="未连接"
+                        android:textColor="@color/text_color"
+                        android:textSize="12sp" />
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="10dp"
+                        android:src="@mipmap/card_weight" />
+
+                    <ImageView
+                        android:id="@+id/delete_weight"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_marginLeft="136dp"
+                        android:src="@mipmap/card_delete"
+                        android:visibility="gone"
+                        tools:ignore="MissingConstraints" />
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/ble_wheel"
+                android:layout_width="0dp"
+                android:layout_height="54dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                app:cardCornerRadius="5dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/add_device_wheel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="+ 添加设备"
+                        android:visibility="gone" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/device_wheel"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="12dp"
+                        android:text="蓝牙健腹轮"
+                        android:textColor="@color/text_color"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="30dp"
+                        android:text="未连接"
+                        android:textColor="@color/text_color"
+                        android:textSize="12sp" />
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="10dp"
+                        android:src="@mipmap/card_wheel" />
+
+                    <ImageView
+                        android:id="@+id/delete_wheel"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_marginStart="136dp"
+                        android:src="@mipmap/card_delete"
+                        android:visibility="gone"
+                        tools:ignore="MissingConstraints" />
+                </RelativeLayout>
+
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_exercise"
@@ -143,150 +213,8 @@
         android:layout_marginBottom="17dp"
         android:background="@drawable/bg_while_radius4"
         android:padding="15dp">
-        <TextView
-            android:id="@+id/device_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="我的设备"
-            android:textSize="12sp"
-            android:textColor="@color/text_color"
-            tools:ignore="MissingConstraints" />
 
-        <LinearLayout
-            app:layout_constraintTop_toBottomOf="@id/device_text"
-            android:layout_height="61dp"
-            android:layout_width="match_parent"
-            tools:ignore="MissingConstraints"
-            android:orientation="horizontal"
-            >
-            <androidx.cardview.widget.CardView
-                android:id="@+id/ble_scale"
-                android:layout_marginTop="6dp"
-                android:layout_height="54dp"
-                android:layout_width="150dp"
-                app:cardCornerRadius="5dp">
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="#FFE0E0E0" />
-                <RelativeLayout
-                    android:layout_height="match_parent"
-                    android:layout_width="match_parent">
-                <TextView
-                    android:id="@+id/add_device_weight"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:text="+ 添加设备"
-                    android:visibility="gone"
-                    android:layout_centerInParent="true"
-                    />
-                </RelativeLayout>
-                <RelativeLayout
-                    android:id="@+id/device_weight"
-                    android:layout_height="match_parent"
-                    android:layout_width="match_parent">
-                <TextView
-                    android:id="@+id/weight_device_name"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:textSize="15sp"
-                    android:layout_marginTop="12dp"
-                    android:text="蓝牙体脂秤"
-                    android:layout_marginLeft="10dp"
-                    android:textColor="@color/text_color"
-                    />
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:textSize="12sp"
-                    android:text="未连接"
-                    android:layout_marginLeft="10dp"
-                    android:textColor="@color/text_color"
-                    android:layout_marginTop="30dp"
-                    />
 
-                <ImageView
-                    android:layout_marginTop="5dp"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:layout_marginLeft="94dp"
-                    android:src="@mipmap/card_weight" />
-                <ImageView
-                    android:id="@+id/delete_weight"
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
-                    android:src="@mipmap/card_delete"
-                    android:visibility="gone"
-                    android:layout_marginLeft="136dp"
-                    tools:ignore="MissingConstraints" />
-                </RelativeLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/ble_wheel"
-                android:layout_marginTop="6dp"
-                android:layout_height="54dp"
-                android:layout_marginLeft="8dp"
-                android:layout_width="150dp"
-                app:cardCornerRadius="5dp">
-                <RelativeLayout
-                    android:layout_height="match_parent"
-                    android:layout_width="match_parent">
-                    <TextView
-                        android:id="@+id/add_device_wheel"
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:text="+ 添加设备"
-                        android:visibility="gone"
-                        android:layout_centerInParent="true"
-                        />
-                </RelativeLayout>
-                <RelativeLayout
-                    android:id="@+id/device_wheel"
-                    android:layout_height="match_parent"
-                    android:layout_width="match_parent">
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:textSize="15sp"
-                    android:layout_marginTop="12dp"
-                    android:text="蓝牙健腹轮"
-                    android:layout_marginLeft="10dp"
-                    android:textColor="@color/text_color"
-                    />
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:textSize="12sp"
-                    android:text="未连接"
-                    android:layout_marginLeft="10dp"
-                    android:textColor="@color/text_color"
-                    android:layout_marginTop="30dp"
-                    />
-
-                <ImageView
-                    android:layout_marginTop="2dp"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginLeft="95dp"
-                    android:src="@mipmap/card_wheel" />
-                <ImageView
-                    android:id="@+id/delete_wheel"
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
-                    android:visibility="gone"
-                    android:src="@mipmap/card_delete"
-                    android:layout_marginLeft="136dp"
-                    tools:ignore="MissingConstraints" />
-                </RelativeLayout>
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="0dp"
-                    android:background="#FFE0E0E0" />
-            </androidx.cardview.widget.CardView>
-
-        </LinearLayout>
         <com.css.base.view.ProgressView
             android:id="@+id/pb_step"
             android:layout_width="220dp"
@@ -295,6 +223,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/tv_step_num"
             android:layout_width="wrap_content"
@@ -331,7 +260,6 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_step_num" />
 
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="160dp"
@@ -356,11 +284,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
-                        android:drawableStart="@mipmap/icon_main_step_distance"
                         android:drawablePadding="3dp"
                         android:text="步行距离"
                         android:textColor="@color/text_color"
                         android:textSize="12sp"
+                        app:drawableStartCompat="@mipmap/icon_main_step_distance"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -405,11 +333,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
-                        android:drawableStart="@mipmap/icon_main_step_distance"
                         android:drawablePadding="3dp"
                         android:text="消耗热量"
                         android:textColor="@color/text_color"
                         android:textSize="12sp"
+                        app:drawableStartCompat="@mipmap/icon_main_step_distance"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -462,11 +390,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
-                        android:drawableStart="@mipmap/icon_main_step_distance"
                         android:drawablePadding="3dp"
                         android:text="初始体重"
                         android:textColor="@color/text_color"
                         android:textSize="12sp"
+                        app:drawableStartCompat="@mipmap/icon_main_step_distance"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -511,11 +439,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
-                        android:drawableStart="@mipmap/icon_main_step_distance"
                         android:drawablePadding="3dp"
                         android:text="目标体重"
                         android:textColor="@color/text_color"
                         android:textSize="12sp"
+                        app:drawableStartCompat="@mipmap/icon_main_step_distance"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />

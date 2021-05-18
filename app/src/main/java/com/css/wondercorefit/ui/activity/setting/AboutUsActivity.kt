@@ -23,20 +23,28 @@ class AboutUsActivity : BaseActivity<DefaultViewModel, ActivityAboutUsBinding>()
             context.startActivity(intent)
         }
     }
+
     override fun initCommonToolBarBg(): ToolBarView.ToolBarBg {
         return ToolBarView.ToolBarBg.WHITE
     }
+
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        mViewBinding.toolBarView.setCenterText("关于我们")
-        mViewBinding.toolBarView.setToolBarClickListener(this)
+        setToolBarLeftTitle("关于我们")
+    }
+
+    override fun enabledVisibleToolBar(): Boolean {
+        return true
     }
 
     override fun initViewModel(): DefaultViewModel =
         ViewModelProvider(this).get(DefaultViewModel::class.java)
 
-    override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): ActivityAboutUsBinding =
-        ActivityAboutUsBinding.inflate(layoutInflater,parent,false)
+    override fun initViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?
+    ): ActivityAboutUsBinding =
+        ActivityAboutUsBinding.inflate(layoutInflater, parent, false)
 
     override fun onClickToolBarView(view: View, event: ToolBarView.ViewType) {
         when (event) {
