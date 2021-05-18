@@ -48,9 +48,8 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
 
     @SuppressLint("UseRequireInsteadOfGet")
     private fun initRecycle() {
-        linearLayoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+        linearLayoutManager = GridLayoutManager(activity, 2)
         mViewBinding?.courseRecycle?.layoutManager = linearLayoutManager
-        mViewBinding?.courseRecycle?.addItemDecoration(SimpleItemDecoration(20, 10, 10, 10))
         val recyclerAdapter = RecycleAdapter()
         mViewBinding?.courseRecycle?.adapter = recyclerAdapter
         recyclePlayer = ListPlayer(LitePlayerView(context!!)).apply {

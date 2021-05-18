@@ -1,36 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="161dp"
-    android:layout_height="116dp"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+android:layout_marginStart="5dp"
+    android:layout_marginEnd="5dp"
     android:orientation="vertical">
-   <LinearLayout
-       android:layout_height="match_parent"
-       android:layout_width="match_parent"
-       android:orientation="vertical"
-       android:layout_marginLeft="3dp"
-       >
-       <com.css.wondercorefit.widget.GeneralRoundImageView
-           android:id="@+id/video_poster"
-           android:layout_width="158dp"
-           android:layout_height="101dp"
-           android:scaleType="centerCrop"
-           app:corner_radius="4dp"
-           />
 
-       <TextView
-           android:id="@+id/video_index"
-           android:layout_width="wrap_content"
-           android:layout_height="15dp"
-           android:gravity="center"
-           android:textColor="@color/black"
-           android:textSize="12sp"/>
-   </LinearLayout>
+    <com.css.wondercorefit.widget.GeneralRoundImageView
+        android:id="@+id/video_poster"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        app:corner_radius="4dp"
+        app:layout_constraintDimensionRatio="158:104"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/video_index"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="4dp"
+        android:paddingBottom="6dp"
+        android:text="jianshen"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@+id/video_poster"
+        app:layout_constraintTop_toBottomOf="@+id/video_poster" />
 
     <com.css.wondercorefit.widget.GeneralRoundFrameLayout
         android:id="@+id/video_container"
-        android:layout_width="158dp"
-        android:layout_marginLeft="3dp"
-        android:layout_height="101dp"
-        app:corner_radius="4dp"/>
-</FrameLayout>
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:corner_radius="4dp"
+        app:layout_constraintDimensionRatio="158:104"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
