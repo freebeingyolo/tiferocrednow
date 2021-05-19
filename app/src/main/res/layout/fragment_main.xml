@@ -76,20 +76,6 @@
                 android:layout_weight="1"
                 app:cardCornerRadius="5dp">
 
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/add_device_weight"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:text="+ 添加设备"
-                        android:visibility="gone" />
-                </RelativeLayout>
-
                 <RelativeLayout
                     android:id="@+id/device_weight"
                     android:layout_width="match_parent"
@@ -119,17 +105,7 @@
                         android:layout_height="50dp"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginEnd="15dp"
                         android:src="@mipmap/card_weight" />
-
-                    <ImageView
-                        android:id="@+id/delete_weight"
-                        android:layout_width="17dp"
-                        android:layout_height="17dp"
-                        android:layout_alignParentEnd="true"
-                        android:src="@mipmap/card_delete"
-                        android:visibility="gone"
-                        tools:ignore="MissingConstraints" />
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
 
@@ -142,19 +118,6 @@
                 android:layout_marginEnd="10dp"
                 android:layout_weight="1"
                 app:cardCornerRadius="5dp">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/add_device_wheel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:text="+ 添加设备"
-                        android:visibility="gone" />
-                </RelativeLayout>
 
                 <RelativeLayout
                     android:id="@+id/device_wheel"
@@ -184,17 +147,7 @@
                         android:layout_height="50dp"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginEnd="10dp"
                         android:src="@mipmap/card_wheel" />
-
-                    <ImageView
-                        android:id="@+id/delete_wheel"
-                        android:layout_width="17dp"
-                        android:layout_height="17dp"
-                        android:layout_alignParentEnd="true"
-                        android:src="@mipmap/card_delete"
-                        android:visibility="gone"
-                        tools:ignore="MissingConstraints" />
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
 

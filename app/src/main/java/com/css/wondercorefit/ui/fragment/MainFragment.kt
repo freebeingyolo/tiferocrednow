@@ -29,7 +29,7 @@ import com.css.wondercorefit.databinding.FragmentMainBinding
 import com.css.wondercorefit.viewmodel.MainViewModel
 
 
-class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnClickListener,View.OnLongClickListener {
+class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnClickListener {
     private val TAG = "MainFragment"
 
     private lateinit var iSportStepInterface: ISportStepInterface
@@ -47,7 +47,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnC
         super.initView(savedInstanceState)
         SystemBarHelper.immersiveStatusBar(activity, 0f)
         SystemBarHelper.setHeightAndPadding(activity, mViewBinding?.topView)
-        initdeviceWidget()
+        initDeviceWidget()
         startSensorService()
         startStep()
         initClickListenr()
@@ -65,13 +65,11 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnC
         mViewBinding?.pbStep?.setProgress(result)
     }
 
-    private fun initdeviceWidget() {
-        mViewBinding!!.bleScale.setOnLongClickListener(this)
-        mViewBinding!!.bleWheel.setOnLongClickListener(this)
+    private fun initDeviceWidget() {
         mViewBinding!!.bleScale.setOnClickListener {
-            ARouter.getInstance()
-                .build(ARouterConst.PATH_APP_BLE_WEIGHTBOND)
-                .navigation()
+//            ARouter.getInstance()
+//                .build(ARouterConst.PATH_APP_BLE_WEIGHTBOND)
+//                .navigation()
         }
         mViewBinding!!.bleWheel.setOnClickListener {
 //            var intentScale = Intent (activity , WeightBondActivity::class.java)
@@ -196,54 +194,6 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnC
     override fun onClick(v: View) {
        when(v.id){
        }
-    }
-
-    override fun onLongClick(view: View?): Boolean {
-        Log.d(TAG, "onLongClick   :  ${view.toString()}")
-        when (view?.id) {
-            R.id.ble_scale -> deleteWeight()
-            R.id.ble_wheel -> deleteWheel()
-            else -> {
-            }
-        }
-        return true
-    }
-
-    private fun deleteWeight() {
-        mViewBinding!!.deleteWeight.visibility = View.VISIBLE
-        val vibrator = activity?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        vibrator.vibrate(100)
-        val handler = Handler()
-        handler.postDelayed({
-            mViewBinding!!.deleteWeight.visibility = View.GONE
-        }, 3000) //3000毫秒后执行
-
-        mViewBinding!!.deleteWeight.setOnClickListener {
-            mViewBinding!!.deviceWeight.visibility = View.GONE
-            mViewBinding!!.addDeviceWeight.visibility = View.VISIBLE
-            deleteDevice()
-        }
-        Toast.makeText(activity, "长按体脂秤收到", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun deleteWheel() {
-        mViewBinding!!.deleteWheel?.visibility = View.VISIBLE
-        val vibrator = activity?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        vibrator.vibrate(100)
-        val handler = Handler()
-        handler.postDelayed({
-            mViewBinding!!.deleteWheel.visibility = View.GONE
-        }, 3000) //3000毫秒后执行
-        mViewBinding!!.deleteWheel.setOnClickListener {
-            mViewBinding!!.deviceWheel.visibility = View.GONE
-            mViewBinding!!.addDeviceWheel.visibility = View.VISIBLE
-            deleteDevice()
-        }
-        Toast.makeText(activity, "长按健腹轮收到", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun deleteDevice() {
-        Toast.makeText(activity, "删除设备成功", Toast.LENGTH_SHORT).show()
     }
 
     override fun onHiddenChanged(hidden: Boolean) {

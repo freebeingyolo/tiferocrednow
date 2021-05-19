@@ -28,7 +28,7 @@ class ProgressView : View {
     private var paint2: Paint
 
     init {
-        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null)
         animator = ObjectAnimator.ofFloat(this, "progress", 0f, mProgress)!!
         animator.duration = 1500
         quenLinePaint = Paint(Paint.ANTI_ALIAS_FLAG)

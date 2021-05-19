@@ -1,10 +1,12 @@
 package com.css.wondercorefit.ui.activity
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
@@ -63,29 +65,31 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
             .request()
     }
 
+    @SuppressLint("WrongConstant")
     private fun checkBodySensorPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            if (ContextCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACTIVITY_RECOGNITION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(Manifest.permission.ACTIVITY_RECOGNITION),
-                    1
-                )
-                if (ActivityCompat.shouldShowRequestPermissionRationale(
-                        this,
-                        Manifest.permission.ACTIVITY_RECOGNITION
-                    )
-                ) {
-                    //此处需要弹窗通知用户去设置权限
-                    Toast.makeText(this, "请允许获取健身运动信息，不然无法为你计步哦~", Toast.LENGTH_SHORT).show()
+            val permission = Manifest.permission.ACTIVITY_RECOGNITION
+            PermissionUtils.permission(permission)
+                .rationale { _, shouldRequest ->
+                    shouldRequest.again(true)
                 }
-            }
+                .callback(object : PermissionUtils.FullCallback {
+                    override fun onGranted(permissionsGranted: List<String>) {
+                        start()
+                    }
+
+                    override fun onDenied(
+                        permissionsDeniedForever: List<String>,
+                        permissionsDenied: List<String>
+                    ) {
+                        start()
+                    }
+                })
+                .request()
         }
-        start()
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P){
+            start()
+        }
     }
 
     private fun checkLocationPermission() {
