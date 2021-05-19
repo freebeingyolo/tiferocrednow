@@ -1,8 +1,9 @@
 package com.css.wondercorefit.ui.fragment
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -24,6 +25,14 @@ class MallFragment : BaseFragment<DefaultViewModel, FragmentMallBinding>() {
         mAdapter = activity?.let { MallProductAdapter(it, mData) }!!
         mViewBinding?.productList?.layoutManager = GridLayoutManager(activity, 3)
         mViewBinding?.productList?.adapter = mAdapter
+        mAdapter.setOnItemClickListener {
+            val uri: Uri = Uri.parse("http://www.taobao.com")
+            val intent = Intent()
+            intent.action = "android.intent.action.VIEW"
+            intent.data = uri
+            startActivity(intent)
+            showToast(it.productName)
+        }
     }
 
     override fun initData() {
