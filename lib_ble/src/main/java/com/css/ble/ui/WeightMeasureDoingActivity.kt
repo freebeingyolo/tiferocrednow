@@ -2,18 +2,14 @@ package com.css.ble.ui
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.css.base.uibase.BaseActivity
-import com.css.base.uibase.viewmodel.DefaultViewModel
-import com.css.ble.databinding.ActivityWeightMeasureBeginBinding
 import com.css.ble.databinding.ActivityWeightMeasureDoingBinding
+import com.css.ble.viewmodel.WeightMeasureVM
 
-class WeightMeasureDoingActivity :
-    BaseActivity<DefaultViewModel, ActivityWeightMeasureDoingBinding>() {
+class WeightMeasureDoingActivity : BaseActivity<WeightMeasureVM, ActivityWeightMeasureDoingBinding>() {
 
     companion object {
         fun starActivity(context: Context) {
@@ -22,8 +18,8 @@ class WeightMeasureDoingActivity :
         }
     }
 
-    override fun initViewModel(): DefaultViewModel =
-        ViewModelProvider(this).get(DefaultViewModel::class.java)
+    override fun initViewModel(): WeightMeasureVM =
+        ViewModelProvider(this).get(WeightMeasureVM::class.java)
 
     override fun initViewBinding(
         inflater: LayoutInflater,

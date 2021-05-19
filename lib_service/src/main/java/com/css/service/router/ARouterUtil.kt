@@ -5,7 +5,7 @@ import com.alibaba.android.arouter.launcher.ARouter
 object ARouterUtil {
     object MAIN {
         fun openMainActivity() {
-            ARouter.getInstance().build(PATH_APP_MAIN)
+            ARouter.getInstance().build(ARouterConst.PATH_APP_MAIN)
                 .navigation()
         }
     }

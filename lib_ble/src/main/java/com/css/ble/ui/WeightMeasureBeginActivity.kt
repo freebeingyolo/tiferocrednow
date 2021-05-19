@@ -16,16 +16,13 @@ import com.css.ble.viewmodel.WeightMeasureVM
  * @date 2021-05-12
  */
 //WeightMeasueBeginFragment -> WeightMeasuring ->
-class WeightMeasureBeginActivity :
-    BaseActivity<WeightMeasureVM, ActivityWeightMeasureBeginBinding>(), View.OnClickListener {
+class WeightMeasureBeginActivity : BaseActivity<WeightMeasureVM, ActivityWeightMeasureBeginBinding>(), View.OnClickListener {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         setToolBarLeftTitle("蓝牙体脂秤")
         mViewBinding.tvToMeasure.setOnClickListener(this)
     }
-
-    override fun enabledVisibleToolBar(): Boolean = true
 
     override fun initCommonToolBarBg(): ToolBarView.ToolBarBg = ToolBarView.ToolBarBg.GRAY
 
@@ -44,8 +41,8 @@ class WeightMeasureBeginActivity :
             R.id.tv_to_measure -> {
                 WeightMeasureDoingActivity.starActivity(this)
             }
-
         }
+
     }
 
 }

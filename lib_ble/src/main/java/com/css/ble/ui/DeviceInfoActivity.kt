@@ -13,7 +13,9 @@ import com.css.base.uibase.viewmodel.DefaultViewModel
 import com.css.base.view.ToolBarView
 import com.css.ble.R
 import com.css.ble.databinding.ActivityDeviceInfoBinding
-
+/*
+* 设备详情界面
+*/
 class DeviceInfoActivity : BaseActivity<DefaultViewModel, ActivityDeviceInfoBinding>(),
     OnToolBarClickListener, View.OnClickListener {
 

@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
@@ -38,7 +38,8 @@
         <activity android:name=".ui.activity.index.BfsMeasureResultsActivity" />
         <activity android:name=".ui.activity.setting.AboutUsActivity" />
         <activity android:name=".ui.activity.setting.PersonInformationActivity" />
-        <activity android:name=".ui.activity.TestActivity" />
+        <activity android:name=".ui.activity.TestActivity"/>
+
         <activity android:name=".ui.activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -49,12 +50,13 @@
         <activity
             android:name=".ui.activity.MainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
-            android:screenOrientation="portrait"
+            android:hardwareAccelerated="false"
             android:launchMode="singleTop"
-            android:theme="@style/FullScreenTheme" >
+            android:screenOrientation="portrait"
+            android:theme="@style/FullScreenTheme">
             <intent-filter>
-                <action android:name="com.css.Notification.action"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="com.css.Notification.action" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
         </activity>

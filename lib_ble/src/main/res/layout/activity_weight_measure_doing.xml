@@ -52,7 +52,8 @@
             android:gravity="center"
             android:text="去测量"
             android:textColor="#F2682A"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:visibility="gone" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
@@ -71,11 +72,11 @@
             <TextView
                 android:id="@+id/tv_weight"
                 android:layout_width="wrap_content"
-                android:textStyle="bold"
                 android:layout_height="wrap_content"
                 android:text="51.0"
                 android:textColor="#ff000000"
-                android:textSize="30sp" />
+                android:textSize="30sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"

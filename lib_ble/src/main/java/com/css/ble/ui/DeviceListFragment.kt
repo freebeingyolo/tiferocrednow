@@ -1,5 +1,6 @@
 package com.css.ble.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,16 +10,20 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.alibaba.android.arouter.launcher.ARouter
 import com.css.base.uibase.BaseFragment
-import com.css.base.view.ToolBarView
 import com.css.ble.R
 import com.css.ble.databinding.FragmentDeviceListBinding
 import com.css.ble.databinding.LayoutDeviceItemBinding
+import com.css.ble.ui.fragment.WeightBondFragment
+import com.css.ble.ui.fragment.WeightMeasureFragment
 import com.css.ble.ui.view.SpaceItemDecoration
 import com.css.ble.viewmodel.DeviceListVM.DeviceInfo
 import com.css.ble.viewmodel.DeviceListVM
 import com.css.service.data.BondDeviceData
+import com.css.service.router.ARouterConst
 import com.css.service.utils.WonderCoreCache
+import kotlin.concurrent.thread
 
 class DeviceListFragment : BaseFragment<DeviceListVM, FragmentDeviceListBinding>() {
     companion object {
@@ -43,7 +48,6 @@ class DeviceListFragment : BaseFragment<DeviceListVM, FragmentDeviceListBinding>
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         setToolBarLeftTitle("绑定设备")
-        mViewBinding!!.lifecycleOwner = viewLifecycleOwner
         mViewBinding?.lv!!.apply {
             mAdapter = RecycleViewAdapter()
             mAdapter.itemClickListener = object : RecycleViewAdapter.onItemClickListener {
@@ -58,9 +62,11 @@ class DeviceListFragment : BaseFragment<DeviceListVM, FragmentDeviceListBinding>
                         BondDeviceData::class.java
                     )
                     if (d.mac.isNullOrEmpty()) {
-                        activity?.let { WeightBondActivity.starActivity(it) }
+                        //activity?.let { WeightBondActivity.starActivity(it) }
+                        (requireActivity() as BleEntryActivity).changeFragment(WeightBondFragment::class.java)
                     } else {
-                        startFragment(WeightBondedFragment.newInstance())
+                        requireActivity().finish()
+                        startActivity(Intent(requireContext(), WeightMeasureActivity::class.java))
                     }
                 }
             }
@@ -79,6 +85,16 @@ class DeviceListFragment : BaseFragment<DeviceListVM, FragmentDeviceListBinding>
             mAdapter.mList = it
             mAdapter.notifyDataSetChanged()
         })
+    }
+
+    override fun initData() {
+        super.initData()
+        thread(true) {
+            var deviceInfos = mutableListOf<DeviceInfo>()
+            deviceInfos.add(DeviceInfo(getString(R.string.device_weight), R.mipmap.icon_weight))
+            deviceInfos.add(DeviceInfo(getString(R.string.device_wheel), R.mipmap.icon_abroller))
+            mViewModel._deviceInfos.postValue(deviceInfos)
+        }
     }
 
     class RecycleViewAdapter : RecyclerView.Adapter<RecycleViewAdapter.MyViewHolder>() {

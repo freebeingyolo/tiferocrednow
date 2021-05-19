@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">WonderCoreFit</string>
     <string name="allow_usecamera">Open Camera Permission</string>
     <string name="exit">exit</string>
@@ -21,16 +21,23 @@
     <string name="step_calorie">消耗热量：</string>
 
 
-    <string name="sex" >性别</string>
-    <string name="age" >年龄</string>
-    <string name="stature" >身高</string>
-    <string name="target_weight" >目标体重</string>
-    <string name="target_step" >目标步数</string>
-    <string name="wonder_core" >万达康</string>
-    <string name="tos" >服务条款</string>
-    <string name="disclaimer" >免责声明</string>
-    <string name="privacy_policy" >隐私政策</string>
-    <string name="details" >详情</string>
-    <string name="tmaill_store" >天猫旗舰店</string>
-    <string name="sports_products" >运动好产品</string>
+    <string name="sex">性别</string>
+    <string name="age">年龄</string>
+    <string name="stature">身高</string>
+    <string name="target_weight">目标体重</string>
+    <string name="target_step">目标步数</string>
+    <string name="wonder_core">万达康</string>
+    <string name="tos">服务条款</string>
+    <string name="disclaimer">免责声明</string>
+    <string name="privacy_policy">隐私政策</string>
+    <string name="details">详情</string>
+    <string name="tmaill_store">天猫旗舰店</string>
+    <string name="sports_products">运动好产品</string>
+    <string name="weight_found_tips">发现一台秤！当界面数值与秤上显示一致 时请点击“确认绑定”，不一致时请点击 “重新搜索”哟~</string>
+    <string name="research">重新搜索</string>
+    <string name="confirm_bond">确认绑定</string>
+    <string name="weight_bonded_tip">蓝牙体脂秤已连接成功，开启你的健康之旅吧！</string>
+    <string name="backnow">立刻返回</string>
+    <string name="count_down_tips"><Data><![CDATA[<font color="#FF0000"><big><big>%d<big></big></font> s后自动返回首页"]]></Data></string>
+    <string name="ble_weight_name">蓝牙体脂秤</string>
 </resources>

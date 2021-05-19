@@ -13,6 +13,7 @@ import java.lang.reflect.Method
 
 object BleUtils {
 
+
     //绑定
     fun createBond(bleDevice: BluetoothDevice): Boolean? {
         var result = false

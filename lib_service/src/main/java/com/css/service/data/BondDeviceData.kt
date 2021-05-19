@@ -7,9 +7,14 @@ import androidx.annotation.IntDef
  * @date 2021-05-13
  */
 
-class BondDeviceData(var mac: String, var manufacturerDataHex: String, @DeviceType var type: Int) : BaseData() {
-    constructor() : this("", "", TYPE_WEIGHT) {
+class BondDeviceData(
+    var mac: String,
+    var manufacturerDataHex: String,
+    @DeviceType var type: Int
+) : BaseData() {
+    var alias: String = ""
 
+    constructor() : this("", "", TYPE_WEIGHT) {
     }
 
     companion object {

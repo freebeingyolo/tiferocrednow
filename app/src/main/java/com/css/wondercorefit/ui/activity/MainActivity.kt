@@ -1,10 +1,6 @@
 package com.css.wondercorefit.ui.activity
 
-import android.os.*
 import android.os.Bundle
-import android.os.Handler
-import android.os.Message
-import android.os.RemoteException
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -14,9 +10,7 @@ import com.css.base.uibase.BaseActivity
 import com.css.base.uibase.viewmodel.DefaultViewModel
 import com.css.base.view.ToolBarView
 import com.css.service.inner.BaseInner
-import com.css.service.router.PATH_APP_MAIN
-import com.css.step.ISportStepInterface
-import com.css.step.TodayStepManager
+import com.css.service.router.ARouterConst
 import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.ActivityMainBinding
 import com.css.wondercorefit.ui.fragment.CourseFragment
@@ -24,7 +18,7 @@ import com.css.wondercorefit.ui.fragment.MainFragment
 import com.css.wondercorefit.ui.fragment.MallFragment
 import com.css.wondercorefit.ui.fragment.SettingFragment
 
-@Route(path = PATH_APP_MAIN)
+@Route(path = ARouterConst. PATH_APP_MAIN)
 class MainActivity : BaseActivity<DefaultViewModel, ActivityMainBinding>() {
     private var mCurFragment: Fragment? = null
     private lateinit var mTabMainFragment: MainFragment
@@ -45,7 +39,6 @@ class MainActivity : BaseActivity<DefaultViewModel, ActivityMainBinding>() {
         initTablayout()
     }
 
-    override fun enabledVisibleToolBar(): Boolean = false
     private fun initTablayout() {
         mTabMainFragment = MainFragment()
         mTabCourseFragment = CourseFragment()

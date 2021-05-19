@@ -76,7 +76,6 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
         initUIChangeLiveDataCallBack()
         initData()
         postInitLazyData()
-
     }
 
     override fun enabledVisibleToolBar() = false

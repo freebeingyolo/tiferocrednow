@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.WeightBondActivity">
+
+    <TextView
+        android:id="@+id/tips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="蓝牙ok"
+        android:textSize="20sp"
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- 绑定开始界面-->
+    <RelativeLayout
+        android:id="@+id/bondbegin_root"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/anim_weight_guide"
+                android:layout_width="225dp"
+                android:layout_height="225dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="20dp"
+                android:src="@mipmap/icon_bound_img" />
+
+            <TextView
+                android:id="@+id/content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="30dp"
+                android:text="请持续轻踩，并保持屏幕常亮"
+                android:textColor="#333333"
+                android:textSize="13sp" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </RelativeLayout>
+    <!-- 绑定超时界面-->
+    <RelativeLayout
+        android:id="@+id/timeout_root"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/msg"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="搜索超时" />
+
+
+            <Button
+                android:id="@+id/research2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/research" />
+
+        </LinearLayout>
+    </RelativeLayout>
+    <!-- 绑定发现 -->
+    <RelativeLayout
+        android:id="@+id/found_root"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/found_img"
+            android:layout_width="225dp"
+            android:layout_height="225dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="20dp"
+            android:src="@mipmap/icon_weight_found" />
+
+        <TextView
+            android:id="@+id/fond_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/found_img"
+            android:layout_alignStart="@id/found_img"
+            android:layout_alignEnd="@+id/found_img"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="30dp"
+            android:text="@string/weight_found_tips"
+            android:textColor="#333333"
+            android:textSize="13sp" />
+
+        <LinearLayout
+            android:id="@+id/fond_btns"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/fond_tip"
+            android:layout_alignStart="@id/found_img"
+            android:layout_alignEnd="@id/found_img"
+            android:divider="#E0E0E0"
+            android:gravity="center"
+            android:showDividers="middle">
+
+            <TextView
+                android:id="@+id/research"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/research"
+                android:textColor="#8B8C8D"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/bond"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/confirm_bond"
+                android:textColor="#F2682A"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/fond_device"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/fond_btns"
+            android:layout_alignStart="@id/found_img"
+            android:layout_alignEnd="@+id/found_img"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="30dp"
+            android:textColor="#333333"
+            android:textSize="13sp" />
+    </RelativeLayout>
+    <!-- 绑定成功 -->
+    <RelativeLayout
+        android:id="@+id/bonded_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/img1"
+            android:layout_width="225dp"
+            android:layout_height="225dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="20dp"
+            android:src="@mipmap/icon_weight_bonded" />
+
+        <TextView
+            android:id="@+id/tv1"
+            android:layout_width="225dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/img1"
+            android:layout_alignStart="@+id/img1"
+            android:layout_alignEnd="@+id/img1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="30dp"
+            android:gravity="center"
+            android:text="@string/weight_bonded_tip"
+            android:textColor="#333333"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/countdownTv"
+            android:layout_width="225dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv1"
+            android:layout_alignStart="@+id/tv1"
+            android:layout_alignEnd="@+id/tv1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="30dp"
+            android:gravity="center"
+            android:text="@string/count_down_tips"
+            android:textColor="#333333"
+            android:textSize="13sp" />
+
+        <Button
+            android:id="@+id/back"
+            android:layout_width="167dp"
+            android:layout_height="35dp"
+            android:layout_below="@+id/countdownTv"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/ble_bonded_backnow_frame"
+            android:text="@string/backnow"
+            android:textColor="#fff2682a" />
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

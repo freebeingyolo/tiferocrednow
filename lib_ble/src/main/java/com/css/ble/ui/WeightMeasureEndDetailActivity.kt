@@ -1,6 +1,5 @@
 package com.css.ble.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -12,8 +11,7 @@ import com.css.ble.bean.WeightDetailsBean
 import com.css.ble.databinding.ActivityWeightMeasureEndDetailBinding
 import com.css.ble.viewmodel.WeightMeasureVM
 
-class WeightMeasureEndDetailActivity :
-    BaseActivity<WeightMeasureVM, ActivityWeightMeasureEndDetailBinding>() {
+class WeightMeasureEndDetailActivity : BaseActivity<WeightMeasureVM, ActivityWeightMeasureEndDetailBinding>() {
     lateinit var mBodyDetailAdapter: BodyDetailAdapter
     var mData = ArrayList<WeightDetailsBean>()
     override fun initView(savedInstanceState: Bundle?) {

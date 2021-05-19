@@ -20,12 +20,6 @@ import com.css.wondercorefit.viewmodel.SplashViewModel
 
 class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
 
-    override fun initView(savedInstanceState: Bundle?) {
-        super.initView(savedInstanceState)
-
-    }
-
-
     override fun initViewModel(): SplashViewModel =
         ViewModelProvider(this).get(SplashViewModel::class.java)
 

@@ -107,7 +107,7 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
         isAttachViewModelOk = true
     }
 
-    abstract fun initViewBinding(inflater: LayoutInflater, viewGroup: ViewGroup?): VB
+    abstract fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): VB
 
     override fun enabledVisibleToolBar() = false
 
@@ -138,7 +138,7 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
             mChildContainerLayout = mRootView!!.findViewById(R.id.fl_container)
             mChildContainerLayout!!.apply {
                 //子布局
-                mViewBinding = initViewBinding(inflater, mChildContainerLayout)
+                mViewBinding = initViewBinding(inflater, this)
                 if (!contains(mViewBinding!!.root)) {
                     addView(mViewBinding!!.root)
                 }

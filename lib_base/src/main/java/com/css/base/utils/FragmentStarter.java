@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
 import com.css.base.uibase.base.BaseWonderFragment;
 
 /**
@@ -38,7 +39,7 @@ public class FragmentStarter {
 
                 ft.add((containerId != 0) ? containerId : android.R.id.content, fragment, fragmentTag);
             }
-            if(isAddStatck) {
+            if (isAddStatck) {
                 ft.addToBackStack(fragmentTag);
             }
             ft.commitAllowingStateLoss();
@@ -66,6 +67,13 @@ public class FragmentStarter {
     public static void startFragment(Fragment fromFragment, Fragment toFragment, String tag) {
         FragmentTransaction fragmentTransaction = fromFragment.getParentFragmentManager().beginTransaction();
         fragmentTransaction.hide(fromFragment).add(android.R.id.content, toFragment, tag);
+        fragmentTransaction.addToBackStack(tag);
+        fragmentTransaction.commitAllowingStateLoss();
+    }
+
+    public static void startFragment(Fragment fromFragment, Fragment toFragment, int containerViewId, String tag) {
+        FragmentTransaction fragmentTransaction = fromFragment.getParentFragmentManager().beginTransaction();
+        fragmentTransaction.hide(fromFragment).add(containerViewId, toFragment, tag);
         fragmentTransaction.addToBackStack(tag);
         fragmentTransaction.commitAllowingStateLoss();
     }

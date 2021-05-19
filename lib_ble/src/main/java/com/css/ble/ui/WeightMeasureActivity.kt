@@ -14,37 +14,36 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.css.base.uibase.BaseActivity
 import com.css.ble.R
 import com.css.ble.databinding.ActivityBleEntryBinding
+import com.css.ble.ui.fragment.WeightMeasureFragment
 import com.css.ble.utils.BleUtils
-import com.css.ble.viewmodel.WeightBondVM
+import com.css.ble.viewmodel.WeightMeasureVM
 import com.css.service.router.ARouterConst
 import com.pingwang.bluetoothlib.AILinkSDK
 import com.pingwang.bluetoothlib.server.ELinkBleServer
 import com.pingwang.bluetoothlib.utils.BleLog
 
 @Route(path = ARouterConst.PATH_APP_BLE)
-class BleEntryActivity : BaseActivity<WeightBondVM, ActivityBleEntryBinding>() {
+class WeightMeasureActivity : BaseActivity<WeightMeasureVM, ActivityBleEntryBinding>() {
     var mCurFragment: Fragment? = null
-    var mBluetoothService: ELinkBleServer? = null
 
     private val mFhrSCon: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
             Log.d(TAG, "服务与界面建立连接成功")
-            mBluetoothService = (service as ELinkBleServer.BluetoothBinder).service
+            var mBluetoothService = (service as ELinkBleServer.BluetoothBinder).service
             mViewModel.onBindService(mBluetoothService!!)
         }
 
         override fun onServiceDisconnected(name: ComponentName) {
             Log.d(TAG, "服务与界面连接断开")
             mViewModel.onUnBindService()
-            mBluetoothService = null
         }
     }
 
-    override fun enabledVisibleToolBar(): Boolean {
-        return false
-    }
-
-    fun <T : Fragment> changeFragment(cls: Class<T>, addToBackStack: Boolean = true, option: Option = Option.OP_ADD): T {
+    fun <T : Fragment> changeFragment(
+        cls: Class<T>,
+        addToBackStack: Boolean = true,
+        option: BleEntryActivity.Option = BleEntryActivity.Option.OP_ADD
+    ): T {
         val newFragmentTag = cls.simpleName
         val ft = supportFragmentManager.beginTransaction()
         if (mCurFragment != null && !mCurFragment!!.isHidden) {
@@ -55,8 +54,8 @@ class BleEntryActivity : BaseActivity<WeightBondVM, ActivityBleEntryBinding>() {
             fragment = cls.newInstance()
             if (!fragment.isAdded) {
                 when (option) {
-                    Option.OP_ADD -> ft.add(R.id.content, fragment, newFragmentTag)
-                    Option.OP_REPLACE -> ft.replace(R.id.content, fragment, newFragmentTag)
+                    BleEntryActivity.Option.OP_ADD -> ft.add(R.id.content, fragment, newFragmentTag)
+                    BleEntryActivity.Option.OP_REPLACE -> ft.replace(R.id.content, fragment, newFragmentTag)
                 }
                 if (addToBackStack) ft.addToBackStack(newFragmentTag)
             }
@@ -68,9 +67,9 @@ class BleEntryActivity : BaseActivity<WeightBondVM, ActivityBleEntryBinding>() {
         return fragment as T
     }
 
-    enum class Option {
-        OP_ADD,
-        OP_REPLACE
+
+    override fun enabledVisibleToolBar(): Boolean {
+        return false
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -85,7 +84,7 @@ class BleEntryActivity : BaseActivity<WeightBondVM, ActivityBleEntryBinding>() {
         filter.addAction(LocationManager.PROVIDERS_CHANGED_ACTION)
         registerReceiver(receiver, filter)
 
-        changeFragment(DeviceListFragment::class.java, true)
+        changeFragment(WeightMeasureFragment::class.java)
     }
 
     override fun initData() {
@@ -95,8 +94,8 @@ class BleEntryActivity : BaseActivity<WeightBondVM, ActivityBleEntryBinding>() {
         mViewModel.locationPermission.value = BleUtils.isLocationAllowed(baseContext)
     }
 
-    override fun initViewModel(): WeightBondVM {
-        return ViewModelProvider(this).get(WeightBondVM::class.java)
+    override fun initViewModel(): WeightMeasureVM {
+        return ViewModelProvider(this).get(WeightMeasureVM::class.java)
     }
 
     override fun initViewBinding(

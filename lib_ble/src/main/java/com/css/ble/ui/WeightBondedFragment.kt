@@ -24,6 +24,8 @@ class WeightBondedFragment : BaseFragment<WeightBondVM, FragmentWeightBoundedBin
         }
     }
 
+    override fun enabledVisibleToolBar() = true
+
     override fun initViewBinding(
         inflater: LayoutInflater,
         viewGroup: ViewGroup?

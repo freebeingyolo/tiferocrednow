@@ -23,7 +23,5 @@
             android:layout_height="wrap_content"
             android:text="重新搜索" />
 
-
-
     </LinearLayout>
 </layout>

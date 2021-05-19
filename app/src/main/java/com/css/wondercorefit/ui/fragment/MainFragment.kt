@@ -14,10 +14,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.launcher.ARouter
 import com.css.base.uibase.BaseFragment
-import com.css.ble.ui.WeightBondActivity
+//import com.css.ble.ui.WeightBondActivity
 import com.css.service.data.StepData
 import com.css.service.data.UserData
-import com.css.service.router.PATH_APP_BLE
+import com.css.service.router.ARouterConst
 import com.css.service.utils.SystemBarHelper
 import com.css.service.utils.WonderCoreCache
 import com.css.step.ISportStepInterface
@@ -69,8 +69,9 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnC
         mViewBinding!!.bleScale.setOnLongClickListener(this)
         mViewBinding!!.bleWheel.setOnLongClickListener(this)
         mViewBinding!!.bleScale.setOnClickListener {
-            var intentScale = Intent(activity, WeightBondActivity::class.java)
-            startActivity(intentScale)
+            ARouter.getInstance()
+                .build(ARouterConst.PATH_APP_BLE_WEIGHTBOND)
+                .navigation()
         }
         mViewBinding!!.bleWheel.setOnClickListener {
 //            var intentScale = Intent (activity , WeightBondActivity::class.java)
@@ -81,7 +82,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnC
     private fun initClickListenr() {
         mViewBinding!!.addBleDevice.setOnClickListener {
             ARouter.getInstance()
-                .build(PATH_APP_BLE)
+                .build(ARouterConst.PATH_APP_BLE)
                 .navigation()
         }
     }

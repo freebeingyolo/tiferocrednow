@@ -33,4 +33,11 @@
     <string name="step_distance">步行距离：</string>
     <string name="step_calorie">消耗热量：</string>
     <string name="today_steps">今日步数</string>
+    <string name="weight_found_tips">发现一台秤！当界面数值与秤上显示一致 时请点击“确认绑定”，不一致时请点击 “重新搜索”哟~</string>
+    <string name="research">重新搜索</string>
+    <string name="confirm_bond">确认绑定</string>
+    <string name="weight_bonded_tip">蓝牙体脂秤已连接成功，开启你的健康之旅吧！</string>
+    <string name="backnow">立刻返回</string>
+    <string name="count_down_tips"><Data><![CDATA[<font color="#FF0000"><big><big>%d<big></big></font> s后自动返回首页"]]></Data></string>
+    <string name="ble_weight_name">蓝牙体脂秤</string>
 </resources>

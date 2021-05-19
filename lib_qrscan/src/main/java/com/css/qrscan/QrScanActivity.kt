@@ -21,11 +21,11 @@ import com.css.base.constants.QRScanConstants
 import com.css.base.uibase.BaseActivity
 import com.css.qrscan.databinding.ActivityQrscanMainBinding
 import com.css.qrscan.viewmodel.QrScanViewModel
-import com.css.service.router.PATH_APP_QRSCAN
+import com.css.service.router.ARouterConst
 import com.huawei.hms.hmsscankit.RemoteView
 import com.huawei.hms.ml.scan.HmsScan
 
-@Route(path = PATH_APP_QRSCAN)
+@Route(path = ARouterConst.PATH_APP_QRSCAN)
 class QrScanActivity : BaseActivity<QrScanViewModel, ActivityQrscanMainBinding>() {
 
     var remoteView: RemoteView? = null;

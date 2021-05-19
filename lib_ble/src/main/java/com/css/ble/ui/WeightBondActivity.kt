@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.blankj.utilcode.constant.PermissionConstants
 import com.blankj.utilcode.util.PermissionUtils
 import com.blankj.utilcode.util.ToastUtils
@@ -24,11 +25,13 @@ import com.css.ble.databinding.LayoutSearchTimeoutBinding
 import com.css.ble.utils.BleUtils
 import com.css.ble.viewmodel.WeightBondVM
 import com.css.service.data.BondDeviceData
+import com.css.service.router.ARouterConst
 import com.css.service.utils.WonderCoreCache
 import com.pingwang.bluetoothlib.AILinkSDK
 import com.pingwang.bluetoothlib.server.ELinkBleServer
 import com.pingwang.bluetoothlib.utils.BleLog
 
+@Route(path = ARouterConst.PATH_APP_BLE_WEIGHTBOND)
 class WeightBondActivity : BaseActivity<WeightBondVM, ActivityWeightBondBinding>() {
     companion object {
         const val TAG: String = "WeightBondFragment"
@@ -44,12 +47,6 @@ class WeightBondActivity : BaseActivity<WeightBondVM, ActivityWeightBondBinding>
         return true
     }
 
-    override fun initData() {
-        super.initData()
-        mViewModel.bleEnabled.value = BluetoothAdapter.getDefaultAdapter().isEnabled
-        mViewModel.locationOpened.value = BleUtils.isLocationEnabled(baseContext)
-        mViewModel.locationPermission.value = BleUtils.isLocationAllowed(baseContext)
-    }
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         AILinkSDK.getInstance().init(this)
@@ -61,16 +58,10 @@ class WeightBondActivity : BaseActivity<WeightBondVM, ActivityWeightBondBinding>
         registerReceiver(receiver, filter)
 
         setToolBarLeftTitle("蓝牙体脂秤")
-
         mViewBinding?.apply {
             tips.setOnClickListener { tipsClick(it) }
         }
-
         checkAndRequestBleEnv()
-
-        if (mViewModel.cachedData.mac.isNullOrEmpty()) {
-
-        }
     }
 
     override fun registorUIChangeLiveDataCallBack() {
@@ -182,16 +173,11 @@ class WeightBondActivity : BaseActivity<WeightBondVM, ActivityWeightBondBinding>
             }
         }
         if (mViewModel.isBleEnvironmentOk) {
-            Log.d(
-                TAG,
-                "mViewModel.bleService.isScanStatus:${mViewModel.mBluetoothService!!.isScanStatus()}"
-            )
             startScan()
         } else {
             ToastUtils.showShort("已经停止绑定设备，请检查蓝牙环境")
             mViewModel.stopScanBle()
         }
-
     }
 
     fun startScan() {
@@ -290,12 +276,14 @@ class WeightBondActivity : BaseActivity<WeightBondVM, ActivityWeightBondBinding>
             BleLog.d(TAG, "服务与界面建立连接成功")
             val mBluetoothService = (service as ELinkBleServer.BluetoothBinder).service
             mViewModel.onBindService(mBluetoothService)
+            mViewModel.bleEnabled.value = BluetoothAdapter.getDefaultAdapter().isEnabled
+            mViewModel.locationOpened.value = BleUtils.isLocationEnabled(baseContext)
+            mViewModel.locationPermission.value = BleUtils.isLocationAllowed(baseContext)
         }
 
         override fun onServiceDisconnected(name: ComponentName) {
             BleLog.d(TAG, "服务与界面连接断开")
             mViewModel.onUnBindService()
         }
-
     }
 }

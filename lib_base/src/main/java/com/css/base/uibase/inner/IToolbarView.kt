@@ -80,7 +80,7 @@ interface IToolbarView {
     }
     /**
      * enabledCommonToolBar 为true时有效。
-     * 设置中心title
+     * 设置左侧title
      *
      * @param title
      */
@@ -94,7 +94,7 @@ interface IToolbarView {
 
     /**
      * enabledCommonToolBar 为true时有效。
-     * 设置中心title
+     * 设置左侧title
      *
      * @param resId
      */
@@ -173,6 +173,48 @@ interface IToolbarView {
      * enabledCommonToolBar 为true时有效。
      * 设置右侧 文字
      *
+     * @param resId
+     */
+    fun setToolBarLeftText(@StringRes resId: Int): ToolBarView? {
+        if (hasCommonToolBar()) {
+            return getCommonToolBarView()?.setLeftText(resId)
+        } else {
+            return null
+        }
+    }
+
+    /**
+     * enabledCommonToolBar 为true时有效。
+     * 设置右侧 文字
+     *
+     * @param text
+     */
+    fun setToolBarLeftText(text: String): ToolBarView? {
+        if (hasCommonToolBar()) {
+            return getCommonToolBarView()?.setLeftText(text)
+        } else {
+            return null
+        }
+    }
+
+    /**
+     * enabledCommonToolBar 为true时有效。
+     * 设置右侧 文字
+     *
+     * @param resId
+     */
+    fun setToolBarRightText(@StringRes resId: Int): ToolBarView? {
+        if (hasCommonToolBar()) {
+            return getCommonToolBarView()?.setRightText(resId)
+        } else {
+            return null
+        }
+    }
+
+    /**
+     * enabledCommonToolBar 为true时有效。
+     * 设置右侧 文字
+     *
      * @param text
      */
     fun setToolBarRightText(text: String): ToolBarView? {
@@ -206,20 +248,6 @@ interface IToolbarView {
     fun setToolBarRightTextColorInt(@ColorInt resId: Int): ToolBarView? {
         if (hasCommonToolBar()) {
             return getCommonToolBarView()?.setRightTextColorInt(resId)
-        } else {
-            return null
-        }
-    }
-
-    /**
-     * enabledCommonToolBar 为true时有效。
-     * 设置右侧 文字
-     *
-     * @param resId
-     */
-    fun setToolBarRightText(@StringRes resId: Int): ToolBarView? {
-        if (hasCommonToolBar()) {
-            return getCommonToolBarView()?.setRightText(resId)
         } else {
             return null
         }
