@@ -1,5 +1,6 @@
 package com.css.wondercorefit.ui.fragment
 
+//import com.css.ble.ui.WeightBondActivity
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -15,7 +16,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.ToastUtils
 import com.css.base.uibase.BaseFragment
-//import com.css.ble.ui.WeightBondActivity
+import com.css.ble.bean.BondDeviceData
+import com.css.ble.ui.WeightMeasureBeginActivity
 import com.css.service.data.StepData
 import com.css.service.data.UserData
 import com.css.service.router.ARouterConst
@@ -30,7 +32,8 @@ import com.css.wondercorefit.databinding.FragmentMainBinding
 import com.css.wondercorefit.viewmodel.MainViewModel
 
 
-class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.OnClickListener, View.OnLongClickListener {
+class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.OnClickListener,
+    View.OnLongClickListener {
     private val TAG = "MainFragment"
 
     private lateinit var iSportStepInterface: ISportStepInterface
@@ -48,11 +51,32 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         super.initView(savedInstanceState)
         SystemBarHelper.immersiveStatusBar(activity, 0f)
         SystemBarHelper.setHeightAndPadding(activity, mViewBinding?.topView)
+        showDevice()
         initdeviceWidget()
         startSensorService()
         startStep()
         initClickListenr()
         initProgressRate()
+
+    }
+
+    private fun showDevice() {
+        if (WonderCoreCache.getData(
+                WonderCoreCache.BOND_WEIGHT_INFO,
+                BondDeviceData::class.java
+            ).mac.isNotEmpty()
+        ) {
+            mViewBinding?.llDevice?.visibility = View.VISIBLE
+            mViewBinding?.bleScale?.visibility = View.VISIBLE
+        }
+        if (WonderCoreCache.getData(
+                WonderCoreCache.BOND_WHEEL_INFO,
+                BondDeviceData::class.java
+            ).mac.isNotEmpty()
+        ) {
+            mViewBinding?.llDevice?.visibility = View.VISIBLE
+            mViewBinding?.bleWheel?.visibility = View.VISIBLE
+        }
     }
 
     private fun initProgressRate() {
@@ -197,6 +221,9 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
 
     override fun onClick(v: View) {
         when (v.id) {
+            R.id.ble_scale -> {
+                activity?.let { WeightMeasureBeginActivity.starActivity(it) }
+            }
         }
     }
 
@@ -205,8 +232,6 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         when (view?.id) {
             R.id.ble_scale -> deleteWeight()
             R.id.ble_wheel -> deleteWheel()
-            else -> {
-            }
         }
         return true
     }

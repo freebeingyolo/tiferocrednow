@@ -1,5 +1,7 @@
 package com.css.ble.ui
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +19,12 @@ import com.css.ble.viewmodel.WeightMeasureVM
  */
 //WeightMeasueBeginFragment -> WeightMeasuring ->
 class WeightMeasureBeginActivity : BaseActivity<WeightMeasureVM, ActivityWeightMeasureBeginBinding>(), View.OnClickListener {
-
+    companion object {
+        fun starActivity(context: Context) {
+            val intent = Intent(context, WeightMeasureBeginActivity::class.java)
+            context.startActivity(intent)
+        }
+    }
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         setToolBarLeftTitle(getString(R.string.device_weight))
