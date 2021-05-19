@@ -2,9 +2,6 @@ package com.css.wondercorefit.viewmodel
 
 import android.text.TextUtils
 import com.css.base.uibase.viewmodel.BaseViewModel
-import com.css.wondercorefit.databinding.ActivityPersonInformationBinding
-import java.text.FieldPosition
-import java.util.*
 
 class BodyScaleViewModel: BaseViewModel() {
     enum class dataOne(var intPosition: Int, var title: String, var style: String, var information: String ) {
@@ -48,4 +45,121 @@ class BodyScaleViewModel: BaseViewModel() {
     fun toString(enumPosition:Int): String {
         return itemBle[enumPosition].title + "   " +  itemBle[enumPosition].style + "   " +  itemBle[enumPosition].information
     }
+
+    // 	标准体重  	男性：(身高cm－80)×70﹪=标准体重  	女性：(身高cm－70)×60﹪=标准体重
+    private fun standardWeight (high: Float, sex: String): Float {
+        return if (sex == "男") {
+            (( high - 80 ) * 0.7).toFloat()
+        } else {
+            (( high - 80 ) * 0.6).toFloat()
+        }
+    }
+
+    // 脂肪量
+    private fun fatContent (sex: String, age: Int, fatPercent: Float): String {
+        var standard = ""
+        if (sex == "男") {
+            if (age < 30) {
+                if( fatPercent < 0.1 ) {
+                    standard = "偏低"
+                }
+                if ( 0.1 <= fatPercent && fatPercent < 0.21){
+                    standard = "标准"
+                }
+                if ( 0.21 <= fatPercent || fatPercent < 0.26) {
+                    standard = "偏高"
+                }
+                if (0.26 < fatPercent) {
+                        standard = "高"
+                }
+            } else {
+                if( fatPercent < 0.11 ) {
+                    standard = "偏低"
+                }
+                if ( 0.11 <= fatPercent && fatPercent < 0.22){
+                    standard = "标准"
+                }
+                if ( 0.22 <= fatPercent || fatPercent < 0.27) {
+                    standard = "偏高"
+                }
+                if (0.27 < fatPercent) {
+                    standard = "高"
+                }
+            }
+        } else {
+            if (age < 30) {
+                if( fatPercent < 0.16 ) {
+                    standard = "偏低"
+                }
+                if ( 0.16 <= fatPercent && fatPercent < 0.24){
+                    standard = "标准"
+                }
+                if ( 0.24 <= fatPercent || fatPercent < 0.30) {
+                    standard = "偏高"
+                }
+                if (0.30 < fatPercent) {
+                    standard = "高"
+                }
+            } else {
+                if( fatPercent < 0.19 ) {
+                    standard = "偏低"
+                }
+                if ( 0.19 <= fatPercent && fatPercent < 0.27){
+                    standard = "标准"
+                }
+                if ( 0.27 <= fatPercent || fatPercent < 0.30) {
+                    standard = "偏高"
+                }
+                if (0.30 < fatPercent) {
+                    standard = "高"
+                }
+            }
+
+        }
+        return standard
+    }
+
+    //	体重控制量   体重控制量=实际体重-标准体重
+    private fun weightControl (weight: Float, high: Float, sex: String): Float {
+        var stand = standardWeight(high,sex)
+        return weight - stand
+    }
+
+    // 去脂体重   去脂体重=（1-体脂率）* 实际体重
+    private fun fatFreeWeight(weight: Float, fatPercent: Float):Float {
+        return (1 - fatPercent) * weight
+    }
+
+    //	肌肉量
+    private fun muscleContent(weight: Float, musclePercent:Float): Float {
+        return weight * musclePercent
+    }
+
+    //  蛋白量
+    private fun proteinContent(weight: Float, proteinPercent: Float): Float {
+        return weight * proteinPercent
+    }
+
+    //  肥胖等级
+    private fun fatLevel (weight: Float, high: Float, sex: String): String {
+        var fatWeight = (weight - standardWeight(high,sex)) / standardWeight(high,sex)
+        var fatLevel = ""
+        if (fatWeight < -0.2) {
+            fatLevel = "体重不足"
+        }
+        if (-0.2 <= fatWeight && fatWeight < -0.1) {
+            fatLevel = "偏瘦"
+        }
+        if (-0.1 <= fatWeight && fatWeight <= 0.1) {
+            fatLevel = "标准"
+        }
+        if (0.1 < fatWeight && fatWeight <=0.2) {
+            fatLevel = "偏重"
+        }
+        if (0.2 < fatWeight) {
+            fatLevel = "超重"
+        }
+        return fatLevel
+    }
+
 }

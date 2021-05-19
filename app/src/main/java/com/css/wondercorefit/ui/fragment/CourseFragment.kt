@@ -29,6 +29,7 @@ import com.seagazer.liteplayer.LitePlayerView
 import com.seagazer.liteplayer.bean.DataSource
 import com.seagazer.liteplayer.list.ListItemChangedListener
 import com.seagazer.liteplayer.list.ListPlayer
+import com.seagazer.liteplayer.listener.PlayerViewModeChangedListener
 import com.seagazer.liteplayer.widget.LiteGestureController
 import com.seagazer.liteplayer.widget.LiteMediaController
 
@@ -88,6 +89,20 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
                 }
             }
         }
+        recyclePlayer.addPlayerViewModeChangedListener(object: PlayerViewModeChangedListener{
+            override fun onAutoSensorModeChanged(isAutoSensor: Boolean) {
+                // do something when auto sensor changed
+            }
+
+            override fun onFloatWindowModeChanged(isFloatWindow: Boolean) {
+                // do something when floatWindow changed
+            }
+
+            override fun onFullScreenModeChanged(isFullScreen: Boolean) {
+                recyclePlayer.pause(true)
+            }
+
+        })
         val videoScrollListener = object : ListPlayer.VideoListScrollListener {
 
             override fun getVideoContainer(position: Int): ViewGroup? {
@@ -143,6 +158,7 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
                 itemView.setOnClickListener {
                     if (!isAutoPlay) {
                         recyclePlayer.onItemClick(bindingAdapterPosition)
+                        recyclePlayer.setFullScreenMode(true)
                     }
                 }
             }
