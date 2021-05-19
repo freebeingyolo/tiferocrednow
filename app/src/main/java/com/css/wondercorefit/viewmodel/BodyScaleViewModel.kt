@@ -2,9 +2,6 @@ package com.css.wondercorefit.viewmodel
 
 import android.text.TextUtils
 import com.css.base.uibase.viewmodel.BaseViewModel
-import com.css.wondercorefit.databinding.ActivityPersonInformationBinding
-import java.text.FieldPosition
-import java.util.*
 
 class BodyScaleViewModel: BaseViewModel() {
     enum class dataOne(var intPosition: Int, var title: String, var style: String, var information: String ) {
@@ -48,4 +45,84 @@ class BodyScaleViewModel: BaseViewModel() {
     fun toString(enumPosition:Int): String {
         return itemBle[enumPosition].title + "   " +  itemBle[enumPosition].style + "   " +  itemBle[enumPosition].information
     }
+
+    // 	标准体重
+    private fun standardWeight (high: Float, sex: String): Float {
+        return if (sex == "男") {
+            (( high - 80 ) * 0.7).toFloat()
+        } else {
+            (( high - 80 ) * 0.6).toFloat()
+        }
+    }
+
+    // 脂肪量
+    private fun fatContent (sex: String, age: Int, fatPercent: Float): String {
+        var standard = ""
+        if (sex == "男") {
+            if (age < 30) {
+                if( fatPercent < 0.1 ) {
+                    standard = "偏低"
+                }
+                if ( 0.1 <= fatPercent && fatPercent < 0.21){
+                    standard = "标准"
+                }
+                if ( 0.21 <= fatPercent || fatPercent < 0.26) {
+                    standard = "偏高"
+                }
+                if (0.26 < fatPercent) {
+                        standard = "高"
+                }
+            } else {
+                if( fatPercent < 0.11 ) {
+                    standard = "偏低"
+                }
+                if ( 0.11 <= fatPercent && fatPercent < 0.22){
+                    standard = "标准"
+                }
+                if ( 0.22 <= fatPercent || fatPercent < 0.27) {
+                    standard = "偏高"
+                }
+                if (0.27 < fatPercent) {
+                    standard = "高"
+                }
+            }
+        } else {
+            if (age < 30) {
+                if( fatPercent < 0.16 ) {
+                    standard = "偏低"
+                }
+                if ( 0.16 <= fatPercent && fatPercent < 0.24){
+                    standard = "标准"
+                }
+                if ( 0.24 <= fatPercent || fatPercent < 0.30) {
+                    standard = "偏高"
+                }
+                if (0.30 < fatPercent) {
+                    standard = "高"
+                }
+            } else {
+                if( fatPercent < 0.19 ) {
+                    standard = "偏低"
+                }
+                if ( 0.19 <= fatPercent && fatPercent < 0.27){
+                    standard = "标准"
+                }
+                if ( 0.27 <= fatPercent || fatPercent < 0.30) {
+                    standard = "偏高"
+                }
+                if (0.30 < fatPercent) {
+                    standard = "高"
+                }
+            }
+
+        }
+        return standard
+    }
+
+    //
+    private fun obesity (weight: Float, high: Float, sex: String): Float {
+        var standWeight = standardWeight(high,sex)
+        return ( weight - standWeight )/standWeight
+    }
+
 }
