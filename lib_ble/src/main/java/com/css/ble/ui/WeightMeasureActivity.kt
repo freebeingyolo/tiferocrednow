@@ -22,7 +22,7 @@ import com.pingwang.bluetoothlib.AILinkSDK
 import com.pingwang.bluetoothlib.server.ELinkBleServer
 import com.pingwang.bluetoothlib.utils.BleLog
 
-@Route(path = ARouterConst.PATH_APP_BLE)
+@Route(path = ARouterConst.PATH_APP_BLE_WEIGHTMEASURE)
 class WeightMeasureActivity : BaseActivity<WeightMeasureVM, ActivityBleEntryBinding>() {
     var mCurFragment: Fragment? = null
 
@@ -84,7 +84,7 @@ class WeightMeasureActivity : BaseActivity<WeightMeasureVM, ActivityBleEntryBind
         filter.addAction(LocationManager.PROVIDERS_CHANGED_ACTION)
         registerReceiver(receiver, filter)
 
-        changeFragment(WeightMeasureFragment::class.java)
+        changeFragment(WeightMeasureFragment::class.java,false)
     }
 
     override fun initData() {

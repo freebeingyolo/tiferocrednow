@@ -20,7 +20,7 @@ class WeightMeasureBeginActivity : BaseActivity<WeightMeasureVM, ActivityWeightM
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        setToolBarLeftTitle("蓝牙体脂秤")
+        setToolBarLeftTitle(getString(R.string.device_weight))
         mViewBinding.tvToMeasure.setOnClickListener(this)
     }
 

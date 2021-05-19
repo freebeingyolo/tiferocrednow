@@ -7,7 +7,6 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.IBinder
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +23,7 @@ import com.css.ble.databinding.LayoutFindbonddeviceBinding
 import com.css.ble.databinding.LayoutSearchTimeoutBinding
 import com.css.ble.utils.BleUtils
 import com.css.ble.viewmodel.WeightBondVM
-import com.css.service.data.BondDeviceData
+import com.css.ble.bean.BondDeviceData
 import com.css.service.router.ARouterConst
 import com.css.service.utils.WonderCoreCache
 import com.pingwang.bluetoothlib.AILinkSDK
@@ -57,7 +56,7 @@ class WeightBondActivity : BaseActivity<WeightBondVM, ActivityWeightBondBinding>
         filter.addAction(LocationManager.PROVIDERS_CHANGED_ACTION)
         registerReceiver(receiver, filter)
 
-        setToolBarLeftTitle("蓝牙体脂秤")
+        setToolBarLeftTitle(getString(R.string.device_weight))
         mViewBinding?.apply {
             tips.setOnClickListener { tipsClick(it) }
         }
@@ -86,6 +85,7 @@ class WeightBondActivity : BaseActivity<WeightBondVM, ActivityWeightBondBinding>
         }
 
         mViewModel.bondData.observe(this) {
+            if (it == null) return@observe
             ToastUtils.showShort("得到设备数据：${it.weight} ${it.adc}")
             mViewBinding!!.tips.text = it.weight.toString()
             mViewBinding!!.vgBonding.apply {

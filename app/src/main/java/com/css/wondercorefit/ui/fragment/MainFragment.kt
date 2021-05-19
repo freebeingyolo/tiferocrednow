@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.launcher.ARouter
+import com.blankj.utilcode.util.ToastUtils
 import com.css.base.uibase.BaseFragment
 //import com.css.ble.ui.WeightBondActivity
 import com.css.service.data.StepData
@@ -29,7 +30,7 @@ import com.css.wondercorefit.databinding.FragmentMainBinding
 import com.css.wondercorefit.viewmodel.MainViewModel
 
 
-class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnClickListener,View.OnLongClickListener {
+class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.OnClickListener, View.OnLongClickListener {
     private val TAG = "MainFragment"
 
     private lateinit var iSportStepInterface: ISportStepInterface
@@ -37,9 +38,9 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnC
     private val mDelayHandler = Handler(TodayStepCounterCall())
     private val REFRESH_STEP_WHAT = 0
     private val TIME_INTERVAL_REFRESH: Long = 1000
-    private lateinit var targetStep:String
-    private var currentStep:Int = 0
-    private var result:Float = 0.0f
+    private lateinit var targetStep: String
+    private var currentStep: Int = 0
+    private var result: Float = 0.0f
     private lateinit var userData: UserData
     private lateinit var stepData: StepData
 
@@ -60,7 +61,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnC
         targetStep = userData.targetStep
         mViewBinding!!.tvTodayStepTarget.text = "目标 " + targetStep
         currentStep = stepData.todaySteps
-        result = ((currentStep*100)/targetStep.toInt()).toFloat()
+        result = ((currentStep * 100) / targetStep.toInt()).toFloat()
         Log.d(TAG, "ProgressInformation   :  $currentStep    $targetStep    $result")
         mViewBinding?.pbStep?.setProgress(result)
     }
@@ -70,12 +71,13 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnC
         mViewBinding!!.bleWheel.setOnLongClickListener(this)
         mViewBinding!!.bleScale.setOnClickListener {
             ARouter.getInstance()
-                .build(ARouterConst.PATH_APP_BLE_WEIGHTBOND)
+                .build(ARouterConst.PATH_APP_BLE_WEIGHTMEASURE)
                 .navigation()
         }
         mViewBinding!!.bleWheel.setOnClickListener {
 //            var intentScale = Intent (activity , WeightBondActivity::class.java)
 //            startActivity(intentScale)
+            ToastUtils.showShort("尚在开发中")
         }
     }
 
@@ -140,7 +142,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnC
         }
         mViewBinding?.tvWalkingDistanceNum?.text = getDistanceByStep(realSteps.toLong())
         mViewBinding?.tvCalorieConsumptionNum?.text = getCalorieByStep(realSteps.toLong())
-        result = ((realSteps*100)/targetStep.toInt()).toFloat()
+        result = ((realSteps * 100) / targetStep.toInt()).toFloat()
         mViewBinding?.pbStep?.setProgress(result)
     }
 
@@ -194,8 +196,8 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnC
     ): FragmentMainBinding = FragmentMainBinding.inflate(inflater, viewGroup, false)
 
     override fun onClick(v: View) {
-       when(v.id){
-       }
+        when (v.id) {
+        }
     }
 
     override fun onLongClick(view: View?): Boolean {

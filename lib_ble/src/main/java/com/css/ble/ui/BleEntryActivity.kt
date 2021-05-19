@@ -61,6 +61,12 @@ class BleEntryActivity : BaseActivity<WeightBondVM, ActivityBleEntryBinding>() {
                 if (addToBackStack) ft.addToBackStack(newFragmentTag)
             }
         } else {
+            //将supportFragmentManager栈中fragment之前的都弹栈
+            var size = supportFragmentManager.fragments.size
+            for (i in size - 1 downTo 0) {
+                if (supportFragmentManager.fragments[i] == fragment) break
+                supportFragmentManager.popBackStackImmediate()
+            }
             ft.show(fragment)
         }
         ft.commit()
@@ -85,7 +91,8 @@ class BleEntryActivity : BaseActivity<WeightBondVM, ActivityBleEntryBinding>() {
         filter.addAction(LocationManager.PROVIDERS_CHANGED_ACTION)
         registerReceiver(receiver, filter)
 
-        changeFragment(DeviceListFragment::class.java, true)
+        //展示设备列表界面
+        changeFragment(DeviceListFragment::class.java, false)
     }
 
     override fun initData() {

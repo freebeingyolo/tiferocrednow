@@ -33,7 +33,7 @@ class WeightMeasureEndDeailFragment : BaseFragment<WeightMeasureVM, ActivityWeig
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        setToolBarLeftText(getString(R.string.ble_weight_name))
+        setToolBarLeftText(getString(R.string.device_weight))
         mBodyDetailAdapter = BodyDetailAdapter(requireContext(), ArrayList<WeightDetailsBean>())
         mViewBinding!!.rvData.layoutManager = LinearLayoutManager(requireContext())
         mViewBinding!!.rvData.adapter = mBodyDetailAdapter

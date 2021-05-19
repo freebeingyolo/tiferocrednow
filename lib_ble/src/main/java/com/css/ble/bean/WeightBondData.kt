@@ -16,7 +16,7 @@ package com.css.ble.bean
  *                       0xFF ：测试结束    end of test
  *                       只要Ailink协议才有这些状态。其他协议只要开始测量和结束两种状态   Only the Ailink protocol has these states. Other protocols only need to start measurement and end two states
  * @param tempUnit       温度单位 0=℃ ，1=℉   Temperature unit 0=℃, 1=℉
- * @param weightUnit     体重单位 0:kg 1斤 6:lb 4:st:lb   Weight unit 0: kg 1 catty 6: lb 4: st: lb
+ * @param weightUnit     体重单位 0:kg 1:斤 6:lb 4:st:lb   Weight unit 0: kg 1:catty 6: lb 4: st: lb
  * @param weightDecimal  体重小数点   Weight decimal point
  * @param weightStatus   0：实时重量，1：稳定重量  real-time weight, 1: stable weight
  * @param weightNegative 0 ：正重量; 1 ：负重量   positive weight; 1: negative weight
@@ -40,7 +40,7 @@ class WeightBondData() {
     var algorithmId: Int = 0
     var tempNegative: Int = 0
     var temp: Int = 0
-
+    var timestamp: Long = 0
 
     fun setValue(
         status: Int,
@@ -67,10 +67,20 @@ class WeightBondData() {
         this.algorithmId = algorithmId
         this.tempNegative = tempNegative
         this.temp = temp
+        this.timestamp = System.currentTimeMillis()
     }
 
-    fun getWeightKg(){
-
+    fun getWeightKg(): Float {
+        //0:kg 1:斤 6:lb 4:st:lb
+        var scale = 1f
+        when (weightUnit) {
+            1 -> scale *= 0.5f
+            4, 6 -> scale *= 0.4536f
+        }
+        for (i in 0 until weightDecimal) {
+            scale *= 0.1f
+        }
+        return weight * scale
     }
 
     override fun toString(): String {

@@ -9,6 +9,7 @@ import com.blankj.utilcode.util.ToastUtils
 import com.css.base.uibase.BaseFragment
 import com.css.ble.databinding.FragmentWeightBoundedBinding
 import com.css.ble.viewmodel.WeightBondVM
+import com.css.ble.bean.BondDeviceData
 import com.css.service.utils.WonderCoreCache
 
 
@@ -40,8 +41,9 @@ class WeightBondedFragment : BaseFragment<WeightBondVM, FragmentWeightBoundedBin
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mViewBinding!!.apply {
-            mac.text = mViewModel.cachedData.mac
-            macHex.text = mViewModel.cachedData.manufacturerDataHex
+            var data = WonderCoreCache.getData(WonderCoreCache.BOND_WEIGHT_INFO, BondDeviceData::class.java)
+            mac.text = data.mac
+            macHex.text = data.manufacturerDataHex
             unBond.setOnClickListener {
                 WonderCoreCache.removeKey(WonderCoreCache.BOND_WEIGHT_INFO)
                 var data = WonderCoreCache.getData(

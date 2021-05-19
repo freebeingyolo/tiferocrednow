@@ -3,15 +3,13 @@ package com.css.ble.viewmodel
 import android.os.Looper
 import android.util.Log
 import androidx.annotation.RequiresPermission
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import cn.net.aicare.algorithmutil.AlgorithmUtil
 import cn.net.aicare.algorithmutil.BodyFatData
-import com.blankj.utilcode.util.LogUtils
 import com.css.ble.bean.WeightBondData
 import com.css.ble.bean.WeightDetailsBean
 import com.css.ble.bean.WeightInfo
-import com.css.service.data.BondDeviceData
+import com.css.ble.bean.BondDeviceData
 import com.css.service.utils.WonderCoreCache
 import com.pingwang.bluetoothlib.BroadcastDataParsing
 import com.pingwang.bluetoothlib.bean.BleValueBean
@@ -24,9 +22,10 @@ import com.pinwang.ailinkble.AiLinkPwdUtil
 
 class WeightMeasureVM : BleEnvVM(), BroadcastDataParsing.OnBroadcastDataParsing {
     companion object {
-        var TAG = "BleServiceFragment"
+        var TAG = "WeightMeasureVM"
         private val TianShengKey = intArrayOf(0x54493049, 0x4132794E, 0x53783148, 0x476c6531)
     }
+
     val bleSvcLiveData: MutableLiveData<ELinkBleServer> by lazy { MutableLiveData<ELinkBleServer>() }
     private val mBluetoothService: ELinkBleServer?
         get() = bleSvcLiveData.value
@@ -183,7 +182,7 @@ class WeightMeasureVM : BleEnvVM(), BroadcastDataParsing.OnBroadcastDataParsing 
 
     @RequiresPermission(allOf = ["android.permission.BLUETOOTH_ADMIN", "android.permission.BLUETOOTH"])
     fun startScanBle(timeOut: Long = 0) {
-        LogUtils.d(TAG, "startScanBle")
+        Log.d(TAG, "startScanBle")
         if (mBluetoothService != null && !mBluetoothService!!.isScanStatus)
             this.mBluetoothService?.scanLeDevice(timeOut)
     }
@@ -206,14 +205,21 @@ class WeightMeasureVM : BleEnvVM(), BroadcastDataParsing.OnBroadcastDataParsing 
         tempNegative: Int,
         temp: Int
     ) {
-        WeightBondData().apply {
-            setValue(
+        WeightBondData().let {
+            it.setValue(
                 status, tempUnit, weightUnit, weightDecimal,
                 weightStatus, weightNegative, weight, adc, algorithmId, tempNegative, temp
             )
-            bondData.value = this
+            bondData.value = it
+            Log.d(TAG, "getWeightData:$it")
+
+            if (status == 0x00 && state.value != State.doing) {
+                state.value = State.doing
+            } else if (status == 0xFF && state.value != State.done) {
+                state.value = State.done
+                stopScanBle()
+            }
         }
     }
-
 
 }

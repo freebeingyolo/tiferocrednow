@@ -7,6 +7,8 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewStub
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.blankj.utilcode.constant.PermissionConstants
 import com.blankj.utilcode.util.ActivityUtils
@@ -16,20 +18,68 @@ import com.css.base.uibase.BaseFragment
 import com.css.base.uibase.inner.OnToolBarClickListener
 import com.css.base.view.ToolBarView
 import com.css.ble.R
-import com.css.ble.databinding.ActivityWeightMeasureBeginBinding
+import com.css.ble.bean.WeightBondData
+import com.css.ble.databinding.*
 import com.css.ble.ui.BleEntryActivity
 import com.css.ble.ui.WeightBondActivity
+import com.css.ble.ui.WeightMeasureActivity
 import com.css.ble.viewmodel.WeightMeasureVM
 import com.css.service.utils.ImageUtils
+import com.css.service.utils.WonderCoreCache
 
 /**
  * @author yuedong
  * @date 2021-05-17
  */
-class WeightMeasureFragment : BaseFragment<WeightMeasureVM, ActivityWeightMeasureBeginBinding>() {
+class WeightMeasureFragment : BaseFragment<WeightMeasureVM, FragmentWeightMeasureBinding>() {
 
-    override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): ActivityWeightMeasureBeginBinding {
-        return ActivityWeightMeasureBeginBinding.inflate(inflater, parent, false)
+    val beginBinding: ActivityWeightMeasureBeginBinding by lazy {
+        ActivityWeightMeasureBeginBinding.inflate(layoutInflater, mViewBinding!!.root, false)
+            .also {
+                it.tvToMeasure.setOnClickListener {
+                    checkAndRequestBleEnv {
+                        mViewModel.state.value = WeightMeasureVM.State.doing
+                        startScan()
+                    }
+                }
+            }
+    }
+    val doingBinding: ActivityWeightMeasureDoingBinding by lazy {
+        ActivityWeightMeasureDoingBinding.inflate(layoutInflater, mViewBinding!!.root, false)
+    }
+
+    val doneBinding: ActivityWeightMeasureDoneBinding by lazy {
+        ActivityWeightMeasureDoneBinding.inflate(layoutInflater, mViewBinding!!.root, false)
+            .also {
+                var it2 = it
+                mViewModel.bondData.observe(this) {
+                    it2.tvWeight.text = String.format("%.1f", it.getWeightKg())
+                }
+            }
+    }
+    val doneDetailBinding: ActivityWeightMeasureEndDetailBinding by lazy {
+        ActivityWeightMeasureEndDetailBinding.inflate(layoutInflater, mViewBinding!!.root, false)
+            .also {
+                var it2 = it
+                mViewModel.bondData.observe(this) {
+
+                }
+                it.btnMeasureWeight.setOnClickListener {//重新测量
+                    beginBinding.tvToMeasure.performClick()
+                }
+            }
+    }
+    val timeoutBinding: LayoutSearchTimeoutBinding by lazy {
+        LayoutSearchTimeoutBinding.inflate(layoutInflater, mViewBinding!!.root, false).also {
+            it.research.setOnClickListener {
+                mViewModel.state.value = WeightMeasureVM.State.doing
+                checkAndRequestBleEnv { startScan() }
+            }
+        }
+    }
+
+    override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): FragmentWeightMeasureBinding {
+        return FragmentWeightMeasureBinding.inflate(inflater, parent, false)
     }
 
     override fun initViewModel(): WeightMeasureVM {
@@ -39,6 +89,7 @@ class WeightMeasureFragment : BaseFragment<WeightMeasureVM, ActivityWeightMeasur
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
         observerVM()
+        mViewModel.state.value = WeightMeasureVM.State.begin
     }
 
     fun observerVM() {
@@ -51,27 +102,37 @@ class WeightMeasureFragment : BaseFragment<WeightMeasureVM, ActivityWeightMeasur
         mViewModel.locationOpened.observe(this) {
             updateBleCondition()
         }
+        //蓝牙环境ok，主动搜索
         mViewModel.bleSvcLiveData.observe(this) {
-            checkAndRequestBleEnv {
-                startScan()
-            }
+//            checkAndRequestBleEnv {
+//                startScan()
+//            }
         }
+
         mViewModel.state.observe(this) {
+            changeLayout(it)
             when (it) {
-                WeightMeasureVM.State.begin ->{
-
+                WeightMeasureVM.State.begin -> {
                 }
-                WeightMeasureVM.State.doing ->{
-
+                WeightMeasureVM.State.doing -> {
                 }
-                WeightMeasureVM.State.done ->{
-
+                WeightMeasureVM.State.done -> {
                 }
                 WeightMeasureVM.State.timeout -> {
-
                 }
             }
         }
+    }
+
+    fun changeLayout(state: WeightMeasureVM.State) {
+        mViewBinding!!.root.removeAllViews()
+        val map = mapOf(
+            WeightMeasureVM.State.begin to beginBinding,
+            WeightMeasureVM.State.doing to doingBinding,
+            WeightMeasureVM.State.done to doneBinding,
+            WeightMeasureVM.State.timeout to timeoutBinding,
+        )
+        mViewBinding!!.root.addView(map[state]!!.root)
     }
 
     private fun updateBleCondition() {
@@ -83,6 +144,7 @@ class WeightMeasureFragment : BaseFragment<WeightMeasureVM, ActivityWeightMeasur
             !mViewModel.locationOpened.value!! -> {
             }
             else -> {
+
             }
         }
         if (mViewModel.isBleEnvironmentOk) {
@@ -97,7 +159,7 @@ class WeightMeasureFragment : BaseFragment<WeightMeasureVM, ActivityWeightMeasur
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        setToolBarLeftText(getString(R.string.ble_weight_name))
+        setToolBarLeftText(getString(R.string.device_weight))
         var view = LayoutInflater.from(requireContext()).inflate(R.layout.layout_weight_measure_header, null, false)
         setRightImage(ImageUtils.getBitmap(view))
         getCommonToolBarView()?.setToolBarClickListener(object : OnToolBarClickListener {
@@ -105,23 +167,20 @@ class WeightMeasureFragment : BaseFragment<WeightMeasureVM, ActivityWeightMeasur
                 when (event) {
                     ToolBarView.ViewType.LEFT_IMAGE -> ActivityUtils.getActivityByContext(context).onBackPressed()
                     ToolBarView.ViewType.RIGHT_IMAGE -> {
-                        var fragment = (requireActivity() as BleEntryActivity).changeFragment(DeviceInfoFragment::class.java)
+                        var fragment = (requireActivity() as WeightMeasureActivity).changeFragment(DeviceInfoFragment::class.java)
+                        fragment.setArguments(WonderCoreCache.BOND_WEIGHT_INFO)
                     }
                 }
             }
         })
-        mViewBinding?.tvToMeasure?.setOnClickListener {
-            checkAndRequestBleEnv {
-                startScan()
-            }
-        }
+
     }
 
     fun startScan() {
         mViewModel.startScanBle(10 * 1000)
     }
 
-    private fun checkAndRequestBleEnv(onBleEnvOk: () -> Unit) {
+    private fun checkAndRequestBleEnv(onBleEnvOk: (() -> Unit)? = null) {
         if (!mViewModel.bleEnabled.value!!) {
             BluetoothAdapter.getDefaultAdapter().enable()
             return
@@ -152,6 +211,6 @@ class WeightMeasureFragment : BaseFragment<WeightMeasureVM, ActivityWeightMeasur
             return
         }
         //环境OK
-        onBleEnvOk()
+        onBleEnvOk?.invoke()
     }
 }

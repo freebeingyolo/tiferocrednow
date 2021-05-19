@@ -90,6 +90,7 @@
         </LinearLayout>
     </RelativeLayout>
     <!-- 绑定发现 -->
+    <!-- 绑定成功 -->
     <RelativeLayout
         android:id="@+id/found_root"
         android:layout_width="0dp"
@@ -97,8 +98,10 @@
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <ImageView
             android:id="@+id/found_img"
@@ -108,6 +111,25 @@
             android:layout_marginTop="30dp"
             android:layout_marginBottom="20dp"
             android:src="@mipmap/icon_weight_found" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/found_weight"
+            android:layout_width="48dp"
+            android:layout_height="21dp"
+            android:layout_below="@id/found_img"
+            android:layout_alignStart="@id/found_img"
+            android:layout_alignTop="@id/found_img"
+            android:layout_alignEnd="@id/found_img"
+            android:layout_alignBottom="@+id/found_img"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="89dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="88dp"
+            android:layout_marginBottom="154dp"
+            android:gravity="center"
+            android:textColor="#333333"
+            android:textSize="12sp"
+            tools:text="88.8kg" />
 
         <TextView
             android:id="@+id/fond_tip"
@@ -168,7 +190,7 @@
             android:textColor="#333333"
             android:textSize="13sp" />
     </RelativeLayout>
-    <!-- 绑定成功 -->
+
     <RelativeLayout
         android:id="@+id/bonded_root"
         android:layout_width="match_parent"

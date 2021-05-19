@@ -6,15 +6,14 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.Message
 import android.provider.Settings
 import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.postDelayed
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.constant.PermissionConstants
 import com.blankj.utilcode.util.PermissionUtils
 import com.blankj.utilcode.util.ToastUtils
@@ -24,7 +23,7 @@ import com.css.ble.databinding.FragmentWeightBondBinding
 import com.css.ble.ui.WeightBondActivity
 import com.css.ble.utils.BleUtils
 import com.css.ble.viewmodel.WeightBondVM
-import com.css.service.data.BondDeviceData
+import com.css.ble.bean.BondDeviceData
 import com.css.service.utils.WonderCoreCache
 
 /**
@@ -32,11 +31,26 @@ import com.css.service.utils.WonderCoreCache
  * @date 2021-05-17
  */
 class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBondBinding>() {
-    private val mHandler by lazy { Handler(Looper.getMainLooper()) }
+
+    private val mHandler by lazy {
+        object : Handler(Looper.getMainLooper()) {
+            override fun handleMessage(msg: Message) {
+                super.handleMessage(msg)
+                when (msg.what) {
+                    ID_SCAN_TIMEOUT -> {
+                        mViewModel.state.value = WeightBondVM.State.bondingTimeOut
+                        mViewModel.stopScanBle()
+                    }
+                }
+            }
+        }
+    }
+    var countDonwBackR: Runnable? = null
 
     companion object {
         fun newInstance() = WeightBondFragment()
         private val TAG: String = "WeightBond#WeightBondFragment"
+        const val ID_SCAN_TIMEOUT = 1
     }
 
     override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): FragmentWeightBondBinding {
@@ -57,10 +71,11 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBondBinding>
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        setToolBarLeftTitle("蓝牙体脂秤")
+        setToolBarLeftTitle(getString(R.string.device_weight))
         mViewBinding?.apply {
             tips.setOnClickListener { tipsClick(it) }
             var clickLis: (v: View) -> Unit = {
+                mViewModel.stopScanBle()
                 mViewModel.state.value = WeightBondVM.State.bondbegin
             }
             research.setOnClickListener(clickLis)
@@ -77,7 +92,6 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBondBinding>
             //返回主页
             back.setOnClickListener {
                 onBackPressed()
-                //requireActivity().finish()
             }
         }
     }
@@ -99,20 +113,19 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBondBinding>
         }
 
         mViewModel.bondDevice.observe(this) {
-            ToastUtils.showShort("发现一台设备：" + it.mac)
+    //          ToastUtils.showShort("发现一台设备：" + it.mac)
         }
 
         mViewModel.bondData.observe(this) {
             Log.d(TAG, "得到设备数据-->" + it.toString())
-            ToastUtils.showShort("得到设备数据：${it.weight} ${it.adc}")
+            mViewBinding!!.foundWeight.text = String.format("%.1fkg", it.getWeightKg())
             //发现绑定设备，停止搜索,并且得到体重
             mViewModel.state.value = WeightBondVM.State.found
-            mViewModel.stopScanBle()
         }
 
         mViewModel.state.observe(this) {
             //清除3s返回页面任务
-            mHandler.removeCallbacksAndMessages(null)
+            countDonwBackR?.apply { mHandler.removeCallbacks(this) }
             when (it) {
                 WeightBondVM.State.bondbegin -> {
                     showFragment(mViewBinding!!.bondbeginRoot)
@@ -124,12 +137,14 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBondBinding>
                     showFragment(mViewBinding!!.timeoutRoot)
                 }
                 WeightBondVM.State.found -> {
+                    mHandler.removeMessages(ID_SCAN_TIMEOUT)
                     showFragment(mViewBinding!!.foundRoot)
                     var it = mViewModel.bondDevice.value!!
                     mViewBinding!!.fondDevice.text = it.mac + "||" + it.manifactureHex
                 }
 
                 WeightBondVM.State.bonded -> {
+                    mViewModel.stopScanBle()
                     showFragment(mViewBinding!!.bondedRoot)
                     startCountDonwBack()
                 }
@@ -140,21 +155,24 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBondBinding>
     //开启3s返回页面任务
     private fun startCountDonwBack() {
         var seconds = 3
-        mViewBinding!!.countdownTv.text = Html.fromHtml(getString(R.string.count_down_tips, seconds))
-        var r = object : Runnable {
-            override fun run() {
-                seconds--
-                Log.d(TAG, "seconds:$seconds")
-                mViewBinding!!.countdownTv.text = Html.fromHtml(getString(R.string.count_down_tips, seconds))
-                if (seconds > 0) {
-                    mHandler.postDelayed(this, 1000)
-                } else {
-                    mViewBinding!!.back.performClick()
+        if (countDonwBackR == null) {
+            countDonwBackR = object : Runnable {
+                override fun run() {
+                    seconds--
+                    Log.d(TAG, "seconds:$seconds")
+                    mViewBinding!!.countdownTv.text = Html.fromHtml(getString(R.string.count_down_tips, seconds))
+                    if (seconds > 0) {
+                        mHandler.postDelayed(this, 1000)
+                    } else {
+                        mViewBinding!!.back.performClick()
+                    }
                 }
             }
         }
-        mHandler.postDelayed(r, 1000)
+        mViewBinding!!.countdownTv.text = Html.fromHtml(getString(R.string.count_down_tips, seconds))
+        mHandler.postDelayed(countDonwBackR!!, 1000)
     }
+
 
     private fun showFragment(view: View) {
         for (i in 0..mViewBinding!!.root.childCount) {
@@ -195,11 +213,12 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBondBinding>
 
     fun startScan() {
         if (!mViewModel.mBluetoothService!!.isScanStatus) {
-            mViewModel.startScanBle(3 * 1000);
+            mHandler.removeMessages(ID_SCAN_TIMEOUT)
+            mHandler.sendEmptyMessageDelayed(ID_SCAN_TIMEOUT, 3 * 1000)
+            mViewModel.startScanBle();
             mViewBinding!!.content.text = "开始搜索"
         }
     }
-
 
     //点击检查蓝牙环境
     private fun tipsClick(view: View?) {
