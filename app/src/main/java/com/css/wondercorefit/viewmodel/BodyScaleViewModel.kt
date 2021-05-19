@@ -46,7 +46,7 @@ class BodyScaleViewModel: BaseViewModel() {
         return itemBle[enumPosition].title + "   " +  itemBle[enumPosition].style + "   " +  itemBle[enumPosition].information
     }
 
-    // 	标准体重
+    // 	标准体重  	男性：(身高cm－80)×70﹪=标准体重  	女性：(身高cm－70)×60﹪=标准体重
     private fun standardWeight (high: Float, sex: String): Float {
         return if (sex == "男") {
             (( high - 80 ) * 0.7).toFloat()
@@ -119,10 +119,47 @@ class BodyScaleViewModel: BaseViewModel() {
         return standard
     }
 
-    //
-    private fun obesity (weight: Float, high: Float, sex: String): Float {
-        var standWeight = standardWeight(high,sex)
-        return ( weight - standWeight )/standWeight
+    //	体重控制量   体重控制量=实际体重-标准体重
+    private fun weightControl (weight: Float, high: Float, sex: String): Float {
+        var stand = standardWeight(high,sex)
+        return weight - stand
+    }
+
+    // 去脂体重   去脂体重=（1-体脂率）* 实际体重
+    private fun fatFreeWeight(weight: Float, fatPercent: Float):Float {
+        return (1 - fatPercent) * weight
+    }
+
+    //	肌肉量
+    private fun muscleContent(weight: Float, musclePercent:Float): Float {
+        return weight * musclePercent
+    }
+
+    //  蛋白量
+    private fun proteinContent(weight: Float, proteinPercent: Float): Float {
+        return weight * proteinPercent
+    }
+
+    //  肥胖等级
+    private fun fatLevel (weight: Float, high: Float, sex: String): String {
+        var fatWeight = (weight - standardWeight(high,sex)) / standardWeight(high,sex)
+        var fatLevel = ""
+        if (fatWeight < -0.2) {
+            fatLevel = "体重不足"
+        }
+        if (-0.2 <= fatWeight && fatWeight < -0.1) {
+            fatLevel = "偏瘦"
+        }
+        if (-0.1 <= fatWeight && fatWeight <= 0.1) {
+            fatLevel = "标准"
+        }
+        if (0.1 < fatWeight && fatWeight <=0.2) {
+            fatLevel = "偏重"
+        }
+        if (0.2 < fatWeight) {
+            fatLevel = "超重"
+        }
+        return fatLevel
     }
 
 }
