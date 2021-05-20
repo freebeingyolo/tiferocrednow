@@ -221,12 +221,12 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
                     if (null != iSportStepInterface) {
                         try {
                             stepArray = iSportStepInterface.todaySportStepArray
-                            Log.d(TAG, " refresh UI in 500 ms  :   ")
+                           // Log.d(TAG, " refresh UI in 500 ms  :   ")
                             updataValues(stepArray)
                         } catch (e: RemoteException) {
                             e.printStackTrace()
                         }
-                        Log.d(TAG, " stepArray  :  $stepArray    step   :   $stepArray ")
+                       // Log.d(TAG, " stepArray  :  $stepArray    step   :   $stepArray ")
                         if (stepArray != stepArray) {
                             stepArray = stepArray
 //                            updateStepCount(stepArray)

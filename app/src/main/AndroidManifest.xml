@@ -34,7 +34,6 @@
         <activity android:name=".ui.activity.setting.AboutUsActivity" />
         <activity android:name=".ui.activity.setting.PersonInformationActivity" />
         <activity android:name=".ui.activity.TestActivity" />
-
         <activity android:name=".ui.activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -50,10 +49,15 @@
             android:theme="@style/FullScreenTheme">
             <intent-filter>
                 <action android:name="com.css.Notification.action" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
         </activity>
+        <activity android:name=".ui.activity.index.CoursePlayActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:screenOrientation="portrait"
+            android:theme="@style/FullScreenTheme"
+            ></activity>
     </application>
 
 </manifest>
