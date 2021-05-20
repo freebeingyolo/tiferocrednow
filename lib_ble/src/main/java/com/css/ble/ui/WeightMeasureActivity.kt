@@ -15,6 +15,7 @@ import com.css.base.uibase.BaseActivity
 import com.css.ble.R
 import com.css.ble.databinding.ActivityBleEntryBinding
 import com.css.ble.ui.fragment.WeightMeasureFragment
+import com.css.ble.utils.BleFragmentUtils
 import com.css.ble.utils.BleUtils
 import com.css.ble.viewmodel.WeightMeasureVM
 import com.css.service.router.ARouterConst
@@ -24,7 +25,6 @@ import com.pingwang.bluetoothlib.utils.BleLog
 
 @Route(path = ARouterConst.PATH_APP_BLE_WEIGHTMEASURE)
 class WeightMeasureActivity : BaseActivity<WeightMeasureVM, ActivityBleEntryBinding>() {
-    var mCurFragment: Fragment? = null
 
     private val mFhrSCon: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
@@ -38,35 +38,6 @@ class WeightMeasureActivity : BaseActivity<WeightMeasureVM, ActivityBleEntryBind
             mViewModel.onUnBindService()
         }
     }
-
-    fun <T : Fragment> changeFragment(
-        cls: Class<T>,
-        addToBackStack: Boolean = true,
-        option: BleEntryActivity.Option = BleEntryActivity.Option.OP_ADD
-    ): T {
-        val newFragmentTag = cls.simpleName
-        val ft = supportFragmentManager.beginTransaction()
-        if (mCurFragment != null && !mCurFragment!!.isHidden) {
-            ft.hide(mCurFragment!!)
-        }
-        var fragment = supportFragmentManager.findFragmentByTag(newFragmentTag)
-        if (fragment == null) {
-            fragment = cls.newInstance()
-            if (!fragment.isAdded) {
-                when (option) {
-                    BleEntryActivity.Option.OP_ADD -> ft.add(R.id.content, fragment, newFragmentTag)
-                    BleEntryActivity.Option.OP_REPLACE -> ft.replace(R.id.content, fragment, newFragmentTag)
-                }
-                if (addToBackStack) ft.addToBackStack(newFragmentTag)
-            }
-        } else {
-            ft.show(fragment)
-        }
-        ft.commit()
-        mCurFragment = fragment
-        return fragment as T
-    }
-
 
     override fun enabledVisibleToolBar(): Boolean {
         return false
@@ -83,8 +54,7 @@ class WeightMeasureActivity : BaseActivity<WeightMeasureVM, ActivityBleEntryBind
         val filter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
         filter.addAction(LocationManager.PROVIDERS_CHANGED_ACTION)
         registerReceiver(receiver, filter)
-
-        changeFragment(WeightMeasureFragment::class.java,false)
+        BleFragmentUtils.changeFragment(WeightMeasureFragment::class.java,false)
     }
 
     override fun initData() {

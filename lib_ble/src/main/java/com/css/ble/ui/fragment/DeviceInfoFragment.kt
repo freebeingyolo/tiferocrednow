@@ -94,6 +94,7 @@ class DeviceInfoFragment : BaseFragment<DefaultViewModel, FragmentDeviceInfoBind
 
                         override fun onRightBtnClick(view: View) {
                             super.onRightBtnClick(view)
+
                             WonderCoreCache.removeKey(data.getCacheKey())
                             ToastUtils.showShort("解锁成功")
                         }

@@ -1,9 +1,12 @@
 package com.css.ble.ui.fragment
 
+import android.app.ProgressDialog
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +17,7 @@ import com.blankj.utilcode.constant.PermissionConstants
 import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.PermissionUtils
 import com.blankj.utilcode.util.ToastUtils
+import com.css.base.dialog.CommonAlertDialog
 import com.css.base.uibase.BaseFragment
 import com.css.base.uibase.inner.OnToolBarClickListener
 import com.css.base.view.ToolBarView
@@ -23,6 +27,7 @@ import com.css.ble.databinding.*
 import com.css.ble.ui.BleEntryActivity
 import com.css.ble.ui.WeightBondActivity
 import com.css.ble.ui.WeightMeasureActivity
+import com.css.ble.utils.BleFragmentUtils
 import com.css.ble.viewmodel.WeightMeasureVM
 import com.css.service.utils.ImageUtils
 import com.css.service.utils.WonderCoreCache
@@ -32,7 +37,7 @@ import com.css.service.utils.WonderCoreCache
  * @date 2021-05-17
  */
 class WeightMeasureFragment : BaseFragment<WeightMeasureVM, FragmentWeightMeasureBinding>() {
-
+    private var TAG = "WeightMeasureFragment"
     val beginBinding: ActivityWeightMeasureBeginBinding by lazy {
         ActivityWeightMeasureBeginBinding.inflate(layoutInflater, mViewBinding!!.root, false)
             .also {
@@ -117,12 +122,24 @@ class WeightMeasureFragment : BaseFragment<WeightMeasureVM, FragmentWeightMeasur
                 WeightMeasureVM.State.doing -> {
                 }
                 WeightMeasureVM.State.done -> {
+                    //3s --> done
+                    var totalTime: Long = 2 * 1000
+                    object : CountDownTimer(totalTime, 1000) {
+                        override fun onFinish() {
+                            BleFragmentUtils.changeFragment(WeightMeasureEndDeailFragment::class.java, false)
+                        }
+
+                        override fun onTick(millisUntilFinished: Long) {
+                            Log.d(TAG, "onTick#millisUntilFinished:$millisUntilFinished")
+                        }
+                    }.start()
                 }
                 WeightMeasureVM.State.timeout -> {
                 }
             }
         }
     }
+
 
     fun changeLayout(state: WeightMeasureVM.State) {
         mViewBinding!!.root.removeAllViews()
@@ -167,7 +184,7 @@ class WeightMeasureFragment : BaseFragment<WeightMeasureVM, FragmentWeightMeasur
                 when (event) {
                     ToolBarView.ViewType.LEFT_IMAGE -> ActivityUtils.getActivityByContext(context).onBackPressed()
                     ToolBarView.ViewType.RIGHT_IMAGE -> {
-                        var fragment = (requireActivity() as WeightMeasureActivity).changeFragment(DeviceInfoFragment::class.java)
+                        var fragment = BleFragmentUtils.changeFragment(DeviceInfoFragment::class.java)
                         fragment.setArguments(WonderCoreCache.BOND_WEIGHT_INFO)
                     }
                 }

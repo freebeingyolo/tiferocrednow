@@ -1,10 +1,7 @@
 package com.css.wondercorefit.ui.fragment
 
 //import com.css.ble.ui.WeightBondActivity
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
+import android.content.*
 import android.os.*
 import android.util.Log
 import android.view.LayoutInflater
@@ -78,9 +75,12 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             mViewBinding?.llDevice?.visibility = View.VISIBLE
             mViewBinding?.bleWheel?.visibility = View.VISIBLE
         }
-        var sp =
-            activity?.getSharedPreferences("spUtils", Context.MODE_PRIVATE)
-        sp?.registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
+        sp?.registerOnSharedPreferenceChangeListener(spLis)
+    }
+
+    private val sp by lazy { activity?.getSharedPreferences("spUtils", Context.MODE_PRIVATE) }
+    private val spLis by lazy {
+        SharedPreferences.OnSharedPreferenceChangeListener { sp, key ->
             if (key.equals(WonderCoreCache.BOND_WEIGHT_INFO)) {
                 if (WonderCoreCache.getData(
                         WonderCoreCache.BOND_WEIGHT_INFO,
@@ -106,6 +106,11 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             }
             LogUtils.vTag("suisui", key)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        sp?.unregisterOnSharedPreferenceChangeListener(spLis)
     }
 
     private fun initProgressRate() {
@@ -252,10 +257,10 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     override fun onClick(v: View) {
         when (v.id) {
             R.id.ble_scale -> {
-                activity?.let { WeightMeasureBeginActivity.starActivity(it) }
+                activity?.let { WeightMeasureBeginActivity.toWeightBondOrMeasureAct(it) }
             }
-            R.id.goto_measure->{
-                activity?.let { WeightMeasureBeginActivity.starActivity(it) }
+            R.id.goto_measure -> {
+                activity?.let { WeightMeasureBeginActivity.toWeightBondOrMeasureAct(it) }
             }
         }
     }

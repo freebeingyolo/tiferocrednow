@@ -14,7 +14,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.constant.PermissionConstants
+import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.PermissionUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.css.base.uibase.BaseFragment
@@ -24,6 +26,7 @@ import com.css.ble.ui.WeightBondActivity
 import com.css.ble.utils.BleUtils
 import com.css.ble.viewmodel.WeightBondVM
 import com.css.ble.bean.BondDeviceData
+import com.css.service.router.ARouterConst
 import com.css.service.utils.WonderCoreCache
 
 /**
@@ -91,7 +94,7 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBondBinding>
             }
             //返回主页
             back.setOnClickListener {
-                onBackPressed()
+                ARouter.getInstance().build(ARouterConst.PATH_APP_MAIN).navigation()
             }
         }
     }
@@ -113,7 +116,7 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBondBinding>
         }
 
         mViewModel.bondDevice.observe(this) {
-    //          ToastUtils.showShort("发现一台设备：" + it.mac)
+            //          ToastUtils.showShort("发现一台设备：" + it.mac)
         }
 
         mViewModel.bondData.observe(this) {

@@ -37,6 +37,11 @@ class WeightMeasureEndDeailFragment : BaseFragment<WeightMeasureVM, ActivityWeig
         mBodyDetailAdapter = BodyDetailAdapter(requireContext(), ArrayList<WeightDetailsBean>())
         mViewBinding!!.rvData.layoutManager = LinearLayoutManager(requireContext())
         mViewBinding!!.rvData.adapter = mBodyDetailAdapter
+        mViewBinding?.apply {
+            btnMeasureWeight.setOnClickListener {
+
+            }
+        }
     }
 
     override fun initData() {

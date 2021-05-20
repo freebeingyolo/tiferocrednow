@@ -8,7 +8,6 @@ import cn.net.aicare.algorithmutil.AlgorithmUtil
 import cn.net.aicare.algorithmutil.BodyFatData
 import com.css.ble.bean.WeightBondData
 import com.css.ble.bean.WeightDetailsBean
-import com.css.ble.bean.WeightInfo
 import com.css.ble.bean.BondDeviceData
 import com.css.service.utils.WonderCoreCache
 import com.pingwang.bluetoothlib.BroadcastDataParsing
@@ -35,7 +34,6 @@ class WeightMeasureVM : BleEnvVM(), BroadcastDataParsing.OnBroadcastDataParsing 
 
 
     val state: MutableLiveData<State> by lazy { MutableLiveData<State>() }
-    private val weightInfo: MutableLiveData<WeightInfo> by lazy { MutableLiveData<WeightInfo>() }
 
     enum class State {
         begin,
@@ -48,9 +46,9 @@ class WeightMeasureVM : BleEnvVM(), BroadcastDataParsing.OnBroadcastDataParsing 
         var userInfo = WonderCoreCache.getUserInfo()
         val sex = userInfo.setInt
         val age = userInfo.age.toInt()
-        val weight_kg = weightInfo.value!!.weight
+        val weight_kg = bondData.value!!.getWeightKg() * 1.0
         val height_cm = userInfo.stature.toInt()
-        val adc = weightInfo.value!!.adc
+        val adc = bondData.value!!.adc
         var data: BodyFatData = AlgorithmUtil.getBodyFatData(AlgorithmUtil.AlgorithmType.TYPE_AICARE, sex, age, weight_kg, height_cm, adc);
         return data
     }
