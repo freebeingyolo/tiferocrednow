@@ -11,15 +11,20 @@ class WonderCoreCache {
         USER_INFO,
         BOND_WEIGHT_INFO,
         BOND_WHEEL_INFO,
+        FIRST_WEIGHT_INFO,
+        LAST_WEIGHT_INFO,
         STEP_DATA
     )
     @kotlin.annotation.Retention(AnnotationRetention.SOURCE)
+    @Target(AnnotationTarget.TYPE_PARAMETER, AnnotationTarget.VALUE_PARAMETER)
     annotation class CacheKey
 
 
     companion object {
         const val BOND_WEIGHT_INFO = "BOND_WEIGHT_INFO" //体脂秤
         const val BOND_WHEEL_INFO = "BOND_WHEEL_INFO" //健腹轮
+        const val FIRST_WEIGHT_INFO = "FIRST_WEIGHT_INFO" //
+        const val LAST_WEIGHT_INFO = "LAST_WEIGHT_INFO"
         const val USER_INFO = "user_info"
         const val STEP_DATA = "stepdata"
 
@@ -54,9 +59,8 @@ class WonderCoreCache {
             return t
         }
 
-        fun removeKey(@CacheKey k: String) {
-            SPUtils.getInstance().remove(k)
-        }
+        fun containsKey(@CacheKey k: String) = SPUtils.getInstance().contains(k)
+        fun removeKey(@CacheKey k: String) = SPUtils.getInstance().remove(k)
     }
 
 

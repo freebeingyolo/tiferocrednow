@@ -12,8 +12,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.css.base.uibase.BaseActivity
-import com.css.ble.R
 import com.css.ble.databinding.ActivityBleEntryBinding
+import com.css.ble.ui.fragment.DeviceListFragment
 import com.css.ble.utils.BleFragmentUtils
 import com.css.ble.utils.BleUtils
 import com.css.ble.viewmodel.WeightBondVM
@@ -38,7 +38,6 @@ class BleEntryActivity : BaseActivity<WeightBondVM, ActivityBleEntryBinding>() {
             Log.d(TAG, "服务与界面连接断开")
             mViewModel.onUnBindService()
             mBluetoothService = null
-            BleFragmentUtils.changeFragment(WeightBondedFragment::class.java,false)
         }
     }
 

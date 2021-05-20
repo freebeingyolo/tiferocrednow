@@ -1,5 +1,7 @@
 package com.css.ble.bean
 
+import com.css.service.utils.WonderCoreCache
+
 /**
  * @author yuedong
  * @date 2021-05-14
@@ -41,6 +43,23 @@ class WeightBondData() {
     var tempNegative: Int = 0
     var temp: Int = 0
     var timestamp: Long = 0
+
+    companion object {
+        //第一次测量体重信息
+        var firstWeightInfo: WeightBondData?
+            get() = WonderCoreCache.takeIf { it.containsKey(WonderCoreCache.FIRST_WEIGHT_INFO) }?.let {
+                it.getData(WonderCoreCache.FIRST_WEIGHT_INFO, WeightBondData::class.java)
+            }
+            set(value) = WonderCoreCache.saveData(WonderCoreCache.FIRST_WEIGHT_INFO, value)
+
+        //上次测量体重信息
+        var lastWeightInfo: WeightBondData?
+            get() = WonderCoreCache.takeIf { it.containsKey(WonderCoreCache.LAST_WEIGHT_INFO) }?.let {
+                it.getData(WonderCoreCache.LAST_WEIGHT_INFO, WeightBondData::class.java)
+            }
+            set(value) = WonderCoreCache.saveData(WonderCoreCache.LAST_WEIGHT_INFO, value)
+    }
+
 
     fun setValue(
         status: Int,

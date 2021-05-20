@@ -3,12 +3,13 @@ package com.css.ble.viewmodel
 import android.os.Looper
 import android.util.Log
 import androidx.annotation.RequiresPermission
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import cn.net.aicare.algorithmutil.AlgorithmUtil
 import cn.net.aicare.algorithmutil.BodyFatData
 import com.css.ble.bean.WeightBondData
-import com.css.ble.bean.WeightDetailsBean
 import com.css.ble.bean.BondDeviceData
+import com.css.ble.bean.WeightDetailBean
 import com.css.service.utils.WonderCoreCache
 import com.pingwang.bluetoothlib.BroadcastDataParsing
 import com.pingwang.bluetoothlib.bean.BleValueBean
@@ -30,10 +31,11 @@ class WeightMeasureVM : BleEnvVM(), BroadcastDataParsing.OnBroadcastDataParsing 
         get() = bleSvcLiveData.value
 
     private var decryptKey: IntArray = TianShengKey
-    val bondData: MutableLiveData<WeightBondData> by lazy { MutableLiveData<WeightBondData>() }
+    private val _bondData: MutableLiveData<WeightBondData> by lazy { MutableLiveData<WeightBondData>() }
+    val bondData: LiveData<WeightBondData> get() = _bondData
 
-
-    val state: MutableLiveData<State> by lazy { MutableLiveData<State>() }
+    private val _state: MutableLiveData<State> by lazy { MutableLiveData<State>() }
+    val state: LiveData<State> get() = _state
 
     enum class State {
         begin,
@@ -42,13 +44,17 @@ class WeightMeasureVM : BleEnvVM(), BroadcastDataParsing.OnBroadcastDataParsing 
         done
     }
 
+    fun initOrReset() {
+        _state.value = State.begin
+    }
+
     fun getBodyFatData(): BodyFatData {
         var userInfo = WonderCoreCache.getUserInfo()
         val sex = userInfo.setInt
         val age = userInfo.age.toInt()
-        val weight_kg = bondData.value!!.getWeightKg() * 1.0
+        val weight_kg = _bondData.value!!.getWeightKg() * 1.0
         val height_cm = userInfo.stature.toInt()
-        val adc = bondData.value!!.adc
+        val adc = _bondData.value!!.adc
         var data: BodyFatData = AlgorithmUtil.getBodyFatData(AlgorithmUtil.AlgorithmType.TYPE_AICARE, sex, age, weight_kg, height_cm, adc);
         return data
     }
@@ -68,13 +74,13 @@ class WeightMeasureVM : BleEnvVM(), BroadcastDataParsing.OnBroadcastDataParsing 
         return datas
     }
 
-    fun getBodyFatDataList(): List<WeightDetailsBean> {
+    fun getBodyFatDataList(): List<WeightDetailBean> {
         var data: BodyFatData = getBodyFatData();
-        var datas = mutableListOf<WeightDetailsBean>()
+        var datas = mutableListOf<WeightDetailBean>()
         var clazz = data.javaClass
         for (m in clazz.declaredFields) {
             m.isAccessible = true
-            var map = WeightDetailsBean(
+            var map = WeightDetailBean(
                 m.name,
                 "",
                 m.get(data).toString()
@@ -162,7 +168,7 @@ class WeightMeasureVM : BleEnvVM(), BroadcastDataParsing.OnBroadcastDataParsing 
     private val mOnCallbackBle: OnCallbackBle = object : OnCallbackBle {
         override fun onScanTimeOut() {
             super.onScanTimeOut()
-            state.value = State.timeout
+            _state.value = State.timeout
         }
     }
 
@@ -181,6 +187,7 @@ class WeightMeasureVM : BleEnvVM(), BroadcastDataParsing.OnBroadcastDataParsing 
     @RequiresPermission(allOf = ["android.permission.BLUETOOTH_ADMIN", "android.permission.BLUETOOTH"])
     fun startScanBle(timeOut: Long = 0) {
         Log.d(TAG, "startScanBle")
+        _state.value = State.doing
         if (mBluetoothService != null && !mBluetoothService!!.isScanStatus)
             this.mBluetoothService?.scanLeDevice(timeOut)
     }
@@ -208,13 +215,15 @@ class WeightMeasureVM : BleEnvVM(), BroadcastDataParsing.OnBroadcastDataParsing 
                 status, tempUnit, weightUnit, weightDecimal,
                 weightStatus, weightNegative, weight, adc, algorithmId, tempNegative, temp
             )
-            bondData.value = it
+            _bondData.value = it
             Log.d(TAG, "getWeightData:$it")
 
             if (status == 0x00 && state.value != State.doing) {
-                state.value = State.doing
+                _state.value = State.doing
             } else if (status == 0xFF && state.value != State.done) {
-                state.value = State.done
+                _state.value = State.done
+                WeightBondData.firstWeightInfo ?: let { WeightBondData.firstWeightInfo = _bondData.value }
+                WeightBondData.lastWeightInfo = _bondData.value
                 stopScanBle()
             }
         }

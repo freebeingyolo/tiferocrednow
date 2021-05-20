@@ -1,4 +1,4 @@
-package com.css.ble.ui
+package com.css.ble.ui.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -16,11 +16,9 @@ import com.css.base.uibase.BaseFragment
 import com.css.ble.R
 import com.css.ble.databinding.FragmentDeviceListBinding
 import com.css.ble.databinding.LayoutDeviceItemBinding
-import com.css.ble.ui.fragment.WeightBondFragment
 import com.css.ble.ui.view.SpaceItemDecoration
 import com.css.ble.viewmodel.DeviceListVM.DeviceInfo
 import com.css.ble.viewmodel.DeviceListVM
-import com.css.ble.bean.BondDeviceData
 import com.css.ble.utils.BleFragmentUtils
 import com.css.service.utils.WonderCoreCache
 import kotlin.concurrent.thread

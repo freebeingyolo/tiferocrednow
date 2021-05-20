@@ -1,14 +1,12 @@
 package com.css.ble.utils
 
 import androidx.annotation.IntDef
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.blankj.utilcode.util.ActivityUtils
 import com.css.ble.R
 import java.lang.IllegalStateException
-import java.lang.annotation.RetentionPolicy
 
 
 /**
@@ -34,16 +32,18 @@ object BleFragmentUtils {
     }
 
     fun <T : Fragment> changeFragment(
-        supportFragmentManager: FragmentManager,
+        fragmentManager: FragmentManager,
         cls: Class<T>,
         addToBackStack: Boolean = true,
         @OptionRange option: Int = OP_ADD,
     ): T {
         val newFragmentTag = cls.simpleName
-        val ft = supportFragmentManager.beginTransaction()
-        var fragment = supportFragmentManager.findFragmentByTag(newFragmentTag)
+        val ft = fragmentManager.beginTransaction()
+        var fragment = fragmentManager.findFragmentByTag(newFragmentTag)
         if (fragment == null) {
             fragment = cls.newInstance()
+            var curFragment = fragmentManager.fragments.takeIf { it.size > 0 }?.let { it[it.size - 1] }
+            curFragment?.let { ft.hide(it) }
             if (!fragment.isAdded) {
                 when (option) {
                     OP_ADD -> ft.add(R.id.content, fragment, newFragmentTag)
@@ -53,10 +53,10 @@ object BleFragmentUtils {
             }
         } else {
             //将supportFragmentManager栈中fragment之前的都弹栈
-            var size = supportFragmentManager.fragments.size
+            var size = fragmentManager.fragments.size
             for (i in size - 1 downTo 0) {
-                if (supportFragmentManager.fragments[i] == fragment) break
-                supportFragmentManager.popBackStackImmediate()
+                if (fragmentManager.fragments[i] == fragment) break
+                fragmentManager.popBackStackImmediate()
             }
             ft.show(fragment)
         }

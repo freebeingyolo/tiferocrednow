@@ -1,4 +1,4 @@
-package com.css.ble.ui
+package com.css.ble.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,9 +7,10 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.blankj.utilcode.util.ToastUtils
 import com.css.base.uibase.BaseFragment
-import com.css.ble.databinding.FragmentWeightBoundedBinding
-import com.css.ble.viewmodel.WeightBondVM
 import com.css.ble.bean.BondDeviceData
+import com.css.ble.databinding.FragmentWeightBoundedBinding
+import com.css.ble.ui.WeightBondActivity
+import com.css.ble.viewmodel.WeightBondVM
 import com.css.service.utils.WonderCoreCache
 
 

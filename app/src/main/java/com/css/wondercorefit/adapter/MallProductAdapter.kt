@@ -1,8 +1,6 @@
 package com.css.wondercorefit.adapter
 
 import android.content.Context
-import com.css.ble.bean.WeightDetailsBean
-import com.css.ble.databinding.ItemWeightDetailsBinding
 import com.css.ble.ui.view.BaseBindingAdapter
 import com.css.wondercorefit.R
 import com.css.wondercorefit.bean.ProductBean

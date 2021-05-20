@@ -16,16 +16,14 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.constant.PermissionConstants
-import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.PermissionUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.css.base.uibase.BaseFragment
 import com.css.ble.R
+import com.css.ble.bean.BondDeviceData
 import com.css.ble.databinding.FragmentWeightBondBinding
-import com.css.ble.ui.WeightBondActivity
 import com.css.ble.utils.BleUtils
 import com.css.ble.viewmodel.WeightBondVM
-import com.css.ble.bean.BondDeviceData
 import com.css.service.router.ARouterConst
 import com.css.service.utils.WonderCoreCache
 
@@ -54,6 +52,7 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBondBinding>
         fun newInstance() = WeightBondFragment()
         private val TAG: String = "WeightBond#WeightBondFragment"
         const val ID_SCAN_TIMEOUT = 1
+        const val GPS_REQUEST_CODE = 100
     }
 
     override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): FragmentWeightBondBinding {
@@ -257,7 +256,7 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBondBinding>
         }
         if (!mViewModel.locationOpened.value!!) {
             val intent: Intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-            startActivityForResult(intent, WeightBondActivity.GPS_REQUEST_CODE)
+            startActivityForResult(intent, GPS_REQUEST_CODE)
             return
         }
         //环境OK
@@ -267,7 +266,7 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBondBinding>
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            WeightBondActivity.GPS_REQUEST_CODE -> {
+            GPS_REQUEST_CODE -> {
                 mViewModel.locationOpened.value = BleUtils.isLocationEnabled(requireContext())
             }
         }

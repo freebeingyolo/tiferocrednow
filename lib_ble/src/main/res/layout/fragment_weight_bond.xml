@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true"
-    tools:context=".ui.WeightBondActivity">
+    tools:context=".ui.BleEntryActivity">
 
     <TextView
         android:id="@+id/tips"
@@ -23,7 +22,7 @@
         android:id="@+id/bondbegin_root"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -45,7 +44,7 @@
                 android:src="@mipmap/icon_bound_img" />
 
             <TextView
-                android:id="@+id/content"
+                android:id="@+id/content2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
@@ -58,6 +57,18 @@
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
+        <TextView
+            android:id="@+id/content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="30dp"
+            tools:text="请持续轻踩，并保持屏幕常亮"
+            android:textColor="#333333"
+            android:textSize="13sp"
+            android:visibility="gone" />
     </RelativeLayout>
     <!-- 绑定超时界面-->
     <RelativeLayout
@@ -96,7 +107,7 @@
         android:id="@+id/found_root"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

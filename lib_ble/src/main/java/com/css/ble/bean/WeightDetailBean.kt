@@ -1,6 +1,6 @@
 package com.css.ble.bean
 
-data class WeightDetailsBean(
+data class WeightDetailBean(
     var type: String,
     var status: String,
     var value: String

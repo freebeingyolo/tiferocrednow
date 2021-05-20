@@ -18,6 +18,12 @@ class BondDeviceData(
 ) : BaseData() {
     var alias: String? = null
 
+    companion object {
+        const val TYPE_WEIGHT = 0
+        const val TYPE_WHEEL = 1
+
+    }
+
     constructor() : this("", "", TYPE_WEIGHT) {
 
     }
@@ -31,10 +37,6 @@ class BondDeviceData(
             }
         }
 
-    companion object {
-        const val TYPE_WEIGHT = 0
-        const val TYPE_WHEEL = 1
-    }
 
     @IntDef(TYPE_WEIGHT, TYPE_WHEEL)
     @kotlin.annotation.Retention(AnnotationRetention.SOURCE)

@@ -23,19 +23,19 @@
             android:layout_height="match_parent"
             android:background="@color/white"
             android:gravity="center"
-            android:text="@string/app_name"
             android:textColor="@color/text_color"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:text="@string/app_name" />
 
         <ImageButton
             android:id="@+id/addBleDevice"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="30dp"
-            android:background="@mipmap/icon" />
+            android:layout_marginStart="30dp"
+            android:background="@mipmap/icon_add_device" />
     </RelativeLayout>
 
     <androidx.core.widget.NestedScrollView
