@@ -1,5 +1,6 @@
 package com.css.base.uibase
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
@@ -12,6 +13,7 @@ abstract class BaseActivity<VM : BaseViewModel, VB : ViewBinding> : BaseWonderAc
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ActivityHolder.addActivity(this)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED; // 禁用横屏
     }
 
     override fun onStop() {
