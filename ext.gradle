@@ -41,7 +41,11 @@ ext {
             recyclerView         : 'androidx.recyclerview:recyclerview:1.2.0-alpha03',
 
             arouter              : 'com.alibaba:arouter-api:1.5.1',
-            arouter_compiler     : 'com.alibaba:arouter-compiler:1.5.1'
+            arouter_compiler     : 'com.alibaba:arouter-compiler:1.5.1',
+            bugly_upgrade        : 'com.tencent.bugly:crashreport_upgrade:latest.release',
+            bugly                : 'com.tencent.bugly:nativecrashreport:latest.release',
+            multidex                 : "androidx.multidex:multidex:2.0.1",
+
     ]
     isDebugType = false
 }

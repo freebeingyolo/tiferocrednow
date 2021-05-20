@@ -21,6 +21,11 @@ android {
         versionName rootProject.ext.android["versionName"]
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled = true
+        ndk {
+            //设置支持的SO库架构
+            abiFilters "armeabi-v7a" //, 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+        }
     }
 
     buildTypes {
@@ -76,7 +81,7 @@ dependencies {
     implementation 'com.danikula:videocache:2.7.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 //    implementation project(':lib_qrscan')
-
+    api dep.multidex
     kapt dep.arouter_compiler
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
