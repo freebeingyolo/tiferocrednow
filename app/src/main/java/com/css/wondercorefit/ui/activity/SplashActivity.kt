@@ -39,7 +39,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
 
     override fun onStart() {
         super.onStart()
-        checkStoragePermission()
+        checkLocationPermission()
     }
 
     private fun checkStoragePermission() {
