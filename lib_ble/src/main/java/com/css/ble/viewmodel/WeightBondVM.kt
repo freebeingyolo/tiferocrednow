@@ -5,11 +5,7 @@ import android.util.Log
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.LogUtils
-import com.blankj.utilcode.util.SPUtils
-import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.ble.bean.WeightBondData
-import com.css.service.data.BondDeviceData
-import com.css.service.utils.WonderCoreCache
 import com.pingwang.bluetoothlib.BroadcastDataParsing
 import com.pingwang.bluetoothlib.bean.BleValueBean
 import com.pingwang.bluetoothlib.listener.OnCallbackBle
@@ -25,6 +21,7 @@ class WeightBondVM : BleEnvVM(), BroadcastDataParsing.OnBroadcastDataParsing {
     }
 
     val bondData: MutableLiveData<WeightBondData> by lazy { MutableLiveData<WeightBondData>() }
+    private var filterDevice: BondDeviceInfo? = null
     val bondDevice: MutableLiveData<BondDeviceInfo> by lazy { MutableLiveData<BondDeviceInfo>() }
     var mBluetoothService: ELinkBleServer? = null
 
@@ -36,21 +33,14 @@ class WeightBondVM : BleEnvVM(), BroadcastDataParsing.OnBroadcastDataParsing {
         bondingTimeOut,
         found,
         bonded,
-        bleEnvError
     }
-
-    val cachedData: BondDeviceData
-        get() = WonderCoreCache.getData(WonderCoreCache.BOND_WEIGHT_INFO, BondDeviceData::class.java)
-
 
     val state: MutableLiveData<State> by lazy { MutableLiveData<State>() }
 
     private val mOnScanFilterListener: OnScanFilterListener = object : OnScanFilterListener {
 
         override fun onFilter(bleValueBean: BleValueBean): Boolean {
-            //Log.d(TAG, "bleValueBean:mac:${bleValueBean.mac},name:${bleValueBean.name}")
-            var d: BondDeviceData = cachedData
-            return if (d.mac.isNullOrEmpty()) true else d.mac == bleValueBean.mac
+            return filterDevice?.run { mac == bleValueBean.mac } ?: true
         }
 
         override fun onScanRecord(bleValueBean: BleValueBean) {
@@ -105,6 +95,7 @@ class WeightBondVM : BleEnvVM(), BroadcastDataParsing.OnBroadcastDataParsing {
             this.mac = mac
             this.manifactureHex = dataHexStr
             bondDevice.value = this
+            filterDevice = this
         }
         mBroadcastDataParsing.dataParsing(data, isAilink)
     }
@@ -160,14 +151,16 @@ class WeightBondVM : BleEnvVM(), BroadcastDataParsing.OnBroadcastDataParsing {
 
     @RequiresPermission(allOf = ["android.permission.BLUETOOTH_ADMIN", "android.permission.BLUETOOTH"])
     fun startScanBle(timeOut: Long = 0) {
-        LogUtils.d(TAG, "startScanBle")
+        Log.d(TAG, "startScanBle")
         if (!mBluetoothService!!.isScanStatus)
             this.mBluetoothService?.scanLeDevice(timeOut)
+        filterDevice = null
     }
 
     fun stopScanBle() {
         Log.d(TAG, "stopScanBle")
         this.mBluetoothService?.stopScan()
+        filterDevice = null
     }
 
     private val mOnCallbackBle: OnCallbackBle = object : OnCallbackBle {

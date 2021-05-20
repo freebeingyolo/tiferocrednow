@@ -17,6 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="44dp"
         android:background="@color/white"
+        android:visibility="gone"
         android:gravity="center"
         android:text="@string/app_name"
         android:textColor="@color/text_color"

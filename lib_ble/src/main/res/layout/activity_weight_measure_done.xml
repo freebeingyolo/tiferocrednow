@@ -5,11 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F7F7F7"
-    tools:context=".ui.BleEntryActivity">
-
+    tools:context=".ui.WeightMeasureDoingActivity">
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/linearLayoutCompat"
+        android:id="@+id/linearLayoutCompat2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
@@ -43,49 +42,48 @@
             android:textColor="@color/black"
             android:textSize="13sp" />
 
-
         <TextView
-            android:id="@+id/tv_weight_num"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
-            android:textColor="#333333"
-            android:textSize="25sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="45.6 kg" />
+            android:id="@+id/tv_to_measure"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="42dp"
+            android:background="@drawable/bg_to_measure_btn"
+            android:gravity="center"
+            android:text="去测量"
+            android:textColor="#F2682A"
+            android:textSize="12sp"
+            android:visibility="gone" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginTop="100dp"
-            android:background="@drawable/ble_weight_measure_prgrssbar_frame"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingStart="0dp"
-            android:paddingTop="0dp"
-            android:paddingEnd="0dp"
-            android:paddingBottom="0dp">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <androidx.core.widget.ContentLoadingProgressBar
-                style="?android:attr/progressBarStyleLarge"
-                android:layout_width="48dp"
-                android:layout_height="48dp" />
-
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="70dp"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="center"
-                android:text="@string/weight_measuring"
-                android:textSize="10sp" />
+                android:text="您的体重为："
+                android:textColor="#ff000000"
+                android:textSize="13sp" />
 
+            <TextView
+                android:id="@+id/tv_weight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="51.0"
+                android:textColor="#ff000000"
+                android:textSize="30sp"
+                android:textStyle="bold" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  kg"
+                android:textColor="#ff000000"
+                android:textSize="13sp" />
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.appcompat.widget.LinearLayoutCompat>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

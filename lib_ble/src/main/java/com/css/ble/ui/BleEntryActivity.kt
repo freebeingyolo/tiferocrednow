@@ -12,8 +12,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.css.base.uibase.BaseActivity
-import com.css.ble.R
 import com.css.ble.databinding.ActivityBleEntryBinding
+import com.css.ble.ui.fragment.DeviceListFragment
+import com.css.ble.utils.BleFragmentUtils
 import com.css.ble.utils.BleUtils
 import com.css.ble.viewmodel.WeightBondVM
 import com.css.service.router.ARouterConst
@@ -44,34 +45,6 @@ class BleEntryActivity : BaseActivity<WeightBondVM, ActivityBleEntryBinding>() {
         return false
     }
 
-    fun <T : Fragment> changeFragment(cls: Class<T>, addToBackStack: Boolean = true, option: Option = Option.OP_ADD): T {
-        val newFragmentTag = cls.simpleName
-        val ft = supportFragmentManager.beginTransaction()
-        if (mCurFragment != null && !mCurFragment!!.isHidden) {
-            ft.hide(mCurFragment!!)
-        }
-        var fragment = supportFragmentManager.findFragmentByTag(newFragmentTag)
-        if (fragment == null) {
-            fragment = cls.newInstance()
-            if (!fragment.isAdded) {
-                when (option) {
-                    Option.OP_ADD -> ft.add(R.id.content, fragment, newFragmentTag)
-                    Option.OP_REPLACE -> ft.replace(R.id.content, fragment, newFragmentTag)
-                }
-                if (addToBackStack) ft.addToBackStack(newFragmentTag)
-            }
-        } else {
-            ft.show(fragment)
-        }
-        ft.commit()
-        mCurFragment = fragment
-        return fragment as T
-    }
-
-    enum class Option {
-        OP_ADD,
-        OP_REPLACE
-    }
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
@@ -85,7 +58,8 @@ class BleEntryActivity : BaseActivity<WeightBondVM, ActivityBleEntryBinding>() {
         filter.addAction(LocationManager.PROVIDERS_CHANGED_ACTION)
         registerReceiver(receiver, filter)
 
-        changeFragment(DeviceListFragment::class.java, true)
+        //展示设备列表界面
+        BleFragmentUtils.changeFragment(DeviceListFragment::class.java, false)
     }
 
     override fun initData() {

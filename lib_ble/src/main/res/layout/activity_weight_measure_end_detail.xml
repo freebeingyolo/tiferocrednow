@@ -33,7 +33,8 @@
                     android:layout_marginEnd="20dp"
                     android:background="@drawable/bg_while_radius4">
 
-                    <androidx.core.widget.ContentLoadingProgressBar
+
+                    <ProgressBar
                         android:id="@+id/pb_weight"
                         style="?android:attr/progressBarStyleLarge"
                         android:layout_width="140dp"

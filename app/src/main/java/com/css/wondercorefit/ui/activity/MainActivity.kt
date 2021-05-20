@@ -18,7 +18,7 @@ import com.css.wondercorefit.ui.fragment.MainFragment
 import com.css.wondercorefit.ui.fragment.MallFragment
 import com.css.wondercorefit.ui.fragment.SettingFragment
 
-@Route(path = ARouterConst. PATH_APP_MAIN)
+@Route(path = ARouterConst.PATH_APP_MAIN)
 class MainActivity : BaseActivity<DefaultViewModel, ActivityMainBinding>() {
     private var mCurFragment: Fragment? = null
     private lateinit var mTabMainFragment: MainFragment

@@ -1,20 +1,17 @@
 package com.css.ble
 
 import android.content.Context
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
-import com.css.ble.bean.WeightDetailsBean
+import com.css.ble.bean.WeightDetailBean
 import com.css.ble.databinding.ItemWeightDetailsBinding
 import com.css.ble.ui.view.BaseBindingAdapter
 
-class BodyDetailAdapter(private val mContext: Context, private val mData: List<WeightDetailsBean>) :
-    BaseBindingAdapter<WeightDetailsBean, ItemWeightDetailsBinding>(mData) {
+class BodyDetailAdapter(private val mContext: Context, private val mData: List<WeightDetailBean>) :
+    BaseBindingAdapter<WeightDetailBean, ItemWeightDetailsBinding>(mData) {
     override fun getLayoutResId(viewType: Int): Int = R.layout.item_weight_details
 
     override fun onBindItem(
         binding: ItemWeightDetailsBinding,
-        item: WeightDetailsBean,
+        item: WeightDetailBean,
         position: Int
     ) {
         binding.data = item

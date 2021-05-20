@@ -7,13 +7,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.css.base.uibase.BaseActivity
 import com.css.ble.BodyDetailAdapter
-import com.css.ble.bean.WeightDetailsBean
+import com.css.ble.bean.WeightDetailBean
 import com.css.ble.databinding.ActivityWeightMeasureEndDetailBinding
 import com.css.ble.viewmodel.WeightMeasureVM
 
 class WeightMeasureEndDetailActivity : BaseActivity<WeightMeasureVM, ActivityWeightMeasureEndDetailBinding>() {
     lateinit var mBodyDetailAdapter: BodyDetailAdapter
-    var mData = ArrayList<WeightDetailsBean>()
+    var mData = ArrayList<WeightDetailBean>()
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         mBodyDetailAdapter = BodyDetailAdapter(this, mData)

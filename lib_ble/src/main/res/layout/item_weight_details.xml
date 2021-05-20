@@ -6,7 +6,7 @@
 
         <variable
             name="data"
-            type="com.css.ble.bean.WeightDetailsBean" />
+            type="com.css.ble.bean.WeightDetailBean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

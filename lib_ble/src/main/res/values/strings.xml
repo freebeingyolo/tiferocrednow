@@ -8,6 +8,7 @@
     <string name="current_weight">当前体重</string>
     <string name="measure_weight">测量体重</string>
     <string name="bond_device">绑定设备</string>
-    <string name="device_weight">体脂秤</string>
-    <string name="device_wheel">健腹轮</string>
+    <string name="device_weight">蓝牙体脂秤</string>
+    <string name="device_wheel">蓝牙健腹轮</string>
+    <string name="weight_measuring">详细数据测量中请稍后</string>
 </resources>

@@ -39,5 +39,4 @@
     <string name="weight_bonded_tip">蓝牙体脂秤已连接成功，开启你的健康之旅吧！</string>
     <string name="backnow">立刻返回</string>
     <string name="count_down_tips"><Data><![CDATA[<font color="#FF0000"><big><big>%d<big></big></font> s后自动返回首页"]]></Data></string>
-    <string name="ble_weight_name">蓝牙体脂秤</string>
 </resources>

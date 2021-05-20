@@ -1,20 +1,19 @@
 package com.css.wondercorefit.ui.fragment
 
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
+//import com.css.ble.ui.WeightBondActivity
+import android.content.*
 import android.os.*
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.launcher.ARouter
+import com.blankj.utilcode.util.LogUtils
 import com.css.base.uibase.BaseFragment
-//import com.css.ble.ui.WeightBondActivity
+import com.css.ble.bean.BondDeviceData
+import com.css.ble.bean.WeightBondData
 import com.css.service.data.StepData
 import com.css.service.data.UserData
 import com.css.service.router.ARouterConst
@@ -29,7 +28,7 @@ import com.css.wondercorefit.databinding.FragmentMainBinding
 import com.css.wondercorefit.viewmodel.MainViewModel
 
 
-class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnClickListener {
+class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.OnClickListener {
     private val TAG = "MainFragment"
 
     private lateinit var iSportStepInterface: ISportStepInterface
@@ -37,9 +36,9 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnC
     private val mDelayHandler = Handler(TodayStepCounterCall())
     private val REFRESH_STEP_WHAT = 0
     private val TIME_INTERVAL_REFRESH: Long = 1000
-    private lateinit var targetStep:String
-    private var currentStep:Int = 0
-    private var result:Float = 0.0f
+    private lateinit var targetStep: String
+    private var currentStep: Int = 0
+    private var result: Float = 0.0f
     private lateinit var userData: UserData
     private lateinit var stepData: StepData
 
@@ -48,10 +47,77 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnC
         SystemBarHelper.immersiveStatusBar(activity, 0f)
         SystemBarHelper.setHeightAndPadding(activity, mViewBinding?.topView)
         initDeviceWidget()
+        showDevice()
         startSensorService()
         startStep()
         initClickListenr()
         initProgressRate()
+
+    }
+
+    override fun initData() {
+        super.initData()
+        mViewBinding?.tvTargetWeightNum?.text = userData.targetWeight
+        WeightBondData.firstWeightInfo?.let {
+            mViewBinding?.tvInitialWeightNum?.text =
+                it.getWeightKg().toString()
+        }
+
+    }
+
+    private fun showDevice() {
+        if (WonderCoreCache.getData(
+                WonderCoreCache.BOND_WEIGHT_INFO,
+                BondDeviceData::class.java
+            ).mac.isNotEmpty()
+        ) {
+            mViewBinding?.llDevice?.visibility = View.VISIBLE
+            mViewBinding?.deviceWeight?.visibility = View.VISIBLE
+        }
+        if (WonderCoreCache.getData(
+                WonderCoreCache.BOND_WHEEL_INFO,
+                BondDeviceData::class.java
+            ).mac.isNotEmpty()
+        ) {
+            mViewBinding?.llDevice?.visibility = View.VISIBLE
+            mViewBinding?.deviceWheel?.visibility = View.VISIBLE
+        }
+        sp?.registerOnSharedPreferenceChangeListener(spLis)
+    }
+
+    private val sp by lazy { activity?.getSharedPreferences("spUtils", Context.MODE_PRIVATE) }
+    private val spLis by lazy {
+        SharedPreferences.OnSharedPreferenceChangeListener { sp, key ->
+            if (key.equals(WonderCoreCache.BOND_WEIGHT_INFO)) {
+                if (WonderCoreCache.getData(
+                        WonderCoreCache.BOND_WEIGHT_INFO,
+                        BondDeviceData::class.java
+                    ).mac.isNotEmpty()
+                ) {
+                    mViewBinding?.llDevice?.visibility = View.VISIBLE
+                    mViewBinding?.deviceWeight?.visibility = View.VISIBLE
+                } else {
+                    mViewBinding?.llDevice?.visibility = View.GONE
+                }
+
+                if (WonderCoreCache.getData(
+                        WonderCoreCache.BOND_WHEEL_INFO,
+                        BondDeviceData::class.java
+                    ).mac.isNotEmpty()
+                ) {
+                    mViewBinding?.llDevice?.visibility = View.VISIBLE
+                    mViewBinding?.deviceWheel?.visibility = View.VISIBLE
+                } else {
+                    mViewBinding?.deviceWheel?.visibility = View.GONE
+                }
+            }
+            LogUtils.vTag("suisui", key)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        sp?.unregisterOnSharedPreferenceChangeListener(spLis)
     }
 
     private fun initProgressRate() {
@@ -60,7 +126,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnC
         targetStep = userData.targetStep
         mViewBinding!!.tvTodayStepTarget.text = "目标 " + targetStep
         currentStep = stepData.todaySteps
-        result = ((currentStep*100)/targetStep.toInt()).toFloat()
+        result = ((currentStep * 100) / targetStep.toInt()).toFloat()
         Log.d(TAG, "ProgressInformation   :  $currentStep    $targetStep    $result")
         mViewBinding?.pbStep?.setProgress(result)
     }
@@ -78,11 +144,9 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnC
     }
 
     private fun initClickListenr() {
-        mViewBinding!!.addBleDevice.setOnClickListener {
-            ARouter.getInstance()
-                .build(ARouterConst.PATH_APP_BLE)
-                .navigation()
-        }
+        mViewBinding!!.gotoMeasure.setOnClickListener(this)
+        mViewBinding!!.deviceWeight.setOnClickListener(this)
+        mViewBinding!!.addBleDevice.setOnClickListener(this)
     }
 
     private fun startSensorService() {
@@ -128,17 +192,13 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnC
     private fun updataValues(stepArray: Int) {
         val realSteps = stepArray
         if (realSteps == 0) {
-//            mViewBinding?.tvTodayStep?.text = getString(R.string.zero_stepsOne) + "\n" + getString(R.string.zero_stepsTwo)
-//            mViewBinding?.tvStepNum?.visibility = View.INVISIBLE
             mViewBinding?.tvStepNum?.text = "--"
         } else {
-//            mViewBinding?.tvStepNum?.visibility = View.VISIBLE
-//            mViewBinding?.tvTodayStep?.text = getString(R.string.today_steps)
             mViewBinding?.tvStepNum?.text = realSteps.toString()
         }
         mViewBinding?.tvWalkingDistanceNum?.text = getDistanceByStep(realSteps.toLong())
         mViewBinding?.tvCalorieConsumptionNum?.text = getCalorieByStep(realSteps.toLong())
-        result = ((realSteps*100)/targetStep.toInt()).toFloat()
+        result = ((realSteps * 100) / targetStep.toInt()).toFloat()
         mViewBinding?.pbStep?.setProgress(result)
     }
 
@@ -192,8 +252,24 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(),View.OnC
     ): FragmentMainBinding = FragmentMainBinding.inflate(inflater, viewGroup, false)
 
     override fun onClick(v: View) {
-       when(v.id){
-       }
+        when (v.id) {
+            R.id.device_weight -> {
+                ARouter.getInstance()
+                    .build(ARouterConst.PATH_APP_BLE_WEIGHTMEASURE)
+                    .navigation()
+            }
+            R.id.goto_measure -> {
+                ARouter.getInstance()
+                    .build(ARouterConst.PATH_APP_BLE_WEIGHTMEASURE)
+                    .navigation()
+            }
+
+            R.id.add_ble_device -> {
+                ARouter.getInstance()
+                    .build(ARouterConst.PATH_APP_BLE)
+                    .navigation()
+            }
+        }
     }
 
     override fun onHiddenChanged(hidden: Boolean) {

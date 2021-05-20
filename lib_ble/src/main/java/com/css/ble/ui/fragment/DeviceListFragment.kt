@@ -1,6 +1,5 @@
-package com.css.ble.ui
+package com.css.ble.ui.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,18 +9,17 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.alibaba.android.arouter.launcher.ARouter
+import com.blankj.utilcode.util.ToastUtils
+import com.css.base.dialog.CommonAlertDialog
+import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseFragment
 import com.css.ble.R
 import com.css.ble.databinding.FragmentDeviceListBinding
 import com.css.ble.databinding.LayoutDeviceItemBinding
-import com.css.ble.ui.fragment.WeightBondFragment
-import com.css.ble.ui.fragment.WeightMeasureFragment
 import com.css.ble.ui.view.SpaceItemDecoration
 import com.css.ble.viewmodel.DeviceListVM.DeviceInfo
 import com.css.ble.viewmodel.DeviceListVM
-import com.css.service.data.BondDeviceData
-import com.css.service.router.ARouterConst
+import com.css.ble.utils.BleFragmentUtils
 import com.css.service.utils.WonderCoreCache
 import kotlin.concurrent.thread
 
@@ -47,26 +45,41 @@ class DeviceListFragment : BaseFragment<DeviceListVM, FragmentDeviceListBinding>
     override fun enabledVisibleToolBar(): Boolean = true
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        setToolBarLeftTitle("绑定设备")
+        setToolBarLeftTitle(R.string.bond_device)
         mViewBinding?.lv!!.apply {
             mAdapter = RecycleViewAdapter()
             mAdapter.itemClickListener = object : RecycleViewAdapter.onItemClickListener {
                 override fun onItemClick(
-
                     holder: RecycleViewAdapter.MyViewHolder,
                     position: Int,
                     deviceInfo: DeviceInfo
                 ) {
-                    var d = WonderCoreCache.getData(
-                        WonderCoreCache.BOND_WEIGHT_INFO,
-                        BondDeviceData::class.java
-                    )
+                    if (deviceInfo.icon == R.mipmap.icon_abroller) {
+                        ToastUtils.showShort("尚在开发中")
+                        return
+                    }
+                    var d = deviceInfo.getBondDeviceData()
                     if (d.mac.isNullOrEmpty()) {
                         //activity?.let { WeightBondActivity.starActivity(it) }
-                        (requireActivity() as BleEntryActivity).changeFragment(WeightBondFragment::class.java)
+                        BleFragmentUtils.changeFragment(WeightBondFragment::class.java)
                     } else {
-                        requireActivity().finish()
-                        startActivity(Intent(requireContext(), WeightMeasureActivity::class.java))
+                        CommonAlertDialog(requireContext()).apply {
+                            type = CommonAlertDialog.DialogType.Confirm
+                            content = "确定要解绑吗"
+                            leftBtnText = "取消"
+                            rightBtnText = "解绑"
+                            listener = object : DialogClickListener.DefaultLisener() {
+                                override fun onLeftBtnClick(view: View) {
+                                }
+
+                                override fun onRightBtnClick(view: View) {
+                                    super.onRightBtnClick(view)
+                                    WonderCoreCache.removeKey(d.getCacheKey())
+                                    ToastUtils.showShort("解锁成功")
+                                }
+
+                            }
+                        }.show()
                     }
                 }
             }

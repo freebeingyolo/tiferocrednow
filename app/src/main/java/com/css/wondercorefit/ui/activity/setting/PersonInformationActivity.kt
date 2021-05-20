@@ -104,7 +104,6 @@ class PersonInformationActivity :
                 mUserData = WonderCoreCache.getUserInfo()
                 mUserData.sex = str
                 WonderCoreCache.saveUserInfo(mUserData)
-                LogUtils.vTag("suisui", "str=$str")
 
             }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
                 override fun customLayout(v: View?) {

@@ -334,7 +334,6 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
     }
 
     override fun onClickToolBarView(view: View, event: ToolBarView.ViewType) {
-        Log.v("suisui", "event:$event")
         when (event) {
             //支持默认返回按钮和事件
             ToolBarView.ViewType.LEFT_IMAGE -> {
