@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.launcher.ARouter
+import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.css.base.uibase.BaseFragment
 import com.css.ble.bean.BondDeviceData
@@ -77,6 +78,34 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             mViewBinding?.llDevice?.visibility = View.VISIBLE
             mViewBinding?.bleWheel?.visibility = View.VISIBLE
         }
+        var sp =
+            activity?.getSharedPreferences("spUtils", Context.MODE_PRIVATE)
+        sp?.registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
+            if (key.equals(WonderCoreCache.BOND_WEIGHT_INFO)) {
+                if (WonderCoreCache.getData(
+                        WonderCoreCache.BOND_WEIGHT_INFO,
+                        BondDeviceData::class.java
+                    ).mac.isNotEmpty()
+                ) {
+                    mViewBinding?.llDevice?.visibility = View.VISIBLE
+                    mViewBinding?.bleScale?.visibility = View.VISIBLE
+                } else {
+                    mViewBinding?.llDevice?.visibility = View.GONE
+                }
+
+                if (WonderCoreCache.getData(
+                        WonderCoreCache.BOND_WHEEL_INFO,
+                        BondDeviceData::class.java
+                    ).mac.isNotEmpty()
+                ) {
+                    mViewBinding?.llDevice?.visibility = View.VISIBLE
+                    mViewBinding?.bleWheel?.visibility = View.VISIBLE
+                } else {
+                    mViewBinding?.bleWheel?.visibility = View.GONE
+                }
+            }
+            LogUtils.vTag("suisui", key)
+        }
     }
 
     private fun initProgressRate() {
@@ -93,6 +122,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     private fun initdeviceWidget() {
         mViewBinding!!.bleScale.setOnLongClickListener(this)
         mViewBinding!!.bleWheel.setOnLongClickListener(this)
+        mViewBinding!!.gotoMeasure.setOnClickListener(this)
         mViewBinding!!.bleScale.setOnClickListener {
             ARouter.getInstance()
                 .build(ARouterConst.PATH_APP_BLE_WEIGHTMEASURE)
@@ -222,6 +252,9 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     override fun onClick(v: View) {
         when (v.id) {
             R.id.ble_scale -> {
+                activity?.let { WeightMeasureBeginActivity.starActivity(it) }
+            }
+            R.id.goto_measure->{
                 activity?.let { WeightMeasureBeginActivity.starActivity(it) }
             }
         }

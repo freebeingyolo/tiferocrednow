@@ -215,6 +215,29 @@
         android:background="@drawable/bg_while_radius4"
         android:padding="15dp">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="您尚未测量过身体数据，点此测量，\n了解下自己的身体情况吧！"
+            android:textColor="#ACACAC"
+            android:textSize="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/goto_measure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_to_measure_btn"
+            android:paddingStart="13dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="13dp"
+            android:paddingBottom="5dp"
+            android:text="去测量"
+            android:textColor="#F2682A"
+            android:textSize="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.css.base.view.ProgressView
             android:id="@+id/pb_step"
@@ -264,7 +287,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="160dp"
-            android:layout_marginTop="7dp"
+            android:layout_marginTop="45dp"
             android:background="@drawable/bg_main_f4_radius4"
             android:orientation="vertical"
             app:layout_constraintTop_toBottomOf="@+id/pb_step">

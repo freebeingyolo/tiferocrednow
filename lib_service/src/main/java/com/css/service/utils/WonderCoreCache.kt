@@ -31,10 +31,6 @@ class WonderCoreCache {
         }
 
         fun getUserInfo(): UserData {
-            Log.v("suisui",
-                "SPUtils.getInstance().getString(USER_INFO)" + SPUtils.getInstance()
-                    .getString(USER_INFO)
-            )
             return if (!SPUtils.getInstance().getString(USER_INFO).isNullOrEmpty()) {
                 mGson.fromJson(SPUtils.getInstance().getString(USER_INFO), UserData::class.java)
             } else {
