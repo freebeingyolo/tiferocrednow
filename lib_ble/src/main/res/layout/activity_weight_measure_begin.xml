@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
-            android:text="您尚未测量过体重哦，点此立即测量！"
+            android:text="@string/measure_first_tips"
             android:textColor="@color/black"
             android:textSize="13sp" />
 

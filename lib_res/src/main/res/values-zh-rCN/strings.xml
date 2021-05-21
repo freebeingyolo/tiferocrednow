@@ -21,7 +21,7 @@
     <string name="stature" >身高</string>
     <string name="target_weight" >目标体重</string>
     <string name="target_step" >目标步数</string>
-    <string name="wonder_core" >万达康</string>
+    <string name="wonder_core" >京造运动</string>
     <string name="tos" >服务条款</string>
     <string name="disclaimer" >免责声明</string>
     <string name="privacy_policy" >隐私政策</string>
@@ -39,4 +39,6 @@
     <string name="weight_bonded_tip">蓝牙体脂秤已连接成功，开启你的健康之旅吧！</string>
     <string name="backnow">立刻返回</string>
     <string name="count_down_tips"><Data><![CDATA[<font color="#FF0000"><big><big>%d<big></big></font> s后自动返回首页"]]></Data></string>
+    <string name="tv_current_weight_init_msg">您尚未测量过身体数据，点此测量，了解下自己的身体情况吧！</string>
+    <string name="measure_first_tips">您尚未测量过体重哦，点此立即测量！</string>
 </resources>

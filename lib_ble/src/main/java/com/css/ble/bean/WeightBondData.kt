@@ -1,5 +1,9 @@
 package com.css.ble.bean
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import cn.net.aicare.algorithmutil.AlgorithmUtil
+import cn.net.aicare.algorithmutil.BodyFatData
 import com.css.service.utils.WonderCoreCache
 
 /**
@@ -46,20 +50,95 @@ class WeightBondData() {
 
     companion object {
         //第一次测量体重信息
-        var firstWeightInfo: WeightBondData?
-            get() = WonderCoreCache.takeIf { it.containsKey(WonderCoreCache.FIRST_WEIGHT_INFO) }?.let {
-                it.getData(WonderCoreCache.FIRST_WEIGHT_INFO, WeightBondData::class.java)
+        var firstWeightInfo: WeightBondData? = WonderCoreCache.takeIf { it.containsKey(WonderCoreCache.FIRST_WEIGHT_INFO) }
+            ?.getData(WonderCoreCache.FIRST_WEIGHT_INFO, WeightBondData::class.java)
+            get() = lastWeightInfoObsvr.value
+            set(value) {
+                field = value
+                WonderCoreCache.saveData(WonderCoreCache.FIRST_WEIGHT_INFO, value)
+                (firstWeightInfoObsvr as MutableLiveData).value = value
             }
-            set(value) = WonderCoreCache.saveData(WonderCoreCache.FIRST_WEIGHT_INFO, value)
 
         //上次测量体重信息
-        var lastWeightInfo: WeightBondData?
-            get() = WonderCoreCache.takeIf { it.containsKey(WonderCoreCache.LAST_WEIGHT_INFO) }?.let {
-                it.getData(WonderCoreCache.LAST_WEIGHT_INFO, WeightBondData::class.java)
+        var lastWeightInfo: WeightBondData? = WonderCoreCache.takeIf { it.containsKey(WonderCoreCache.LAST_WEIGHT_INFO) }?.getData(
+            WonderCoreCache.LAST_WEIGHT_INFO, WeightBondData::class.java
+        )
+            get() {
+                return lastWeightInfoObsvr.value
             }
-            set(value) = WonderCoreCache.saveData(WonderCoreCache.LAST_WEIGHT_INFO, value)
+            set(value) {
+                field = value
+                WonderCoreCache.saveData(WonderCoreCache.LAST_WEIGHT_INFO, value)
+                (lastWeightInfoObsvr as MutableLiveData).value = value
+            }
+
+        //第一次测量体重信息监听
+        val firstWeightInfoObsvr: LiveData<WeightBondData> = MutableLiveData()
+
+        //上次测量体重信息监听
+        val lastWeightInfoObsvr: LiveData<WeightBondData> = MutableLiveData()
     }
 
+    fun getBodyFatData(): BodyFatData {
+        var userInfo = WonderCoreCache.getUserInfo()
+        val sex = userInfo.setInt
+        val age = userInfo.age.toInt()
+        val weight_kg = weightKg * 1.0
+        val height_cm = userInfo.stature.toInt()
+        val adc = adc
+        var data: BodyFatData = AlgorithmUtil.getBodyFatData(AlgorithmUtil.AlgorithmType.TYPE_AICARE, sex, age, weight_kg, height_cm, adc)
+        return data
+    }
+
+    fun getBodyFatDataList2(): List<Map<String, Any?>> {
+        var data: BodyFatData = getBodyFatData();
+        var datas = mutableListOf<Map<String, Any?>>()
+        var clazz = data.javaClass
+        for (m in clazz.declaredFields) {
+            m.isAccessible = true
+            var map = mutableMapOf<String, Any?>()
+            map["key"] = m.name
+            map["judge"] = ""
+            map["value"] = m.get(data)
+            datas.add(map)
+        }
+        return datas
+    }
+
+    fun getBodyFatDataList(): List<WeightDetailBean> {
+        var data: BodyFatData = getBodyFatData();
+        var datas = mutableListOf<WeightDetailBean>()
+        var clazz = data.javaClass
+        for (m in clazz.declaredFields) {
+            m.isAccessible = true
+            var map = WeightDetailBean(
+                nameTransfer(m.name),
+                "",
+                m.get(data).toString()
+            )
+            datas.add(map)
+        }
+        return datas
+    }
+
+    fun nameTransfer(name: String): String {
+        return when (name) {
+            "bmi" -> "BMI"
+            "bfr" -> "体脂率"
+            "sfr" -> "皮下脂肪"
+            "uvi" -> "内脏脂肪指数"
+            "sfr" -> "皮下脂肪"
+            "uvi" -> "内脏脂肪指数"
+            "rom" -> "皮下脂肪"
+            "bmr" -> "基础代谢率"
+            "bm" -> "骨量"
+            "vwc" -> "身体水分"
+            "bodyAge" -> "身体年龄"
+            "pp" -> "蛋白率"
+            "weight" -> "体重"
+            else -> name
+        }
+    }
 
     fun setValue(
         status: Int,
@@ -89,18 +168,21 @@ class WeightBondData() {
         this.timestamp = System.currentTimeMillis()
     }
 
-    fun getWeightKg(): Float {
-        //0:kg 1:斤 6:lb 4:st:lb
-        var scale = 1f
-        when (weightUnit) {
-            1 -> scale *= 0.5f
-            4, 6 -> scale *= 0.4536f
+    val weightKg: Float
+        get() {
+            //0:kg 1:斤 6:lb 4:st:lb
+            var scale = 1f
+            when (weightUnit) {
+                1 -> scale *= 0.5f
+                4, 6 -> scale *= 0.4536f
+            }
+            for (i in 0 until weightDecimal) {
+                scale *= 0.1f
+            }
+            return weight * scale
         }
-        for (i in 0 until weightDecimal) {
-            scale *= 0.1f
-        }
-        return weight * scale
-    }
+    val weightKgFmt get() = weightKgFmt("%.1f")
+    fun weightKgFmt(fmt: String) = String.format(fmt, weightKg)
 
     override fun toString(): String {
         return "WeightBondData(status=$status, tempUnit=$tempUnit, weightUnit=$weightUnit, weightDecimal=$weightDecimal, weightStatus=$weightStatus, weightNegative=$weightNegative, weight=$weight, adc=$adc, algorithmId=$algorithmId, tempNegative=$tempNegative, temp=$temp)"

@@ -8,14 +8,12 @@ import android.os.IBinder
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.css.base.uibase.BaseActivity
-import com.css.ble.R
 import com.css.ble.databinding.ActivityBleEntryBinding
 import com.css.ble.ui.fragment.WeightMeasureFragment
-import com.css.ble.utils.BleFragmentUtils
+import com.css.ble.utils.FragmentUtils
 import com.css.ble.utils.BleUtils
 import com.css.ble.viewmodel.WeightMeasureVM
 import com.css.service.router.ARouterConst
@@ -54,7 +52,7 @@ class WeightMeasureActivity : BaseActivity<WeightMeasureVM, ActivityBleEntryBind
         val filter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
         filter.addAction(LocationManager.PROVIDERS_CHANGED_ACTION)
         registerReceiver(receiver, filter)
-        BleFragmentUtils.changeFragment(WeightMeasureFragment::class.java,false)
+        FragmentUtils.changeFragment(WeightMeasureFragment::class.java)
     }
 
     override fun initData() {

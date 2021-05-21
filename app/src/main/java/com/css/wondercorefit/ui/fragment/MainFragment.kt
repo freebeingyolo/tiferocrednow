@@ -14,7 +14,6 @@ import com.blankj.utilcode.util.LogUtils
 import com.css.base.uibase.BaseFragment
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.WeightBondData
-import com.css.ble.ui.WeightMeasureEndDetailActivity
 import com.css.service.data.StepData
 import com.css.service.data.UserData
 import com.css.service.router.ARouterConst
@@ -61,13 +60,25 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     override fun initData() {
         super.initData()
         mViewBinding?.tvTargetWeightNum?.text = userData.targetWeight
-        WeightBondData.firstWeightInfo?.let {
-            mViewBinding?.tvInitialWeightNum?.text =
-                it.getWeightKg().toString()
+
+        WeightBondData.firstWeightInfoObsvr.let {
+            it.observe(this) { it2 ->
+                if (it2 != null) {
+                    mViewBinding?.tvInitialWeightNum?.text = it2.weightKgFmt
+                } else {
+                    mViewBinding?.tvInitialWeightNum?.text = "--"
+                }
+            }
         }
-        WeightBondData.lastWeightInfo?.let {
-            mViewBinding?.tvCurrentWeight?.text =
-                it.getWeightKg().toString()
+
+        WeightBondData.lastWeightInfoObsvr.let {
+            it.observe(this) { it2 ->
+                if (it2 != null) {
+                    mViewBinding?.tvCurrentWeight?.text = it2.weightKgFmt("你上一次的体重是:%.1f kg")
+                } else {
+                    mViewBinding?.tvCurrentWeight?.text = getString(R.string.tv_current_weight_init_msg)
+                }
+            }
         }
     }
 
@@ -106,6 +117,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
                     mIsBindWeight = true
                 } else {
                     mViewBinding?.llDevice?.visibility = View.GONE
+                    mIsBindWeight = false
                 }
 
                 if (WonderCoreCache.getData(

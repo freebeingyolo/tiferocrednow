@@ -22,6 +22,9 @@ class BondDeviceData(
         const val TYPE_WEIGHT = 0
         const val TYPE_WHEEL = 1
 
+        val weightDeviceData= WonderCoreCache.getData(WonderCoreCache.BOND_WEIGHT_INFO,BondDeviceData::class.java)
+        val wheelDeviceData= WonderCoreCache.getData(WonderCoreCache.BOND_WHEEL_INFO,BondDeviceData::class.java)
+
     }
 
     constructor() : this("", "", TYPE_WEIGHT) {

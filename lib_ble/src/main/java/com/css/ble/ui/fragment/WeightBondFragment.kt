@@ -17,11 +17,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.constant.PermissionConstants
 import com.blankj.utilcode.util.PermissionUtils
-import com.blankj.utilcode.util.ToastUtils
 import com.css.base.uibase.BaseFragment
 import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.databinding.FragmentWeightBondBinding
+import com.css.ble.utils.FragmentUtils
 import com.css.ble.utils.BleUtils
 import com.css.ble.viewmodel.WeightBondVM
 import com.css.service.router.ARouterConst
@@ -40,7 +40,7 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBondBinding>
                 when (msg.what) {
                     ID_SCAN_TIMEOUT -> {
                         mViewModel.state.value = WeightBondVM.State.bondingTimeOut
-                        mViewModel.stopScanBle()
+                        stopScan()
                     }
                 }
             }
@@ -115,12 +115,12 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBondBinding>
         }
 
         mViewModel.bondDevice.observe(this) {
-            //          ToastUtils.showShort("发现一台设备：" + it.mac)
+            //ToastUtils.showShort("发现一台设备：" + it.mac)
         }
 
         mViewModel.bondData.observe(this) {
             Log.d(TAG, "得到设备数据-->" + it.toString())
-            mViewBinding!!.foundWeight.text = String.format("%.1fkg", it.getWeightKg())
+            mViewBinding!!.foundWeight.text = String.format("%.1fkg", it.weightKg)
             //发现绑定设备，停止搜索,并且得到体重
             mViewModel.state.value = WeightBondVM.State.found
         }
@@ -208,18 +208,23 @@ class WeightBondFragment : BaseFragment<WeightBondVM, FragmentWeightBondBinding>
         if (mViewModel.isBleEnvironmentOk) {
             startScan()
         } else {
-            ToastUtils.showShort("已经停止绑定设备，请检查蓝牙环境")
-            mViewModel.stopScanBle()
+            //ToastUtils.showShort("已经停止绑定设备，请检查蓝牙环境")
+            FragmentUtils.changeFragment(WeightBondErrorFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
+            stopScan()
         }
     }
 
     fun startScan() {
         if (!mViewModel.mBluetoothService!!.isScanStatus) {
             mHandler.removeMessages(ID_SCAN_TIMEOUT)
-            mHandler.sendEmptyMessageDelayed(ID_SCAN_TIMEOUT, 3 * 1000)
+            mHandler.sendEmptyMessageDelayed(ID_SCAN_TIMEOUT, 10 * 1000)
             mViewModel.startScanBle();
             mViewBinding!!.content.text = "开始搜索"
         }
+    }
+
+    fun stopScan() {
+        mViewModel.stopScanBle()
     }
 
     //点击检查蓝牙环境

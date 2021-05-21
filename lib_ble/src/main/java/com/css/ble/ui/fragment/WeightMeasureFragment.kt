@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.constant.PermissionConstants
 import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.PermissionUtils
@@ -21,9 +22,11 @@ import com.css.base.view.ToolBarView
 import com.css.ble.R
 import com.css.ble.bean.WeightBondData
 import com.css.ble.databinding.*
-import com.css.ble.utils.BleFragmentUtils
+import com.css.ble.utils.FragmentUtils
 import com.css.ble.utils.BleUtils
 import com.css.ble.viewmodel.WeightMeasureVM
+import com.css.service.router.ARouterConst
+import com.css.service.router.ARouterUtil
 import com.css.service.utils.ImageUtils
 import com.css.service.utils.WonderCoreCache
 
@@ -45,42 +48,34 @@ class WeightMeasureFragment : BaseFragment<WeightMeasureVM, FragmentWeightMeasur
                         startScan()
                     }
                 }
-                WeightBondData.lastWeightInfo?.apply {
-                    it.tips.text = String.format("你上一次的体重是:%.1f kg", this.getWeightKg())
+                WeightBondData.lastWeightInfoObsvr.let { it2 ->
+                    it2.observe(this) { it3 ->
+                        it.tips.text = it3.weightKgFmt("你上一次的体重是:%.1f kg")
+                    }
+                    it2.value?.let { it3 ->
+                        it.tips.text = it3.weightKgFmt("你上一次的体重是:%.1f kg")
+                    }
                 }
-
             }
     }
     val doingBinding: ActivityWeightMeasureDoingBinding by lazy {
         ActivityWeightMeasureDoingBinding.inflate(layoutInflater, mViewBinding!!.root, false)
             .also {
-                mViewModel.bondData.observe(this) {
-
+                mViewModel.bondData.observe(this) { it2 ->
+                    it.tvWeightNum.text = it2.weightKgFmt("%.1f kg")
                 }
             }
     }
 
     val doneBinding: ActivityWeightMeasureDoneBinding by lazy {
         ActivityWeightMeasureDoneBinding.inflate(layoutInflater, mViewBinding!!.root, false)
-            .also {
-                var it2 = it
-                mViewModel.bondData.observe(this) {
-                    it2.tvWeight.text = String.format("%.1f", it.getWeightKg())
+            .also { it ->
+                mViewModel.bondData.observe(this) { it2 ->
+                    it.tvWeight.text = it2.weightKgFmt
                 }
             }
     }
-    val doneDetailBinding: ActivityWeightMeasureEndDetailBinding by lazy {
-        ActivityWeightMeasureEndDetailBinding.inflate(layoutInflater, mViewBinding!!.root, false)
-            .also {
-                var it2 = it
-                mViewModel.bondData.observe(this) {
 
-                }
-                it.btnMeasureWeight.setOnClickListener {//重新测量
-                    beginBinding.tvToMeasure.performClick()
-                }
-            }
-    }
     val timeoutBinding: LayoutSearchTimeoutBinding by lazy {
         LayoutSearchTimeoutBinding.inflate(layoutInflater, mViewBinding!!.root, false).also {
             it.research.setOnClickListener {
@@ -135,7 +130,8 @@ class WeightMeasureFragment : BaseFragment<WeightMeasureVM, FragmentWeightMeasur
                     var dialog = ProgressDialog.show(requireContext(), "", "正在处理数据")
                     object : CountDownTimer(totalTime, 1000) {
                         override fun onFinish() {
-                            BleFragmentUtils.changeFragment(WeightMeasureEndDeailFragment::class.java, false)
+                            mViewModel.initOrReset() //重置为初始测量界面
+                            FragmentUtils.changeFragment(WeightMeasureEndDeailFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
                             dialog.dismiss()
                         }
 
@@ -194,13 +190,22 @@ class WeightMeasureFragment : BaseFragment<WeightMeasureVM, FragmentWeightMeasur
                 when (event) {
                     ToolBarView.ViewType.LEFT_IMAGE -> ActivityUtils.getActivityByContext(context).onBackPressed()
                     ToolBarView.ViewType.RIGHT_IMAGE -> {
-                        var fragment = BleFragmentUtils.changeFragment(DeviceInfoFragment::class.java)
+                        var fragment = FragmentUtils.changeFragment(DeviceInfoFragment::class.java)
                         fragment.setArguments(WonderCoreCache.BOND_WEIGHT_INFO)
                     }
                 }
             }
         })
 
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden && !WonderCoreCache.containsKey(WonderCoreCache.BOND_WEIGHT_INFO)) {//如果已经解绑了，回到此界面在回退
+            requireActivity().finish()
+            showCenterToast("请先绑定设备")
+            ARouter.getInstance().build(ARouterConst.PATH_APP_BLE).navigation()
+        }
     }
 
     fun startScan() {

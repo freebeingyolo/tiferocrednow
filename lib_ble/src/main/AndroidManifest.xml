@@ -13,19 +13,19 @@
 
     <application android:theme="@style/Wonder.Base">
         <activity android:name=".ui.WeightMeasureActivity" />
-        <activity android:name=".ui.WeightMeasureEndDetailActivity" />
+ <!--       <activity android:name=".ui.WeightMeasureEndDetailActivity" />
         <activity android:name=".ui.WeightBondActivity" />
         <activity android:name=".ui.WeightMeasureDoingActivity" />
         <activity android:name=".ui.DeviceInfoActivity" />
-        <activity android:name=".ui.WeightMeasureBeginActivity" />
+        <activity android:name=".ui.WeightMeasureBeginActivity" />-->
         <activity
             android:name=".ui.BleEntryActivity"
             android:launchMode="singleTask">
-            <intent-filter>
+            <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
 
         <service android:name="com.pingwang.bluetoothlib.server.ELinkBleServer" />

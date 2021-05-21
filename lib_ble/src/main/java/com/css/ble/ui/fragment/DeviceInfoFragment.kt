@@ -45,7 +45,7 @@ class DeviceInfoFragment : BaseFragment<DefaultViewModel, FragmentDeviceInfoBind
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         key = arguments?.getString("DeviceKey")!!
-        data = WonderCoreCache.getData(key, BondDeviceData::class.java)
+        data = WonderCoreCache.getData(key,BondDeviceData::class.java)
         mViewBinding?.apply {
             tvDeviceName.text = data.displayName
             tvMacAddress.text = data.mac
@@ -60,6 +60,7 @@ class DeviceInfoFragment : BaseFragment<DefaultViewModel, FragmentDeviceInfoBind
         }
 
         mViewBinding?.apply {
+            tvDeviceName.text = data.displayName
             rlDeviceName.setOnClickListener {
                 CommonAlertDialog(requireContext()).apply {
                     type = CommonAlertDialog.DialogType.Edit
@@ -69,19 +70,16 @@ class DeviceInfoFragment : BaseFragment<DefaultViewModel, FragmentDeviceInfoBind
                     leftBtnText = "取消"
                     rightBtnText = "确定"
                     listener = object : DialogClickListener.DefaultLisener() {
-                        override fun onLeftBtnClick(view: View) {
-                        }
 
                         override fun onRightEditBtnClick(view: View, content: String?) {
                             var validContent = getInValidName(content)
-                            mViewBinding!!.tvDeviceName.text = validContent
+                            tvDeviceName.text = validContent
                             data.alias == validContent
                             WonderCoreCache.saveData(key, data)
                         }
                     }
                 }.show()
             }
-
             rlDeleteDevice.setOnClickListener {
                 CommonAlertDialog(requireContext()).apply {
                     type = CommonAlertDialog.DialogType.Confirm

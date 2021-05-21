@@ -48,47 +48,6 @@ class WeightMeasureVM : BleEnvVM(), BroadcastDataParsing.OnBroadcastDataParsing 
         _state.value = State.begin
     }
 
-    fun getBodyFatData(): BodyFatData {
-        var userInfo = WonderCoreCache.getUserInfo()
-        val sex = userInfo.setInt
-        val age = userInfo.age.toInt()
-        val weight_kg = _bondData.value!!.getWeightKg() * 1.0
-        val height_cm = userInfo.stature.toInt()
-        val adc = _bondData.value!!.adc
-        var data: BodyFatData = AlgorithmUtil.getBodyFatData(AlgorithmUtil.AlgorithmType.TYPE_AICARE, sex, age, weight_kg, height_cm, adc);
-        return data
-    }
-
-    fun getBodyFatDataList2(): List<Map<String, Any?>> {
-        var data: BodyFatData = getBodyFatData();
-        var datas = mutableListOf<Map<String, Any?>>()
-        var clazz = data.javaClass
-        for (m in clazz.declaredFields) {
-            m.isAccessible = true
-            var map = mutableMapOf<String, Any?>()
-            map["key"] = m.name
-            map["judge"] = ""
-            map["value"] = m.get(data)
-            datas.add(map)
-        }
-        return datas
-    }
-
-    fun getBodyFatDataList(): List<WeightDetailBean> {
-        var data: BodyFatData = getBodyFatData();
-        var datas = mutableListOf<WeightDetailBean>()
-        var clazz = data.javaClass
-        for (m in clazz.declaredFields) {
-            m.isAccessible = true
-            var map = WeightDetailBean(
-                m.name,
-                "",
-                m.get(data).toString()
-            )
-            datas.add(map)
-        }
-        return datas
-    }
 
     fun onBindService(service: ELinkBleServer) {
         bleSvcLiveData.value = service
@@ -222,6 +181,7 @@ class WeightMeasureVM : BleEnvVM(), BroadcastDataParsing.OnBroadcastDataParsing 
                 _state.value = State.doing
             } else if (status == 0xFF && state.value != State.done) {
                 _state.value = State.done
+
                 WeightBondData.firstWeightInfo ?: let { WeightBondData.firstWeightInfo = _bondData.value }
                 WeightBondData.lastWeightInfo = _bondData.value
                 stopScanBle()

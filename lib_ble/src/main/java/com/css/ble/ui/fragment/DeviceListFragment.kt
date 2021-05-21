@@ -19,7 +19,7 @@ import com.css.ble.databinding.LayoutDeviceItemBinding
 import com.css.ble.ui.view.SpaceItemDecoration
 import com.css.ble.viewmodel.DeviceListVM.DeviceInfo
 import com.css.ble.viewmodel.DeviceListVM
-import com.css.ble.utils.BleFragmentUtils
+import com.css.ble.utils.FragmentUtils
 import com.css.service.utils.WonderCoreCache
 import kotlin.concurrent.thread
 
@@ -61,7 +61,7 @@ class DeviceListFragment : BaseFragment<DeviceListVM, FragmentDeviceListBinding>
                     var d = deviceInfo.getBondDeviceData()
                     if (d.mac.isNullOrEmpty()) {
                         //activity?.let { WeightBondActivity.starActivity(it) }
-                        BleFragmentUtils.changeFragment(WeightBondFragment::class.java)
+                        FragmentUtils.changeFragment(WeightBondFragment::class.java)
                     } else {
                         CommonAlertDialog(requireContext()).apply {
                             type = CommonAlertDialog.DialogType.Confirm

@@ -2,15 +2,14 @@ package com.css.wondercorefit.ui.activity.setting
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.css.base.uibase.BaseActivity
 import com.css.base.uibase.viewmodel.DefaultViewModel
-import com.css.ble.ui.fragment.DeviceListFragment
-import com.css.ble.utils.BleFragmentUtils
+import com.css.ble.utils.FragmentUtils
+import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.ActivityTermsBinding
 import com.css.wondercorefit.ui.fragment.TermsLiabilityFragment
 import com.css.wondercorefit.ui.fragment.TermsPrivacyFragment
@@ -33,15 +32,15 @@ class TermsActivity : BaseActivity<DefaultViewModel, ActivityTermsBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         //展示设备列表界面
-        when (CURRENT){
-            TERMS_SERVICE->{
-                BleFragmentUtils.changeFragment(TermsServiceFragment::class.java, false)
+        when (CURRENT) {
+            TERMS_SERVICE -> {
+                FragmentUtils.changeFragment(TermsServiceFragment::class.java, FragmentUtils.Option.OPT_REPLACE, R.id.content)
             }
-            TERMS_PRIVACY->{
-                BleFragmentUtils.changeFragment(TermsPrivacyFragment::class.java, false)
+            TERMS_PRIVACY -> {
+                FragmentUtils.changeFragment(TermsPrivacyFragment::class.java, FragmentUtils.Option.OPT_REPLACE,R.id.content)
             }
-            TERMS_LIABILITY->{
-                BleFragmentUtils.changeFragment(TermsLiabilityFragment::class.java, false)
+            TERMS_LIABILITY -> {
+                FragmentUtils.changeFragment(TermsLiabilityFragment::class.java, FragmentUtils.Option.OPT_REPLACE,R.id.content)
             }
         }
 

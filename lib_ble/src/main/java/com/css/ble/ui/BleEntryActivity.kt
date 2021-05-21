@@ -14,7 +14,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.css.base.uibase.BaseActivity
 import com.css.ble.databinding.ActivityBleEntryBinding
 import com.css.ble.ui.fragment.DeviceListFragment
-import com.css.ble.utils.BleFragmentUtils
+import com.css.ble.utils.FragmentUtils
 import com.css.ble.utils.BleUtils
 import com.css.ble.viewmodel.WeightBondVM
 import com.css.service.router.ARouterConst
@@ -59,7 +59,7 @@ class BleEntryActivity : BaseActivity<WeightBondVM, ActivityBleEntryBinding>() {
         registerReceiver(receiver, filter)
 
         //展示设备列表界面
-        BleFragmentUtils.changeFragment(DeviceListFragment::class.java, false)
+        FragmentUtils.changeFragment(DeviceListFragment::class.java,FragmentUtils.Option.OPT_REPLACE)
     }
 
     override fun initData() {
