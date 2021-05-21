@@ -42,6 +42,8 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     private var result: Float = 0.0f
     private lateinit var userData: UserData
     private lateinit var stepData: StepData
+    private var needNotify: Boolean = false
+    private var pauseResume: Boolean = false
     private var mIsBindWeight = false
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -54,7 +56,6 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         startStep()
         initClickListenr()
         initProgressRate()
-
     }
 
     override fun initData() {
@@ -228,15 +229,13 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
                     if (null != iSportStepInterface) {
                         try {
                             stepArray = iSportStepInterface.todaySportStepArray
-                           // Log.d(TAG, " refresh UI in 500 ms  :   ")
                             updataValues(stepArray)
                         } catch (e: RemoteException) {
                             e.printStackTrace()
                         }
-                       // Log.d(TAG, " stepArray  :  $stepArray    step   :   $stepArray ")
                         if (stepArray != stepArray) {
                             stepArray = stepArray
-//                            updateStepCount(stepArray)
+                            updataValues(stepArray)
                         }
                     }
                     mDelayHandler.sendEmptyMessageDelayed(
@@ -290,5 +289,37 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         initProgressRate()
+        needNotify = if (!needNotify) {
+            mDelayHandler.removeCallbacksAndMessages(null)
+            true
+        } else {
+            mDelayHandler.removeCallbacksAndMessages(null)
+            mDelayHandler.sendEmptyMessageDelayed(
+                REFRESH_STEP_WHAT,
+                TIME_INTERVAL_REFRESH
+            )
+            false
+        }
     }
+
+    override fun onPause() {
+        super.onPause()
+        if (!pauseResume) {
+            mDelayHandler.removeCallbacksAndMessages(null)
+            pauseResume = true
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (pauseResume) {
+            mDelayHandler.sendEmptyMessageDelayed(
+                REFRESH_STEP_WHAT,
+                TIME_INTERVAL_REFRESH
+            )
+            pauseResume = false
+        }
+    }
+
+
 }

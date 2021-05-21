@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,9 +12,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.blankj.utilcode.util.ClickUtils
 import com.css.base.uibase.BaseFragment
 import com.css.base.uibase.viewmodel.DefaultViewModel
 import com.css.service.utils.SystemBarHelper
@@ -26,20 +23,16 @@ import com.css.wondercorefit.utils.ConfigHolder
 import com.css.wondercorefit.utils.LoadingOverlay
 import com.css.wondercorefit.utils.VideoCacheHelper
 import com.css.wondercorefit.viewmodel.CourseViewModel
-import com.css.wondercorefit.widget.SimpleItemDecoration
 import com.seagazer.liteplayer.LitePlayerView
 import com.seagazer.liteplayer.bean.DataSource
 import com.seagazer.liteplayer.list.ListItemChangedListener
 import com.seagazer.liteplayer.list.ListPlayer
 import com.seagazer.liteplayer.listener.PlayerViewModeChangedListener
 import com.seagazer.liteplayer.widget.LiteGestureController
-import com.seagazer.liteplayer.widget.LiteMediaController
 
 
 class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
     private val TAG = "CourseFragment"
-
-    private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var recyclePlayer: ListPlayer
     private var lastPlayerHolder: RecycleAdapter.VideoHolder? = null
     override fun initView(savedInstanceState: Bundle?) {
@@ -51,8 +44,6 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
 
     @SuppressLint("UseRequireInsteadOfGet")
     private fun initRecycle() {
-//        val gridLayoutManager = GridLayoutManager(context, 2) //第二个参数为网格的列数
-//        linearLayoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         mViewBinding?.courseRecycle?.layoutManager = GridLayoutManager(context,2, RecyclerView.VERTICAL, false)
         val recyclerAdapter = RecycleAdapter()
         mViewBinding?.courseRecycle?.adapter = recyclerAdapter
@@ -63,7 +54,6 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
                 Color.parseColor("#33618A")
             )
             attachOverlay(LoadingOverlay(context!!))
-//            attachMediaController(LiteMediaController(context!!))
             attachGestureController(LiteGestureController(context!!).apply {
                 supportVolume = false
                 supportBrightness = false
@@ -127,17 +117,6 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
                 videoScrollListener
             )
         }
-
-//        mViewBinding?.courseRecycle?.apply {
-//            adapter = recyclerAdapter
-//            gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-//                override fun getSpanSize(position: Int): Int {
-//                    return 1
-//                }
-//            }
-//            layoutManager = gridLayoutManager
-//        }
-
     }
 
     override fun initViewBinding(
@@ -162,8 +141,6 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
                     bundle.putInt("position", bindingAdapterPosition)
                     recyclerIntent.putExtras(bundle)
                     startActivity(recyclerIntent)
-//                    recyclePlayer.onItemClick(bindingAdapterPosition)
-//                    recyclePlayer.setFullScreenMode(true)
                 }
             }
         }

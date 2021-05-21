@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.css.wondercorefit.R
-import com.css.wondercorefit.bean.DataProvider
 import com.css.wondercorefit.utils.*
 import com.css.wondercorefit.viewmodel.CourseViewModel
 import com.seagazer.liteplayer.LitePlayerView
