@@ -11,6 +11,6 @@ import com.seagazer.liteplayer.config.RenderType
 object ConfigHolder {
 
     var playerType: PlayerType = PlayerType.TYPE_EXO_PLAYER
-    var renderType: RenderType = RenderType.TYPE_SURFACE_VIEW
+    var renderType: RenderType = RenderType.TYPE_TEXTURE_VIEW
 
 }

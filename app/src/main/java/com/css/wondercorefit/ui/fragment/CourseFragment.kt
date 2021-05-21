@@ -1,9 +1,9 @@
 package com.css.wondercorefit.ui.fragment
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,36 +12,29 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.blankj.utilcode.util.ClickUtils
 import com.css.base.uibase.BaseFragment
 import com.css.base.uibase.viewmodel.DefaultViewModel
 import com.css.service.utils.SystemBarHelper
 import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.FragmentCourseBinding
+import com.css.wondercorefit.ui.activity.index.CoursePlayActivity
 import com.css.wondercorefit.utils.ConfigHolder
 import com.css.wondercorefit.utils.LoadingOverlay
 import com.css.wondercorefit.utils.VideoCacheHelper
 import com.css.wondercorefit.viewmodel.CourseViewModel
-import com.css.wondercorefit.widget.SimpleItemDecoration
 import com.seagazer.liteplayer.LitePlayerView
 import com.seagazer.liteplayer.bean.DataSource
 import com.seagazer.liteplayer.list.ListItemChangedListener
 import com.seagazer.liteplayer.list.ListPlayer
 import com.seagazer.liteplayer.listener.PlayerViewModeChangedListener
 import com.seagazer.liteplayer.widget.LiteGestureController
-import com.seagazer.liteplayer.widget.LiteMediaController
 
 
 class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
-    private val TAG = "MainFragment"
-
-    private lateinit var linearLayoutManager: LinearLayoutManager
+    private val TAG = "CourseFragment"
     private lateinit var recyclePlayer: ListPlayer
-    private var isAutoPlay = false
     private var lastPlayerHolder: RecycleAdapter.VideoHolder? = null
-    private val gridLayoutManager by lazy { GridLayoutManager(context, 2) }
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         SystemBarHelper.immersiveStatusBar(activity, 0f)
@@ -51,8 +44,7 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
 
     @SuppressLint("UseRequireInsteadOfGet")
     private fun initRecycle() {
-        linearLayoutManager = GridLayoutManager(activity, 2)
-        mViewBinding?.courseRecycle?.layoutManager = linearLayoutManager
+        mViewBinding?.courseRecycle?.layoutManager = GridLayoutManager(context,2, RecyclerView.VERTICAL, false)
         val recyclerAdapter = RecycleAdapter()
         mViewBinding?.courseRecycle?.adapter = recyclerAdapter
         recyclePlayer = ListPlayer(LitePlayerView(context!!)).apply {
@@ -62,7 +54,6 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
                 Color.parseColor("#33618A")
             )
             attachOverlay(LoadingOverlay(context!!))
-            attachMediaController(LiteMediaController(context!!))
             attachGestureController(LiteGestureController(context!!).apply {
                 supportVolume = false
                 supportBrightness = false
@@ -75,21 +66,19 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
             // onDetachItemView always call before onAttachItemView
             listItemChangedListener = object : ListItemChangedListener {
                 override fun onDetachItemView(oldPosition: Int) {
-                    Log.d(TAG, "detach item: $oldPosition")
                     lastPlayerHolder?.let {
                         it.videoPoster.visibility = View.VISIBLE
                     }
                 }
 
                 override fun onAttachItemView(newPosition: Int) {
-                    Log.d(TAG, "attach item: $newPosition")
                     lastPlayerHolder?.let {
                         it.videoPoster.visibility = View.INVISIBLE
                     }
                 }
             }
         }
-        recyclePlayer.addPlayerViewModeChangedListener(object: PlayerViewModeChangedListener{
+        recyclePlayer.addPlayerViewModeChangedListener(object : PlayerViewModeChangedListener {
             override fun onAutoSensorModeChanged(isAutoSensor: Boolean) {
                 // do something when auto sensor changed
             }
@@ -99,7 +88,9 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
             }
 
             override fun onFullScreenModeChanged(isFullScreen: Boolean) {
-                recyclePlayer.pause(true)
+                if (!recyclePlayer.isFullScreen()) {
+                    recyclePlayer.pause(true)
+                }
             }
 
         })
@@ -126,17 +117,6 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
                 videoScrollListener
             )
         }
-
-        mViewBinding?.courseRecycle?.apply {
-            adapter = recyclerAdapter
-            gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int {
-                    return 1
-                }
-            }
-            layoutManager = gridLayoutManager
-        }
-
     }
 
     override fun initViewBinding(
@@ -156,10 +136,11 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
 
             init {
                 itemView.setOnClickListener {
-                    if (!isAutoPlay) {
-                        recyclePlayer.onItemClick(bindingAdapterPosition)
-                        recyclePlayer.setFullScreenMode(true)
-                    }
+                    val recyclerIntent = Intent(context, CoursePlayActivity::class.java)
+                    var bundle = Bundle()
+                    bundle.putInt("position", bindingAdapterPosition)
+                    recyclerIntent.putExtras(bundle)
+                    startActivity(recyclerIntent)
                 }
             }
         }
@@ -180,7 +161,6 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
 
         override fun onBindViewHolder(holder: VideoHolder, position: Int) {
             holder.run {
-//                activity?.let { Glide.with(it).load(CourseViewModel.picture[position]).apply(GlideOptionUitls.getCornerOptions(4)).into(videoPoster) }
                 videoPoster.setImageResource(CourseViewModel.picture[position])
                 videoTitle.text = CourseViewModel.name[position]
             }

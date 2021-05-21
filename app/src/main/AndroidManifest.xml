@@ -52,7 +52,6 @@
         <activity
             android:name=".ui.activity.MainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
-            android:hardwareAccelerated="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/FullScreenTheme">
@@ -62,6 +61,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.activity.index.CoursePlayActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:screenOrientation="portrait"
+            android:theme="@style/FullScreenTheme"
+            ></activity>
     </application>
 
 </manifest>

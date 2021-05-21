@@ -42,18 +42,20 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     private var result: Float = 0.0f
     private lateinit var userData: UserData
     private lateinit var stepData: StepData
+    private var needNotify: Boolean = false
+    private var pauseResume: Boolean = false
     private var mIsBindWeight = false
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         SystemBarHelper.immersiveStatusBar(activity, 0f)
         SystemBarHelper.setHeightAndPadding(activity, mViewBinding?.topView)
+        initDeviceWidget()
         showDevice()
         startSensorService()
         startStep()
         initClickListenr()
         initProgressRate()
-
     }
 
     override fun initData() {
@@ -137,6 +139,18 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         mViewBinding?.pbStep?.setProgress(result)
     }
 
+    private fun initDeviceWidget() {
+        mViewBinding!!.bleScale.setOnClickListener {
+//            ARouter.getInstance()
+//                .build(ARouterConst.PATH_APP_BLE_WEIGHTBOND)
+//                .navigation()
+        }
+        mViewBinding!!.bleWheel.setOnClickListener {
+//            var intentScale = Intent (activity , WeightBondActivity::class.java)
+//            startActivity(intentScale)
+        }
+    }
+
     private fun initClickListenr() {
         mViewBinding!!.gotoMeasure.setOnClickListener(this)
         mViewBinding!!.deviceWeight.setOnClickListener(this)
@@ -215,15 +229,13 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
                     if (null != iSportStepInterface) {
                         try {
                             stepArray = iSportStepInterface.todaySportStepArray
-                            Log.d(TAG, " refresh UI in 500 ms  :   ")
                             updataValues(stepArray)
                         } catch (e: RemoteException) {
                             e.printStackTrace()
                         }
-                        Log.d(TAG, " stepArray  :  $stepArray    step   :   $stepArray ")
                         if (stepArray != stepArray) {
                             stepArray = stepArray
-//                            updateStepCount(stepArray)
+                            updataValues(stepArray)
                         }
                     }
                     mDelayHandler.sendEmptyMessageDelayed(
@@ -277,5 +289,37 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         initProgressRate()
+        needNotify = if (!needNotify) {
+            mDelayHandler.removeCallbacksAndMessages(null)
+            true
+        } else {
+            mDelayHandler.removeCallbacksAndMessages(null)
+            mDelayHandler.sendEmptyMessageDelayed(
+                REFRESH_STEP_WHAT,
+                TIME_INTERVAL_REFRESH
+            )
+            false
+        }
     }
+
+    override fun onPause() {
+        super.onPause()
+        if (!pauseResume) {
+            mDelayHandler.removeCallbacksAndMessages(null)
+            pauseResume = true
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (pauseResume) {
+            mDelayHandler.sendEmptyMessageDelayed(
+                REFRESH_STEP_WHAT,
+                TIME_INTERVAL_REFRESH
+            )
+            pauseResume = false
+        }
+    }
+
+
 }
