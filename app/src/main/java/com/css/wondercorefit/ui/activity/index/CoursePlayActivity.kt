@@ -53,7 +53,7 @@ class CoursePlayActivity : AppCompatActivity() {
         })
         // custom loading overlay
         playerView.attachOverlay(LoadingOverlay(this))
-        playerView.setAutoSensorEnable(false)
+        playerView.setAutoSensorEnable(true)
         playerView.setAutoHideOverlay(true)
         // add render listener
         playerView.addRenderStateChangedListener(object : SimpleRenderStateChangedListener() {
