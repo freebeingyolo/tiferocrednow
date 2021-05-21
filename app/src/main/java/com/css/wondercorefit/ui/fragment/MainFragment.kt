@@ -50,7 +50,6 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         super.initView(savedInstanceState)
         SystemBarHelper.immersiveStatusBar(activity, 0f)
         SystemBarHelper.setHeightAndPadding(activity, mViewBinding?.topView)
-        initDeviceWidget()
         showDevice()
         startSensorService()
         startStep()
@@ -137,18 +136,6 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         result = ((currentStep * 100) / targetStep.toInt()).toFloat()
         Log.d(TAG, "ProgressInformation   :  $currentStep    $targetStep    $result")
         mViewBinding?.pbStep?.setProgress(result)
-    }
-
-    private fun initDeviceWidget() {
-        mViewBinding!!.bleScale.setOnClickListener {
-//            ARouter.getInstance()
-//                .build(ARouterConst.PATH_APP_BLE_WEIGHTBOND)
-//                .navigation()
-        }
-        mViewBinding!!.bleWheel.setOnClickListener {
-//            var intentScale = Intent (activity , WeightBondActivity::class.java)
-//            startActivity(intentScale)
-        }
     }
 
     private fun initClickListenr() {
