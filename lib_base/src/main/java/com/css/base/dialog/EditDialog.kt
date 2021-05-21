@@ -3,7 +3,10 @@ package com.css.base.dialog
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Typeface
+import android.text.InputFilter
+import android.text.Spanned
 import android.view.View
+import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
@@ -16,6 +19,8 @@ import com.css.base.dialog.inner.DialogClickListener
 import com.css.service.utils.DoubleClickUtils
 
 import razerdp.basepopup.BasePopupWindow
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 /**
  * @author Ruis
@@ -44,6 +49,7 @@ class EditDialog : BasePopupWindow, View.OnClickListener {
         tvRight = findViewById(R.id.tv_right)
         tvLeft.setOnClickListener(this)
         tvRight.setOnClickListener(this)
+        setEditTextInhibitInputSpeChat(etContent)
     }
 
     override fun onCreateContentView(): View {
@@ -187,5 +193,20 @@ class EditDialog : BasePopupWindow, View.OnClickListener {
             }
         }
     }
+
+    /**
+     * 禁止EditText输入特殊字符
+     * @param editText
+     */
+    fun setEditTextInhibitInputSpeChat(editText: EditText) {
+        val filter: InputFilter = InputFilter { source, start, end, dest, dstart, dend ->
+            val speChat = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]"
+            val pattern: Pattern = Pattern.compile(speChat)
+            val matcher: Matcher = pattern.matcher(source.toString())
+            if (matcher.find()) "" else null
+        }
+        editText.setFilters(arrayOf<InputFilter>(filter))
+    }
+
 
 }

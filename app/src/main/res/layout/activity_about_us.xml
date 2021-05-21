@@ -11,8 +11,8 @@
 
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_marginTop="50dp"
         android:src="@mipmap/icon" />
 
@@ -20,21 +20,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="@string/wonder_core"
+        android:text="@string/app_name"
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="15sp"
         android:textStyle="bold" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="V 1.0"
-        android:textColor="@color/black"
-        android:textSize="18sp"
+        android:text="V1.0"
+        android:textColor="#666666"
+        android:textSize="11sp"
         android:textStyle="bold" />
 
     <RelativeLayout
+        android:id="@+id/rl_terms_service"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="20dp"
@@ -47,7 +48,7 @@
             android:layout_height="wrap_content"
             android:text="@string/tos"
             android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:textSize="13sp" />
 
     </RelativeLayout>
 
@@ -59,6 +60,7 @@
         android:background="@color/gray" />
 
     <RelativeLayout
+        android:id="@+id/rl_terms_liability"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:gravity="center_vertical"
@@ -70,7 +72,7 @@
             android:layout_height="wrap_content"
             android:text="@string/disclaimer"
             android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:textSize="13sp" />
 
     </RelativeLayout>
 
@@ -82,6 +84,7 @@
         android:background="@color/gray" />
 
     <RelativeLayout
+        android:id="@+id/rl_terms_privacy"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:gravity="center_vertical"
@@ -93,7 +96,7 @@
             android:layout_height="wrap_content"
             android:text="@string/privacy_policy"
             android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:textSize="13sp" />
 
     </RelativeLayout>
 

@@ -6,7 +6,7 @@ import com.css.wondercorefit.R
 import com.css.wondercorefit.bean.ProductBean
 import com.css.wondercorefit.databinding.ItemProductLayoutBinding
 
-class MallProductAdapter(private val mContext: Context, private val mData: List<ProductBean>) :
+class MallProductAdapter(mData: List<ProductBean>) :
     BaseBindingAdapter<ProductBean, ItemProductLayoutBinding>(mData) {
     private var mItemClickListener: ((ProductBean) -> Unit)? = null
 

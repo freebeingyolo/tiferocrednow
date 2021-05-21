@@ -22,7 +22,7 @@ class MallFragment : BaseFragment<DefaultViewModel, FragmentMallBinding>() {
         super.initView(savedInstanceState)
         SystemBarHelper.immersiveStatusBar(activity, 0f)
         SystemBarHelper.setHeightAndPadding(activity, mViewBinding?.topView)
-        mAdapter = activity?.let { MallProductAdapter(it, mData) }!!
+        mAdapter = MallProductAdapter(mData)
         mViewBinding?.productList?.layoutManager = GridLayoutManager(activity, 3)
         mViewBinding?.productList?.adapter = mAdapter
         mAdapter.setOnItemClickListener {

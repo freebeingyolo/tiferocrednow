@@ -9,6 +9,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.css.base.uibase.BaseActivity
 import com.css.base.uibase.viewmodel.DefaultViewModel
 import com.css.base.view.ToolBarView
+import com.css.service.BuildConfig
 import com.css.service.inner.BaseInner
 import com.css.service.router.ARouterConst
 import com.css.wondercorefit.R
@@ -17,6 +18,7 @@ import com.css.wondercorefit.ui.fragment.CourseFragment
 import com.css.wondercorefit.ui.fragment.MainFragment
 import com.css.wondercorefit.ui.fragment.MallFragment
 import com.css.wondercorefit.ui.fragment.SettingFragment
+import com.tencent.bugly.Bugly
 
 @Route(path = ARouterConst.PATH_APP_MAIN)
 class MainActivity : BaseActivity<DefaultViewModel, ActivityMainBinding>() {
@@ -29,13 +31,15 @@ class MainActivity : BaseActivity<DefaultViewModel, ActivityMainBinding>() {
     override fun initViewModel(): DefaultViewModel =
         ViewModelProvider(this).get(DefaultViewModel::class.java)
 
-    override fun initCommonToolBarBg(): ToolBarView.ToolBarBg {
-        return ToolBarView.ToolBarBg.WHITE
-    }
+
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-
+        if (BuildConfig.DEBUG) {
+            Bugly.init(applicationContext, "718b817297", true)
+        } else {
+            Bugly.init(applicationContext, "718b817297", false)
+        }
         initTablayout()
     }
 
@@ -47,32 +51,32 @@ class MainActivity : BaseActivity<DefaultViewModel, ActivityMainBinding>() {
         mViewBinding.tablayout.initTab(callback = {
             mViewBinding.tablayout.tag = it
 //            val fragment = getFragment(it)
-            when (it) {
-                BaseInner.TabIndex.HOME -> {
+//            when (it) {
+//                BaseInner.TabIndex.HOME -> {
 //                    if (mCurFragment == fragment) {
 //                        mTabMainFragment.scrollTopRefresh()
 //                    }
-
-                }
-                BaseInner.TabIndex.MALL -> {
+//
+//                }
+//                BaseInner.TabIndex.MALL -> {
 //                    if (curFragment == fragment) {
 //                        tabMallFragment.scrollTopRefresh()
 //                    }
-
-                }
-                BaseInner.TabIndex.COURSE -> {
+//
+//                }
+//                BaseInner.TabIndex.COURSE -> {
 //                    if (curFragment == fragment) {
 //                        tabCartFragment.scrollTopRefresh()
 //                    }
-
-                }
-                BaseInner.TabIndex.SETTING -> {
+//
+//                }
+//                BaseInner.TabIndex.SETTING -> {
 //                    if (curFragment == fragment) {
 //                        tabMyFragment.scrollTopRefresh()
 //                    }
-
-                }
-            }
+//
+//                }
+//            }
             changeFragment(it)
         })
 

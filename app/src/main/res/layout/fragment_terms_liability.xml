@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.fragment.TermsLiabilityFragment">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingMultiplier="1.3"
+            android:text="1、一切移动客户端用户在下载并浏览 APP 手机 APP 软件时均被视为已经仔细阅读本条款并完全同意。凡以任何方式登陆本 APP，或直接、间接使用本 APP 资料者，均被视为自愿接受本网站相关声明和用户服务协议的约束。\n\n
+2、APP 手机 APP 转载的内容并不代表 APP 手机 APP 之意见及观点，也不意味着本网赞同其观点或证实其内容的真实性。\n\n
+3、APP 手机 APP 转载的文字、图片、音视频等资料均由本 APP 用户提供，其真实性、准确性和合法性由信息发布人负责。APP 手机 APP不提供任何保证，并不承担任何法律责任。\n\n
+4、APP 手机 APP 所转载的文字、图片、音视频等资料，如果侵犯了第三方的知识产权或其他权利，责任由作者或转载者本人承担，本APP 对此不承担责任。\n\n
+5、APP 手机 APP 不保证为向用户提供便利而设置的外部链接的准确性和完整性，同时，对于该外部链接指向的不由 APP 手机 APP 实际控制的任何网页上的内容，APP 手机 APP 不承担任何责任。\n\n
+6、用户明确并同意其使用 APP 手机 APP 网络服务所存在的风险将完全由其本人承担；因其使用 APP 手机 APP 网络服务而产生的一切后果也由其本人承担，APP 手机 APP 对此不承担任何责任。\n\n
+7、除 APP 手机 APP 注明之服务条款外，其它因不当使用本 APP 而导致的任何意外、疏忽、合约毁坏、诽谤、版权或其他知识产权侵犯及其所造成的任何损失，APP 手机 APP 概不负责，亦不承担任何法律责任。\n\n
+8、对于因不可抗力或因黑客攻击、通讯线路中断等 APP 手机 APP 不能控制的原因造成的网络服务中断或其他缺陷，导致用户不能正常使用 APP 手机 APP，APP 手机 APP 不承担任何责任，但将尽力减少因此给用户造成的损失或影响。\n\n
+9、本声明未涉及的问题请参见国家有关法律法规，当本声明与国家有关法律法规冲突时，以国家法律法规为准。\n\n
+10、本网站相关声明版权及其修改权、更新权和最终解释权均属 APP手机 APP 所有。"
+            android:textColor="#ff000000"
+            android:textSize="12sp" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</androidx.core.widget.NestedScrollView>

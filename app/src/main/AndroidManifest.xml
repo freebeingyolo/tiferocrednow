@@ -2,25 +2,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.css.wondercorefit">
-    <!--    网络权限    -->
+    <!-- 网络权限 -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <!-- Required  一些系统要求的权限，如访问网络等 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- Required  一些系统要求的权限，如访问网络等 -->
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <!--  防止后台服务被系统干掉  -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <!--  运动传感器相关  -->
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /> <!-- 防止后台服务被系统干掉 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- 运动传感器相关 -->
     <uses-permission android:name="android.permission.BODY_SENSORS" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <!-- 定位 -->
-    <!--    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />-->
-    <!--    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />-->
-    <!--    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />-->
-    <!--    bugly    -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 定位 -->
+    <!-- <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> -->
+    <!-- <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> -->
+    <!-- <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> -->
+    <!-- bugly -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission
         android:name="android.permission.READ_LOGS"
@@ -36,12 +32,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Wonder.Base">
+        <activity android:name=".ui.activity.setting.TermsActivity"></activity>
         <activity android:name=".ui.activity.index.ABRollerActivity" />
         <activity android:name=".ui.activity.index.BfsMeasureResultsActivity" />
         <activity android:name=".ui.activity.setting.AboutUsActivity" />
         <activity android:name=".ui.activity.setting.PersonInformationActivity" />
         <activity android:name=".ui.activity.TestActivity" />
-
         <activity
             android:name=".ui.activity.SplashActivity"
             android:launchMode="singleTop"
@@ -62,9 +58,9 @@
             android:theme="@style/FullScreenTheme">
             <intent-filter>
                 <action android:name="com.css.Notification.action" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
         </activity>
     </application>
 

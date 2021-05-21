@@ -11,14 +11,5 @@ class WonderApplication : BaseApplication() {
         super.onCreate()
         MultiDex.install(this)
         VideoCacheHelper.init(this)
-        instance = this
-        Bugly.init(getApplicationContext(), "718b817297", false);
-
     }
-
-    companion object {
-        var instance: WonderApplication by Delegates.notNull()
-        fun instance() = instance
-    }
-
 }
