@@ -70,6 +70,8 @@ dependencies {
     api project(path: ':pickerview')
     api dep.recyclerView
     api dep.arouter
+    api dep.bugly
+    api dep.bugly_upgrade
     kapt dep.arouter_compiler
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

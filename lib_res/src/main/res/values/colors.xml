@@ -12,9 +12,9 @@
     <color name="bg_gray">#F6F6F6</color>
     <color name="text_666666">#666666</color>
 
-    <color name="colorPrimary">#4A90CE</color>
-    <color name="colorPrimaryDark">#33618A</color>
-    <color name="colorAccent">#D81BA2</color>
+    <color name="colorPrimary">#ffffff</color>
+    <color name="colorPrimaryDark">#ffffff</color>
+    <color name="colorAccent">#F2682A</color>
     <color name="text_color_hint">#BBBBBB</color>
     <color name="color_e5e5e5">#e5e5e5</color>
     <color name="tab_textcolor_focus">#212121</color>

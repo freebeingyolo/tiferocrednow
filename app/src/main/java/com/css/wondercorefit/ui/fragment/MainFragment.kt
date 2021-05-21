@@ -14,6 +14,7 @@ import com.blankj.utilcode.util.LogUtils
 import com.css.base.uibase.BaseFragment
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.WeightBondData
+import com.css.ble.ui.WeightMeasureEndDetailActivity
 import com.css.service.data.StepData
 import com.css.service.data.UserData
 import com.css.service.router.ARouterConst
@@ -41,6 +42,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     private var result: Float = 0.0f
     private lateinit var userData: UserData
     private lateinit var stepData: StepData
+    private var mIsBindWeight = false
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
@@ -62,7 +64,10 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             mViewBinding?.tvInitialWeightNum?.text =
                 it.getWeightKg().toString()
         }
-
+        WeightBondData.lastWeightInfo?.let {
+            mViewBinding?.tvCurrentWeight?.text =
+                it.getWeightKg().toString()
+        }
     }
 
     private fun showDevice() {
@@ -71,6 +76,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
                 BondDeviceData::class.java
             ).mac.isNotEmpty()
         ) {
+            mIsBindWeight = true
             mViewBinding?.llDevice?.visibility = View.VISIBLE
             mViewBinding?.deviceWeight?.visibility = View.VISIBLE
         }
@@ -96,6 +102,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
                 ) {
                     mViewBinding?.llDevice?.visibility = View.VISIBLE
                     mViewBinding?.deviceWeight?.visibility = View.VISIBLE
+                    mIsBindWeight = true
                 } else {
                     mViewBinding?.llDevice?.visibility = View.GONE
                 }
@@ -259,15 +266,23 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
                     .navigation()
             }
             R.id.goto_measure -> {
-                ARouter.getInstance()
-                    .build(ARouterConst.PATH_APP_BLE_WEIGHTMEASURE)
-                    .navigation()
+                if (mIsBindWeight) {
+                    ARouter.getInstance()
+                        .build(ARouterConst.PATH_APP_BLE_WEIGHTMEASURE)
+                        .navigation()
+                } else {
+                    showCenterToast("请先绑定设备")
+                    ARouter.getInstance()
+                        .build(ARouterConst.PATH_APP_BLE)
+                        .navigation()
+                }
             }
 
             R.id.add_ble_device -> {
                 ARouter.getInstance()
                     .build(ARouterConst.PATH_APP_BLE)
                     .navigation()
+//                WeightMeasureEndDetailActivity.starActivity(activity!!)
             }
         }
     }
