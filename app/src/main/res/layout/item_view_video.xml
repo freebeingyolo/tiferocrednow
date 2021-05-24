@@ -30,14 +30,4 @@
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@+id/video_poster"
         app:layout_constraintTop_toBottomOf="@+id/video_poster" />
-
-    <com.css.wondercorefit.widget.GeneralRoundFrameLayout
-        android:id="@+id/video_container"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:corner_radius="4dp"
-        app:layout_constraintDimensionRatio="158:104"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
