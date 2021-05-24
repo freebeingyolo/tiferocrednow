@@ -2,6 +2,9 @@ package com.css.wondercorefit.ui.activity.index
 
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.view.Window
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.css.wondercorefit.R
 import com.css.wondercorefit.utils.*
@@ -18,6 +21,7 @@ import com.seagazer.liteplayer.widget.LiteMediaTopbar
 
 class CoursePlayActivity : AppCompatActivity() {
     private lateinit var playerView: LitePlayerView
+    private var fullScreenPlay:Int = 0
     private val urls =
         listOf(
                 Pair(VideoCacheHelper.url(CourseViewModel.urls[0]), CourseViewModel.name[0]),
@@ -39,7 +43,6 @@ class CoursePlayActivity : AppCompatActivity() {
         currentPlayIndex = bundle!!.getInt("position")
         playerView = findViewById(R.id.player_view)
         playerView.setProgressColor(resources.getColor(R.color.colorAccent), Color.YELLOW)
-        playerView.setAutoSensorEnable(false)
         // config
         playerView.setRenderType(ConfigHolder.renderType)
         playerView.setPlayerType(ConfigHolder.playerType)
@@ -51,41 +54,34 @@ class CoursePlayActivity : AppCompatActivity() {
             supportBrightness = true
             supportVolume = true
         })
-        // custom loading overlay
-        playerView.attachOverlay(LoadingOverlay(this))
-        playerView.setAutoSensorEnable(true)
-        playerView.setAutoHideOverlay(true)
-        // add render listener
-        playerView.addRenderStateChangedListener(object : SimpleRenderStateChangedListener() {
-            override fun onSurfaceCreated() {
-                MediaLogger.d("surface创建")
-            }
-        })
-        // new way to observe fullscreen, floatWindow and autoSensor changed
-        playerView.addPlayerViewModeChangedListener(object : PlayerViewModeChangedListener {
-            override fun onFullScreenModeChanged(isFullScreen: Boolean) {
-                // do something when fullscreen changed
+        playerView.addPlayerViewModeChangedListener(object: PlayerViewModeChangedListener{
+            override fun onAutoSensorModeChanged(isAutoSensor: Boolean) {
+
             }
 
             override fun onFloatWindowModeChanged(isFloatWindow: Boolean) {
-                // do something when floatWindow changed
+
             }
 
-            override fun onAutoSensorModeChanged(isAutoSensor: Boolean) {
-                // do something when auto sensor changed
+            override fun onFullScreenModeChanged(isFullScreen: Boolean) {
+                if (!isFullScreen && fullScreenPlay == 1) {
+                    finish()
+                }
             }
 
         })
+        // custom loading overlay
+        playerView.attachOverlay(LoadingOverlay(this))
+        playerView.setAutoSensorEnable(false)
+        playerView.setAutoHideOverlay(true)
         playerView.setDataSource(DataSource(urls[currentPlayIndex].first, urls[currentPlayIndex].second))
         // start play
         playerView.start()
-//        playerView.setFullScreenMode(true)
-        val render = playerView.getRender()
-        if (render is RenderTextureView) {
-            val renderView = render.getRenderView()
-            // to do something with this render view, like get capture of surface texture for cover
-            val cover = renderView.bitmap
-        }
+        val handler = Handler()
+        handler.postDelayed({
+            playerView.setFullScreenMode(true)
+            fullScreenPlay = 1
+        }, 500)
     }
     override fun onBackPressed() {
         if (playerView.isFullScreen()) {
