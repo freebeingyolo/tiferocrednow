@@ -1,3 +1,5 @@
 <resources>
     <!-- TODO: Remove or change this placeholder text -->
+    <string name="current_weight">当前体重</string>
+    <string name="value_default">--</string>
 </resources>

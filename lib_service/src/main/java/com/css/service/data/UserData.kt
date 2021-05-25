@@ -8,6 +8,7 @@ data class UserData(
     var targetStep: String = "10000"
 ) {
     val setInt: Int get() = if (sex == "男") 0 else 1
+    val ageInt: Int get() = age.toInt()
     val statureFloat: Float get() = stature.toFloat()
 }
 

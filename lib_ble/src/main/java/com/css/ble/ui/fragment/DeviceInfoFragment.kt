@@ -12,7 +12,6 @@ import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseFragment
 import com.css.base.uibase.viewmodel.DefaultViewModel
 import com.css.ble.R
-import com.css.ble.databinding.ActivityDeviceInfoBinding
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.databinding.FragmentDeviceInfoBinding
 import com.css.service.utils.WonderCoreCache
@@ -50,8 +49,8 @@ class DeviceInfoFragment : BaseFragment<DefaultViewModel, FragmentDeviceInfoBind
             tvDeviceName.text = data.displayName
             tvMacAddress.text = data.mac
         }
-        var displayName = when (data.type) {
-            R.mipmap.icon_weight -> ActivityUtils.getTopActivity().getString(R.string.device_weight)
+        var displayName = when (key) {
+            WonderCoreCache.BOND_WEIGHT_INFO -> ActivityUtils.getTopActivity().getString(R.string.device_weight)
             else -> ActivityUtils.getTopActivity().getString(R.string.device_wheel)
         }
         setToolBarLeftText(displayName)

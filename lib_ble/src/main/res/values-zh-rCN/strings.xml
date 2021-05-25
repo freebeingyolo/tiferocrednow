@@ -7,6 +7,6 @@
     <string name="firmware_version">固件版本</string>
     <string name="device_weight">蓝牙体脂秤</string>
     <string name="device_wheel">蓝牙健腹轮</string>
-    <string name="delete_device">删除设备</string>
+    <string name="delete_device">解除绑定</string>
     <string name="weight_measuring">详细数据测量中请稍后</string>
 </resources>

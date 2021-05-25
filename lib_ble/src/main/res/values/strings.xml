@@ -4,7 +4,7 @@
     <string name="device_name">设备名称</string>
     <string name="device_model">设备型号</string>
     <string name="firmware_version">固件版本</string>
-    <string name="delete_device">删除设备</string>
+    <string name="delete_device">解除绑定</string>
     <string name="current_weight">当前体重</string>
     <string name="measure_weight">测量体重</string>
     <string name="bond_device">绑定设备</string>

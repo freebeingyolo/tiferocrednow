@@ -1,6 +1,5 @@
 package com.css.wondercorefit.ui.fragment
 
-//import com.css.ble.ui.WeightBondActivity
 import android.content.*
 import android.os.*
 import android.util.Log
@@ -11,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.LogUtils
+import com.css.base.dialog.ToastDialog
 import com.css.base.uibase.BaseFragment
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.WeightBondData
@@ -43,7 +43,6 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     private lateinit var stepData: StepData
     private var needNotify: Boolean = false
     private var pauseResume: Boolean = false
-    private var mIsBindWeight = false
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
@@ -73,24 +72,40 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         WeightBondData.lastWeightInfoObsvr.let {
             it.observe(this) { it2 ->
                 if (it2 != null) {
-                    mViewBinding?.tvCurrentWeight?.text = it2.weightKgFmt("你上一次的体重是:%.1f kg")
-                } else {
-                    mViewBinding?.tvCurrentWeight?.text = getString(R.string.tv_current_weight_init_msg)
+                    mViewBinding?.tvCurrentWeight?.text = it2.weightKgFmt("%.1f")
                 }
+            }
+        }
+
+        WeightBondData.lastWeightInfo.let {
+            if (it?.getBodyFatData()?.bmi != null) {
+                mViewBinding?.llBmi?.visibility = View.VISIBLE
+                mViewBinding?.tvBmi?.text = "BMI${it?.getBodyFatData()?.bmi}"
+                mViewBinding?.tvBodyType?.text = it.fatLevel
+            } else {
+                mViewBinding?.llBmi?.visibility = View.GONE
             }
         }
     }
 
     private fun showDevice() {
+        //是否已绑定体脂秤
         if (WonderCoreCache.getData(
                 WonderCoreCache.BOND_WEIGHT_INFO,
                 BondDeviceData::class.java
             ).mac.isNotEmpty()
         ) {
-            mIsBindWeight = true
             mViewBinding?.llDevice?.visibility = View.VISIBLE
             mViewBinding?.deviceWeight?.visibility = View.VISIBLE
+            mViewBinding?.llCurrentWeight?.visibility = View.VISIBLE
+            mViewBinding?.gotoMeasure?.visibility = View.GONE
+            mViewBinding?.tvNoneWeight?.visibility = View.GONE
+        } else {
+            mViewBinding?.gotoMeasure?.visibility = View.VISIBLE
+            mViewBinding?.tvNoneWeight?.visibility = View.VISIBLE
+            mViewBinding?.llCurrentWeight?.visibility = View.GONE
         }
+        //是否已绑定健腹轮
         if (WonderCoreCache.getData(
                 WonderCoreCache.BOND_WHEEL_INFO,
                 BondDeviceData::class.java
@@ -99,6 +114,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             mViewBinding?.llDevice?.visibility = View.VISIBLE
             mViewBinding?.deviceWheel?.visibility = View.VISIBLE
         }
+        //绑定监听
         sp?.registerOnSharedPreferenceChangeListener(spLis)
     }
 
@@ -113,10 +129,14 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
                 ) {
                     mViewBinding?.llDevice?.visibility = View.VISIBLE
                     mViewBinding?.deviceWeight?.visibility = View.VISIBLE
-                    mIsBindWeight = true
+                    mViewBinding?.gotoMeasure?.visibility = View.GONE
+                    mViewBinding?.tvNoneWeight?.visibility = View.GONE
+                    mViewBinding?.llCurrentWeight?.visibility = View.VISIBLE
                 } else {
                     mViewBinding?.llDevice?.visibility = View.GONE
-                    mIsBindWeight = false
+                    mViewBinding?.gotoMeasure?.visibility = View.VISIBLE
+                    mViewBinding?.tvNoneWeight?.visibility = View.VISIBLE
+                    mViewBinding?.llCurrentWeight?.visibility = View.GONE
                 }
 
                 if (WonderCoreCache.getData(
@@ -264,23 +284,13 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
                     .navigation()
             }
             R.id.goto_measure -> {
-                if (mIsBindWeight) {
-                    ARouter.getInstance()
-                        .build(ARouterConst.PATH_APP_BLE_WEIGHTMEASURE)
-                        .navigation()
-                } else {
-                    showCenterToast("请先绑定设备")
-                    ARouter.getInstance()
-                        .build(ARouterConst.PATH_APP_BLE)
-                        .navigation()
-                }
+                activity?.let { ToastDialog(it).showPopupWindow() }
             }
 
             R.id.add_ble_device -> {
                 ARouter.getInstance()
                     .build(ARouterConst.PATH_APP_BLE)
                     .navigation()
-//                WeightMeasureEndDetailActivity.starActivity(activity!!)
             }
         }
     }

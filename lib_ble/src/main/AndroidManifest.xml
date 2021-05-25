@@ -13,11 +13,6 @@
 
     <application android:theme="@style/Wonder.Base">
         <activity android:name=".ui.WeightMeasureActivity" />
- <!--       <activity android:name=".ui.WeightMeasureEndDetailActivity" />
-        <activity android:name=".ui.WeightBondActivity" />
-        <activity android:name=".ui.WeightMeasureDoingActivity" />
-        <activity android:name=".ui.DeviceInfoActivity" />
-        <activity android:name=".ui.WeightMeasureBeginActivity" />-->
         <activity
             android:name=".ui.BleEntryActivity"
             android:launchMode="singleTask">
