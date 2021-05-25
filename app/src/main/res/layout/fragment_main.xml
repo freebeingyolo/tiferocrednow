@@ -286,6 +286,7 @@
                     android:layout_marginBottom="14dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
+                    android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="@+id/pb_step"
                     app:layout_constraintEnd_toEndOf="@+id/pb_step"
                     app:layout_constraintStart_toStartOf="@+id/pb_step">
@@ -294,7 +295,7 @@
                         android:id="@+id/tv_bmi"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="BMI30.5"
+                        android:text="BMI --"
                         android:textColor="#ff000000"
                         android:textSize="12sp" />
 
@@ -309,7 +310,7 @@
                         android:id="@+id/tv_body_type"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="偏胖"
+                        android:text="--"
                         android:textColor="#ff000000"
                         android:textSize="12sp" />
                 </androidx.appcompat.widget.LinearLayoutCompat>

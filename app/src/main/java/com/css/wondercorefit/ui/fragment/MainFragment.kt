@@ -25,6 +25,7 @@ import com.css.step.service.SensorService
 import com.css.step.service.TodayStepService
 import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.FragmentMainBinding
+import com.css.wondercorefit.ui.activity.setting.PersonInformationActivity
 import com.css.wondercorefit.viewmodel.MainViewModel
 
 
@@ -39,8 +40,8 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     private lateinit var targetStep: String
     private var currentStep: Int = 0
     private var result: Float = 0.0f
-    private lateinit var userData: UserData
     private lateinit var stepData: StepData
+    private lateinit var mUserData: UserData
     private var needNotify: Boolean = false
     private var pauseResume: Boolean = false
 
@@ -53,11 +54,16 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         startStep()
         initClickListenr()
         initProgressRate()
+        if (mUserData.isFirst) {
+            activity?.let { PersonInformationActivity.starActivity(it) }
+            mUserData.isFirst = false
+            WonderCoreCache.saveUserInfo(mUserData)
+        }
     }
 
     override fun initData() {
         super.initData()
-        mViewBinding?.tvTargetWeightNum?.text = userData.targetWeight
+        mViewBinding?.tvTargetWeightNum?.text = WonderCoreCache.getUserInfo().targetWeight
 
         WeightBondData.firstWeightInfoObsvr.let {
             it.observe(this) { it2 ->
@@ -73,6 +79,13 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             it.observe(this) { it2 ->
                 if (it2 != null) {
                     mViewBinding?.tvCurrentWeight?.text = it2.weightKgFmt("%.1f")
+                    if (it2?.getBodyFatData()?.bmi != null) {
+                        mViewBinding?.llBmi?.visibility = View.VISIBLE
+                        mViewBinding?.tvBmi?.text = "BMI${it2?.getBodyFatData()?.bmi}"
+                        mViewBinding?.tvBodyType?.text = it2.fatLevel
+                    } else {
+                        mViewBinding?.llBmi?.visibility = View.GONE
+                    }
                 }
             }
         }
@@ -82,8 +95,6 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
                 mViewBinding?.llBmi?.visibility = View.VISIBLE
                 mViewBinding?.tvBmi?.text = "BMI${it?.getBodyFatData()?.bmi}"
                 mViewBinding?.tvBodyType?.text = it.fatLevel
-            } else {
-                mViewBinding?.llBmi?.visibility = View.GONE
             }
         }
     }
@@ -121,34 +132,44 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     private val sp by lazy { activity?.getSharedPreferences("spUtils", Context.MODE_PRIVATE) }
     private val spLis by lazy {
         SharedPreferences.OnSharedPreferenceChangeListener { sp, key ->
-            if (key.equals(WonderCoreCache.BOND_WEIGHT_INFO)) {
-                if (WonderCoreCache.getData(
-                        WonderCoreCache.BOND_WEIGHT_INFO,
-                        BondDeviceData::class.java
-                    ).mac.isNotEmpty()
-                ) {
-                    mViewBinding?.llDevice?.visibility = View.VISIBLE
-                    mViewBinding?.deviceWeight?.visibility = View.VISIBLE
-                    mViewBinding?.gotoMeasure?.visibility = View.GONE
-                    mViewBinding?.tvNoneWeight?.visibility = View.GONE
-                    mViewBinding?.llCurrentWeight?.visibility = View.VISIBLE
-                } else {
-                    mViewBinding?.llDevice?.visibility = View.GONE
-                    mViewBinding?.gotoMeasure?.visibility = View.VISIBLE
-                    mViewBinding?.tvNoneWeight?.visibility = View.VISIBLE
-                    mViewBinding?.llCurrentWeight?.visibility = View.GONE
+            when (key) {
+                WonderCoreCache.BOND_WEIGHT_INFO -> {
+                    if (WonderCoreCache.getData(
+                            WonderCoreCache.BOND_WEIGHT_INFO,
+                            BondDeviceData::class.java
+                        ).mac.isNotEmpty()
+                    ) {
+                        mViewBinding?.llDevice?.visibility = View.VISIBLE
+                        mViewBinding?.deviceWeight?.visibility = View.VISIBLE
+                        mViewBinding?.gotoMeasure?.visibility = View.GONE
+                        mViewBinding?.tvNoneWeight?.visibility = View.GONE
+                        mViewBinding?.llCurrentWeight?.visibility = View.VISIBLE
+                    } else {
+                        mViewBinding?.llDevice?.visibility = View.GONE
+                        mViewBinding?.gotoMeasure?.visibility = View.VISIBLE
+                        mViewBinding?.tvNoneWeight?.visibility = View.VISIBLE
+                        mViewBinding?.llCurrentWeight?.visibility = View.GONE
+                    }
+
+                    if (WonderCoreCache.getData(
+                            WonderCoreCache.BOND_WHEEL_INFO,
+                            BondDeviceData::class.java
+                        ).mac.isNotEmpty()
+                    ) {
+                        mViewBinding?.llDevice?.visibility = View.VISIBLE
+                        mViewBinding?.deviceWheel?.visibility = View.VISIBLE
+                    } else {
+                        mViewBinding?.deviceWheel?.visibility = View.INVISIBLE
+                    }
+                }
+                WonderCoreCache.USER_INFO -> {
+                    mUserData = WonderCoreCache.getUserInfo()
+                    mViewBinding?.tvTargetWeightNum?.text =
+                        mUserData.targetWeight
+                    mViewBinding?.tvTodayStepTarget?.text =
+                        "目标 ${mUserData.targetStep}"
                 }
 
-                if (WonderCoreCache.getData(
-                        WonderCoreCache.BOND_WHEEL_INFO,
-                        BondDeviceData::class.java
-                    ).mac.isNotEmpty()
-                ) {
-                    mViewBinding?.llDevice?.visibility = View.VISIBLE
-                    mViewBinding?.deviceWheel?.visibility = View.VISIBLE
-                } else {
-                    mViewBinding?.deviceWheel?.visibility = View.GONE
-                }
             }
             LogUtils.vTag("suisui", key)
         }
@@ -160,10 +181,9 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     }
 
     private fun initProgressRate() {
-        userData = WonderCoreCache.getUserInfo()
+        mUserData = WonderCoreCache.getUserInfo()
+        targetStep = mUserData.targetStep
         stepData = WonderCoreCache.getData(WonderCoreCache.STEP_DATA, StepData::class.java)
-        targetStep = userData.targetStep
-        mViewBinding!!.tvTodayStepTarget.text = "目标 " + targetStep
         currentStep = stepData.todaySteps
         result = ((currentStep * 100) / targetStep.toInt()).toFloat()
         Log.d(TAG, "ProgressInformation   :  $currentStep    $targetStep    $result")

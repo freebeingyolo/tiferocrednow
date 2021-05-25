@@ -23,22 +23,38 @@
         android:textStyle="bold"
         tools:text="这是标题" />
 
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/et_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="11dp"
-        android:background="@null"
-        android:gravity="center_vertical"
-        android:inputType="text"
-        android:maxLength="12"
-        android:paddingStart="17dp"
-        android:paddingTop="7dp"
-        android:paddingBottom="7dp"
-        android:textColor="#222222"
-        android:textColorHint="#C7C7CC"
-        android:textSize="13sp"
-        tools:hint="请输入修改的昵称" />
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="11dp"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:inputType="text"
+            android:maxLength="12"
+            android:paddingStart="17dp"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp"
+            android:textColor="#222222"
+            android:textColorHint="#C7C7CC"
+            android:textSize="13sp"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:hint="请输入修改的昵称" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_clean"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginEnd="17dp"
+            android:src="@drawable/icon_edit_clean"
+            app:layout_constraintBottom_toBottomOf="@+id/et_content"
+            app:layout_constraintEnd_toEndOf="@+id/et_content"
+            app:layout_constraintTop_toTopOf="@+id/et_content" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
         android:layout_width="match_parent"

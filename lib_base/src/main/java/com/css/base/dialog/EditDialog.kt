@@ -3,24 +3,27 @@ package com.css.base.dialog
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Typeface
+import android.text.Editable
 import android.text.InputFilter
-import android.text.Spanned
+import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import com.blankj.utilcode.util.SizeUtils
 import com.css.base.R
 import com.css.base.dialog.inner.DialogClickListener
+import com.css.base.utils.StringUtils
 import com.css.service.utils.DoubleClickUtils
-
 import razerdp.basepopup.BasePopupWindow
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+
 
 /**
  * @author Ruis
@@ -33,6 +36,8 @@ class EditDialog : BasePopupWindow, View.OnClickListener {
     private var etContent: AppCompatEditText
     private var tvLeft: AppCompatTextView
     private var tvRight: AppCompatTextView
+    private var tvHint: AppCompatTextView
+    private var ivClean: AppCompatImageView
 
     constructor(context: Context) : super(context)
 
@@ -47,9 +52,30 @@ class EditDialog : BasePopupWindow, View.OnClickListener {
         etContent = findViewById(R.id.et_content)
         tvLeft = findViewById(R.id.tv_left)
         tvRight = findViewById(R.id.tv_right)
+        ivClean = findViewById(R.id.iv_clean)
+        tvHint = findViewById(R.id.tv_hint)
         tvLeft.setOnClickListener(this)
+        ivClean.setOnClickListener(this)
         tvRight.setOnClickListener(this)
-        setEditTextInhibitInputSpeChat(etContent)
+//        StringUtils.lengthFilter(context, etContent, 12, "设备名称12个字符以内、不可包含符号，无法保存设备名称")
+        etContent.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                if (etContent.text.isNullOrEmpty()) {
+                    tvHint.visibility = View.VISIBLE
+                    ivClean.visibility = View.GONE
+                } else {
+                    tvHint.visibility = View.GONE
+                    ivClean.visibility = View.VISIBLE
+                }
+            }
+
+        })
     }
 
     override fun onCreateContentView(): View {
@@ -188,25 +214,12 @@ class EditDialog : BasePopupWindow, View.OnClickListener {
                 listener?.onLeftBtnClick(v)
             }
             R.id.tv_right -> {
-                dismiss()
                 listener?.onRightEditBtnClick(v, etContent.text.toString().trimEnd())
+            }
+            R.id.iv_clean -> {
+                etContent.setText("")
             }
         }
     }
-
-    /**
-     * 禁止EditText输入特殊字符
-     * @param editText
-     */
-    fun setEditTextInhibitInputSpeChat(editText: EditText) {
-        val filter: InputFilter = InputFilter { source, start, end, dest, dstart, dend ->
-            val speChat = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]"
-            val pattern: Pattern = Pattern.compile(speChat)
-            val matcher: Matcher = pattern.matcher(source.toString())
-            if (matcher.find()) "" else null
-        }
-        editText.setFilters(arrayOf<InputFilter>(filter))
-    }
-
 
 }

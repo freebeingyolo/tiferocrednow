@@ -75,7 +75,7 @@ class DeviceListFragment : BaseFragment<DeviceListVM, FragmentDeviceListBinding>
                                 override fun onRightBtnClick(view: View) {
                                     super.onRightBtnClick(view)
                                     WonderCoreCache.removeKey(d.getCacheKey())
-                                    ToastUtils.showShort("解锁成功")
+                                    ToastUtils.showShort("解绑成功")
                                 }
 
                             }

@@ -11,6 +11,7 @@ import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseFragment
 import com.css.base.uibase.viewmodel.DefaultViewModel
+import com.css.base.utils.StringUtils
 import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.databinding.FragmentDeviceInfoBinding
@@ -28,7 +29,10 @@ class DeviceInfoFragment : BaseFragment<DefaultViewModel, FragmentDeviceInfoBind
         this.arguments = args
     }
 
-    override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): FragmentDeviceInfoBinding {
+    override fun initViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?
+    ): FragmentDeviceInfoBinding {
 
         return FragmentDeviceInfoBinding.inflate(inflater, parent, false)
     }
@@ -44,13 +48,14 @@ class DeviceInfoFragment : BaseFragment<DefaultViewModel, FragmentDeviceInfoBind
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         key = arguments?.getString("DeviceKey")!!
-        data = WonderCoreCache.getData(key,BondDeviceData::class.java)
+        data = WonderCoreCache.getData(key, BondDeviceData::class.java)
         mViewBinding?.apply {
             tvDeviceName.text = data.displayName
             tvMacAddress.text = data.mac
         }
         var displayName = when (key) {
-            WonderCoreCache.BOND_WEIGHT_INFO -> ActivityUtils.getTopActivity().getString(R.string.device_weight)
+            WonderCoreCache.BOND_WEIGHT_INFO -> ActivityUtils.getTopActivity()
+                .getString(R.string.device_weight)
             else -> ActivityUtils.getTopActivity().getString(R.string.device_wheel)
         }
         setToolBarLeftText(displayName)
@@ -59,22 +64,36 @@ class DeviceInfoFragment : BaseFragment<DefaultViewModel, FragmentDeviceInfoBind
         }
 
         mViewBinding?.apply {
-            tvDeviceName.text = data.displayName
+            if (!WonderCoreCache.getData(key, BondDeviceData::class.java).alias.isNullOrEmpty()) {
+                tvDeviceName.text = WonderCoreCache.getData(key, BondDeviceData::class.java).alias
+            } else {
+                tvDeviceName.text = displayName
+            }
+
             rlDeviceName.setOnClickListener {
                 CommonAlertDialog(requireContext()).apply {
                     type = CommonAlertDialog.DialogType.Edit
                     title = "设备名称"
                     content = data.displayName
-                    hint = "请输入设备名称"
+                    hint = "请输入设备名称，不可包含符号"
                     leftBtnText = "取消"
                     rightBtnText = "确定"
                     listener = object : DialogClickListener.DefaultLisener() {
 
                         override fun onRightEditBtnClick(view: View, content: String?) {
-                            var validContent = getInValidName(content)
-                            tvDeviceName.text = validContent
-                            data.alias == validContent
-                            WonderCoreCache.saveData(key, data)
+                            val contentLength =
+                                StringUtils.getCharacterNum(content) + StringUtils.getChineseNum(
+                                    content!!
+                                )
+                            if (contentLength > 12 || StringUtils.getCheckSymbol(content)) {
+                                showToast("设备名称12个字符以内、不可包含符号，无法保存设备名称")
+                            } else {
+                                val validContent = getInValidName(content)
+                                tvDeviceName.text = validContent
+                                data.alias = validContent
+                                WonderCoreCache.saveData(key, data)
+                                dialog?.dismiss()
+                            }
                         }
                     }
                 }.show()
@@ -105,7 +124,8 @@ class DeviceInfoFragment : BaseFragment<DefaultViewModel, FragmentDeviceInfoBind
     fun getInValidName(str: String?): String? {
         if (str.isNullOrEmpty()) {
             return when (data.type) {
-                R.mipmap.icon_weight -> ActivityUtils.getTopActivity().getString(R.string.device_weight)
+                R.mipmap.icon_weight -> ActivityUtils.getTopActivity()
+                    .getString(R.string.device_weight)
                 else -> ActivityUtils.getTopActivity().getString(R.string.device_wheel)
             }
         }
