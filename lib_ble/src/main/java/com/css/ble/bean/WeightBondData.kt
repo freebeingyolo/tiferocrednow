@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import cn.net.aicare.algorithmutil.AlgorithmUtil
 import cn.net.aicare.algorithmutil.BodyFatData
+import com.css.ble.utils.BodyJudgeUtil
 import com.css.service.utils.WonderCoreCache
 
 /**
@@ -59,7 +60,7 @@ class WeightBondData() {
                 (firstWeightInfoObsvr as MutableLiveData).value = value
             }
 
-        //上次测量体重信息
+        //上次测量体重信息，有backfield的需要才能有initializer
         var lastWeightInfo: WeightBondData? = WonderCoreCache.takeIf { it.containsKey(WonderCoreCache.LAST_WEIGHT_INFO) }?.getData(
             WonderCoreCache.LAST_WEIGHT_INFO, WeightBondData::class.java
         )
@@ -82,31 +83,34 @@ class WeightBondData() {
     fun getBodyFatData(): BodyFatData {
         var userInfo = WonderCoreCache.getUserInfo()
         val sex = userInfo.setInt
-        val age = userInfo.age.toInt()
+        val age = userInfo.ageInt
         val weight_kg = weightKg * 1.0
         val height_cm = userInfo.stature.toInt()
         val adc = adc
-        var data: BodyFatData = AlgorithmUtil.getBodyFatData(AlgorithmUtil.AlgorithmType.TYPE_AICARE, sex, age, weight_kg, height_cm, adc)
-        return data
+        val ret = AlgorithmUtil.getBodyFatData(AlgorithmUtil.AlgorithmType.TYPE_AICARE, sex, age, weight_kg, height_cm, adc)
+        return ret
     }
 
-    fun getBodyFatDataList2(): List<Map<String, Any?>> {
-        var data: BodyFatData = getBodyFatData();
-        var datas = mutableListOf<Map<String, Any?>>()
-        var clazz = data.javaClass
-        for (m in clazz.declaredFields) {
-            m.isAccessible = true
-            var map = mutableMapOf<String, Any?>()
-            map["key"] = m.name
-            map["judge"] = ""
-            map["value"] = m.get(data)
-            datas.add(map)
+    /*
+    *肥胖等级
+    return：[体重不足,偏瘦,标准,偏重,超重]
+    */
+    val fatLevel: String
+        get() {
+            var userInfo = WonderCoreCache.getUserInfo()
+            return BodyJudgeUtil.fatLevel(weightKg, userInfo.statureFloat, userInfo.sex)
         }
-        return datas
-    }
+
+    val fatLeveRate: Float
+        get() {
+            var userInfo = WonderCoreCache.getUserInfo()
+            val high = userInfo.statureFloat
+            val sex = userInfo.sex
+            return (weight - BodyJudgeUtil.standardWeight(high, sex)) / BodyJudgeUtil.standardWeight(high, sex)
+        }
 
     fun getBodyFatDataList(): List<WeightDetailBean> {
-        var data: BodyFatData = getBodyFatData();
+        var data: BodyFatData = getBodyFatData()
         var datas = mutableListOf<WeightDetailBean>()
         var clazz = data.javaClass
         for (m in clazz.declaredFields) {
@@ -120,6 +124,7 @@ class WeightBondData() {
         }
         return datas
     }
+
 
     fun nameTransfer(name: String): String {
         return when (name) {
