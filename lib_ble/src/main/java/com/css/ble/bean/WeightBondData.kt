@@ -67,16 +67,19 @@ class WeightBondData() {
             }
 
         //第一次测量体重信息监听
-        val firstWeightInfoObsvr: LiveData<WeightBondData> = MutableLiveData<WeightBondData>().apply {
-            WonderCoreCache.takeIf { it.containsKey(WonderCoreCache.FIRST_WEIGHT_INFO) }?.getData(
-                WonderCoreCache.FIRST_WEIGHT_INFO, WeightBondData::class.java
-            )
+        val firstWeightInfoObsvr: LiveData<WeightBondData> by lazy {
+            MutableLiveData<WeightBondData>().apply {
+                value = WonderCoreCache.takeIf { it.containsKey(WonderCoreCache.FIRST_WEIGHT_INFO) }?.getData(
+                    WonderCoreCache.FIRST_WEIGHT_INFO, WeightBondData::class.java
+                )
+            }
         }
-
         //上次测量体重信息监听
-        val lastWeightInfoObsvr: LiveData<WeightBondData> = MutableLiveData<WeightBondData>().apply {
-            value = WonderCoreCache.takeIf { it.containsKey(WonderCoreCache.LAST_WEIGHT_INFO) }
-                ?.getData(WonderCoreCache.LAST_WEIGHT_INFO, WeightBondData::class.java)
+        val lastWeightInfoObsvr: LiveData<WeightBondData> by lazy {
+            MutableLiveData<WeightBondData>().apply {
+                value = WonderCoreCache.takeIf { it.containsKey(WonderCoreCache.LAST_WEIGHT_INFO) }
+                    ?.getData(WonderCoreCache.LAST_WEIGHT_INFO, WeightBondData::class.java)
+            }
         }
     }
 
