@@ -44,28 +44,15 @@ class WeightMeasureEndDeailFragment : BaseFragment<WeightMeasureVM, ActivityWeig
         mViewBinding!!.rvData.adapter = mBodyDetailAdapter
         mViewBinding?.apply {
             btnMeasureWeight.setOnClickListener {
-                FragmentUtils.changeFragment(WeightMeasureFragment::class.java)
+                mViewModel.initOrReset()
                 Log.d(TAG, "btnMeasureWeight#click")
             }
             mViewModel.bondData.value!!.apply {
                 tvWeightNum.text = weightKgFmt
                 var bodyFatData = getBodyFatData()
-                var userInfo = WonderCoreCache.getUserInfo()
-                tvTodayBodyStatus.text = String.format(
-                    "BMI%.1f|%s", bodyFatData.bmi, BodyJudgeUtil.fatLevel(
-                        weightKg,
-                        userInfo.stature.toFloat(),
-                        userInfo.sex
-                    )
-                )
-                pbWeight.setProgress(
-                    BodyJudgeUtil.fatLeveRate(
-                        weightKg, userInfo.statureFloat, userInfo.sex
-                    ).toInt()
-                )
+                tvTodayBodyStatus.text = String.format("BMI%.1f|%s", bodyFatData.bmi, fatLevel)
+                pbWeight.setProgress(fatLeveRate.toInt())
             }
-
-
         }
 
     }
