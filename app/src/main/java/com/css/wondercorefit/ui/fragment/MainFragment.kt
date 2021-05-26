@@ -15,6 +15,7 @@ import com.css.base.dialog.ToastDialog
 import com.css.base.uibase.BaseFragment
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.WeightBondData
+import com.css.service.bus.EventMessage
 import com.css.service.data.StepData
 import com.css.service.data.UserData
 import com.css.service.router.ARouterConst
@@ -56,7 +57,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         SystemBarHelper.immersiveStatusBar(activity, 0f)
         SystemBarHelper.setHeightAndPadding(activity, mViewBinding?.topView)
         EventBus.getDefault().register(this)
-        Log.d("526" , "EventBus   register  success")
+        Log.d("526", "EventBus   register  success")
         showDevice()
         startSensorService()
         startStep()
@@ -179,7 +180,6 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
                 }
 
             }
-            LogUtils.vTag("suisui", key)
         }
     }
 
@@ -260,16 +260,20 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
 
     //接收消息
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(event: MessageEvent) {
-        Log.d("526" , "onMessageEvent    ${event.type}")
-        when (event.type) {
-            MessageType.ShowLog -> {
-                Log.e(TAG, "onMessageEvent: " + event.getString())
-            }
-            MessageType.ShowToast -> {
-                Toast.makeText(activity, "onMessageEvent: " + event.getString(), Toast.LENGTH_SHORT).show()
+    fun onMessageEvent(event: EventMessage<*>) {
+        when (event.message) {
+            EventMessage.Code.MAIN_INDEX_BACK -> {
+                LogUtils.vTag("suisui", (event.t as StepData).defaultSteps)
             }
         }
+//        when (event.type) {
+//            MessageType.ShowLog -> {
+//                Log.e(TAG, "onMessageEvent: " + event.getString())
+//            }
+//            MessageType.ShowToast -> {
+//                Toast.makeText(activity, "onMessageEvent: " + event.getString(), Toast.LENGTH_SHORT).show()
+//            }
+//        }
     }
 
     // 公里计算公式
