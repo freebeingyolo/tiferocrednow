@@ -5,17 +5,15 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
-import com.blankj.utilcode.util.LogUtils
-
 import com.css.base.uibase.BaseActivity
-import com.css.base.uibase.inner.OnToolBarClickListener
 import com.css.base.uibase.viewmodel.DefaultViewModel
-import com.css.base.view.ToolBarView
 import com.css.pickerview.builder.OptionsPickerBuilder
 import com.css.pickerview.listener.CustomListener
 import com.css.pickerview.view.OptionsPickerView
@@ -123,9 +121,16 @@ class PersonInformationActivity :
             })
                 .setSelectOptions(1)  //设置默认选中项
                 .setOutSideCancelable(true)//点击外部dismiss default true
-                .isDialog(false)//是否显示为对话框样式
+                .setTextColorCenter(Color.parseColor("#F2682A"))
+                .isDialog(true)//是否显示为对话框样式
                 .build()
             mSexPickerDialog?.setPicker(mSexList)
+            val lp: FrameLayout.LayoutParams =
+                mSexPickerDialog!!.dialogContainerLayout.layoutParams as FrameLayout.LayoutParams
+            lp.leftMargin = 0
+            lp.rightMargin = 0
+            mSexPickerDialog!!.dialog.window?.setGravity(Gravity.BOTTOM)
+            mSexPickerDialog!!.dialog.window?.setWindowAnimations(R.style.picker_view_slide_anim)
             mSexPickerDialog?.show()
         } else {
             mSexPickerDialog?.show()
@@ -167,9 +172,15 @@ class PersonInformationActivity :
                 .setLineSpacingMultiplier(3.0F)
                 .setTextColorCenter(Color.parseColor("#F2682A"))
                 .setOutSideCancelable(true)//点击外部dismiss default true
-                .isDialog(false)//是否显示为对话框样式
+                .isDialog(true)//是否显示为对话框样式
                 .build()
             mAgePickerDialog?.setPicker(mAgeList)
+            val lp: FrameLayout.LayoutParams =
+                mAgePickerDialog!!.dialogContainerLayout.layoutParams as FrameLayout.LayoutParams
+            lp.leftMargin = 0
+            lp.rightMargin = 0
+            mAgePickerDialog!!.dialog.window?.setGravity(Gravity.BOTTOM)
+            mAgePickerDialog!!.dialog.window?.setWindowAnimations(R.style.picker_view_slide_anim)
             mAgePickerDialog?.show()
         } else {
             mAgePickerDialog?.show()
@@ -211,9 +222,15 @@ class PersonInformationActivity :
                 .setLineSpacingMultiplier(3.0F)
                 .setTextColorCenter(Color.parseColor("#F2682A"))
                 .setOutSideCancelable(true)//点击外部dismiss default true
-                .isDialog(false)//是否显示为对话框样式
+                .isDialog(true)//是否显示为对话框样式
                 .build()
             mStaturePickerDialog?.setPicker(mStatureList)
+            val lp: FrameLayout.LayoutParams =
+                mStaturePickerDialog!!.dialogContainerLayout.layoutParams as FrameLayout.LayoutParams
+            lp.leftMargin = 0
+            lp.rightMargin = 0
+            mStaturePickerDialog!!.dialog.window?.setGravity(Gravity.BOTTOM)
+            mStaturePickerDialog!!.dialog.window?.setWindowAnimations(R.style.picker_view_slide_anim)
             mStaturePickerDialog?.show()
         } else {
             mStaturePickerDialog?.show()
@@ -255,9 +272,15 @@ class PersonInformationActivity :
                 .setLineSpacingMultiplier(3.0F)
                 .setTextColorCenter(Color.parseColor("#F2682A"))
                 .setOutSideCancelable(true)//点击外部dismiss default true
-                .isDialog(false)//是否显示为对话框样式
+                .isDialog(true)//是否显示为对话框样式
                 .build()
             mTargetWeightPickerDialog?.setPicker(mTargetWeightList)
+            val lp: FrameLayout.LayoutParams =
+                mTargetWeightPickerDialog!!.dialogContainerLayout.layoutParams as FrameLayout.LayoutParams
+            lp.leftMargin = 0
+            lp.rightMargin = 0
+            mTargetWeightPickerDialog!!.dialog.window?.setGravity(Gravity.BOTTOM)
+            mTargetWeightPickerDialog!!.dialog.window?.setWindowAnimations(R.style.picker_view_slide_anim)
             mTargetWeightPickerDialog?.show()
         } else {
             mTargetWeightPickerDialog?.show()
@@ -301,9 +324,15 @@ class PersonInformationActivity :
                 .setLineSpacingMultiplier(3.0F)
                 .setTextColorCenter(Color.parseColor("#F2682A"))
                 .setOutSideCancelable(true)//点击外部dismiss default true
-                .isDialog(false)//是否显示为对话框样式
+                .isDialog(true)//是否显示为对话框样式
                 .build()
             mTargetStepPickerDialog?.setPicker(mTargetStepList)
+            val lp: FrameLayout.LayoutParams =
+                mTargetStepPickerDialog !!.dialogContainerLayout.layoutParams as FrameLayout.LayoutParams
+            lp.leftMargin = 0
+            lp.rightMargin = 0
+            mTargetStepPickerDialog!!.dialog.window?.setGravity(Gravity.BOTTOM)
+            mTargetStepPickerDialog!!.dialog.window?.setWindowAnimations(R.style.picker_view_slide_anim)
             mTargetStepPickerDialog?.show()
         } else {
             mTargetStepPickerDialog?.show()

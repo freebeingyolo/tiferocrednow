@@ -19,7 +19,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:lineSpacingMultiplier="1.3"
-                android:text="         京造运动 app 通过国际互联网为您提供一种全新的运动健身体验。您只有完全同意下列所有服务条款并完成服务程序，才能成为京造运动 APP 的用户并使用相应服务。您在使用京造运动 APP 提供的各项服务之前，应仔细阅读本用户协议。\n        您在服务程序过程中点击“同意条款，立即注册”按钮即表示您与京造运动 APP 达成协议，完全接受本服务条款项下的全部条款。您一旦使用京造运动 APP 的服务，即视为您已了解并完全同意本服务条款各项内容，包括京造运动 APP 对服务条款随时做的任何修改。"
+                android:text="         京造运动 APP 通过国际互联网为您提供一种全新的运动健身体验。您只有完全同意下列所有服务条款并完成服务程序，才能成为京造运动 APP 的用户并使用相应服务。您在使用京造运动 APP 提供的各项服务之前，应仔细阅读本用户协议。\n        您在服务程序过程中点击“同意条款，立即注册”按钮即表示您与京造运动 APP 达成协议，完全接受本服务条款项下的全部条款。您一旦使用京造运动 APP 的服务，即视为您已了解并完全同意本服务条款各项内容，包括京造运动 APP 对服务条款随时做的任何修改。"
                 android:textColor="@color/black"
                 android:textSize="12sp" />
 
@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:lineSpacingMultiplier="1.3"
-                android:text="      为了能使用服务，您同意以下事项：依本服务提示请您填写正确的服务邮箱、密码和名号，并确保今后更新的登陆邮箱、名号、头像等资料的有效性和合法性。若您提供任何违法、不道德或认为不适合在 app 上展示的资料；或者京造运动 APP 有理由怀疑你的资料属于程序或恶意操作，京造运动 APP 有权暂停或终止您的帐号，并拒绝您于现在和未来使用本服务之全部或任何部分。"
+                android:text="      为了能使用服务，您同意以下事项：依本服务提示请您填写正确的服务邮箱、密码和名号，并确保今后更新的登陆邮箱、名号、头像等资料的有效性和合法性。若您提供任何违法、不道德或认为不适合在 APP 上展示的资料；或者京造运动 APP 有理由怀疑你的资料属于程序或恶意操作，京造运动 APP 有权暂停或终止您的帐号，并拒绝您于现在和未来使用本服务之全部或任何部分。"
                 android:textColor="#ff000000"
                 android:textSize="12sp" />
 
@@ -95,8 +95,8 @@
                 android:textSize="12sp" />
 
             <TextView
-                android:layout_width="306dp"
-                android:layout_height="243dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:lineSpacingMultiplier="1.5"
                 android:paddingStart="20dp"
@@ -154,6 +154,7 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="20dp"
                 android:lineSpacingMultiplier="1.5"
+                android:layout_marginTop="10dp"
                 android:paddingEnd="10dp"
                 android:text="(a)  满足法律或行政法规的明文规定，或者符合××京造运动APP 站适用的法律程序；\n(b)  符合京造运动 APP 相关服务条款、软件许可使用协议的约定；\n(c)  保护京造运动 APP 的权利或财产，以及在紧急情况下保京造运动 APP 员工、京造运动 APP 产品或服务的用户或大众的个人安全。京造运动 APP 不会未经您的允许将这些信息与第三方共享，本声明已经列出的上述情况除外。"
                 android:textColor="#666666"

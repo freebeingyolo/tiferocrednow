@@ -32,15 +32,27 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Wonder.Base">
-        <activity android:name=".ui.activity.setting.TermsActivity"></activity>
-        <activity android:name=".ui.activity.index.ABRollerActivity" />
-        <activity android:name=".ui.activity.index.BfsMeasureResultsActivity" />
-        <activity android:name=".ui.activity.setting.AboutUsActivity" />
-        <activity android:name=".ui.activity.setting.PersonInformationActivity" />
+        <activity
+            android:name=".ui.activity.setting.TermsActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ui.activity.index.ABRollerActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activity.index.BfsMeasureResultsActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name=".ui.activity.setting.AboutUsActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activity.setting.PersonInformationActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
         <activity android:name=".ui.activity.TestActivity" />
         <activity
             android:name=".ui.activity.SplashActivity"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/WonderTheme.Launcher">
             <intent-filter>
@@ -51,6 +63,7 @@
         </activity>
         <activity
             android:name=".ui.activity.MainActivity"
+            android:screenOrientation="portrait"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="com.css.Notification.action" />
@@ -58,11 +71,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.index.CoursePlayActivity"
+        <activity
+            android:name=".ui.activity.index.CoursePlayActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:screenOrientation="portrait"
-            android:theme="@style/FullScreenTheme"
-            ></activity>
+            android:theme="@style/FullScreenTheme" />
     </application>
 
 </manifest>
