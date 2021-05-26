@@ -51,33 +51,33 @@ class WeightBondData() {
 
     companion object {
         //第一次测量体重信息
-        var firstWeightInfo: WeightBondData? = WonderCoreCache.takeIf { it.containsKey(WonderCoreCache.FIRST_WEIGHT_INFO) }
-            ?.getData(WonderCoreCache.FIRST_WEIGHT_INFO, WeightBondData::class.java)
-            get() = lastWeightInfoObsvr.value
+        var firstWeightInfo: WeightBondData?
+            get() = firstWeightInfoObsvr.value
             set(value) {
-                field = value
-                WonderCoreCache.saveData(WonderCoreCache.FIRST_WEIGHT_INFO, value)
                 (firstWeightInfoObsvr as MutableLiveData).value = value
+                WonderCoreCache.saveData(WonderCoreCache.FIRST_WEIGHT_INFO, value)
             }
 
         //上次测量体重信息，有backfield的需要才能有initializer
-        var lastWeightInfo: WeightBondData? = WonderCoreCache.takeIf { it.containsKey(WonderCoreCache.LAST_WEIGHT_INFO) }?.getData(
-            WonderCoreCache.LAST_WEIGHT_INFO, WeightBondData::class.java
-        )
-            get() {
-                return lastWeightInfoObsvr.value
-            }
+        var lastWeightInfo: WeightBondData?
+            get() = lastWeightInfoObsvr.value
             set(value) {
-                field = value
-                WonderCoreCache.saveData(WonderCoreCache.LAST_WEIGHT_INFO, value)
                 (lastWeightInfoObsvr as MutableLiveData).value = value
+                WonderCoreCache.saveData(WonderCoreCache.LAST_WEIGHT_INFO, value)
             }
 
         //第一次测量体重信息监听
-        val firstWeightInfoObsvr: LiveData<WeightBondData> = MutableLiveData()
+        val firstWeightInfoObsvr: LiveData<WeightBondData> = MutableLiveData<WeightBondData>().apply {
+            WonderCoreCache.takeIf { it.containsKey(WonderCoreCache.FIRST_WEIGHT_INFO) }?.getData(
+                WonderCoreCache.FIRST_WEIGHT_INFO, WeightBondData::class.java
+            )
+        }
 
         //上次测量体重信息监听
-        val lastWeightInfoObsvr: LiveData<WeightBondData> = MutableLiveData()
+        val lastWeightInfoObsvr: LiveData<WeightBondData> = MutableLiveData<WeightBondData>().apply {
+            value = WonderCoreCache.takeIf { it.containsKey(WonderCoreCache.LAST_WEIGHT_INFO) }
+                ?.getData(WonderCoreCache.LAST_WEIGHT_INFO, WeightBondData::class.java)
+        }
     }
 
     fun getBodyFatData(): BodyFatData {
