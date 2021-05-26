@@ -12,14 +12,12 @@ import android.os.IBinder
 import android.os.Message
 import android.util.Log
 import com.css.service.data.StepData
-import com.css.service.data.UserData
 import com.css.service.utils.WonderCoreCache
 import com.css.step.*
 import com.css.step.data.ConstantData
 import com.css.step.data.TodayStepData
-import com.css.step.utils.Logger
-import com.css.step.utils.OnStepCounterListener
-import com.css.step.utils.TodayStepDBHelper
+import com.css.step.utils.*
+import org.greenrobot.eventbus.EventBus
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -150,7 +148,7 @@ class TodayStepService : Service(), Handler.Callback {
         )
         builder!!.setContentIntent(contentIntent)
         val smallIcon: Int =
-            getResources().getIdentifier("icon_step_small", "mipmap", getPackageName())
+            resources.getIdentifier("icon_step_small", "mipmap", getPackageName())
         if (0 != smallIcon) {
             Logger().e(TAG, "smallIcon")
             builder!!.setSmallIcon(smallIcon)
@@ -311,16 +309,18 @@ class TodayStepService : Service(), Handler.Callback {
         builder!!.setContentText("步行 $km km    消耗 $calorie kcal")
         notification = builder!!.build()
         nm!!.notify(R.string.app_name, notification)
+        EventBus.getDefault().post(MessageEvent(MessageType.ShowToast).put("hellohellohellohello"))
+        Log.d("526" , "has send message   hellohellohellohello")
         stepData.todaySteps = realSteps
         WonderCoreCache.saveData(WonderCoreCache.STEP_DATA, stepData)
     }
 
     private fun isStepCounter(): Boolean {
-        return getPackageManager().hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_COUNTER)
+        return packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_COUNTER)
     }
 
     private fun isStepDetector(): Boolean {
-        return getPackageManager().hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_DETECTOR)
+        return packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_DETECTOR)
     }
 
     private val mOnStepCounterListener: OnStepCounterListener = object : OnStepCounterListener {
@@ -342,7 +342,7 @@ class TodayStepService : Service(), Handler.Callback {
         val DISTANCE = "km"
         val CALORIE = "kaluli"
         override fun getCurrentTimeSportStep(): Int {
-            return currentTimeSportStep
+            return currentStep
         }
 
         override fun getTodaySportStepArray(): Int {

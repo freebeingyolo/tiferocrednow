@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.launcher.ARouter
@@ -23,10 +24,15 @@ import com.css.step.ISportStepInterface
 import com.css.step.TodayStepManager
 import com.css.step.service.SensorService
 import com.css.step.service.TodayStepService
+import com.css.step.utils.MessageEvent
+import com.css.step.utils.MessageType
 import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.FragmentMainBinding
 import com.css.wondercorefit.ui.activity.setting.PersonInformationActivity
 import com.css.wondercorefit.viewmodel.MainViewModel
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 
 class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.OnClickListener {
@@ -49,6 +55,8 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         super.initView(savedInstanceState)
         SystemBarHelper.immersiveStatusBar(activity, 0f)
         SystemBarHelper.setHeightAndPadding(activity, mViewBinding?.topView)
+        EventBus.getDefault().register(this)
+        Log.d("526" , "EventBus   register  success")
         showDevice()
         startSensorService()
         startStep()
@@ -177,6 +185,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
 
     override fun onDestroy() {
         super.onDestroy()
+        EventBus.getDefault().unregister(this)
         sp?.unregisterOnSharedPreferenceChangeListener(spLis)
     }
 
@@ -249,6 +258,20 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         mViewBinding?.pbStep?.setProgress(result)
     }
 
+    //接收消息
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: MessageEvent) {
+        Log.d("526" , "onMessageEvent    ${event.type}")
+        when (event.type) {
+            MessageType.ShowLog -> {
+                Log.e(TAG, "onMessageEvent: " + event.getString())
+            }
+            MessageType.ShowToast -> {
+                Toast.makeText(activity, "onMessageEvent: " + event.getString(), Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     // 公里计算公式
     private fun getDistanceByStep(steps: Long): String {
         return String.format("%.2f", steps * 0.6f / 1000)
@@ -264,17 +287,13 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             when (msg.what) {
                 REFRESH_STEP_WHAT -> {
 
-                    //每隔500毫秒获取一次计步数据刷新UI
+                    //每隔1000毫秒获取一次计步数据刷新UI
                     if (null != iSportStepInterface) {
                         try {
-                            stepArray = iSportStepInterface.todaySportStepArray
-                            updataValues(stepArray)
+//                            stepArray = iSportStepInterface.currentTimeSportStep
+//                            Log.d("526" ," notify ui main  $stepArray       ${SystemClock.currentGnssTimeClock()}")
                         } catch (e: RemoteException) {
                             e.printStackTrace()
-                        }
-                        if (stepArray != stepArray) {
-                            stepArray = stepArray
-                            updataValues(stepArray)
                         }
                     }
                     mDelayHandler.sendEmptyMessageDelayed(
@@ -349,6 +368,4 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             pauseResume = false
         }
     }
-
-
 }
