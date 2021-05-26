@@ -119,7 +119,7 @@ class PersonInformationActivity :
                 }
 
             })
-                .setSelectOptions(1)  //设置默认选中项
+                .setSelectOptions( WonderCoreCache.getUserInfo().sexLocation)  //设置默认选中项
                 .setOutSideCancelable(true)//点击外部dismiss default true
                 .setTextColorCenter(Color.parseColor("#F2682A"))
                 .isDialog(true)//是否显示为对话框样式
@@ -149,6 +149,7 @@ class PersonInformationActivity :
                 mViewBinding.tvAge.text = str + "岁"
                 mUserData = WonderCoreCache.getUserInfo()
                 mUserData.age = str
+                mUserData.ageLocation = options1
                 WonderCoreCache.saveUserInfo(mUserData)
 
             }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
@@ -168,7 +169,7 @@ class PersonInformationActivity :
 
             }).setLabels("岁", "", "")
                 .isCenterLabel(true)
-                .setSelectOptions(82)
+                .setSelectOptions( WonderCoreCache.getUserInfo().ageLocation)
                 .setLineSpacingMultiplier(3.0F)
                 .setTextColorCenter(Color.parseColor("#F2682A"))
                 .setOutSideCancelable(true)//点击外部dismiss default true
@@ -199,6 +200,7 @@ class PersonInformationActivity :
                 mViewBinding.tvStature.text = str + "cm"
                 mUserData = WonderCoreCache.getUserInfo()
                 mUserData.stature = str
+                mUserData.statureLocation = options1
                 WonderCoreCache.saveUserInfo(mUserData)
 
             }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
@@ -218,7 +220,7 @@ class PersonInformationActivity :
 
             }).setLabels("cm", "", "")
                 .isCenterLabel(true)
-                .setSelectOptions(90)
+                .setSelectOptions( WonderCoreCache.getUserInfo().statureLocation)
                 .setLineSpacingMultiplier(3.0F)
                 .setTextColorCenter(Color.parseColor("#F2682A"))
                 .setOutSideCancelable(true)//点击外部dismiss default true
@@ -249,6 +251,7 @@ class PersonInformationActivity :
                 mViewBinding.tvTargetWeight.text = str + "kg"
                 mUserData = WonderCoreCache.getUserInfo()
                 mUserData.targetWeight = str
+                mUserData.targetWeightLocation = options1
                 WonderCoreCache.saveUserInfo(mUserData)
 
             }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
@@ -268,7 +271,7 @@ class PersonInformationActivity :
 
             }).setLabels("kg", "", "")
                 .isCenterLabel(true)
-                .setSelectOptions(80)
+                .setSelectOptions( WonderCoreCache.getUserInfo().targetWeightLocation)
                 .setLineSpacingMultiplier(3.0F)
                 .setTextColorCenter(Color.parseColor("#F2682A"))
                 .setOutSideCancelable(true)//点击外部dismiss default true
@@ -301,6 +304,7 @@ class PersonInformationActivity :
                 mViewBinding.tvTargetStep.text = str + "步"
                 mUserData = WonderCoreCache.getUserInfo()
                 mUserData.targetStep = str
+                mUserData.targetStepLocation = options1
                 WonderCoreCache.saveUserInfo(mUserData)
 
             }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
@@ -320,7 +324,7 @@ class PersonInformationActivity :
 
             }).setLabels("步", "", "")
                 .isCenterLabel(true)
-                .setSelectOptions(80)
+                .setSelectOptions( WonderCoreCache.getUserInfo().targetStepLocation)
                 .setLineSpacingMultiplier(3.0F)
                 .setTextColorCenter(Color.parseColor("#F2682A"))
                 .setOutSideCancelable(true)//点击外部dismiss default true
