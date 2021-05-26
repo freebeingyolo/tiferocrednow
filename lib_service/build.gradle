@@ -72,6 +72,7 @@ dependencies {
     api dep.arouter
     api dep.bugly
     api dep.bugly_upgrade
+    api dep.eventBus
     kapt dep.arouter_compiler
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

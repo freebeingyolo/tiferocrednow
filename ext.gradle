@@ -44,7 +44,7 @@ ext {
             arouter_compiler     : 'com.alibaba:arouter-compiler:1.5.1',
             bugly_upgrade        : 'com.tencent.bugly:crashreport_upgrade:latest.release',
             bugly                : 'com.tencent.bugly:nativecrashreport:latest.release',
-            multidex                 : "androidx.multidex:multidex:2.0.1",
+            multidex             : "androidx.multidex:multidex:2.0.1",
 
     ]
     isDebugType = false

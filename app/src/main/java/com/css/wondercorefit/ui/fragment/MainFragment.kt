@@ -6,11 +6,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.launcher.ARouter
-import com.blankj.utilcode.util.LogUtils
 import com.css.base.dialog.ToastDialog
 import com.css.base.uibase.BaseFragment
 import com.css.ble.bean.BondDeviceData
@@ -25,15 +23,10 @@ import com.css.step.ISportStepInterface
 import com.css.step.TodayStepManager
 import com.css.step.service.SensorService
 import com.css.step.service.TodayStepService
-import com.css.step.utils.MessageEvent
-import com.css.step.utils.MessageType
 import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.FragmentMainBinding
 import com.css.wondercorefit.ui.activity.setting.PersonInformationActivity
 import com.css.wondercorefit.viewmodel.MainViewModel
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 
 
 class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.OnClickListener {
@@ -43,7 +36,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     private var stepArray: Int = 0
     private val mDelayHandler = Handler(TodayStepCounterCall())
     private val REFRESH_STEP_WHAT = 0
-    private val TIME_INTERVAL_REFRESH: Long = 1000
+    private val TIME_INTERVAL_REFRESH: Long = 500
     private lateinit var targetStep: String
     private var currentStep: Int = 0
     private var result: Float = 0.0f
@@ -56,7 +49,6 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         super.initView(savedInstanceState)
         SystemBarHelper.immersiveStatusBar(activity, 0f)
         SystemBarHelper.setHeightAndPadding(activity, mViewBinding?.topView)
-        EventBus.getDefault().register(this)
         Log.d("526", "EventBus   register  success")
         showDevice()
         startSensorService()
@@ -185,7 +177,6 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
 
     override fun onDestroy() {
         super.onDestroy()
-        EventBus.getDefault().unregister(this)
         sp?.unregisterOnSharedPreferenceChangeListener(spLis)
     }
 
@@ -258,24 +249,6 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         mViewBinding?.pbStep?.setProgress(result)
     }
 
-    //接收消息
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(event: EventMessage<*>) {
-        when (event.message) {
-            EventMessage.Code.MAIN_INDEX_BACK -> {
-                LogUtils.vTag("suisui", (event.t as StepData).defaultSteps)
-            }
-        }
-//        when (event.type) {
-//            MessageType.ShowLog -> {
-//                Log.e(TAG, "onMessageEvent: " + event.getString())
-//            }
-//            MessageType.ShowToast -> {
-//                Toast.makeText(activity, "onMessageEvent: " + event.getString(), Toast.LENGTH_SHORT).show()
-//            }
-//        }
-    }
-
     // 公里计算公式
     private fun getDistanceByStep(steps: Long): String {
         return String.format("%.2f", steps * 0.6f / 1000)
@@ -291,11 +264,12 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             when (msg.what) {
                 REFRESH_STEP_WHAT -> {
 
-                    //每隔1000毫秒获取一次计步数据刷新UI
+                    //每隔500毫秒获取一次计步数据刷新UI
                     if (null != iSportStepInterface) {
                         try {
-//                            stepArray = iSportStepInterface.currentTimeSportStep
-//                            Log.d("526" ," notify ui main  $stepArray       ${SystemClock.currentGnssTimeClock()}")
+                            stepArray = iSportStepInterface.currentTimeSportStep
+                            updataValues(stepArray)
+                            Log.d("526" ," notify ui main  $stepArray       ${SystemClock.currentGnssTimeClock()}")
                         } catch (e: RemoteException) {
                             e.printStackTrace()
                         }

@@ -11,14 +11,14 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Message
 import android.util.Log
-import com.css.service.bus.EventMessage
 import com.css.service.data.StepData
 import com.css.service.utils.WonderCoreCache
 import com.css.step.*
 import com.css.step.data.ConstantData
 import com.css.step.data.TodayStepData
-import com.css.step.utils.*
-import org.greenrobot.eventbus.EventBus
+import com.css.step.utils.Logger
+import com.css.step.utils.OnStepCounterListener
+import com.css.step.utils.TodayStepDBHelper
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -31,7 +31,7 @@ class TodayStepService : Service(), Handler.Callback {
 
     //保存数据库频率
     private val DB_SAVE_COUNTER = 50
-
+    private var currentNotifySteps: Int = 0
 
     //当前日期
     private var currentDate: String? = null
@@ -71,6 +71,7 @@ class TodayStepService : Service(), Handler.Callback {
 
     private var mTodayStepDBHelper: TodayStepDBHelper? = null
 
+
     private val sHandler: Handler = Handler(this)
 
     override fun handleMessage(msg: Message): Boolean {
@@ -107,7 +108,6 @@ class TodayStepService : Service(), Handler.Callback {
 
         //注册传感器
         startStepDetector()
-
         //TODO:测试数据Start
 //        if(Logger.sIsDebug) {
 //            if (!isStepCounter()) {
@@ -310,9 +310,9 @@ class TodayStepService : Service(), Handler.Callback {
         builder!!.setContentText("步行 $km km    消耗 $calorie kcal")
         notification = builder!!.build()
         nm!!.notify(R.string.app_name, notification)
-        EventBus.getDefault()
-            .post(EventMessage<StepData>(EventMessage.Code.MAIN_INDEX_BACK, StepData(1, 2, 3, "")))
-        Log.d("526", "has send message   hellohellohellohello")
+        currentNotifySteps = realSteps
+//        EventBus.getDefault()
+//            .post(EventMessage<StepData>(EventMessage.Code.MAIN_INDEX_BACK, StepData(1, 2, 3, "")))
         stepData.todaySteps = realSteps
         WonderCoreCache.saveData(WonderCoreCache.STEP_DATA, stepData)
     }
@@ -344,7 +344,7 @@ class TodayStepService : Service(), Handler.Callback {
         val DISTANCE = "km"
         val CALORIE = "kaluli"
         override fun getCurrentTimeSportStep(): Int {
-            return currentStep
+            return currentNotifySteps
         }
 
         override fun getTodaySportStepArray(): Int {
