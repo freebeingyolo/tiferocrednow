@@ -1,13 +1,16 @@
 package com.css.wondercorefit.ui.fragment
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -52,13 +55,30 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
 
             init {
                 itemView.setOnClickListener {
-                    val recyclerIntent = Intent(context, CoursePlayActivity::class.java)
-                    var bundle = Bundle()
-                    bundle.putInt("position", bindingAdapterPosition)
-                    recyclerIntent.putExtras(bundle)
-                    startActivity(recyclerIntent)
+                    gotoPlayerActivity()
                 }
             }
+
+            private fun gotoPlayerActivity() {
+                val manager: ConnectivityManager = activity?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                when {
+                    manager.activeNetworkInfo != null -> {
+                        startIntent()
+                    }
+                    else -> {
+                        Toast.makeText(context, "网络请求失败，请确认网络环境是否正常", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+
+            private fun startIntent(){
+                val recyclerIntent = Intent(context, CoursePlayActivity::class.java)
+                var bundle = Bundle()
+                bundle.putInt("position", bindingAdapterPosition)
+                recyclerIntent.putExtras(bundle)
+                startActivity(recyclerIntent)
+            }
+
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoHolder {

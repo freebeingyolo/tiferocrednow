@@ -3,18 +3,15 @@ package com.css.wondercorefit.ui.activity.index
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
-import android.view.Window
-import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.css.wondercorefit.R
-import com.css.wondercorefit.utils.*
+import com.css.wondercorefit.utils.ConfigHolder
+import com.css.wondercorefit.utils.LoadingOverlay
+import com.css.wondercorefit.utils.VideoCacheHelper
 import com.css.wondercorefit.viewmodel.CourseViewModel
 import com.seagazer.liteplayer.LitePlayerView
 import com.seagazer.liteplayer.bean.DataSource
-import com.seagazer.liteplayer.helper.MediaLogger
 import com.seagazer.liteplayer.listener.PlayerViewModeChangedListener
-import com.seagazer.liteplayer.listener.SimpleRenderStateChangedListener
-import com.seagazer.liteplayer.render.RenderTextureView
 import com.seagazer.liteplayer.widget.LiteGestureController
 import com.seagazer.liteplayer.widget.LiteMediaController
 import com.seagazer.liteplayer.widget.LiteMediaTopbar
@@ -22,6 +19,7 @@ import com.seagazer.liteplayer.widget.LiteMediaTopbar
 class CoursePlayActivity : AppCompatActivity() {
     private lateinit var playerView: LitePlayerView
     private var fullScreenPlay:Int = 0
+    private val handler = Handler()
     private val urls =
         listOf(
                 Pair(VideoCacheHelper.url(CourseViewModel.urls[0]), CourseViewModel.name[0]),
@@ -74,10 +72,9 @@ class CoursePlayActivity : AppCompatActivity() {
         playerView.attachOverlay(LoadingOverlay(this))
         playerView.setAutoSensorEnable(false)
         playerView.setAutoHideOverlay(true)
+        playerView.setRepeatMode(true)
         playerView.setDataSource(DataSource(urls[currentPlayIndex].first, urls[currentPlayIndex].second))
-        // start play
         playerView.start()
-        val handler = Handler()
         handler.postDelayed({
             playerView.setFullScreenMode(true)
             fullScreenPlay = 1

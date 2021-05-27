@@ -49,7 +49,6 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         super.initView(savedInstanceState)
         SystemBarHelper.immersiveStatusBar(activity, 0f)
         SystemBarHelper.setHeightAndPadding(activity, mViewBinding?.topView)
-        Log.d("526", "EventBus   register  success")
         showDevice()
         startSensorService()
         startStep()
