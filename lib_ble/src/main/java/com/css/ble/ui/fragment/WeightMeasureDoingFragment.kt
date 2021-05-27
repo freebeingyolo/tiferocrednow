@@ -13,8 +13,6 @@ import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.databinding.ActivityWeightMeasureDoingBinding
 import com.css.ble.ui.DeviceInfoActivity
-import com.css.ble.utils.FragmentUtils
-import com.css.ble.viewmodel.WeightMeasureVM.State
 import com.css.ble.viewmodel.WeightMeasureVM
 import com.css.service.router.ARouterConst
 import com.css.service.utils.ImageUtils
@@ -24,7 +22,7 @@ import com.css.service.utils.WonderCoreCache
  * @author yuedong
  * @date 2021-05-17
  */
-class WeightMeasureDoingFragment : BaseFragment<WeightMeasureVM, ActivityWeightMeasureDoingBinding>() {
+class WeightMeasureDoingFragment : BaseWeightFragment<WeightMeasureVM, ActivityWeightMeasureDoingBinding>() {
 
     override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): ActivityWeightMeasureDoingBinding {
         return ActivityWeightMeasureDoingBinding.inflate(inflater, parent, false).also {

@@ -5,7 +5,7 @@
     style="@style/base_toolbar"
     android:layout_width="match_parent"
     android:layout_height="@dimen/common_toolbar_height"
-    android:background="@android:color/white"
+    android:background="@color/common_gray_color"
     android:minHeight="44dp"
     android:navigationIcon="@null"
     app:centerText=""

@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
  * @author yuedong
  * @date 2021-05-17
  */
-class WeightBondEndFragment : BaseFragment<WeightBondVM, LayoutWeightBondBondedBinding>() {
+class WeightBondEndFragment : BaseWeightFragment<WeightBondVM, LayoutWeightBondBondedBinding>() {
     companion object {
         val TAG = "WeightBond"
     }

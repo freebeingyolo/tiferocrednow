@@ -1,11 +1,8 @@
 package com.css.ble.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.blankj.utilcode.util.ActivityUtils
 import com.css.base.uibase.viewmodel.BaseViewModel
-import com.css.ble.R
 import java.lang.IllegalArgumentException
 
 /**
@@ -13,16 +10,33 @@ import java.lang.IllegalArgumentException
  * @date 2021-05-18
  */
 object BleEnvVM : BaseViewModel() {
-    val bleEnabled: MutableLiveData<Boolean> = MutableLiveData<Boolean>()
-    val locationPermission: MutableLiveData<Boolean> = MutableLiveData<Boolean>()
-    val locationOpened: MutableLiveData<Boolean> = MutableLiveData<Boolean>()
-    val isBleEnvironmentOk get() = bleEnabled.value!! && locationPermission.value!! && locationOpened.value!!
+    var bleEnabled: Boolean
+        get() = bleInitMap["bleEnabled"] ?: false
+        set(v) {
+            bleInitMap["bleEnabled"] = v
+            if (bleInitMap.size == 3 && !isBleEnvironmentInit.value!!) isBleEnvironmentInit.value = true
+        }
+    var locationPermission: Boolean
+        get() = bleInitMap["locationPermission"] ?: false
+        set(v) {
+            bleInitMap["locationPermission"] = v
+            if (bleInitMap.size == 3 && !isBleEnvironmentInit.value!!) isBleEnvironmentInit.value = true
+        }
+    var locationOpened: Boolean
+        get() = bleInitMap["locationOpened"] ?: false
+        set(v) {
+            bleInitMap["locationOpened"] = v
+            if (bleInitMap.size == 3 && !isBleEnvironmentInit.value!!) isBleEnvironmentInit.value = true
+        }
+    val bleInitMap: MutableMap<String, Boolean> by lazy { mutableMapOf() }
+    val isBleEnvironmentOk get() = isBleEnvironmentInit.value!! && bleEnabled && locationPermission && locationOpened
+    val isBleEnvironmentInit: MutableLiveData<Boolean> by lazy { MutableLiveData(false) } //蓝牙权限和开关监听器
 
     val bleErrType
         get() = when {
-            !bleEnabled.value!! -> ErrorType.BLE_OFF
-            !locationPermission.value!! -> ErrorType.LOCATION_PERMISSION_OFF
-            !locationOpened.value!! -> ErrorType.LOCATION_OFF
+            !bleEnabled -> ErrorType.BLE_OFF
+            !locationPermission -> ErrorType.LOCATION_PERMISSION_OFF
+            !locationOpened -> ErrorType.LOCATION_OFF
             else -> throw IllegalArgumentException("ble env is ok,no error msg")
         }
 

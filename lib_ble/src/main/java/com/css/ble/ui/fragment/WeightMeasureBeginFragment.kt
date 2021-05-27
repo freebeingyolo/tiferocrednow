@@ -1,14 +1,12 @@
 package com.css.ble.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.alibaba.android.arouter.launcher.ARouter
-import com.blankj.utilcode.util.ActivityUtils
-import com.css.base.uibase.BaseFragment
 import com.css.base.uibase.inner.OnToolBarClickListener
 import com.css.base.view.ToolBarView
 import com.css.ble.R
@@ -16,28 +14,31 @@ import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.WeightBondData
 import com.css.ble.databinding.ActivityWeightMeasureBeginBinding
 import com.css.ble.ui.DeviceInfoActivity
-import com.css.ble.ui.WeightMeasureActivity
-import com.css.ble.utils.FragmentUtils
 import com.css.ble.viewmodel.BleEnvVM
 import com.css.ble.viewmodel.WeightMeasureVM
-import com.css.ble.viewmodel.WeightMeasureVM.State
 import com.css.service.router.ARouterConst
 import com.css.service.utils.ImageUtils
 import com.css.service.utils.WonderCoreCache
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * @author yuedong
  * @date 2021-05-17
  */
-class WeightMeasureBeginFragment : BaseFragment<WeightMeasureVM, ActivityWeightMeasureBeginBinding>() {
+class WeightMeasureBeginFragment : BaseWeightFragment<WeightMeasureVM, ActivityWeightMeasureBeginBinding>() {
 
     override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): ActivityWeightMeasureBeginBinding {
         return ActivityWeightMeasureBeginBinding.inflate(inflater, parent, false).also {
             it.tvToMeasure.setOnClickListener {
-                if (BleEnvVM.isBleEnvironmentOk) {
-                    mViewModel.startScanBle()
-                } else {
-                    BleErrorFragment.Builder.errorType(BleEnvVM.bleErrType).leftTitle(R.string.device_weight).create()
+                checkBleEnv()
+                lifecycleScope.launch {
+                    while (!checkEnvDone) delay(100)
+                    if (BleEnvVM.isBleEnvironmentOk) {
+                        mViewModel.startScanBle()
+                    } else {
+                        BleErrorFragment.Builder.errorType(BleEnvVM.bleErrType).leftTitle(R.string.device_weight).create()
+                    }
                 }
             }
             WeightBondData.lastWeightInfoObsvr.let { it2 ->
@@ -51,14 +52,8 @@ class WeightMeasureBeginFragment : BaseFragment<WeightMeasureVM, ActivityWeightM
         }
     }
 
-    override fun initData() {
-        super.initData()
-    }
-
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        //设置标题栏
-        setToolBarLeftText(getString(R.string.device_weight))
         var view = LayoutInflater.from(context).inflate(R.layout.layout_weight_measure_header, null, false)
         setRightImage(ImageUtils.getBitmap(view))
         getCommonToolBarView()?.setToolBarClickListener(object : OnToolBarClickListener {
@@ -71,13 +66,15 @@ class WeightMeasureBeginFragment : BaseFragment<WeightMeasureVM, ActivityWeightM
                 }
             }
         })
-        Log.d(javaClass.simpleName,"initView")
+    }
+
+    override fun initData() {
+        super.initData()
     }
 
     override fun initViewModel(): WeightMeasureVM {
         return ViewModelProvider(requireActivity()).get(WeightMeasureVM::class.java)
     }
-
 
     override fun enabledVisibleToolBar(): Boolean = true
 

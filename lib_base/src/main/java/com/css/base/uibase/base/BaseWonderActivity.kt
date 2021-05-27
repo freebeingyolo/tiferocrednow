@@ -210,7 +210,7 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
         if (mCurrentFragment != null) {
             enableBackPressed = !mCurrentFragment!!.processBackPressed()
         }
-        log(" getBackStackEntryCount  " + supportFragmentManager.backStackEntryCount + "   " + enableBackPressed + ";mCurrentFragment:" + mCurrentFragment)
+        //log(" getBackStackEntryCount  " + supportFragmentManager.backStackEntryCount + "   " + enableBackPressed + ";mCurrentFragment:" + mCurrentFragment)
 
         if (!enableBackPressed) {
             return
@@ -378,9 +378,11 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
         )
         OSUtils.fixWhiteStatusbarBug(this)
     }
+
     open fun setGrayFakeStatus(contentParentViewId: Int, enbaleFixImmersionAndEditBug: Boolean) {
         setFakeStatus(contentParentViewId, true, 0, R.color.common_gray_color, enbaleFixImmersionAndEditBug)
     }
+
     open fun setTransparentStatus(contentParentViewId: Int, enbaleFixImmersionAndEditBug: Boolean) {
         val parentView = findViewById<View>(contentParentViewId)
         if (parentView != null) {
@@ -436,9 +438,9 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
     }
     //--------------------- control fragment start --------------------------
 
-    private var mCurrentFragment: BaseWonderFragment<*,*>? = null
+    private var mCurrentFragment: BaseWonderFragment<*, *>? = null
 
-    open fun getCurrentFragment(): BaseWonderFragment<*,*>? {
+    open fun getCurrentFragment(): BaseWonderFragment<*, *>? {
         return mCurrentFragment
     }
 
@@ -449,13 +451,13 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
      * @param cls
      * @param data
      */
-    open fun pushFragmentToBackStack(@IdRes containerId: Int, cls: Class<out BaseWonderFragment<*,*>>?, data: Any?) {
-            mCurrentFragment = FragmentStarter.pushFragmentToBackStack(this, containerId, cls, data, true)
-            mCloseWarned = false
+    open fun pushFragmentToBackStack(@IdRes containerId: Int, cls: Class<out BaseWonderFragment<*, *>>?, data: Any?) {
+        mCurrentFragment = FragmentStarter.pushFragmentToBackStack(this, containerId, cls, data, true)
+        mCloseWarned = false
 
     }
 
-    open fun pushFragmentToBackStack(cls: Class<out BaseWonderFragment<*,*>>?, data: Any?) {
+    open fun pushFragmentToBackStack(cls: Class<out BaseWonderFragment<*, *>>?, data: Any?) {
         pushFragmentToBackStack(getFragmentContainerId(), cls, data)
     }
 
@@ -473,13 +475,14 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
         if (cnt > 0) {
             val name = fm.getBackStackEntryAt(cnt - 1).name
             val fragment = fm.findFragmentByTag(name)
-            if (fragment != null && fragment is BaseWonderFragment<*,*>) {
+            if (fragment != null && fragment is BaseWonderFragment<*, *>) {
                 mCurrentFragment = fragment
             }
             return true
         }
         return false
     }
+
     protected open fun getFragmentContainerId(): Int {
         return 0
     }

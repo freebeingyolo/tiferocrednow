@@ -2,8 +2,6 @@ package com.css.ble.ui.fragment
 
 import android.app.ProgressDialog
 import android.os.Bundle
-import android.os.CountDownTimer
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,7 +27,7 @@ import kotlinx.coroutines.launch
  * @author yuedong
  * @date 2021-05-17
  */
-class WeightMeasureDoneFragment : BaseFragment<WeightMeasureVM, ActivityWeightMeasureDoneBinding>() {
+class WeightMeasureDoneFragment : BaseWeightFragment<WeightMeasureVM, ActivityWeightMeasureDoneBinding>() {
     private var dialog: ProgressDialog? = null
 
     override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): ActivityWeightMeasureDoneBinding {

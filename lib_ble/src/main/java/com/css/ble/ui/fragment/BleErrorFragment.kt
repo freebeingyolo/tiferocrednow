@@ -1,16 +1,19 @@
 package com.css.ble.ui.fragment
 
 import android.os.Bundle
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import com.css.base.uibase.BaseFragment
 import com.css.base.uibase.viewmodel.DefaultViewModel
 import com.css.ble.databinding.LayoutBleErrorBinding
 import com.css.ble.utils.FragmentUtils
 import com.css.ble.viewmodel.BleEnvVM
 import com.css.ble.viewmodel.ErrorType
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -75,8 +78,8 @@ class BleErrorFragment : BaseFragment<DefaultViewModel, LayoutBleErrorBinding>()
     private fun startSelfDestroy() {//启动1s自毁
         lifecycleScope.launch {
             delay(1000)
-            solveError()
             onBackPressed()
+            solveError()
         }
     }
 

@@ -11,10 +11,7 @@ import com.css.ble.BodyDetailAdapter
 import com.css.ble.R
 import com.css.ble.bean.WeightDetailBean
 import com.css.ble.databinding.ActivityWeightMeasureEndDetailBinding
-import com.css.ble.utils.FragmentUtils
-import com.css.ble.utils.BodyJudgeUtil
 import com.css.ble.viewmodel.WeightMeasureVM
-import com.css.service.utils.WonderCoreCache
 
 /**
  * @author yuedong

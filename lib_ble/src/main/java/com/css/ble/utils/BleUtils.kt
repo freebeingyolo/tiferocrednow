@@ -8,8 +8,13 @@ import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.blankj.utilcode.constant.PermissionConstants
+import com.blankj.utilcode.util.PermissionUtils
+import com.blankj.utilcode.util.ToastUtils
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
+
 
 object BleUtils {
 
@@ -69,7 +74,7 @@ object BleUtils {
         return isGpsEnabled
     }
 
-    fun isLocationAllowed(ctx: Context): Boolean {
+    fun isLocationAllowed(ctx: Context, cb: PermissionUtils.FullCallback): Boolean {
         var neededPermissions = mutableListOf<String>()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) { //target sdk版本在29以上的需要精确定位权限才能搜索到蓝牙设备
             neededPermissions.add(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -78,12 +83,23 @@ object BleUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             neededPermissions.add(Manifest.permission.ACCESS_COARSE_LOCATION)
         }
+        var neededPermissions2 = mutableListOf<String>()
         for (b in neededPermissions) {
-            if (ActivityCompat.checkSelfPermission(ctx, b) != PackageManager.PERMISSION_GRANTED) {
-                return false
+            if (ContextCompat.checkSelfPermission(ctx, b) != PackageManager.PERMISSION_GRANTED) {
+                neededPermissions2.add(b)
             }
         }
-        return true
+        if (neededPermissions2.isEmpty()) {
+            cb.onGranted(neededPermissions)
+            return true
+        } else {
+            PermissionUtils.permission(PermissionConstants.LOCATION)
+                .rationale { _, shouldRequest ->
+                    shouldRequest.again(true)
+                }.callback(cb).request()
+            return false
+        }
     }
+
 
 }
