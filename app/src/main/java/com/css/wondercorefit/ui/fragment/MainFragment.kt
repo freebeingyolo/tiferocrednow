@@ -305,7 +305,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
 
             R.id.add_ble_device -> {
                 ARouter.getInstance()
-                    .build(ARouterConst.PATH_APP_BLE)
+                    .build(ARouterConst.PATH_APP_BLE_DEVICELIST)
                     .navigation()
             }
         }

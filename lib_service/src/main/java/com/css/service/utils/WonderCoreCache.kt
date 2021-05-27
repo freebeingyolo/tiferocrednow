@@ -1,6 +1,5 @@
 package com.css.service.utils
 
-import android.util.Log
 import androidx.annotation.StringDef
 import com.blankj.utilcode.util.SPUtils
 import com.css.service.data.UserData
@@ -60,7 +59,8 @@ class WonderCoreCache {
         }
 
         fun containsKey(@CacheKey k: String) = SPUtils.getInstance().contains(k)
-        fun removeKey(@CacheKey k: String) = SPUtils.getInstance().remove(k)
+        //apply：异步  commit:同步
+        fun removeKey(@CacheKey k: String, isCommit: Boolean = true) = SPUtils.getInstance().remove(k,isCommit)
     }
 
 

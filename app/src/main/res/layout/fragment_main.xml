@@ -96,7 +96,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
                             android:layout_marginTop="12dp"
-                            android:text="蓝牙体脂秤"
+                            android:text="@string/device_weight"
                             android:textColor="@color/text_color"
                             android:textSize="13sp" />
 

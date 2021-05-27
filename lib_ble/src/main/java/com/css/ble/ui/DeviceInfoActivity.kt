@@ -1,5 +1,6 @@
-package com.css.ble.ui.fragment
+package com.css.ble.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
+import com.css.base.uibase.BaseActivity
 import com.css.base.uibase.BaseFragment
 import com.css.base.uibase.viewmodel.DefaultViewModel
 import com.css.base.utils.StringUtils
@@ -19,26 +21,26 @@ import com.css.service.utils.WonderCoreCache
 
 /**
  * @author yuedong
- * @date 2021-05-17
+ * @date 2021-05-26
  */
-class DeviceInfoFragment : BaseFragment<DefaultViewModel, FragmentDeviceInfoBinding>() {
+class DeviceInfoActivity : BaseActivity<DefaultViewModel, FragmentDeviceInfoBinding>() {
 
-    fun setArguments(deviceKey: String) {
-        val args = Bundle()
-        args.putString("DeviceKey", deviceKey)
-        this.arguments = args
+    companion object {
+        fun start(deviceKey: String) {
+            var intent = Intent(ActivityUtils.getTopActivity(), DeviceInfoActivity.javaClass).apply { putExtra("DeviceKey", deviceKey) }
+            ActivityUtils.startActivity(intent)
+        }
     }
 
     override fun initViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?
     ): FragmentDeviceInfoBinding {
-
         return FragmentDeviceInfoBinding.inflate(inflater, parent, false)
     }
 
     override fun initViewModel(): DefaultViewModel {
-        return ViewModelProvider(requireActivity()).get(DefaultViewModel::class.java)
+        return ViewModelProvider(this).get(DefaultViewModel::class.java)
     }
 
     override fun enabledVisibleToolBar() = true
@@ -47,7 +49,7 @@ class DeviceInfoFragment : BaseFragment<DefaultViewModel, FragmentDeviceInfoBind
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        key = arguments?.getString("DeviceKey")!!
+        key = intent.getStringExtra("DeviceKey")!!
         data = WonderCoreCache.getData(key, BondDeviceData::class.java)
         mViewBinding?.apply {
             tvDeviceName.text = data.displayName
@@ -71,7 +73,7 @@ class DeviceInfoFragment : BaseFragment<DefaultViewModel, FragmentDeviceInfoBind
             }
 
             rlDeviceName.setOnClickListener {
-                CommonAlertDialog(requireContext()).apply {
+                CommonAlertDialog(baseContext).apply {
                     type = CommonAlertDialog.DialogType.Edit
                     title = "设备名称"
                     content = data.displayName
@@ -99,18 +101,14 @@ class DeviceInfoFragment : BaseFragment<DefaultViewModel, FragmentDeviceInfoBind
                 }.show()
             }
             rlDeleteDevice.setOnClickListener {
-                CommonAlertDialog(requireContext()).apply {
+                CommonAlertDialog(baseContext).apply {
                     type = CommonAlertDialog.DialogType.Confirm
                     content = "确定要解绑吗"
                     leftBtnText = "取消"
                     rightBtnText = "解绑"
                     listener = object : DialogClickListener.DefaultLisener() {
-                        override fun onLeftBtnClick(view: View) {
-                        }
-
                         override fun onRightBtnClick(view: View) {
                             super.onRightBtnClick(view)
-
                             WonderCoreCache.removeKey(data.getCacheKey())
                             ToastUtils.showShort("解锁成功")
                         }

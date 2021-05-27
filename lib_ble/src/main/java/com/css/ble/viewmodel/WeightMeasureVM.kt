@@ -5,12 +5,10 @@ import android.util.Log
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import cn.net.aicare.algorithmutil.AlgorithmUtil
-import cn.net.aicare.algorithmutil.BodyFatData
+import androidx.lifecycle.viewModelScope
+import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.ble.bean.WeightBondData
 import com.css.ble.bean.BondDeviceData
-import com.css.ble.bean.WeightDetailBean
-import com.css.service.utils.WonderCoreCache
 import com.pingwang.bluetoothlib.BroadcastDataParsing
 import com.pingwang.bluetoothlib.bean.BleValueBean
 import com.pingwang.bluetoothlib.listener.OnCallbackBle
@@ -18,24 +16,32 @@ import com.pingwang.bluetoothlib.listener.OnScanFilterListener
 import com.pingwang.bluetoothlib.server.ELinkBleServer
 import com.pingwang.bluetoothlib.utils.BleStrUtils
 import com.pinwang.ailinkble.AiLinkPwdUtil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
-class WeightMeasureVM : BleEnvVM(), BroadcastDataParsing.OnBroadcastDataParsing {
+class WeightMeasureVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastDataParsing {
     companion object {
         var TAG = "WeightMeasureVM"
         private val TianShengKey = intArrayOf(0x54493049, 0x4132794E, 0x53783148, 0x476c6531)
     }
 
-    val bleSvcLiveData: MutableLiveData<ELinkBleServer> by lazy { MutableLiveData<ELinkBleServer>() }
-    private val mBluetoothService: ELinkBleServer?
-        get() = bleSvcLiveData.value
+    private var mBluetoothService: ELinkBleServer?
+        get() = mBluetoothServiceObsvr.value
+        set(value) {
+            (mBluetoothServiceObsvr as MutableLiveData).value = value
+        }
+    val mBluetoothServiceObsvr: LiveData<ELinkBleServer> by lazy { MutableLiveData() }
 
     private var decryptKey: IntArray = TianShengKey
-    private val _bondData: MutableLiveData<WeightBondData> by lazy { MutableLiveData<WeightBondData>() }
+    private var _bondData: MutableLiveData<WeightBondData> = MutableLiveData<WeightBondData>()
     val bondData: LiveData<WeightBondData> get() = _bondData
 
     private val _state: MutableLiveData<State> by lazy { MutableLiveData<State>() }
-    val state: LiveData<State> get() = _state
+    val state: MutableLiveData<State> get() = _state
+    private var timeOutJob: Job? = null;
 
     enum class State {
         begin,
@@ -46,11 +52,12 @@ class WeightMeasureVM : BleEnvVM(), BroadcastDataParsing.OnBroadcastDataParsing 
 
     fun initOrReset() {
         _state.value = State.begin
+        _bondData = MutableLiveData<WeightBondData>()
     }
 
 
     fun onBindService(service: ELinkBleServer) {
-        bleSvcLiveData.value = service
+        mBluetoothService = service
         mBluetoothService?.setOnScanFilterListener(mOnScanFilterListener)
         mBluetoothService?.setOnCallback(mOnCallbackBle)
     }
@@ -59,14 +66,14 @@ class WeightMeasureVM : BleEnvVM(), BroadcastDataParsing.OnBroadcastDataParsing 
     fun onUnBindService() {
         mBluetoothService?.setOnScanFilterListener(null)
         mBluetoothService?.setOnCallback(null)
-        bleSvcLiveData.value = null;
+        mBluetoothService = null;
     }
 
     private val mOnScanFilterListener: OnScanFilterListener = object : OnScanFilterListener {
 
         override fun onFilter(bleValueBean: BleValueBean): Boolean {
-            var d: BondDeviceData = WonderCoreCache.getData(WonderCoreCache.BOND_WEIGHT_INFO, BondDeviceData::class.java)
-            return if (d.mac.isNullOrEmpty()) true else d.mac == bleValueBean.mac
+            var d: BondDeviceData? = BondDeviceData.bondWeight
+            return if (d == null) true else d.mac == bleValueBean.mac
         }
 
         override fun onScanRecord(bleValueBean: BleValueBean) {
@@ -144,16 +151,34 @@ class WeightMeasureVM : BleEnvVM(), BroadcastDataParsing.OnBroadcastDataParsing 
     }
 
     @RequiresPermission(allOf = ["android.permission.BLUETOOTH_ADMIN", "android.permission.BLUETOOTH"])
-    fun startScanBle(timeOut: Long = 0) {
+    fun startScanBle() {
         Log.d(TAG, "startScanBle")
         _state.value = State.doing
-        if (mBluetoothService != null && !mBluetoothService!!.isScanStatus)
-            this.mBluetoothService?.scanLeDevice(timeOut)
+        if (!mBluetoothService!!.isScanStatus) {
+            this.mBluetoothService?.scanLeDevice(0)
+            startTimeoutTimer(3 * 1000)
+        }
     }
+
+    private fun startTimeoutTimer(timeOut: Long) {
+        timeOutJob?.cancel()
+        timeOutJob = viewModelScope.launch(Dispatchers.Main) {
+            delay(timeOut)
+            stopScanBle()
+            _state.value = State.timeout
+        }
+    }
+
+    private fun cancelTimeOutTimer() {
+        timeOutJob?.cancel()
+        timeOutJob = null
+    }
+
 
     fun stopScanBle() {
         Log.d(TAG, "stopScanBle")
         this.mBluetoothService?.stopScan()
+        if (timeOutJob != null) cancelTimeOutTimer()
     }
 
     override fun getWeightData(
@@ -177,11 +202,11 @@ class WeightMeasureVM : BleEnvVM(), BroadcastDataParsing.OnBroadcastDataParsing 
             _bondData.value = it
             Log.d(TAG, "getWeightData:$it")
 
+            if (timeOutJob != null) cancelTimeOutTimer()
             if (status == 0x00 && state.value != State.doing) {
                 _state.value = State.doing
             } else if (status == 0xFF && state.value != State.done) {
                 _state.value = State.done
-
                 WeightBondData.firstWeightInfo ?: let { WeightBondData.firstWeightInfo = _bondData.value }
                 WeightBondData.lastWeightInfo = _bondData.value
                 stopScanBle()

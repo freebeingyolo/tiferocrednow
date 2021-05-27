@@ -49,7 +49,7 @@ dependencies {
     //kt
     api dep.kt_coroutines_core
     api dep.kt_coroutines_android
-    api dep.lifecycler_ext
+    //api dep.lifecycler_ext
     api dep.lifecycler_viewmodel
     api dep.utils
     api dep.viewbinding

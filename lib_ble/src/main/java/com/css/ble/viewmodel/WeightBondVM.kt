@@ -3,8 +3,10 @@ package com.css.ble.viewmodel
 import android.os.Looper
 import android.util.Log
 import androidx.annotation.RequiresPermission
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.blankj.utilcode.util.LogUtils
+import androidx.lifecycle.viewModelScope
+import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.ble.bean.WeightBondData
 import com.pingwang.bluetoothlib.BroadcastDataParsing
 import com.pingwang.bluetoothlib.bean.BleValueBean
@@ -13,20 +15,31 @@ import com.pingwang.bluetoothlib.listener.OnScanFilterListener
 import com.pingwang.bluetoothlib.server.ELinkBleServer
 import com.pingwang.bluetoothlib.utils.BleStrUtils
 import com.pinwang.ailinkble.AiLinkPwdUtil
+import kotlinx.coroutines.*
 
-class WeightBondVM : BleEnvVM(), BroadcastDataParsing.OnBroadcastDataParsing {
+class WeightBondVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastDataParsing {
     companion object {
         private val TianShengKey = intArrayOf(0x54493049, 0x4132794E, 0x53783148, 0x476c6531)
         private const val TAG: String = "WeightBond#WeightBondVM"
     }
 
-    val bondData: MutableLiveData<WeightBondData> by lazy { MutableLiveData<WeightBondData>() }
+    val bondData: LiveData<WeightBondData>
+        get() = _bondData
+
+    private var _bondData: MutableLiveData<WeightBondData> = MutableLiveData<WeightBondData>();
+
     private var filterDevice: BondDeviceInfo? = null
     val bondDevice: MutableLiveData<BondDeviceInfo> by lazy { MutableLiveData<BondDeviceInfo>() }
-    var mBluetoothService: ELinkBleServer? = null
+    private var mBluetoothService: ELinkBleServer?
+        get() = mBluetoothServiceObsvr.value
+        set(value) {
+            (mBluetoothServiceObsvr as MutableLiveData).value = value
+        }
+    val mBluetoothServiceObsvr: LiveData<ELinkBleServer> by lazy { MutableLiveData() }
 
     private val mBroadcastDataParsing by lazy { BroadcastDataParsing(this) }
     private var decryptKey: IntArray = TianShengKey
+    private var timeOutJob: Job? = null;
 
     enum class State {
         bondbegin,
@@ -95,8 +108,9 @@ class WeightBondVM : BleEnvVM(), BroadcastDataParsing.OnBroadcastDataParsing {
             this.mac = mac
             this.manifactureHex = dataHexStr
             bondDevice.value = this
-            filterDevice = this
+            if (filterDevice == null) filterDevice = this
         }
+        if(timeOutJob != null) cancelTimeOutTimer() //搜索到设备就取消超时
         mBroadcastDataParsing.dataParsing(data, isAilink)
     }
 
@@ -118,7 +132,7 @@ class WeightBondVM : BleEnvVM(), BroadcastDataParsing.OnBroadcastDataParsing {
                 status, tempUnit, weightUnit, weightDecimal,
                 weightStatus, weightNegative, weight, adc, algorithmId, tempNegative, temp
             )
-            bondData.value = this
+            _bondData.value = this
         }
     }
 
@@ -150,17 +164,33 @@ class WeightBondVM : BleEnvVM(), BroadcastDataParsing.OnBroadcastDataParsing {
     }
 
     @RequiresPermission(allOf = ["android.permission.BLUETOOTH_ADMIN", "android.permission.BLUETOOTH"])
-    fun startScanBle(timeOut: Long = 0) {
+    fun startScanBle() {
         Log.d(TAG, "startScanBle")
-        if (!mBluetoothService!!.isScanStatus)
-            this.mBluetoothService?.scanLeDevice(timeOut)
+        if (!mBluetoothService!!.isScanStatus) this.mBluetoothService?.scanLeDevice(0)
         filterDevice = null
+        startTimeoutTimer(3 * 1000)
+    }
+
+    private fun startTimeoutTimer(timeOut: Long) {
+        timeOutJob?.cancel()
+        timeOutJob = viewModelScope.launch(Dispatchers.Main) {
+            delay(timeOut)
+            stopScanBle()
+            state.value = State.bondingTimeOut
+        }
+    }
+
+    private fun cancelTimeOutTimer() {
+        timeOutJob?.cancel()
+        timeOutJob = null
     }
 
     fun stopScanBle() {
         Log.d(TAG, "stopScanBle")
         this.mBluetoothService?.stopScan()
         filterDevice = null
+        cancelTimeOutTimer()
+        _bondData = MutableLiveData<WeightBondData>()
     }
 
     private val mOnCallbackBle: OnCallbackBle = object : OnCallbackBle {
@@ -180,6 +210,7 @@ class WeightBondVM : BleEnvVM(), BroadcastDataParsing.OnBroadcastDataParsing {
             return "BondDeviceInfo(mac='$mac', manifactureHex='$manifactureHex')"
         }
     }
+
 }
 
 

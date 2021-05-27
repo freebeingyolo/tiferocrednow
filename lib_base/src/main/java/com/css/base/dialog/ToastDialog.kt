@@ -38,7 +38,7 @@ class ToastDialog : BasePopupWindow {
 
             override fun onFinish() {
                 ARouter.getInstance()
-                    .build(ARouterConst.PATH_APP_BLE)
+                    .build(ARouterConst.PATH_APP_BLE_DEVICELIST)
                     .navigation()
                 dismiss()
             }

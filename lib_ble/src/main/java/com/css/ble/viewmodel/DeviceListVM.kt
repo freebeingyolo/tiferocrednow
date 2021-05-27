@@ -16,20 +16,15 @@ class DeviceListVM : BaseViewModel() {
         @DrawableRes val icon: Int
     ) {
 
-        fun getBondDeviceData(): BondDeviceData {
-            var cls: Class<out BondDeviceData>
-            var key: String
-            when (icon) {
+        fun getBondDeviceData(): BondDeviceData? {
+            return when (icon) {
                 R.mipmap.icon_weight -> {
-                    cls = BondDeviceData::class.java
-                    key = WonderCoreCache.BOND_WEIGHT_INFO
+                    BondDeviceData.bondWeight
                 }
                 else -> {
-                    cls = BondDeviceData::class.java
-                    key = WonderCoreCache.BOND_WHEEL_INFO
+                    BondDeviceData.bondWheel
                 }
             }
-            return WonderCoreCache.getData(key, cls)
         }
     }
 }

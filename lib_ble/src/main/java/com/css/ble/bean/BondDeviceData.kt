@@ -22,8 +22,15 @@ class BondDeviceData(
         const val TYPE_WEIGHT = 0
         const val TYPE_WHEEL = 1
 
-        val weightDeviceData= WonderCoreCache.getData(WonderCoreCache.BOND_WEIGHT_INFO,BondDeviceData::class.java)
-        val wheelDeviceData= WonderCoreCache.getData(WonderCoreCache.BOND_WHEEL_INFO,BondDeviceData::class.java)
+        val bondWeight: BondDeviceData?
+            get() =
+                if (!WonderCoreCache.containsKey(WonderCoreCache.BOND_WEIGHT_INFO)) null
+                else WonderCoreCache.getData(WonderCoreCache.BOND_WEIGHT_INFO, BondDeviceData::class.java)
+
+        val bondWheel: BondDeviceData?
+            get() =
+                if (!WonderCoreCache.containsKey(WonderCoreCache.BOND_WHEEL_INFO)) null
+                else WonderCoreCache.getData(WonderCoreCache.BOND_WHEEL_INFO, BondDeviceData::class.java)
 
     }
 
@@ -56,5 +63,9 @@ class BondDeviceData(
                 WonderCoreCache.BOND_WHEEL_INFO
             }
         }
+    }
+
+    override fun toString(): String {
+        return "BondDeviceData(mac='$mac', manufacturerDataHex='$manufacturerDataHex', type=$type, alias=$alias)"
     }
 }

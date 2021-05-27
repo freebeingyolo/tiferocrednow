@@ -76,9 +76,9 @@
                         android:id="@+id/tv_today_body_status"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
                         android:text="BMI30.5  偏瘦"
                         android:textColor="@color/black"
-                        android:layout_marginTop="8dp"
                         android:textSize="12sp"
                         app:layout_constraintEnd_toEndOf="@+id/pb_weight"
                         app:layout_constraintStart_toStartOf="@+id/pb_weight"
@@ -110,8 +110,8 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingStart="20dp"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:paddingStart="20dp">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -151,6 +151,7 @@
             android:layout_width="match_parent"
             android:layout_height="54dp"
             android:layout_alignParentBottom="true"
+            android:layout_marginTop="11dp"
             android:background="@color/white"
             android:gravity="center"
             android:text="@string/measure_weight"
