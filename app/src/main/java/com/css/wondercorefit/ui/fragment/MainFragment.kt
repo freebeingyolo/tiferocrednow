@@ -269,7 +269,6 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
                         try {
                             stepArray = iSportStepInterface.currentTimeSportStep
                             updataValues(stepArray)
-                            Log.d("526" ," notify ui main  $stepArray       ${SystemClock.currentGnssTimeClock()}")
                         } catch (e: RemoteException) {
                             e.printStackTrace()
                         }
