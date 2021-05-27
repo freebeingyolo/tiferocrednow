@@ -13,7 +13,6 @@ import com.css.base.dialog.ToastDialog
 import com.css.base.uibase.BaseFragment
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.WeightBondData
-import com.css.service.bus.EventMessage
 import com.css.service.data.StepData
 import com.css.service.data.UserData
 import com.css.service.router.ARouterConst
@@ -32,7 +31,7 @@ import com.css.wondercorefit.viewmodel.MainViewModel
 class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.OnClickListener {
     private val TAG = "MainFragment"
 
-    private lateinit var iSportStepInterface: ISportStepInterface
+    private var iSportStepInterface: ISportStepInterface? = null
     private var stepArray: Int = 0
     private val mDelayHandler = Handler(TodayStepCounterCall())
     private val REFRESH_STEP_WHAT = 0
@@ -219,7 +218,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
                 //Activity和Service通过aidl进行通信
                 iSportStepInterface = ISportStepInterface.Stub.asInterface(service)
                 try {
-                    stepArray = iSportStepInterface.todaySportStepArray
+                    stepArray = iSportStepInterface!!.todaySportStepArray
                     updataValues(stepArray)
                     Log.d(TAG, " getTodaySportStepArray  :   $stepArray")
                 } catch (e: RemoteException) {
@@ -262,11 +261,10 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         override fun handleMessage(msg: Message): Boolean {
             when (msg.what) {
                 REFRESH_STEP_WHAT -> {
-
                     //每隔500毫秒获取一次计步数据刷新UI
                     if (null != iSportStepInterface) {
                         try {
-                            stepArray = iSportStepInterface.currentTimeSportStep
+                            stepArray = iSportStepInterface!!.currentTimeSportStep
                             updataValues(stepArray)
                         } catch (e: RemoteException) {
                             e.printStackTrace()
