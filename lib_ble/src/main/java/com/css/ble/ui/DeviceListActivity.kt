@@ -60,7 +60,8 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
                     }
                     var d = deviceInfo.getBondDeviceData()
                     if (d == null) {
-                        ARouter.getInstance().build(ARouterConst.PATH_APP_BLE_WEIGHTBOND).navigation()
+                        ARouter.getInstance().build(ARouterConst.PATH_APP_BLE_WEIGHTBOND)
+                            .navigation()
                     } else {
                         CommonAlertDialog(context).apply {
                             type = CommonAlertDialog.DialogType.Confirm
@@ -72,7 +73,11 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
                                 override fun onRightBtnClick(view: View) {
                                     super.onRightBtnClick(view)
                                     WonderCoreCache.removeKey(d.getCacheKey())
-                                    ToastUtils.showShort("解绑成功")
+                                    CommonAlertDialog(context).apply {
+                                        type = CommonAlertDialog.DialogType.Image
+                                        imageResources = R.mipmap.icon_tick
+                                        content = "解绑成功"
+                                    }.show()
                                     mViewModel._deviceInfos.value = mViewModel._deviceInfos.value
                                 }
                             }
@@ -101,8 +106,18 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
         super.initData()
         thread(true) {
             var deviceInfos = mutableListOf<DeviceListVM.DeviceInfo>()
-            deviceInfos.add(DeviceListVM.DeviceInfo(getString(R.string.device_weight), R.mipmap.icon_weight))
-            deviceInfos.add(DeviceListVM.DeviceInfo(getString(R.string.device_wheel), R.mipmap.icon_abroller))
+            deviceInfos.add(
+                DeviceListVM.DeviceInfo(
+                    getString(R.string.device_weight),
+                    R.mipmap.icon_weight
+                )
+            )
+            deviceInfos.add(
+                DeviceListVM.DeviceInfo(
+                    getString(R.string.device_wheel),
+                    R.mipmap.icon_abroller
+                )
+            )
             mViewModel._deviceInfos.postValue(deviceInfos)
         }
     }
@@ -111,7 +126,8 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
         var mList: List<DeviceListVM.DeviceInfo>? = null
         var itemClickListener: onItemClickListener? = null
 
-        class MyViewHolder(itemView: View, val binding: LayoutDeviceItemBinding) : RecyclerView.ViewHolder(itemView) {
+        class MyViewHolder(itemView: View, val binding: LayoutDeviceItemBinding) :
+            RecyclerView.ViewHolder(itemView) {
 
         }
 
@@ -132,8 +148,10 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
                 binding.container.setOnClickListener {
                     itemClickListener?.onItemClick(holder, position, mList!![position])
                 }
-                binding.masked.visibility = if (it[position].getBondDeviceData() == null) View.VISIBLE else View.GONE
-                binding.masked2.visibility = if (it[position].getBondDeviceData() != null) View.VISIBLE else View.GONE
+                binding.masked.visibility =
+                    if (it[position].getBondDeviceData() == null) View.VISIBLE else View.GONE
+                binding.masked2.visibility =
+                    if (it[position].getBondDeviceData() != null) View.VISIBLE else View.GONE
             }
         }
 
@@ -142,7 +160,11 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
         }
 
         interface onItemClickListener {
-            fun onItemClick(holder: MyViewHolder, position: Int, deviceInfo: DeviceListVM.DeviceInfo)
+            fun onItemClick(
+                holder: MyViewHolder,
+                position: Int,
+                deviceInfo: DeviceListVM.DeviceInfo
+            )
         }
     }
 }

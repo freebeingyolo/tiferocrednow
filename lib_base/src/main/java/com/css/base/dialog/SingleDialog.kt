@@ -34,6 +34,7 @@ class SingleDialog : BasePopupWindow, View.OnClickListener {
     constructor(dialog: Dialog) : super(dialog)
 
     init {
+
         tvTitle = findViewById(R.id.tv_title)
         tvContent = findViewById(R.id.tv_content)
         tvOk = findViewById(R.id.tv_ok)
