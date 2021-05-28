@@ -7,17 +7,14 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.blankj.utilcode.constant.PermissionConstants
 import com.blankj.utilcode.util.PermissionUtils
-import com.blankj.utilcode.util.ToastUtils
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 
 
 object BleUtils {
-
 
     //绑定
     fun createBond(bleDevice: BluetoothDevice): Boolean? {

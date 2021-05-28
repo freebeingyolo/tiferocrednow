@@ -13,6 +13,7 @@ import com.css.base.uibase.base.BaseWonderFragment
 import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.ble.R
 import com.css.ble.utils.BleUtils
+import com.css.ble.utils.QuickTransUtils
 import com.css.ble.viewmodel.BleEnvVM
 
 /**
@@ -47,8 +48,9 @@ abstract class BaseWeightFragment<VM : BaseViewModel, VB : ViewBinding> : BaseWo
 
                     override fun onRightBtnClick(view: View) {
                         super.onRightBtnClick(view)
-                        val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-                        startActivityForResult(enableBtIntent, 0x101)
+                        QuickTransUtils.startActivityForResult(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)) { _, _, _, _ ->
+                            checkBleEnv()
+                        }
                     }
                 }
             }.show()
@@ -70,8 +72,9 @@ abstract class BaseWeightFragment<VM : BaseViewModel, VB : ViewBinding> : BaseWo
 
                     override fun onRightBtnClick(view: View) {
                         super.onRightBtnClick(view)
-                        val intent: Intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                        startActivityForResult(intent, 0x100)
+                        QuickTransUtils.startActivityForResult(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) { _, _, _, _ ->
+                            checkBleEnv()
+                        }
                     }
                 }
             }.show()
@@ -89,15 +92,6 @@ abstract class BaseWeightFragment<VM : BaseViewModel, VB : ViewBinding> : BaseWo
             }
 
         })
-    }
-
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            0x100, 0x101 -> checkBleEnv()
-        }
-
     }
 
     override fun onDestroyView() {
