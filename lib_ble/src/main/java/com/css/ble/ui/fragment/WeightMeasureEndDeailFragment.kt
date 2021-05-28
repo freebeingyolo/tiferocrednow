@@ -1,5 +1,6 @@
 package com.css.ble.ui.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,6 +8,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.css.base.uibase.BaseFragment
+import com.css.base.view.ToolBarView
 import com.css.ble.BodyDetailAdapter
 import com.css.ble.R
 import com.css.ble.bean.WeightDetailBean
@@ -17,11 +19,15 @@ import com.css.ble.viewmodel.WeightMeasureVM
  * @author yuedong
  * @date 2021-05-17
  */
-class WeightMeasureEndDeailFragment : BaseFragment<WeightMeasureVM, ActivityWeightMeasureEndDetailBinding>() {
+class WeightMeasureEndDeailFragment :
+    BaseFragment<WeightMeasureVM, ActivityWeightMeasureEndDetailBinding>() {
     private val TAG: String = "WeightMeasureEndDeailFragment"
     lateinit var mBodyDetailAdapter: BodyDetailAdapter
 
-    override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): ActivityWeightMeasureEndDetailBinding {
+    override fun initViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?
+    ): ActivityWeightMeasureEndDetailBinding {
 
         return ActivityWeightMeasureEndDetailBinding.inflate(inflater, parent, false)
     }
@@ -31,8 +37,13 @@ class WeightMeasureEndDeailFragment : BaseFragment<WeightMeasureVM, ActivityWeig
         return ViewModelProvider(requireActivity()).get(WeightMeasureVM::class.java)
     }
 
+    override fun initCommonToolBarBg(): ToolBarView.ToolBarBg {
+        return ToolBarView.ToolBarBg.GRAY
+    }
+
     override fun enabledVisibleToolBar() = true
 
+    @SuppressLint("SetTextI18n")
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         setToolBarLeftText(getString(R.string.device_weight))
@@ -45,7 +56,9 @@ class WeightMeasureEndDeailFragment : BaseFragment<WeightMeasureVM, ActivityWeig
                 Log.d(TAG, "btnMeasureWeight#click")
             }
             mViewModel.bondData.value!!.apply {
-                tvWeightNum.text = weightKgFmt
+                var weightList = weightKgFmt.split(".")
+                tvWeightNum.text = " ${weightList[0]}."
+                tvWeightFloatNum.text = weightList[1]
                 var bodyFatData = getBodyFatData()
                 tvTodayBodyStatus.text = String.format("BMI%.1f|%s", bodyFatData.bmi, fatLevel)
                 pbWeight.setProgress(fatLeveRate.toInt())
