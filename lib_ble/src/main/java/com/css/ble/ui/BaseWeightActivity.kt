@@ -15,7 +15,7 @@ import com.blankj.utilcode.util.PermissionUtils
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseActivity
-import com.css.base.uibase.base.BaseWonderActivity
+import com.css.ble.utils.QuickTransUtils
 import com.css.ble.utils.BleUtils
 import com.css.ble.viewmodel.BaseWeightVM
 import com.css.ble.viewmodel.BleEnvVM
@@ -112,20 +112,12 @@ abstract class BaseWeightActivity<VM : BaseWeightVM, VB : ViewBinding> : BaseAct
             listener = object : DialogClickListener.DefaultLisener() {
                 override fun onRightBtnClick(view: View) {
                     super.onRightBtnClick(view)
-                    val intent: Intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                    startActivityForResult(intent, 0x100)
+                    QuickTransUtils.startActivityForResult(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) { activity, _, _, _ ->
+                        BleEnvVM.locationOpened = BleUtils.isLocationEnabled(activity)
+                    }
                 }
             }
         }.show()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (resultCode) {
-            0x100 -> {
-                BleEnvVM.locationOpened = BleUtils.isLocationEnabled(this)
-            }
-        }
     }
 
     private var receiver: BroadcastReceiver = object : BroadcastReceiver() {
