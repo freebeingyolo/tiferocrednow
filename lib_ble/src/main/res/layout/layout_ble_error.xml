@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F7F7F7"
+    android:background="@color/common_gray_color"
     android:orientation="vertical">
 
     <LinearLayout
@@ -31,9 +31,10 @@
             android:id="@+id/error"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:textColor="#333333"
-            android:textSize="25sp"
-            tools:text="未搜到设备" />
+            android:textSize="13sp"
+            tools:text="@string/error_ble_off" />
 
         <Space
             android:layout_width="wrap_content"

@@ -38,20 +38,6 @@ class WeightMeasureDoingFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        //设置标题栏
-        setToolBarLeftText(getString(R.string.device_weight))
-        var view = LayoutInflater.from(context).inflate(R.layout.layout_weight_measure_header, null, false)
-        setRightImage(ImageUtils.getBitmap(view))
-        getCommonToolBarView()?.setToolBarClickListener(object : OnToolBarClickListener {
-            override fun onClickToolBarView(view: View, event: ToolBarView.ViewType) {
-                when (event) {
-                    ToolBarView.ViewType.LEFT_IMAGE -> onBackPressed()
-                    ToolBarView.ViewType.RIGHT_IMAGE -> {
-                        DeviceInfoActivity.start(WonderCoreCache.BOND_WEIGHT_INFO)
-                    }
-                }
-            }
-        })
     }
     override fun initCommonToolBarBg(): ToolBarView.ToolBarBg {
         return ToolBarView.ToolBarBg.GRAY

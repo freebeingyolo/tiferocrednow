@@ -70,9 +70,6 @@ class WeightMeasureBeginFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
     override fun initCommonToolBarBg(): ToolBarView.ToolBarBg {
         return ToolBarView.ToolBarBg.GRAY
     }
-    override fun initData() {
-        super.initData()
-    }
 
     override fun initViewModel(): WeightMeasureVM {
         return ViewModelProvider(requireActivity()).get(WeightMeasureVM::class.java)
@@ -87,5 +84,7 @@ class WeightMeasureBeginFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
             showCenterToast("请先绑定设备")
             ARouter.getInstance().build(ARouterConst.PATH_APP_BLE_DEVICELIST).navigation()
         }
+        mViewModel.stopScanBle()
     }
+
 }

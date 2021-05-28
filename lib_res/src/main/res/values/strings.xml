@@ -37,15 +37,15 @@
     <string name="research">重新搜索</string>
     <string name="confirm_bond">确认绑定</string>
     <string name="weight_bonded_tip">蓝牙智能体脂秤已连接成功，开启你的健康之旅吧！</string>
-    <string name="backnow">立刻返回</string>
-    <string name="count_down_tips"><Data><![CDATA[<font color="#FF0000"><big><big>%d<big></big></font> s后自动返回首页"]]></Data></string>
+    <string name="backnow">立即返回</string>
+    <string name="count_down_tips">秒后回到首页</string>
     <string name="tv_current_weight_init_msg">您尚未测量过身体数据，点此测量，了解下自己的身体情况吧！</string>
     <string name="measure_first_tips">您尚未测量过体重哦，点此立即测量！</string>
-    <string name="error_ble_off">蓝牙未打开</string>
-    <string name="error_location_notallowed">定位权限未允许</string>
-    <string name="error_location_off">定位未打开</string>
+    <string name="error_ble_off">手机蓝牙未打开!</string>
+    <string name="error_location_notallowed">定位权限未打开!</string>
+    <string name="error_location_off">定位未打开!</string>
     <string name="ok_ble_env">蓝牙环境ok</string>
     <string name="developping">尚在开发中</string>
-    <string name="error_search_timeout">搜索超时</string>
+    <string name="error_search_timeout">未搜索到设备！</string>
 
 </resources>

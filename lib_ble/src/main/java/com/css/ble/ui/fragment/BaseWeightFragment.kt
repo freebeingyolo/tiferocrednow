@@ -9,6 +9,7 @@ import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.util.PermissionUtils
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
+import com.css.base.uibase.BaseFragment
 import com.css.base.uibase.base.BaseWonderFragment
 import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.ble.R
@@ -20,7 +21,7 @@ import com.css.ble.viewmodel.BleEnvVM
  * @author yuedong
  * @date 2021-05-27
  */
-abstract class BaseWeightFragment<VM : BaseViewModel, VB : ViewBinding> : BaseWonderFragment<VM, VB>() {
+abstract class BaseWeightFragment<VM : BaseViewModel, VB : ViewBinding> : BaseFragment<VM, VB>() {
     protected var checkEnvDone = false
 
     override fun enabledVisibleToolBar() = true

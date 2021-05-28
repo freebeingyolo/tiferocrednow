@@ -41,7 +41,7 @@ class WeightMeasureActivity : BaseWeightActivity<WeightMeasureVM, ActivityBleEnt
                     FragmentUtils.changeFragment(WeightMeasureBeginFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
                 }
                 State.doing -> {
-                    FragmentUtils.changeFragment(WeightMeasureDoingFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
+                    FragmentUtils.changeFragment(WeightMeasureDoingFragment::class.java, FragmentUtils.Option.OPT_ADD)
                 }
                 State.done -> {
                     FragmentUtils.changeFragment(WeightMeasureDoneFragment::class.java, FragmentUtils.Option.OPT_REPLACE)

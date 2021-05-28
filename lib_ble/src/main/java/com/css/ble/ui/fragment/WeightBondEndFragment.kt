@@ -58,7 +58,7 @@ class WeightBondEndFragment : BaseWeightFragment<WeightBondVM, LayoutWeightBondB
                     delay(1000)
                 }
             }.collect {
-                mViewBinding!!.countdownTv.text = Html.fromHtml(getString(R.string.count_down_tips, it))
+                mViewBinding!!.countdownTv.text = String.format("%d",it)
                 if (it <= 0) {
                     mViewBinding!!.back.performClick()
                 }

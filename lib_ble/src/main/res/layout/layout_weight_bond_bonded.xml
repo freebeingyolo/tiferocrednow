@@ -1,8 +1,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F7F7F7">
+    android:background="@color/common_gray_color"
+    tools:context=".ui.DeviceListActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -39,28 +41,42 @@
             android:textColor="#333333"
             android:textSize="13sp" />
 
-        <TextView
-            android:id="@+id/countdownTv"
-            android:layout_width="225dp"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv1"
-            android:layout_alignStart="@+id/tv1"
-            android:layout_alignEnd="@+id/tv1"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="30dp"
-            android:gravity="center"
-            android:text="@string/count_down_tips"
-            android:textColor="#333333"
-            android:textSize="13sp" />
+            android:layout_centerHorizontal="true">
 
-        <Button
+            <TextView
+                android:id="@+id/countdownTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="#F1672B"
+                android:textSize="13sp"
+                tools:text="3 " />
+
+            <TextView
+                android:id="@+id/countdownTv2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/count_down_tips"
+                android:textColor="#333333"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/back"
-            android:layout_width="167dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/countdownTv"
+            android:layout_width="127dp"
+            android:layout_height="35dp"
+            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
+            android:layout_marginBottom="94dp"
             android:background="@drawable/ble_bonded_backnow_frame"
+            android:stateListAnimator="@null"
             android:text="@string/backnow"
-            android:textColor="#fff2682a" />
+            android:textColor="#fff2682a"
+            android:textSize="13sp" />
     </RelativeLayout>
 </RelativeLayout>
