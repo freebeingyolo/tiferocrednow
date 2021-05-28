@@ -220,6 +220,10 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
                     R.id.ll_base_root,
                     enbaleFixImmersionAndEditBug()
                 )
+                ToolBarView.ToolBarBg.GRAY -> baseActivity.setGrayFakeStatus(
+                    R.id.ll_base_root,
+                    enbaleFixImmersionAndEditBug()
+                )
             }
         } else {
             baseActivity.setTransparentStatus(R.id.ll_base_root, enbaleFixImmersionAndEditBug())

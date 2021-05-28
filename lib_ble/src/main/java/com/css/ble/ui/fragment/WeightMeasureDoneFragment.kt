@@ -72,7 +72,9 @@ class WeightMeasureDoneFragment : BaseWeightFragment<WeightMeasureVM, ActivityWe
             }
         })
     }
-
+    override fun initCommonToolBarBg(): ToolBarView.ToolBarBg {
+        return ToolBarView.ToolBarBg.GRAY
+    }
     override fun onDetach() {
         super.onDetach()
         dialog?.dismiss()

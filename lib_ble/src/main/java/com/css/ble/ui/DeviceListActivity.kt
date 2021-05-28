@@ -67,7 +67,7 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
                             title = "解除绑定"
                             content = "此操作会清除手机中有关该设备的所有数据。设备解绑后，若再次使用，需重新添加。"
                             leftBtnText = "取消"
-                            rightBtnText = "确认"
+                            rightBtnText = "确认解绑"
                             listener = object : DialogClickListener.DefaultLisener() {
                                 override fun onRightBtnClick(view: View) {
                                     super.onRightBtnClick(view)

@@ -1,6 +1,8 @@
 package com.css.ble.ui
 
+import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +16,7 @@ import com.css.base.uibase.BaseActivity
 import com.css.base.uibase.BaseFragment
 import com.css.base.uibase.viewmodel.DefaultViewModel
 import com.css.base.utils.StringUtils
+import com.css.base.view.ToolBarView
 import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.databinding.FragmentDeviceInfoBinding
@@ -27,7 +30,10 @@ class DeviceInfoActivity : BaseActivity<DefaultViewModel, FragmentDeviceInfoBind
 
     companion object {
         fun start(deviceKey: String) {
-            var intent = Intent(ActivityUtils.getTopActivity(), DeviceInfoActivity.javaClass).apply { putExtra("DeviceKey", deviceKey) }
+            var intent = Intent(
+                ActivityUtils.getTopActivity(),
+                DeviceInfoActivity::class.java
+            ).apply { putExtra("DeviceKey", deviceKey) }
             ActivityUtils.startActivity(intent)
         }
     }
@@ -103,14 +109,15 @@ class DeviceInfoActivity : BaseActivity<DefaultViewModel, FragmentDeviceInfoBind
             rlDeleteDevice.setOnClickListener {
                 CommonAlertDialog(baseContext).apply {
                     type = CommonAlertDialog.DialogType.Confirm
-                    content = "确定要解绑吗"
+                    title = "解除绑定"
+                    content = "此操作会清除手机中有关该设备的所有数据。设备解绑后，若再次使用，需重新添加。"
                     leftBtnText = "取消"
-                    rightBtnText = "解绑"
+                    rightBtnText = "确认解绑"
                     listener = object : DialogClickListener.DefaultLisener() {
                         override fun onRightBtnClick(view: View) {
                             super.onRightBtnClick(view)
                             WonderCoreCache.removeKey(data.getCacheKey())
-                            ToastUtils.showShort("解锁成功")
+                            ToastUtils.showShort("解绑成功")
                         }
                     }
                 }.show()

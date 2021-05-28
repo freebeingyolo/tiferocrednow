@@ -53,7 +53,9 @@ class WeightMeasureDoingFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
             }
         })
     }
-
+    override fun initCommonToolBarBg(): ToolBarView.ToolBarBg {
+        return ToolBarView.ToolBarBg.GRAY
+    }
     override fun enabledVisibleToolBar(): Boolean = true
 
     override fun onVisible() {

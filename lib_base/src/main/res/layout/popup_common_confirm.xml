@@ -16,36 +16,35 @@
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="23dp"
-        android:gravity="center"
-        android:paddingLeft="31dp"
-        android:paddingRight="31dp"
+        android:layout_marginTop="11dp"
+        android:paddingStart="17dp"
         android:textColor="#222222"
-        android:textSize="16sp"
-        android:textStyle="bold"
+        android:textSize="15sp"
         tools:text="这是标题" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="9dp"
-        android:layout_marginBottom="22dp"
-        android:gravity="center"
-        android:paddingLeft="31dp"
-        android:paddingRight="31dp"
-        android:textColor="#222222"
-        android:textSize="14sp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="start"
+        android:paddingLeft="19dp"
+        android:paddingRight="19dp"
+        android:textColor="#FF000000"
+        android:textSize="13sp"
         tools:text="这是内容这是内容这是内容这是内容" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="#e2e2e2" />
+        android:background="#e2e2e2"
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -55,12 +54,12 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="#999999"
-            android:textSize="16sp"
+            android:textSize="13sp"
             tools:text="取消" />
 
         <View
             android:layout_width="1px"
-            android:layout_height="match_parent"
+            android:layout_height="11dp"
             android:background="#e2e2e2" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -69,8 +68,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:textColor="#FFBD01"
-            android:textSize="16sp"
+            android:textColor="#FFFF0000"
+            android:textSize="13sp"
             tools:text="确定" />
     </LinearLayout>
 

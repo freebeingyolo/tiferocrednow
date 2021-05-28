@@ -42,6 +42,7 @@ interface IToolbarView {
     fun getToolBarLayoutResId(): Int {
         when (initCommonToolBarBg()) {
             ToolBarView.ToolBarBg.WHITE -> return R.layout.include_common_white_toolbar
+            ToolBarView.ToolBarBg.GRAY -> return R.layout.include_common_gray_toolbar
             else -> return R.layout.include_common_white_toolbar
         }
     }
@@ -78,6 +79,7 @@ interface IToolbarView {
             return null
         }
     }
+
     /**
      * enabledCommonToolBar 为true时有效。
      * 设置左侧title
@@ -105,6 +107,7 @@ interface IToolbarView {
             return null
         }
     }
+
     fun hasCommonToolBar(): Boolean
 
     fun getCommonToolBarView(): ToolBarView?
@@ -254,7 +257,10 @@ interface IToolbarView {
     }
 
 
-    fun setToolBarViewVisible(isVisible: Boolean, vararg events: ToolBarView.ViewType): ToolBarView? {
+    fun setToolBarViewVisible(
+        isVisible: Boolean,
+        vararg events: ToolBarView.ViewType
+    ): ToolBarView? {
         if (hasCommonToolBar()) {
             return getCommonToolBarView()?.setToolBarViewVisible(isVisible, *events)
         } else {
