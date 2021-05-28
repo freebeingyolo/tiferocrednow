@@ -46,7 +46,7 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         setToolBarLeftTitle(R.string.bond_device)
-        mViewBinding?.lv!!.apply {
+        mViewBinding.lv!!.apply {
             mAdapter = RecycleViewAdapter()
             mAdapter.itemClickListener = object : RecycleViewAdapter.onItemClickListener {
                 override fun onItemClick(
