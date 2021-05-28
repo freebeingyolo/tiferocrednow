@@ -45,7 +45,7 @@
                 android:layout_marginTop="42dp"
                 android:background="@drawable/bg_to_measure_btn"
                 android:gravity="center"
-                android:text="去测量"
+                android:text="@string/goto_measure"
                 android:textColor="#F2682A"
                 android:textSize="12sp" />
         </androidx.appcompat.widget.LinearLayoutCompat>

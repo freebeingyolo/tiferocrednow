@@ -70,15 +70,19 @@
 
                 <Space
                     android:layout_width="10dp"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="1dp" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="4"
+                    android:layout_weight="1"
                     android:text="已有设备，如需更换绑定设备 点此解绑"
                     android:textColor="#ffffff"
                     android:textSize="10sp" />
+
+                <Space
+                    android:layout_width="10dp"
+                    android:layout_height="1dp" />
 
                 <ImageView
                     android:layout_width="30dp"
@@ -88,7 +92,7 @@
 
                 <Space
                     android:layout_width="10dp"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="1dp" />
             </LinearLayout>
         </FrameLayout>
     </LinearLayout>

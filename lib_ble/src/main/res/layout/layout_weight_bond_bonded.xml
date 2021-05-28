@@ -54,7 +54,11 @@
                 android:gravity="center"
                 android:textColor="#F1672B"
                 android:textSize="13sp"
-                tools:text="3 " />
+                tools:text="3" />
+
+            <Space
+                android:layout_width="5dp"
+                android:layout_height="1dp" />
 
             <TextView
                 android:id="@+id/countdownTv2"

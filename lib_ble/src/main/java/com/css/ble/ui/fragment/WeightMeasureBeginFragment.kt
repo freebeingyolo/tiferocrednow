@@ -49,6 +49,7 @@ class WeightMeasureBeginFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
                     it.tips.text = it3.weightKgFmt("你上一次的体重是:%.1f kg")
                 }
             }
+
         }
     }
 
@@ -67,6 +68,7 @@ class WeightMeasureBeginFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
             }
         })
     }
+
     override fun initCommonToolBarBg(): ToolBarView.ToolBarBg {
         return ToolBarView.ToolBarBg.GRAY
     }
