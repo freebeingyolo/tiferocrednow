@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -15,23 +16,20 @@ import com.css.wondercorefit.adapter.MallProductAdapter
 import com.css.wondercorefit.bean.ProductBean
 import com.css.wondercorefit.databinding.FragmentMallBinding
 
-class MallFragment : BaseFragment<DefaultViewModel, FragmentMallBinding>() {
+class MallFragment : BaseFragment<DefaultViewModel, FragmentMallBinding>(), View.OnClickListener {
     var mData = ArrayList<ProductBean>()
     lateinit var mAdapter: MallProductAdapter
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
+        mViewBinding?.tvStoreDetails1?.setOnClickListener(this)
+        mViewBinding?.tvStoreDetails2?.setOnClickListener(this)
         SystemBarHelper.immersiveStatusBar(activity, 0f)
         SystemBarHelper.setHeightAndPadding(activity, mViewBinding?.topView)
         mAdapter = MallProductAdapter(mData)
         mViewBinding?.productList?.layoutManager = GridLayoutManager(activity, 3)
         mViewBinding?.productList?.adapter = mAdapter
         mAdapter.setOnItemClickListener {
-            val uri: Uri = Uri.parse("http://www.taobao.com")
-            val intent = Intent()
-            intent.action = "android.intent.action.VIEW"
-            intent.data = uri
-            startActivity(intent)
-            showToast(it.productName)
+            openUrl("https://www.taobao.com/")
         }
     }
 
@@ -56,4 +54,22 @@ class MallFragment : BaseFragment<DefaultViewModel, FragmentMallBinding>() {
         inflater: LayoutInflater,
         viewGroup: ViewGroup?
     ): FragmentMallBinding = FragmentMallBinding.inflate(inflater, viewGroup, false)
+
+    override fun onClick(v: View) {
+        when(v.id){
+            R.id.tv_store_details_1->{
+                openUrl("https://www.tmall.com/")
+            }
+            R.id.tv_store_details_2->{
+                openUrl("https://www.jd.com/")
+            }
+        }
+    }
+    private fun openUrl(url:String){
+        val uri: Uri = Uri.parse(url)
+        val intent = Intent()
+        intent.action = "android.intent.action.VIEW"
+        intent.data = uri
+        startActivity(intent)
+    }
 }
