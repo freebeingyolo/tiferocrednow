@@ -1,9 +1,6 @@
 package com.css.ble.ui
 
-import android.content.*
 import android.os.Bundle
-import android.os.IBinder
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
@@ -19,7 +16,6 @@ import com.css.ble.viewmodel.ErrorType
 import com.css.ble.viewmodel.WeightMeasureVM
 import com.css.ble.viewmodel.WeightMeasureVM.State
 import com.css.service.router.ARouterConst
-import com.pingwang.bluetoothlib.server.ELinkBleServer
 
 
 @Route(path = ARouterConst.PATH_APP_BLE_WEIGHTMEASURE)

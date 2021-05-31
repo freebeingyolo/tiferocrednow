@@ -1,6 +1,5 @@
 package com.css.ble.ui.fragment
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -43,7 +42,6 @@ class WeightMeasureEndDeailFragment :
 
     override fun enabledVisibleToolBar() = true
 
-    @SuppressLint("SetTextI18n")
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         setToolBarLeftText(getString(R.string.device_weight))
@@ -59,9 +57,9 @@ class WeightMeasureEndDeailFragment :
                 var weightList = weightKgFmt.split(".")
                 tvWeightNum.text = " ${weightList[0]}."
                 tvWeightFloatNum.text = weightList[1]
-                var bodyFatData = getBodyFatData()
-                tvTodayBodyStatus.text = String.format("BMI%.1f|%s", bodyFatData.bmi, fatLevel)
-                pbWeight.setProgress(fatLeveRate.toInt())
+                tvTodayBodyStatus.text = String.format("BMI%.1f|%s", bodyFatData.bmi, bodyFatData.bmiJudge)
+                pbWeight.setProgress(bodyFatData.weightProgress.toInt())
+                score.text = bodyFatData.bodyScore.toString()
             }
         }
 

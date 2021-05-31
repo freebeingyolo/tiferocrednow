@@ -78,22 +78,20 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             it.observe(this) { it2 ->
                 if (it2 != null) {
                     mViewBinding?.tvCurrentWeight?.text = it2.weightKgFmt("%.1f")
-                    if (it2?.getBodyFatData()?.bmi != null) {
-                        mViewBinding?.llBmi?.visibility = View.VISIBLE
-                        mViewBinding?.tvBmi?.text = "BMI${it2?.getBodyFatData()?.bmi}"
-                        mViewBinding?.tvBodyType?.text = it2.fatLevel
-                    } else {
-                        mViewBinding?.llBmi?.visibility = View.GONE
-                    }
+                    mViewBinding?.llBmi?.visibility = View.VISIBLE
+                    mViewBinding?.tvBmi?.text = "BMI${it2?.bodyFatData.bmi}"
+                    mViewBinding?.tvBodyType?.text = it2.bodyFatData.bmiJudge
+                } else {
+                    mViewBinding?.llBmi?.visibility = View.GONE
                 }
             }
         }
 
         WeightBondData.lastWeightInfo.let {
-            if (it?.getBodyFatData()?.bmi != null) {
+            if (it?.bodyFatData?.bmi != null) {
                 mViewBinding?.llBmi?.visibility = View.VISIBLE
-                mViewBinding?.tvBmi?.text = "BMI${it?.getBodyFatData()?.bmi}"
-                mViewBinding?.tvBodyType?.text = it.fatLevel
+                mViewBinding?.tvBmi?.text = "BMI${it.bodyFatData?.bmi}"
+                mViewBinding?.tvBodyType?.text = it.bodyFatData.bmiJudge
             }
         }
     }

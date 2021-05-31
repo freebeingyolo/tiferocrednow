@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import cn.net.aicare.algorithmutil.AlgorithmUtil
 import cn.net.aicare.algorithmutil.BodyFatData
-import com.css.ble.utils.BodyJudgeUtil
 import com.css.service.utils.WonderCoreCache
 
 /**
@@ -74,6 +73,7 @@ class WeightBondData() {
                 )
             }
         }
+
         //上次测量体重信息监听
         val lastWeightInfoObsvr: LiveData<WeightBondData> by lazy {
             MutableLiveData<WeightBondData>().apply {
@@ -83,69 +83,26 @@ class WeightBondData() {
         }
     }
 
-    fun getBodyFatData(): BodyFatData {
-        var userInfo = WonderCoreCache.getUserInfo()
-        val sex = userInfo.setInt
-        val age = userInfo.ageInt
-        val weight_kg = weightKg * 1.0
-        val height_cm = userInfo.stature.toInt()
-        val adc = adc
-        val ret = AlgorithmUtil.getBodyFatData(AlgorithmUtil.AlgorithmType.TYPE_AICARE, sex, age, weight_kg, height_cm, adc)
-        return ret
-    }
-
-    /*
-    *肥胖等级
-    return：[体重不足,偏瘦,标准,偏重,超重]
-    */
-    val fatLevel: String
-        get() {
+    val bodyFatData: BodyFatDataWrapper
+        get() = run {
             var userInfo = WonderCoreCache.getUserInfo()
-            return BodyJudgeUtil.fatLevel(weightKg, userInfo.statureFloat, userInfo.sex)
-        }
-
-    val fatLeveRate: Float
-        get() {
-            var userInfo = WonderCoreCache.getUserInfo()
-            val high = userInfo.statureFloat
-            val sex = userInfo.sex
-            return (weight - BodyJudgeUtil.standardWeight(high, sex)) / BodyJudgeUtil.standardWeight(high, sex)
+            val sex = userInfo.setInt
+            val age = userInfo.ageInt
+            val weight_kg = weightKg * 1.0
+            val height_cm = userInfo.stature.toInt()
+            val adc = adc
+            val ret = AlgorithmUtil.getBodyFatData(AlgorithmUtil.AlgorithmType.TYPE_AICARE, sex, age, weight_kg, height_cm, adc)
+            BodyFatDataWrapper(ret, weightKg, WonderCoreCache.getUserInfo())
         }
 
     fun getBodyFatDataList(): List<WeightDetailBean> {
-        var data: BodyFatData = getBodyFatData()
-        var datas = mutableListOf<WeightDetailBean>()
-        var clazz = data.javaClass
-        for (m in clazz.declaredFields) {
-            m.isAccessible = true
-            var map = WeightDetailBean(
-                nameTransfer(m.name),
-                "",
-                m.get(data).toString()
-            )
+        val dataWrapper = bodyFatData
+        val datas = mutableListOf<WeightDetailBean>()
+        for (m in dataWrapper.output) {
+            val map = WeightDetailBean(m[0], m[1], m[2])
             datas.add(map)
         }
         return datas
-    }
-
-
-    fun nameTransfer(name: String): String {
-        return when (name) {
-            "bmi" -> "BMI"
-            "bfr" -> "体脂率"
-            "sfr" -> "皮下脂肪"
-            "uvi" -> "内脏脂肪指数"
-            "sfr" -> "皮下脂肪"
-            "uvi" -> "内脏脂肪指数"
-            "rom" -> "皮下脂肪"
-            "bmr" -> "基础代谢率"
-            "bm" -> "骨量"
-            "vwc" -> "身体水分"
-            "bodyAge" -> "身体年龄"
-            "pp" -> "蛋白率"
-            "weight" -> "体重"
-            else -> name
-        }
     }
 
     fun setValue(

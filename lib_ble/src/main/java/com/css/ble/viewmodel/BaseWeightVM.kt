@@ -92,6 +92,7 @@ abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastD
     abstract fun onScanTimeOut()
     abstract fun onScanStop()
     abstract fun onScanTimerOutCancel()
+    protected open val timeOut = 5 * 1000L
 
     private fun cmdSum(data: ByteArray): Byte {
         var sum: Byte = 0
@@ -126,19 +127,20 @@ abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastD
     protected fun cancelTimeOutTimer() {
         if (timeOutJob != null) {
             LogUtils.d("cancelTimeOutTimer", 3)
-            timeOutJob?.cancel()
+            timeOutJob!!.cancel()
             timeOutJob = null
             this@BaseWeightVM.onScanTimerOutCancel()
         }
     }
 
     protected fun startTimeoutTimer(timeOut: Long) {
-        cancelTimeOutTimer()
-        var t1 = System.currentTimeMillis()
         timeOutJob = viewModelScope.launch {
             delay(timeOut)
-            stopScanBle()
-            mOnCallbackBle.onScanTimeOut()
+            if (!timeOutJob!!.isCancelled) {
+                stopScanBle()
+                mOnCallbackBle.onScanTimeOut()
+            }
+            timeOutJob = null
         }
     }
 
@@ -147,7 +149,7 @@ abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastD
         mBluetoothService!!.apply {
             if (!isScanStatus) {
                 Log.d(TAG, "startScanBle:true")
-                startTimeoutTimer(5 * 1000)
+                startTimeoutTimer(timeOut)
                 scanLeDevice(0)
                 onScanStart()
             } else {
@@ -158,7 +160,7 @@ abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastD
 
     fun stopScanBle() {
         if (mBluetoothService?.isScanStatus == true) {
-            Log.d(TAG, "stopScanBle")
+            LogUtils.d(TAG, 3)
             this.mBluetoothService?.stopScan()
             cancelTimeOutTimer()
             onScanStop()

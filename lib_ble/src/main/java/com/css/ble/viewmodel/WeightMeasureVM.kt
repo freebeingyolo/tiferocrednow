@@ -2,33 +2,22 @@ package com.css.ble.viewmodel
 
 import android.os.Looper
 import android.util.Log
-import androidx.annotation.RequiresPermission
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.ble.bean.WeightBondData
 import com.css.ble.bean.BondDeviceData
 import com.pingwang.bluetoothlib.BroadcastDataParsing
 import com.pingwang.bluetoothlib.bean.BleValueBean
-import com.pingwang.bluetoothlib.listener.OnCallbackBle
-import com.pingwang.bluetoothlib.listener.OnScanFilterListener
-import com.pingwang.bluetoothlib.server.ELinkBleServer
-import com.pingwang.bluetoothlib.utils.BleStrUtils
-import com.pinwang.ailinkble.AiLinkPwdUtil
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 class WeightMeasureVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataParsing {
     private val _state: MutableLiveData<State> by lazy { MutableLiveData<State>() }
     val state: MutableLiveData<State> get() = _state
+    protected override val timeOut = 10 * 1000L
 
     enum class State {
         begin,
-        doing,
+        doing,//开始测量
+        receiving,//收到数据
         timeout,
         done
     }
@@ -83,9 +72,8 @@ class WeightMeasureVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPars
             bondData.value = it
             Log.d(TAG, "getWeightData:$it")
 
-            if (timeOutJob != null) cancelTimeOutTimer()
-            if (status == 0x00 && state.value != State.doing) {
-                _state.value = State.doing
+            if (status == 0x00 && state.value != State.receiving) {
+                _state.value = State.receiving
             } else if (status == 0xFF && state.value != State.done) {
                 _state.value = State.done
                 WeightBondData.firstWeightInfo ?: let { WeightBondData.firstWeightInfo = bondData.value }
