@@ -74,10 +74,10 @@
                 android:paddingEnd="0dp"
                 android:paddingBottom="0dp">
 
-                <androidx.core.widget.ContentLoadingProgressBar
-                    style="?android:attr/progressBarStyleLarge"
+                <pl.droidsonroids.gif.GifImageView
                     android:layout_width="48dp"
-                    android:layout_height="48dp" />
+                    android:layout_height="48dp"
+                    android:src="@drawable/loading_git" />
 
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -86,7 +86,8 @@
                     android:layout_marginTop="10dp"
                     android:gravity="center"
                     android:text="@string/weight_measuring"
-                    android:textSize="10sp" />
+                    android:textColor="@color/black"
+                    android:textSize="10dp" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
