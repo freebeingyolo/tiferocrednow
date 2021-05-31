@@ -9,11 +9,11 @@ import com.css.wondercorefit.utils.ConfigHolder
 import com.css.wondercorefit.utils.LoadingOverlay
 import com.css.wondercorefit.utils.VideoCacheHelper
 import com.css.wondercorefit.viewmodel.CourseViewModel
+import com.css.wondercorefit.widget.MediaController
 import com.seagazer.liteplayer.LitePlayerView
 import com.seagazer.liteplayer.bean.DataSource
 import com.seagazer.liteplayer.listener.PlayerViewModeChangedListener
 import com.seagazer.liteplayer.widget.LiteGestureController
-import com.seagazer.liteplayer.widget.LiteMediaController
 import com.seagazer.liteplayer.widget.LiteMediaTopbar
 
 class CoursePlayActivity : AppCompatActivity() {
@@ -45,7 +45,7 @@ class CoursePlayActivity : AppCompatActivity() {
         playerView.setRenderType(ConfigHolder.renderType)
         playerView.setPlayerType(ConfigHolder.playerType)
         // media controller, topbar and gesture controller
-        playerView.attachMediaController(LiteMediaController(this))
+        playerView.attachMediaController(MediaController(this))
         playerView.attachMediaTopbar(LiteMediaTopbar(this))
         playerView.attachGestureController(LiteGestureController(this).apply {
             supportSeek = true
