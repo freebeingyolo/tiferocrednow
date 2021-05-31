@@ -38,7 +38,7 @@ class WeightMeasureEndDeailFragment :
     }
 
     override fun initCommonToolBarBg(): ToolBarView.ToolBarBg {
-        return ToolBarView.ToolBarBg.GRAY
+        return ToolBarView.ToolBarBg.WHITE
     }
 
     override fun enabledVisibleToolBar() = true

@@ -10,13 +10,12 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bg_gray">
+        android:background="@color/white">
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/btn_measure_weight"
-            android:background="@color/bg_gray"
             android:fillViewport="true"
             android:overScrollMode="never">
 
