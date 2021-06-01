@@ -6,13 +6,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.blankj.utilcode.util.LogUtils
 import com.css.base.uibase.BaseActivity
 import com.css.base.uibase.viewmodel.DefaultViewModel
-import com.css.base.view.ToolBarView
 import com.css.service.BuildConfig
-import com.css.service.bus.EventMessage
-import com.css.service.data.StepData
 import com.css.service.inner.BaseInner
 import com.css.service.router.ARouterConst
 import com.css.wondercorefit.R
@@ -22,9 +18,6 @@ import com.css.wondercorefit.ui.fragment.MainFragment
 import com.css.wondercorefit.ui.fragment.MallFragment
 import com.css.wondercorefit.ui.fragment.SettingFragment
 import com.tencent.bugly.Bugly
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 
 @Route(path = ARouterConst.PATH_APP_MAIN)
 class MainActivity : BaseActivity<DefaultViewModel, ActivityMainBinding>() {
@@ -41,7 +34,6 @@ class MainActivity : BaseActivity<DefaultViewModel, ActivityMainBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        EventBus.getDefault().register(this)
         if (BuildConfig.DEBUG) {
             Bugly.init(applicationContext, "718b817297", true)
         } else {
@@ -49,23 +41,7 @@ class MainActivity : BaseActivity<DefaultViewModel, ActivityMainBinding>() {
         }
         initTablayout()
     }
-    //接收消息
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(event: EventMessage<*>) {
-        when (event.message) {
-            EventMessage.Code.MAIN_INDEX_BACK -> {
-                LogUtils.vTag("suisui", "2222"+(event.t as StepData).defaultSteps)
-            }
-        }
-//        when (event.type) {
-//            MessageType.ShowLog -> {
-//                Log.e(TAG, "onMessageEvent: " + event.getString())
-//            }
-//            MessageType.ShowToast -> {
-//                Toast.makeText(activity, "onMessageEvent: " + event.getString(), Toast.LENGTH_SHORT).show()
-//            }
-//        }
-    }
+
     private fun initTablayout() {
         mTabMainFragment = MainFragment()
         mTabCourseFragment = CourseFragment()
