@@ -10,6 +10,7 @@ import com.css.base.uibase.BaseFragment
 import com.css.base.view.ToolBarView
 import com.css.ble.BodyDetailAdapter
 import com.css.ble.R
+import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.WeightDetailBean
 import com.css.ble.databinding.ActivityWeightMeasureEndDetailBinding
 import com.css.ble.viewmodel.WeightMeasureVM
@@ -44,7 +45,7 @@ class WeightMeasureEndDeailFragment :
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        setToolBarLeftText(getString(R.string.device_weight))
+        setToolBarLeftText(BondDeviceData.displayName(BondDeviceData.TYPE_WEIGHT))
         mBodyDetailAdapter = BodyDetailAdapter(requireContext(), ArrayList<WeightDetailBean>())
         mViewBinding!!.rvData.layoutManager = LinearLayoutManager(requireContext())
         mViewBinding!!.rvData.adapter = mBodyDetailAdapter

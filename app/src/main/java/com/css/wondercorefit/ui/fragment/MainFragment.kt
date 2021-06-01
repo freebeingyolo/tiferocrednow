@@ -306,6 +306,12 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         }
     }
 
+    override fun onVisible() {
+        super.onVisible()
+        mViewBinding!!.weightDeviceName.text = BondDeviceData.displayName(BondDeviceData.TYPE_WEIGHT)
+        mViewBinding!!.wheelDeviceName.text = BondDeviceData.displayName(BondDeviceData.TYPE_WHEEL)
+    }
+
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         initProgressRate()

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.launcher.ARouter
+import com.css.base.dialog.CommonAlertDialog
 import com.css.base.uibase.BaseFragment
 import com.css.base.uibase.inner.OnToolBarClickListener
 import com.css.base.view.ToolBarView
@@ -17,6 +18,7 @@ import com.css.ble.viewmodel.WeightMeasureVM
 import com.css.service.router.ARouterConst
 import com.css.service.utils.ImageUtils
 import com.css.service.utils.WonderCoreCache
+import razerdp.basepopup.BasePopupWindow
 
 /**
  * @author yuedong
@@ -47,9 +49,17 @@ class WeightMeasureDoingFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
     override fun onVisible() {
         super.onVisible()
         if (BondDeviceData.bondWeight == null) {//如果已经解绑了，回到此界面在回退
-            requireActivity().finish()
-            showCenterToast("请先绑定设备")
-            ARouter.getInstance().build(ARouterConst.PATH_APP_BLE_DEVICELIST).navigation()
+            CommonAlertDialog(requireContext()).apply {
+                type = CommonAlertDialog.DialogType.Image
+                imageResources = R.mipmap.icon_tick
+                content = getString(R.string.please_bond_first)
+                onDismissListener = object : BasePopupWindow.OnDismissListener() {
+                    override fun onDismiss() {
+                        requireActivity().finish()
+                        ARouter.getInstance().build(ARouterConst.PATH_APP_BLE_DEVICELIST).navigation()
+                    }
+                }
+            }.show()
         }
     }
 }

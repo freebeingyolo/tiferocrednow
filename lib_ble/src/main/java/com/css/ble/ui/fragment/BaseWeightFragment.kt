@@ -13,6 +13,7 @@ import com.css.base.uibase.BaseFragment
 import com.css.base.uibase.base.BaseWonderFragment
 import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.ble.R
+import com.css.ble.bean.BondDeviceData
 import com.css.ble.utils.BleUtils
 import com.css.ble.utils.QuickTransUtils
 import com.css.ble.viewmodel.BleEnvVM
@@ -29,7 +30,12 @@ abstract class BaseWeightFragment<VM : BaseViewModel, VB : ViewBinding> : BaseFr
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         //设置标题栏
-        setToolBarLeftText(getString(R.string.device_weight))
+        setToolBarLeftText(BondDeviceData.displayName(BondDeviceData.TYPE_WEIGHT))
+    }
+
+    override fun onVisible() {
+        super.onVisible()
+        setToolBarLeftText(BondDeviceData.displayName(BondDeviceData.TYPE_WEIGHT))
     }
 
     protected fun checkBleEnv() {

@@ -155,7 +155,6 @@ class CommonAlertDialog {
                     confirmDialog.setRightBtnColorInt(rightBtnColorInt)
                 }
                 confirmDialog.setListener(listener)
-                confirmDialog.setOnDismissListener(onDismissListener)
             }
             is SingleDialog -> {
                 val singleDialog = dialog as SingleDialog
@@ -194,7 +193,6 @@ class CommonAlertDialog {
                     singleDialog.setConfirmBtnColorInt(confirmBtnColorInt)
                 }
                 singleDialog.setListener(listener)
-                singleDialog.setOnDismissListener(onDismissListener)
             }
             is EditDialog -> {
                 val editDialog = dialog as EditDialog
@@ -248,7 +246,6 @@ class CommonAlertDialog {
                     editDialog.setRightBtnColorInt(rightBtnColorInt)
                 }
                 editDialog.setListener(listener)
-                editDialog.setOnDismissListener(onDismissListener)
             }
             is ImageDialog -> {
                 val imageDialog = dialog as ImageDialog
@@ -262,6 +259,7 @@ class CommonAlertDialog {
                 }
             }
         }
+        dialog!!.onDismissListener = onDismissListener
         if (openBackgroudColor) {
             dialog!!.setBackgroundColor(Color.parseColor("#4D000000"))
         } else {

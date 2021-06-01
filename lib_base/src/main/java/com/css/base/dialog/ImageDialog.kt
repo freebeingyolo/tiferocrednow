@@ -36,7 +36,6 @@ class ImageDialog : BasePopupWindow {
             }
 
             override fun onFinish() {
-
                 dismiss()
             }
         }

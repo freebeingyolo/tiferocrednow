@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/common_gray_color"
+    android:background="@color/white"
     tools:context=".ui.DeviceListActivity">
 
     <RelativeLayout
@@ -29,11 +29,9 @@
 
         <TextView
             android:id="@+id/tv1"
-            android:layout_width="225dp"
+            android:layout_width="234dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/img1"
-            android:layout_alignStart="@+id/img1"
-            android:layout_alignEnd="@+id/img1"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="30dp"
             android:gravity="center"

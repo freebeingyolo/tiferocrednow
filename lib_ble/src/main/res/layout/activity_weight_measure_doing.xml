@@ -14,7 +14,6 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
-        android:background="@color/common_gray_color"
         tools:context=".ui.BleEntryActivity">
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -42,7 +41,7 @@
                 android:textSize="10sp" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="253dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="60dp"
@@ -79,7 +78,6 @@
                     android:layout_height="48dp"
                     android:src="@drawable/loading_git" />
 
-
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="70dp"
                     android:layout_height="wrap_content"
@@ -105,7 +103,7 @@
             android:layout_marginTop="63dp"
             android:textColor="#333333"
             android:textSize="6sp"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

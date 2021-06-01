@@ -76,7 +76,7 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
                                     CommonAlertDialog(context).apply {
                                         type = CommonAlertDialog.DialogType.Image
                                         imageResources = R.mipmap.icon_tick
-                                        content = "解绑成功"
+                                        content = context.getString(R.string.unbond_ok)
                                     }.show()
                                     mViewModel._deviceInfos.value = mViewModel._deviceInfos.value
                                 }

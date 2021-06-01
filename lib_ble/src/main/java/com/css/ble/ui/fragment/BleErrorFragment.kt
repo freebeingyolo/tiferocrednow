@@ -27,10 +27,10 @@ class BleErrorFragment : BaseFragment<DefaultViewModel, LayoutBleErrorBinding>()
 
 
     object Builder {
-        var leftTitle: Int = 0
+        var leftTitle: String = ""
         var errorType: ErrorType = ErrorType.SEARCH_TIMEOUT
 
-        fun leftTitle(v: Int): Builder {
+        fun leftTitle(v: String): Builder {
             leftTitle = v
             return this
         }

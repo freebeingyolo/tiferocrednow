@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.css.ble.R
+import com.css.ble.bean.BondDeviceData
 import com.css.ble.databinding.ActivityBleEntryBinding
 import com.css.ble.ui.fragment.BleErrorFragment
 import com.css.ble.ui.fragment.WeightMeasureBeginFragment
@@ -43,7 +44,8 @@ class WeightMeasureActivity : BaseWeightActivity<WeightMeasureVM, ActivityBleEnt
                     FragmentUtils.changeFragment(WeightMeasureDoneFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
                 }
                 State.timeout -> {
-                    BleErrorFragment.Builder.errorType(ErrorType.SEARCH_TIMEOUT).leftTitle(R.string.device_weight).create()
+                    BleErrorFragment.Builder.errorType(ErrorType.SEARCH_TIMEOUT)
+                        .leftTitle(BondDeviceData.displayName(BondDeviceData.TYPE_WEIGHT)).create()
                 }
             }
         }

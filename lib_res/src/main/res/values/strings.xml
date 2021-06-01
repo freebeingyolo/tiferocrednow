@@ -33,10 +33,10 @@
     <string name="details">详情</string>
     <string name="tmaill_store">天猫旗舰店</string>
     <string name="sports_products">运动好产品</string>
-    <string name="weight_found_tips">发现一台秤！当界面数值与秤上显示一致 时请点击“确认绑定”，不一致时请点击 “重新搜索”哟~</string>
+    <string name="weight_found_tips">发现一台秤！当界面数值与秤上显示一致时请点击“确认绑定”，不一致时请点击“重新搜索”哟~</string>
     <string name="research">重新搜索</string>
     <string name="confirm_bond">确认绑定</string>
-    <string name="weight_bonded_tip">蓝牙智能体脂秤已连接成功，开启你的健康之旅吧！</string>
+    <string name="weight_bonded_tip">蓝牙体脂秤已连接成功，开启你的健康之旅吧！</string>
     <string name="backnow">立即返回</string>
     <string name="count_down_tips">秒后返回设备首页</string>
     <string name="tv_current_weight_init_msg">您尚未测量过身体数据，点此测量，了解下自己的身体情况吧！</string>
@@ -59,5 +59,7 @@
     <string name="device_weight">蓝牙体脂秤</string>
     <string name="device_wheel">蓝牙健腹轮</string>
     <string name="weight_measuring">详细数据测量中请稍后</string>
+    <string name="unbond_ok">解绑成功</string>
+    <string name="please_bond_first">请先绑定设备</string>
 
 </resources>

@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.css.ble.R
+import com.css.ble.bean.BondDeviceData
 import com.css.ble.databinding.LayoutWeightBondBeginBinding
 import com.css.ble.viewmodel.BleEnvVM
 import com.css.ble.viewmodel.WeightBondVM
@@ -43,7 +44,7 @@ class WeightBondBeginFragment : BaseWeightFragment<WeightBondVM, LayoutWeightBon
                         if (System.currentTimeMillis() - startTime < 200) delay(startTime + 200 - System.currentTimeMillis())
                         mViewModel.startScanBle()
                     } else {
-                        BleErrorFragment.Builder.errorType(BleEnvVM.bleErrType).leftTitle(R.string.device_weight).create()
+                        BleErrorFragment.Builder.errorType(BleEnvVM.bleErrType).leftTitle(BondDeviceData.displayName(BondDeviceData.TYPE_WEIGHT)).create()
                     }
                 }
             }

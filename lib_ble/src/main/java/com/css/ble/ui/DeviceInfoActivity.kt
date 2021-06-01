@@ -20,7 +20,9 @@ import com.css.base.view.ToolBarView
 import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.databinding.FragmentDeviceInfoBinding
+import com.css.pickerview.listener.OnDismissListener
 import com.css.service.utils.WonderCoreCache
+import razerdp.basepopup.BasePopupWindow
 
 /**
  * @author yuedong
@@ -53,6 +55,7 @@ class DeviceInfoActivity : BaseActivity<DefaultViewModel, FragmentDeviceInfoBind
     private lateinit var data: BondDeviceData
     private lateinit var key: String
 
+
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         key = intent.getStringExtra("DeviceKey")!!
@@ -61,23 +64,13 @@ class DeviceInfoActivity : BaseActivity<DefaultViewModel, FragmentDeviceInfoBind
             tvDeviceName.text = data.displayName
             tvMacAddress.text = data.mac
         }
-        var displayName = when (key) {
-            WonderCoreCache.BOND_WEIGHT_INFO -> ActivityUtils.getTopActivity()
-                .getString(R.string.device_weight)
-            else -> ActivityUtils.getTopActivity().getString(R.string.device_wheel)
-        }
-        setToolBarLeftText(displayName)
+        setToolBarLeftText(data.displayName)
         mViewBinding!!.rlDeleteDevice.setOnClickListener {
             WonderCoreCache.removeKey(key)
         }
 
         mViewBinding?.apply {
-            if (!WonderCoreCache.getData(key, BondDeviceData::class.java).alias.isNullOrEmpty()) {
-                tvDeviceName.text = WonderCoreCache.getData(key, BondDeviceData::class.java).alias
-            } else {
-                tvDeviceName.text = displayName
-            }
-
+            tvDeviceName.text = data.displayName
             rlDeviceName.setOnClickListener {
                 CommonAlertDialog(baseContext).apply {
                     type = CommonAlertDialog.DialogType.Edit
@@ -101,6 +94,7 @@ class DeviceInfoActivity : BaseActivity<DefaultViewModel, FragmentDeviceInfoBind
                                 data.alias = validContent
                                 WonderCoreCache.saveData(key, data)
                                 dialog?.dismiss()
+                                setToolBarLeftText(data.displayName)
                             }
                         }
                     }
@@ -117,7 +111,18 @@ class DeviceInfoActivity : BaseActivity<DefaultViewModel, FragmentDeviceInfoBind
                         override fun onRightBtnClick(view: View) {
                             super.onRightBtnClick(view)
                             WonderCoreCache.removeKey(data.getCacheKey())
-                            ToastUtils.showShort("解绑成功")
+                            data.alias = null
+                            CommonAlertDialog(context).apply {
+                                type = CommonAlertDialog.DialogType.Image
+                                imageResources = R.mipmap.icon_tick
+                                content = context.getString(R.string.unbond_ok)
+                                onDismissListener = object : BasePopupWindow.OnDismissListener() {
+                                    override fun onDismiss() {
+                                        finish()
+                                    }
+                                }
+                            }.show()
+
                         }
                     }
                 }.show()

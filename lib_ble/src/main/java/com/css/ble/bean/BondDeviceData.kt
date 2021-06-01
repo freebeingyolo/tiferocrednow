@@ -1,6 +1,8 @@
 package com.css.ble.bean
 
 import androidx.annotation.IntDef
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.ActivityUtils
 import com.css.ble.R
 import com.css.service.data.BaseData
@@ -32,21 +34,33 @@ class BondDeviceData(
                 if (!WonderCoreCache.containsKey(WonderCoreCache.BOND_WHEEL_INFO)) null
                 else WonderCoreCache.getData(WonderCoreCache.BOND_WHEEL_INFO, BondDeviceData::class.java)
 
+        fun displayName(@DeviceType type: Int): String {
+            val data = when (type) {
+                TYPE_WEIGHT -> bondWeight
+                else -> bondWheel
+            }
+            return if (data == null) {
+                when (type) {
+                    TYPE_WEIGHT -> ActivityUtils.getTopActivity().getString(R.string.device_weight)
+                    else -> ActivityUtils.getTopActivity().getString(R.string.device_wheel)
+                }
+            } else {
+                return data.displayName
+            }
+        }
     }
+
+    val displayName: String
+        get() = if (alias.isNullOrEmpty()) {
+            when (type) {
+                TYPE_WEIGHT -> ActivityUtils.getTopActivity().getString(R.string.device_weight)
+                else -> ActivityUtils.getTopActivity().getString(R.string.device_wheel)
+            }
+        } else alias!!
 
     constructor() : this("", "", TYPE_WEIGHT) {
 
     }
-
-    val displayName: String?
-        get() {
-            if (!alias.isNullOrEmpty()) return alias
-            return when (type) {
-                TYPE_WEIGHT -> ActivityUtils.getTopActivity().getString(R.string.device_weight)
-                else -> ActivityUtils.getTopActivity().getString(R.string.device_wheel)
-            }
-        }
-
 
     @IntDef(TYPE_WEIGHT, TYPE_WHEEL)
     @kotlin.annotation.Retention(AnnotationRetention.SOURCE)
