@@ -8,6 +8,8 @@ import com.css.base.uibase.BaseFragment
 import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.databinding.LayoutWeightBondFoundBinding
+import com.css.ble.utils.FragmentUtils
+import com.css.ble.viewmodel.ErrorType
 import com.css.ble.viewmodel.WeightBondVM
 import com.css.service.utils.WonderCoreCache
 
@@ -49,6 +51,16 @@ class WeightBondDoingFragment : BaseWeightFragment<WeightBondVM, LayoutWeightBon
         super.initData()
         mViewModel.bondData.observe(viewLifecycleOwner) {
             mViewBinding!!.foundWeight.text = String.format("%.1fkg", it.weightKg)
+        }
+        mViewModel.state.observe(viewLifecycleOwner) {
+            when (it) {
+                WeightBondVM.State.begin -> {
+                    FragmentUtils.changeFragment(WeightBondBeginFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
+                }
+                WeightBondVM.State.done -> {
+                    FragmentUtils.changeFragment(WeightBondEndFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
+                }
+            }
         }
     }
 

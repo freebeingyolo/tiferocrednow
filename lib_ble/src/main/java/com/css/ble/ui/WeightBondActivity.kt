@@ -23,29 +23,11 @@ class WeightBondActivity : BaseWeightActivity<WeightBondVM, ActivityBleEntryBind
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        mViewModel.state.value = WeightBondVM.State.begin
+        FragmentUtils.changeFragment(WeightBondBeginFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
     }
 
     override fun initData() {
         super.initData()
-        mViewModel.state.observe(this) {
-            when (it) {
-                WeightBondVM.State.begin -> {
-                    FragmentUtils.changeFragment(WeightBondBeginFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
-                }
-                WeightBondVM.State.found -> {
-                    FragmentUtils.changeFragment(WeightBondDoingFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
-                }
-                WeightBondVM.State.done -> {
-                    FragmentUtils.changeFragment(WeightBondEndFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
-                }
-                WeightBondVM.State.timeOut -> {
-                    BleErrorFragment.Builder.errorType(ErrorType.SEARCH_TIMEOUT)
-                        .leftTitle(BondDeviceData.displayName(BondDeviceData.TYPE_WEIGHT))
-                        .create()
-                }
-            }
-        }
     }
 
     override fun initViewModel(): WeightBondVM {

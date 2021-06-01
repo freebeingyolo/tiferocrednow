@@ -8,7 +8,7 @@ import com.pingwang.bluetoothlib.bean.BleValueBean
 
 class WeightBondVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataParsing {
     val bondDevice: MutableLiveData<BondDeviceInfo> by lazy { MutableLiveData<BondDeviceInfo>() }
-    val state: MutableLiveData<State> by lazy { MutableLiveData<State>() }
+    val state: MutableLiveData<State> by lazy { MutableLiveData<State>(State.begin) }
     private var filterDevice: BondDeviceInfo? = null
 
     enum class State {

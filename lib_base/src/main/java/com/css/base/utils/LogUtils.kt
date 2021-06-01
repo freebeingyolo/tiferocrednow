@@ -58,42 +58,62 @@ object LogUtils {
     }
 
     fun e(msg: String, vararg printStackNum: Int) {
+        e(null, msg, *printStackNum)
+    }
+
+    fun w(msg: String, vararg printStackNum: Int) {
+        w(null, msg, *printStackNum)
+    }
+
+    fun d(msg: String, vararg printStackNum: Int) {
+        d(null, msg, *printStackNum)
+    }
+
+    fun v(msg: String, vararg printStackNum: Int) {
+        v(null, msg, *printStackNum)
+    }
+
+    fun i(msg: String, vararg printStackNum: Int) {
+        i(null, msg, *printStackNum)
+    }
+
+    fun e(tag: String?, msg: String, vararg printStackNum: Int) {
         if (curLogLevel > Log.ERROR) {
             return
         }
         initTrace(msg, if (printStackNum.isNotEmpty()) printStackNum[0] else 0)
-        Log.e(tagName, msgT + msgC)
+        Log.e(tag ?: tagName, msgT + msgC)
     }
 
-    fun w(msg: String, vararg printStackNum: Int) {
+    fun w(tag: String?, msg: String, vararg printStackNum: Int) {
         if (curLogLevel > Log.WARN) {
             return
         }
         initTrace(msg, if (printStackNum.isNotEmpty()) printStackNum[0] else 0)
-        Log.w(tagName, msgT + msgC)
+        Log.w(tag ?: tagName, msgT + msgC)
     }
 
-    fun d(msg: String, vararg printStackNum: Int) {
+    fun d(tag: String?, msg: String, vararg printStackNum: Int) {
         if (curLogLevel > Log.DEBUG) {
             return
         }
         initTrace(msg, if (printStackNum.isNotEmpty()) printStackNum[0] else 0)
-        Log.d(tagName, msgT + msgC)
+        Log.d(tag ?: tagName, msgT + msgC)
     }
 
-    fun v(msg: String, vararg printStackNum: Int) {
+    fun v(tag: String?, msg: String, vararg printStackNum: Int) {
         if (curLogLevel > Log.VERBOSE) {
             return
         }
         initTrace(msg, if (printStackNum.isNotEmpty()) printStackNum[0] else 0)
-        Log.v(tagName, msgT + msgC)
+        Log.v(tag ?: tagName, msgT + msgC)
     }
 
-    fun i(msg: String, vararg printStackNum: Int) {
+    fun i(tag: String?, msg: String, vararg printStackNum: Int) {
         if (curLogLevel > Log.INFO) {
             return
         }
         initTrace(msg, if (printStackNum.isNotEmpty()) printStackNum[0] else 0)
-        Log.i(tagName, msgT + msgC)
+        Log.i(tag ?: tagName, msgT + msgC)
     }
 }

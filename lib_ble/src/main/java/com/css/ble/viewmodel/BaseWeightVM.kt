@@ -126,7 +126,7 @@ abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastD
 
     protected fun cancelTimeOutTimer() {
         if (timeOutJob != null) {
-            LogUtils.d("cancelTimeOutTimer", 3)
+            LogUtils.d(TAG, "cancelTimeOutTimer")
             timeOutJob!!.cancel()
             timeOutJob = null
             this@BaseWeightVM.onScanTimerOutCancel()
@@ -145,10 +145,9 @@ abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastD
     }
 
     fun startScanBle() {
-        Log.d(TAG, "startScanBle")
         mBluetoothService!!.apply {
             if (!isScanStatus) {
-                Log.d(TAG, "startScanBle:true")
+                LogUtils.d(TAG, "startScanBle", 3)
                 startTimeoutTimer(timeOut)
                 scanLeDevice(0)
                 onScanStart()
@@ -160,7 +159,7 @@ abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastD
 
     fun stopScanBle() {
         if (mBluetoothService?.isScanStatus == true) {
-            LogUtils.d(TAG, 3)
+            LogUtils.d(TAG, "stopScanBle", 3)
             this.mBluetoothService?.stopScan()
             cancelTimeOutTimer()
             onScanStop()

@@ -10,7 +10,7 @@ import com.pingwang.bluetoothlib.bean.BleValueBean
 
 
 class WeightMeasureVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataParsing {
-    private val _state: MutableLiveData<State> by lazy { MutableLiveData<State>() }
+    private val _state: MutableLiveData<State> by lazy { MutableLiveData<State>(State.begin) }
     val state: MutableLiveData<State> get() = _state
     protected override val timeOut = 10 * 1000L
 

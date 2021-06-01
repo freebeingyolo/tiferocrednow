@@ -8,7 +8,9 @@ import androidx.lifecycle.lifecycleScope
 import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.databinding.LayoutWeightBondBeginBinding
+import com.css.ble.utils.FragmentUtils
 import com.css.ble.viewmodel.BleEnvVM
+import com.css.ble.viewmodel.ErrorType
 import com.css.ble.viewmodel.WeightBondVM
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -24,6 +26,7 @@ class WeightBondBeginFragment : BaseWeightFragment<WeightBondVM, LayoutWeightBon
     override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): LayoutWeightBondBeginBinding {
         return LayoutWeightBondBeginBinding.inflate(inflater, parent, false)
     }
+
     override fun initViewModel(): WeightBondVM {
         return ViewModelProvider(requireActivity()).get(WeightBondVM::class.java)
     }
@@ -44,8 +47,22 @@ class WeightBondBeginFragment : BaseWeightFragment<WeightBondVM, LayoutWeightBon
                         if (System.currentTimeMillis() - startTime < 200) delay(startTime + 200 - System.currentTimeMillis())
                         mViewModel.startScanBle()
                     } else {
-                        BleErrorFragment.Builder.errorType(BleEnvVM.bleErrType).leftTitle(BondDeviceData.displayName(BondDeviceData.TYPE_WEIGHT)).create()
+                        BleErrorFragment.Builder.errorType(BleEnvVM.bleErrType)
+                            .leftTitle(BondDeviceData.displayName(BondDeviceData.TYPE_WEIGHT)).create()
                     }
+                }
+            }
+        }
+
+        mViewModel.state.observe(viewLifecycleOwner) {
+            when (it) {
+                WeightBondVM.State.found -> {
+                    FragmentUtils.changeFragment(WeightBondDoingFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
+                }
+                WeightBondVM.State.timeOut -> {
+                    BleErrorFragment.Builder.errorType(ErrorType.SEARCH_TIMEOUT)
+                        .leftTitle(BondDeviceData.displayName(BondDeviceData.TYPE_WEIGHT))
+                        .create()
                 }
             }
         }

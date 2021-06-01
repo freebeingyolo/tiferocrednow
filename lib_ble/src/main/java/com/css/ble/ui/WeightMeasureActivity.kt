@@ -8,10 +8,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.databinding.ActivityBleEntryBinding
-import com.css.ble.ui.fragment.BleErrorFragment
-import com.css.ble.ui.fragment.WeightMeasureBeginFragment
-import com.css.ble.ui.fragment.WeightMeasureDoingFragment
-import com.css.ble.ui.fragment.WeightMeasureDoneFragment
+import com.css.ble.ui.fragment.*
 import com.css.ble.utils.FragmentUtils
 import com.css.ble.viewmodel.ErrorType
 import com.css.ble.viewmodel.WeightMeasureVM
@@ -27,28 +24,11 @@ class WeightMeasureActivity : BaseWeightActivity<WeightMeasureVM, ActivityBleEnt
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        mViewModel.state.value = State.begin
+        FragmentUtils.changeFragment(WeightMeasureBeginFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
     }
 
     override fun initData() {
         super.initData()
-        mViewModel.state.observe(this) {
-            when (it) {
-                State.begin -> {
-                    FragmentUtils.changeFragment(WeightMeasureBeginFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
-                }
-                State.doing -> {
-                    FragmentUtils.changeFragment(WeightMeasureDoingFragment::class.java, FragmentUtils.Option.OPT_ADD)
-                }
-                State.done -> {
-                    FragmentUtils.changeFragment(WeightMeasureDoneFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
-                }
-                State.timeout -> {
-                    BleErrorFragment.Builder.errorType(ErrorType.SEARCH_TIMEOUT)
-                        .leftTitle(BondDeviceData.displayName(BondDeviceData.TYPE_WEIGHT)).create()
-                }
-            }
-        }
     }
 
     override fun initViewModel(): WeightMeasureVM {

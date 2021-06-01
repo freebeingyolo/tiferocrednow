@@ -13,6 +13,7 @@ import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.WeightDetailBean
 import com.css.ble.databinding.ActivityWeightMeasureEndDetailBinding
+import com.css.ble.utils.FragmentUtils
 import com.css.ble.viewmodel.WeightMeasureVM
 
 /**
@@ -69,6 +70,13 @@ class WeightMeasureEndDeailFragment :
     override fun initData() {
         super.initData()
         loadData()
+        mViewModel.state.observe(viewLifecycleOwner) {
+            when (it) {
+                WeightMeasureVM.State.begin -> {
+                    FragmentUtils.changeFragment(WeightMeasureBeginFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
+                }
+            }
+        }
     }
 
     fun loadData() {

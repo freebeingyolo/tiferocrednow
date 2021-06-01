@@ -38,12 +38,18 @@ object FragmentUtils {
                 ft2.addToBackStack(supportFragmentManager.fragments[supportFragmentManager.fragments.size - (o + 1)].javaClass.simpleName)
             }
             ft2.add(R.id.container, f, tag)
+            for (f2 in supportFragmentManager.fragments) {
+                if (f2 == f) {
+                    ft2.show(f2)
+                } else {
+                    ft2.hide(f2)
+                }
+            }
             ft2.commitAllowingStateLoss() //如果commit,被系统回收会异常
         }
         if (fragment == null) { //新增的
             fragment = cls.newInstance()
             if (!fragment!!.isAdded) {
-
                 when (opt) {
                     Option.OPT_ADD -> {
                         addOprt(fragment, 0)

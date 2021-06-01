@@ -1,11 +1,14 @@
 package com.css.ble.ui.fragment
 
 import android.os.Bundle
+import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.whenStarted
 import com.alibaba.android.arouter.launcher.ARouter
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.uibase.inner.OnToolBarClickListener
@@ -15,13 +18,16 @@ import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.WeightBondData
 import com.css.ble.databinding.ActivityWeightMeasureBeginBinding
 import com.css.ble.ui.DeviceInfoActivity
+import com.css.ble.utils.FragmentUtils
 import com.css.ble.viewmodel.BleEnvVM
+import com.css.ble.viewmodel.ErrorType
 import com.css.ble.viewmodel.WeightMeasureVM
 import com.css.service.router.ARouterConst
 import com.css.service.utils.ImageUtils
 import com.css.service.utils.WonderCoreCache
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.selects.whileSelect
 import razerdp.basepopup.BasePopupWindow
 
 /**
@@ -33,16 +39,7 @@ class WeightMeasureBeginFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
     override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): ActivityWeightMeasureBeginBinding {
         return ActivityWeightMeasureBeginBinding.inflate(inflater, parent, false).also {
             it.tvToMeasure.setOnClickListener {
-                checkBleEnv()
-                lifecycleScope.launch {
-                    while (!checkEnvDone) delay(100)
-                    if (BleEnvVM.isBleEnvironmentOk) {
-                        mViewModel.startScanBle()
-                    } else {
-                        BleErrorFragment.Builder.errorType(BleEnvVM.bleErrType)
-                            .leftTitle(BondDeviceData.displayName(BondDeviceData.TYPE_WEIGHT)).create()
-                    }
-                }
+                mViewModel.state.value = WeightMeasureVM.State.doing
             }
             WeightBondData.lastWeightInfoObsvr.let { it2 ->
                 it2.observe(this) { it3 ->
@@ -53,6 +50,17 @@ class WeightMeasureBeginFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
                 }
             }
 
+        }
+    }
+
+    override fun initData() {
+        super.initData()
+        mViewModel.state.observe(viewLifecycleOwner) {
+            when (it) {
+                WeightMeasureVM.State.doing -> {
+                    FragmentUtils.changeFragment(WeightMeasureDoingFragment::class.java, FragmentUtils.Option.OPT_ADD)
+                }
+            }
         }
     }
 
@@ -99,5 +107,4 @@ class WeightMeasureBeginFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
         }
         mViewModel.stopScanBle()
     }
-
 }
