@@ -8,21 +8,24 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import com.alibaba.android.arouter.launcher.ARouter
+import com.bumptech.glide.Glide
 import com.css.base.R
 import com.css.service.router.ARouterConst
 import razerdp.basepopup.BasePopupWindow
 
-class ImageDialog : BasePopupWindow  {
+class ImageDialog : BasePopupWindow {
 
-    private var mImageView : AppCompatImageView
-    private var mContent :TextView
+    private var mImageView: AppCompatImageView
+    private var mContent: TextView
     private var mTimer: CountDownTimer? = null
+
     constructor(context: Context) : super(context)
 
     /**
      * 通过dialog构造的弹窗，可以显示在dialog之上
      */
     constructor(dialog: Dialog) : super(dialog)
+
     init {
         popupGravity = Gravity.CENTER
         mImageView = findViewById(R.id.image)
@@ -39,6 +42,7 @@ class ImageDialog : BasePopupWindow  {
         }
         mTimer!!.start()
     }
+
     override fun onCreateContentView(): View {
         return createPopupById(R.layout.popup_common_image)
     }
@@ -54,7 +58,8 @@ class ImageDialog : BasePopupWindow  {
             mContent.setText(it)
         }
     }
-    fun setImage(resources:Int){
 
+    fun setImage(resources: Int) {
+        Glide.with(context).load(resources).into(mImageView)
     }
 }
