@@ -247,12 +247,12 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
 
     // 公里计算公式
     private fun getDistanceByStep(steps: Long): String {
-        return String.format("%.2f", steps * 0.6f / 1000)
+        return String.format("%.2f", steps * 0.7f / 1000)
     }
 
     // 千卡路里计算公式
     private fun getCalorieByStep(steps: Long): String {
-        return String.format("%.1f", steps * 0.6f * 60 * 1.036f / 1000)
+        return String.format("%.1f", steps * 0.7f * 60 * 1.036f / 1000)
     }
 
     inner class TodayStepCounterCall : Handler.Callback {
