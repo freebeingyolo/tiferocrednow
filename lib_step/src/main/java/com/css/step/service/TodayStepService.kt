@@ -149,7 +149,7 @@ class TodayStepService : Service(), Handler.Callback {
         )
         builder!!.setContentIntent(contentIntent)
         val smallIcon: Int =
-            resources.getIdentifier("icon_step_small", "mipmap", getPackageName())
+            resources.getIdentifier("icon_step_small", "mipmap", packageName)
         if (0 != smallIcon) {
             Logger().e(TAG, "smallIcon")
             builder!!.setSmallIcon(smallIcon)
