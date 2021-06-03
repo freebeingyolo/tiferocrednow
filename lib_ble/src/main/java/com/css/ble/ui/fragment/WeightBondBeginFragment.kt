@@ -41,7 +41,7 @@ class WeightBondBeginFragment : BaseWeightFragment<WeightBondVM, LayoutWeightBon
         checkBleEnv()
         mViewModel.mBluetoothServiceObsvr.observe(viewLifecycleOwner) { it ->
             if (it != null) {
-                lifecycleScope.launch(Dispatchers.Main) {
+                lifecycleScope.launch {
                     while (!checkEnvDone) delay(100)
                     if (BleEnvVM.isBleEnvironmentOk) {
                         if (System.currentTimeMillis() - startTime < 200) delay(startTime + 200 - System.currentTimeMillis())
