@@ -2,13 +2,13 @@ package com.css.service.data
 
 data class UserData(
     var sex: String = "男",
-    var age: String = "25",
+    var age: String = "30",
     var stature: String = "175",
     var targetWeight: String = "60",
     var targetStep: String = "8000",
     var isFirst: Boolean = true,
     var sexLocation: Int = 0,
-    var ageLocation: Int = 75,
+    var ageLocation: Int = 70,
     var statureLocation: Int = 75,
     var targetWeightLocation: Int = 90,
     var targetStepLocation: Int = 92,

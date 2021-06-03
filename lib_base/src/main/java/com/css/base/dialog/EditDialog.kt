@@ -67,10 +67,10 @@ class EditDialog : BasePopupWindow, View.OnClickListener {
 
             override fun afterTextChanged(s: Editable?) {
                 if (etContent.text.isNullOrEmpty()) {
-                    tvHint.visibility = View.VISIBLE
+//                    tvHint.visibility = View.VISIBLE
                     ivClean.visibility = View.GONE
                 } else {
-                    tvHint.visibility = View.GONE
+//                    tvHint.visibility = View.GONE
                     ivClean.visibility = View.VISIBLE
                 }
             }

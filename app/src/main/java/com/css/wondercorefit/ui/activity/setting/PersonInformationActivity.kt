@@ -51,7 +51,7 @@ class PersonInformationActivity :
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
 
-       setToolBarLeftTitle("个人信息")
+        setToolBarLeftTitle("个人信息")
         mViewBinding.rlSex.setOnClickListener(this)
         mViewBinding.rlAge.setOnClickListener(this)
         mViewBinding.rlStature.setOnClickListener(this)
@@ -94,47 +94,46 @@ class PersonInformationActivity :
         if (mSexPickerDialog == null) {
             mSexList.add("男")
             mSexList.add("女")
-            mSexPickerDialog = OptionsPickerBuilder(
-                this
-            ) { options1, options2, options3, v ->
-                var str = mSexList[options1]
-                mViewBinding.tvSex.text = str
-                mUserData = WonderCoreCache.getUserInfo()
-                mUserData.sex = str
-                WonderCoreCache.saveUserInfo(mUserData)
-
-            }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
-                override fun customLayout(v: View?) {
-                    var title = v?.findViewById<TextView>(R.id.tv_title)
-                    var cancel = v?.findViewById<TextView>(R.id.btn_cancel)
-                    var submit = v?.findViewById<TextView>(R.id.btn_submit)
-                    title?.text = "性别"
-                    cancel?.setOnClickListener {
-                        mSexPickerDialog?.dismiss()
-                    }
-                    submit?.setOnClickListener {
-                        mSexPickerDialog?.returnData()
-                        mSexPickerDialog?.dismiss()
-                    }
-                }
-
-            })
-                .setSelectOptions( WonderCoreCache.getUserInfo().sexLocation)  //设置默认选中项
-                .setOutSideCancelable(true)//点击外部dismiss default true
-                .setTextColorCenter(Color.parseColor("#F2682A"))
-                .isDialog(true)//是否显示为对话框样式
-                .build()
-            mSexPickerDialog?.setPicker(mSexList)
-            val lp: FrameLayout.LayoutParams =
-                mSexPickerDialog!!.dialogContainerLayout.layoutParams as FrameLayout.LayoutParams
-            lp.leftMargin = 0
-            lp.rightMargin = 0
-            mSexPickerDialog!!.dialog.window?.setGravity(Gravity.BOTTOM)
-            mSexPickerDialog!!.dialog.window?.setWindowAnimations(R.style.picker_view_slide_anim)
-            mSexPickerDialog?.show()
-        } else {
-            mSexPickerDialog?.show()
         }
+        mSexPickerDialog = OptionsPickerBuilder(
+            this
+        ) { options1, options2, options3, v ->
+            var str = mSexList[options1]
+            mViewBinding.tvSex.text = str
+            mUserData = WonderCoreCache.getUserInfo()
+            mUserData.sex = str
+            WonderCoreCache.saveUserInfo(mUserData)
+
+        }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
+            override fun customLayout(v: View?) {
+                var title = v?.findViewById<TextView>(R.id.tv_title)
+                var cancel = v?.findViewById<TextView>(R.id.btn_cancel)
+                var submit = v?.findViewById<TextView>(R.id.btn_submit)
+                title?.text = "性别"
+                cancel?.setOnClickListener {
+                    mSexPickerDialog?.dismiss()
+                }
+                submit?.setOnClickListener {
+                    mSexPickerDialog?.returnData()
+                    mSexPickerDialog?.dismiss()
+                }
+            }
+
+        })
+            .setSelectOptions(WonderCoreCache.getUserInfo().sexLocation)  //设置默认选中项
+            .setOutSideCancelable(true)//点击外部dismiss default true
+            .setTextColorCenter(Color.parseColor("#F2682A"))
+            .isDialog(true)//是否显示为对话框样式
+            .build()
+        mSexPickerDialog?.setPicker(mSexList)
+        val lp: FrameLayout.LayoutParams =
+            mSexPickerDialog!!.dialogContainerLayout.layoutParams as FrameLayout.LayoutParams
+        lp.leftMargin = 0
+        lp.rightMargin = 0
+        mSexPickerDialog!!.dialog.window?.setGravity(Gravity.BOTTOM)
+        mSexPickerDialog!!.dialog.window?.setWindowAnimations(R.style.picker_view_slide_anim)
+        mSexPickerDialog?.show()
+
     }
 
     private fun showAgeDialog() {
@@ -142,50 +141,49 @@ class PersonInformationActivity :
             for (index in 100 downTo 1) {
                 mAgeList.add(index.toString())
             }
-            mAgePickerDialog = OptionsPickerBuilder(
-                this
-            ) { options1, options2, options3, v ->
-                var str = mAgeList[options1]
-                mViewBinding.tvAge.text = str + "岁"
-                mUserData = WonderCoreCache.getUserInfo()
-                mUserData.age = str
-                mUserData.ageLocation = options1
-                WonderCoreCache.saveUserInfo(mUserData)
-
-            }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
-                override fun customLayout(v: View?) {
-                    var title = v?.findViewById<TextView>(R.id.tv_title)
-                    var cancel = v?.findViewById<TextView>(R.id.btn_cancel)
-                    var submit = v?.findViewById<TextView>(R.id.btn_submit)
-                    title?.text = "年龄"
-                    cancel?.setOnClickListener {
-                        mAgePickerDialog?.dismiss()
-                    }
-                    submit?.setOnClickListener {
-                        mAgePickerDialog?.returnData()
-                        mAgePickerDialog?.dismiss()
-                    }
-                }
-
-            }).setLabels("岁", "", "")
-                .isCenterLabel(true)
-                .setSelectOptions( WonderCoreCache.getUserInfo().ageLocation)
-                .setLineSpacingMultiplier(3.0F)
-                .setTextColorCenter(Color.parseColor("#F2682A"))
-                .setOutSideCancelable(true)//点击外部dismiss default true
-                .isDialog(true)//是否显示为对话框样式
-                .build()
-            mAgePickerDialog?.setPicker(mAgeList)
-            val lp: FrameLayout.LayoutParams =
-                mAgePickerDialog!!.dialogContainerLayout.layoutParams as FrameLayout.LayoutParams
-            lp.leftMargin = 0
-            lp.rightMargin = 0
-            mAgePickerDialog!!.dialog.window?.setGravity(Gravity.BOTTOM)
-            mAgePickerDialog!!.dialog.window?.setWindowAnimations(R.style.picker_view_slide_anim)
-            mAgePickerDialog?.show()
-        } else {
-            mAgePickerDialog?.show()
         }
+        mAgePickerDialog = OptionsPickerBuilder(
+            this
+        ) { options1, options2, options3, v ->
+            var str = mAgeList[options1]
+            mViewBinding.tvAge.text = str + "岁"
+            mUserData = WonderCoreCache.getUserInfo()
+            mUserData.age = str
+            mUserData.ageLocation = options1
+            WonderCoreCache.saveUserInfo(mUserData)
+
+        }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
+            override fun customLayout(v: View?) {
+                var title = v?.findViewById<TextView>(R.id.tv_title)
+                var cancel = v?.findViewById<TextView>(R.id.btn_cancel)
+                var submit = v?.findViewById<TextView>(R.id.btn_submit)
+                title?.text = "年龄"
+                cancel?.setOnClickListener {
+                    mAgePickerDialog?.dismiss()
+                }
+                submit?.setOnClickListener {
+                    mAgePickerDialog?.returnData()
+                    mAgePickerDialog?.dismiss()
+                }
+            }
+
+        }).setLabels("岁", "", "")
+            .isCenterLabel(true)
+            .setSelectOptions(WonderCoreCache.getUserInfo().ageLocation)
+            .setLineSpacingMultiplier(3.0F)
+            .setTextColorCenter(Color.parseColor("#F2682A"))
+            .setOutSideCancelable(true)//点击外部dismiss default true
+            .isDialog(true)//是否显示为对话框样式
+            .build()
+        mAgePickerDialog?.setPicker(mAgeList)
+        val lp: FrameLayout.LayoutParams =
+            mAgePickerDialog!!.dialogContainerLayout.layoutParams as FrameLayout.LayoutParams
+        lp.leftMargin = 0
+        lp.rightMargin = 0
+        mAgePickerDialog!!.dialog.window?.setGravity(Gravity.BOTTOM)
+        mAgePickerDialog!!.dialog.window?.setWindowAnimations(R.style.picker_view_slide_anim)
+        mAgePickerDialog?.show()
+
     }
 
     private fun showStatureDialog() {
@@ -193,50 +191,49 @@ class PersonInformationActivity :
             for (index in 250 downTo 100) {
                 mStatureList.add(index.toString())
             }
-            mStaturePickerDialog = OptionsPickerBuilder(
-                this
-            ) { options1, options2, options3, v ->
-                var str = mStatureList[options1]
-                mViewBinding.tvStature.text = str + "cm"
-                mUserData = WonderCoreCache.getUserInfo()
-                mUserData.stature = str
-                mUserData.statureLocation = options1
-                WonderCoreCache.saveUserInfo(mUserData)
-
-            }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
-                override fun customLayout(v: View?) {
-                    var title = v?.findViewById<TextView>(R.id.tv_title)
-                    var cancel = v?.findViewById<TextView>(R.id.btn_cancel)
-                    var submit = v?.findViewById<TextView>(R.id.btn_submit)
-                    title?.text = "身高"
-                    cancel?.setOnClickListener {
-                        mStaturePickerDialog?.dismiss()
-                    }
-                    submit?.setOnClickListener {
-                        mStaturePickerDialog?.returnData()
-                        mStaturePickerDialog?.dismiss()
-                    }
-                }
-
-            }).setLabels("cm", "", "")
-                .isCenterLabel(true)
-                .setSelectOptions( WonderCoreCache.getUserInfo().statureLocation)
-                .setLineSpacingMultiplier(3.0F)
-                .setTextColorCenter(Color.parseColor("#F2682A"))
-                .setOutSideCancelable(true)//点击外部dismiss default true
-                .isDialog(true)//是否显示为对话框样式
-                .build()
-            mStaturePickerDialog?.setPicker(mStatureList)
-            val lp: FrameLayout.LayoutParams =
-                mStaturePickerDialog!!.dialogContainerLayout.layoutParams as FrameLayout.LayoutParams
-            lp.leftMargin = 0
-            lp.rightMargin = 0
-            mStaturePickerDialog!!.dialog.window?.setGravity(Gravity.BOTTOM)
-            mStaturePickerDialog!!.dialog.window?.setWindowAnimations(R.style.picker_view_slide_anim)
-            mStaturePickerDialog?.show()
-        } else {
-            mStaturePickerDialog?.show()
         }
+        mStaturePickerDialog = OptionsPickerBuilder(
+            this
+        ) { options1, options2, options3, v ->
+            var str = mStatureList[options1]
+            mViewBinding.tvStature.text = str + "cm"
+            mUserData = WonderCoreCache.getUserInfo()
+            mUserData.stature = str
+            mUserData.statureLocation = options1
+            WonderCoreCache.saveUserInfo(mUserData)
+
+        }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
+            override fun customLayout(v: View?) {
+                var title = v?.findViewById<TextView>(R.id.tv_title)
+                var cancel = v?.findViewById<TextView>(R.id.btn_cancel)
+                var submit = v?.findViewById<TextView>(R.id.btn_submit)
+                title?.text = "身高"
+                cancel?.setOnClickListener {
+                    mStaturePickerDialog?.dismiss()
+                }
+                submit?.setOnClickListener {
+                    mStaturePickerDialog?.returnData()
+                    mStaturePickerDialog?.dismiss()
+                }
+            }
+
+        }).setLabels("cm", "", "")
+            .isCenterLabel(true)
+            .setSelectOptions(WonderCoreCache.getUserInfo().statureLocation)
+            .setLineSpacingMultiplier(3.0F)
+            .setTextColorCenter(Color.parseColor("#F2682A"))
+            .setOutSideCancelable(true)//点击外部dismiss default true
+            .isDialog(true)//是否显示为对话框样式
+            .build()
+        mStaturePickerDialog?.setPicker(mStatureList)
+        val lp: FrameLayout.LayoutParams =
+            mStaturePickerDialog!!.dialogContainerLayout.layoutParams as FrameLayout.LayoutParams
+        lp.leftMargin = 0
+        lp.rightMargin = 0
+        mStaturePickerDialog!!.dialog.window?.setGravity(Gravity.BOTTOM)
+        mStaturePickerDialog!!.dialog.window?.setWindowAnimations(R.style.picker_view_slide_anim)
+        mStaturePickerDialog?.show()
+
     }
 
     private fun showTargetWeightDialog() {
@@ -244,50 +241,49 @@ class PersonInformationActivity :
             for (index in 150 downTo 30) {
                 mTargetWeightList.add(index.toString())
             }
-            mTargetWeightPickerDialog = OptionsPickerBuilder(
-                this
-            ) { options1, options2, options3, v ->
-                var str = mTargetWeightList[options1]
-                mViewBinding.tvTargetWeight.text = str + "kg"
-                mUserData = WonderCoreCache.getUserInfo()
-                mUserData.targetWeight = str
-                mUserData.targetWeightLocation = options1
-                WonderCoreCache.saveUserInfo(mUserData)
-
-            }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
-                override fun customLayout(v: View?) {
-                    var title = v?.findViewById<TextView>(R.id.tv_title)
-                    var cancel = v?.findViewById<TextView>(R.id.btn_cancel)
-                    var submit = v?.findViewById<TextView>(R.id.btn_submit)
-                    title?.text = "目标体重"
-                    cancel?.setOnClickListener {
-                        mTargetWeightPickerDialog?.dismiss()
-                    }
-                    submit?.setOnClickListener {
-                        mTargetWeightPickerDialog?.returnData()
-                        mTargetWeightPickerDialog?.dismiss()
-                    }
-                }
-
-            }).setLabels("kg", "", "")
-                .isCenterLabel(true)
-                .setSelectOptions( WonderCoreCache.getUserInfo().targetWeightLocation)
-                .setLineSpacingMultiplier(3.0F)
-                .setTextColorCenter(Color.parseColor("#F2682A"))
-                .setOutSideCancelable(true)//点击外部dismiss default true
-                .isDialog(true)//是否显示为对话框样式
-                .build()
-            mTargetWeightPickerDialog?.setPicker(mTargetWeightList)
-            val lp: FrameLayout.LayoutParams =
-                mTargetWeightPickerDialog!!.dialogContainerLayout.layoutParams as FrameLayout.LayoutParams
-            lp.leftMargin = 0
-            lp.rightMargin = 0
-            mTargetWeightPickerDialog!!.dialog.window?.setGravity(Gravity.BOTTOM)
-            mTargetWeightPickerDialog!!.dialog.window?.setWindowAnimations(R.style.picker_view_slide_anim)
-            mTargetWeightPickerDialog?.show()
-        } else {
-            mTargetWeightPickerDialog?.show()
         }
+        mTargetWeightPickerDialog = OptionsPickerBuilder(
+            this
+        ) { options1, options2, options3, v ->
+            var str = mTargetWeightList[options1]
+            mViewBinding.tvTargetWeight.text = str + "kg"
+            mUserData = WonderCoreCache.getUserInfo()
+            mUserData.targetWeight = str
+            mUserData.targetWeightLocation = options1
+            WonderCoreCache.saveUserInfo(mUserData)
+
+        }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
+            override fun customLayout(v: View?) {
+                var title = v?.findViewById<TextView>(R.id.tv_title)
+                var cancel = v?.findViewById<TextView>(R.id.btn_cancel)
+                var submit = v?.findViewById<TextView>(R.id.btn_submit)
+                title?.text = "目标体重"
+                cancel?.setOnClickListener {
+                    mTargetWeightPickerDialog?.dismiss()
+                }
+                submit?.setOnClickListener {
+                    mTargetWeightPickerDialog?.returnData()
+                    mTargetWeightPickerDialog?.dismiss()
+                }
+            }
+
+        }).setLabels("kg", "", "")
+            .isCenterLabel(true)
+            .setSelectOptions(WonderCoreCache.getUserInfo().targetWeightLocation)
+            .setLineSpacingMultiplier(3.0F)
+            .setTextColorCenter(Color.parseColor("#F2682A"))
+            .setOutSideCancelable(true)//点击外部dismiss default true
+            .isDialog(true)//是否显示为对话框样式
+            .build()
+        mTargetWeightPickerDialog?.setPicker(mTargetWeightList)
+        val lp: FrameLayout.LayoutParams =
+            mTargetWeightPickerDialog!!.dialogContainerLayout.layoutParams as FrameLayout.LayoutParams
+        lp.leftMargin = 0
+        lp.rightMargin = 0
+        mTargetWeightPickerDialog!!.dialog.window?.setGravity(Gravity.BOTTOM)
+        mTargetWeightPickerDialog!!.dialog.window?.setWindowAnimations(R.style.picker_view_slide_anim)
+        mTargetWeightPickerDialog?.show()
+
     }
 
     private fun showTargetStepDialog() {
@@ -297,50 +293,49 @@ class PersonInformationActivity :
                     mTargetStepList.add(index.toString())
                 }
             }
-            mTargetStepPickerDialog = OptionsPickerBuilder(
-                this
-            ) { options1, options2, options3, v ->
-                var str = mTargetStepList[options1]
-                mViewBinding.tvTargetStep.text = str + "步"
-                mUserData = WonderCoreCache.getUserInfo()
-                mUserData.targetStep = str
-                mUserData.targetStepLocation = options1
-                WonderCoreCache.saveUserInfo(mUserData)
-
-            }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
-                override fun customLayout(v: View?) {
-                    var title = v?.findViewById<TextView>(R.id.tv_title)
-                    var cancel = v?.findViewById<TextView>(R.id.btn_cancel)
-                    var submit = v?.findViewById<TextView>(R.id.btn_submit)
-                    title?.text = "目标步数"
-                    cancel?.setOnClickListener {
-                        mTargetStepPickerDialog?.dismiss()
-                    }
-                    submit?.setOnClickListener {
-                        mTargetStepPickerDialog?.returnData()
-                        mTargetStepPickerDialog?.dismiss()
-                    }
-                }
-
-            }).setLabels("步", "", "")
-                .isCenterLabel(true)
-                .setSelectOptions( WonderCoreCache.getUserInfo().targetStepLocation)
-                .setLineSpacingMultiplier(3.0F)
-                .setTextColorCenter(Color.parseColor("#F2682A"))
-                .setOutSideCancelable(true)//点击外部dismiss default true
-                .isDialog(true)//是否显示为对话框样式
-                .build()
-            mTargetStepPickerDialog?.setPicker(mTargetStepList)
-            val lp: FrameLayout.LayoutParams =
-                mTargetStepPickerDialog !!.dialogContainerLayout.layoutParams as FrameLayout.LayoutParams
-            lp.leftMargin = 0
-            lp.rightMargin = 0
-            mTargetStepPickerDialog!!.dialog.window?.setGravity(Gravity.BOTTOM)
-            mTargetStepPickerDialog!!.dialog.window?.setWindowAnimations(R.style.picker_view_slide_anim)
-            mTargetStepPickerDialog?.show()
-        } else {
-            mTargetStepPickerDialog?.show()
         }
+        mTargetStepPickerDialog = OptionsPickerBuilder(
+            this
+        ) { options1, options2, options3, v ->
+            var str = mTargetStepList[options1]
+            mViewBinding.tvTargetStep.text = str + "步"
+            mUserData = WonderCoreCache.getUserInfo()
+            mUserData.targetStep = str
+            mUserData.targetStepLocation = options1
+            WonderCoreCache.saveUserInfo(mUserData)
+
+        }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
+            override fun customLayout(v: View?) {
+                var title = v?.findViewById<TextView>(R.id.tv_title)
+                var cancel = v?.findViewById<TextView>(R.id.btn_cancel)
+                var submit = v?.findViewById<TextView>(R.id.btn_submit)
+                title?.text = "目标步数"
+                cancel?.setOnClickListener {
+                    mTargetStepPickerDialog?.dismiss()
+                }
+                submit?.setOnClickListener {
+                    mTargetStepPickerDialog?.returnData()
+                    mTargetStepPickerDialog?.dismiss()
+                }
+            }
+
+        }).setLabels("步", "", "")
+            .isCenterLabel(true)
+            .setSelectOptions(WonderCoreCache.getUserInfo().targetStepLocation)
+            .setLineSpacingMultiplier(3.0F)
+            .setTextColorCenter(Color.parseColor("#F2682A"))
+            .setOutSideCancelable(true)//点击外部dismiss default true
+            .isDialog(true)//是否显示为对话框样式
+            .build()
+        mTargetStepPickerDialog?.setPicker(mTargetStepList)
+        val lp: FrameLayout.LayoutParams =
+            mTargetStepPickerDialog!!.dialogContainerLayout.layoutParams as FrameLayout.LayoutParams
+        lp.leftMargin = 0
+        lp.rightMargin = 0
+        mTargetStepPickerDialog!!.dialog.window?.setGravity(Gravity.BOTTOM)
+        mTargetStepPickerDialog!!.dialog.window?.setWindowAnimations(R.style.picker_view_slide_anim)
+        mTargetStepPickerDialog?.show()
+
     }
 
 }

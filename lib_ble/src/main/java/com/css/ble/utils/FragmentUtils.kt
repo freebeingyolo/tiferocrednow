@@ -37,7 +37,7 @@ object FragmentUtils {
             if (supportFragmentManager.fragments.size > o) {
                 ft2.addToBackStack(supportFragmentManager.fragments[supportFragmentManager.fragments.size - (o + 1)].javaClass.simpleName)
             }
-            ft2.add(R.id.container, f, tag)
+            ft2.add(id, f, tag)
             for (f2 in supportFragmentManager.fragments) {
                 if (f2 == f) {
                     ft2.show(f2)

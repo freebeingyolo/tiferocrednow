@@ -76,20 +76,26 @@ class DeviceInfoActivity : BaseActivity<DefaultViewModel, FragmentDeviceInfoBind
                     type = CommonAlertDialog.DialogType.Edit
                     title = "设备名称"
                     content = data.displayName
-                    hint = "请输入设备名称，不可包含符号"
+                    hint = "请输入设备名称，只可为汉字或英文字母"
                     leftBtnText = "取消"
                     rightBtnText = "确定"
                     listener = object : DialogClickListener.DefaultLisener() {
 
                         override fun onRightEditBtnClick(view: View, content: String?) {
-                            val contentLength =
-                                StringUtils.getCharacterNum(content) + StringUtils.getChineseNum(
-                                    content!!
-                                )
-                            if (contentLength > 12 || StringUtils.getCheckSymbol(content)) {
-                                showToast("设备名称12个字符以内、不可包含符号，无法保存设备名称")
+//                            val contentLength =
+//                                StringUtils.getCharacterNum(content) + StringUtils.getChineseNum(
+//                                    content!!
+//                                )
+                            if (StringUtils.getCheckSymbol(content.toString())) {
+                                showToast("设备名称只可为10个汉字或英文字母，包含其他字符将无法保存")
                             } else {
-                                val validContent = getInValidName(content)
+                                var validContent: String
+                                if (content.isNullOrEmpty()){
+                                     validContent = data.displayName
+                                }else{
+                                    validContent = content
+                                }
+
                                 tvDeviceName.text = validContent
                                 data.alias = validContent
                                 WonderCoreCache.saveData(key, data)
@@ -129,17 +135,5 @@ class DeviceInfoActivity : BaseActivity<DefaultViewModel, FragmentDeviceInfoBind
             }
         }
 
-    }
-
-    fun getInValidName(str: String?): String? {
-        if (str.isNullOrEmpty()) {
-            return when (data.type) {
-                R.mipmap.icon_weight -> ActivityUtils.getTopActivity()
-                    .getString(R.string.device_weight)
-                else -> ActivityUtils.getTopActivity().getString(R.string.device_wheel)
-            }
-        }
-        //check str
-        return str
     }
 }
