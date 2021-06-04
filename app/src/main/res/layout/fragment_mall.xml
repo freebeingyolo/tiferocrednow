@@ -27,7 +27,7 @@
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="185dp"
+        android:layout_height="115dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="10dp"
@@ -49,6 +49,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
 
             android:layout_width="match_parent"
+            android:visibility="gone"
             android:layout_height="71dp"
             android:layout_marginTop="5dp">
 
@@ -98,6 +99,7 @@
             android:layout_height="1dp"
             android:layout_marginStart="15dp"
             android:layout_marginEnd="15dp"
+            android:visibility="gone"
             android:background="@color/color_e5e5e5" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -120,7 +122,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="JD官方旗舰店"
+                android:text="京东京造官方自营旗舰店"
                 android:textColor="@color/black"
                 android:textSize="12sp"
                 android:textStyle="bold"

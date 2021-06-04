@@ -295,7 +295,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
                     .navigation()
             }
             R.id.goto_measure -> {
-                activity?.let { ToastDialog(it).showPopupWindow() }
+                activity?.let { ToastDialog(it).showPopupWindow(mViewBinding?.pbStep) }
             }
 
             R.id.add_ble_device -> {
@@ -308,7 +308,8 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
 
     override fun onVisible() {
         super.onVisible()
-        mViewBinding!!.weightDeviceName.text = BondDeviceData.displayName(BondDeviceData.TYPE_WEIGHT)
+        mViewBinding!!.weightDeviceName.text =
+            BondDeviceData.displayName(BondDeviceData.TYPE_WEIGHT)
         mViewBinding!!.wheelDeviceName.text = BondDeviceData.displayName(BondDeviceData.TYPE_WHEEL)
     }
 

@@ -27,7 +27,7 @@ class ToastDialog : BasePopupWindow {
     constructor(dialog: Dialog) : super(dialog)
 
     init {
-        popupGravity = Gravity.CENTER
+        popupGravity = Gravity.BOTTOM
         setBackground(Color.TRANSPARENT)
         mTvTime = findViewById(R.id.time)
         mTimer = object : CountDownTimer(3 * 1000, 1000) {
@@ -50,11 +50,11 @@ class ToastDialog : BasePopupWindow {
         return createPopupById(R.layout.popup_to_binding_toast_layout)
     }
     override fun onCreateShowAnimation(): Animation {
-        return AnimationHelper.asAnimation().withTranslation(TranslationConfig.FROM_LEFT).toShow()
+        return AnimationHelper.asAnimation().withTranslation(TranslationConfig.FROM_TOP).toShow()
     }
 
     override fun onCreateDismissAnimation(): Animation {
-        return AnimationHelper.asAnimation().withTranslation(TranslationConfig.TO_RIGHT).toShow()
+        return AnimationHelper.asAnimation().withTranslation(TranslationConfig.TO_BOTTOM).toShow()
     }
 
 }
