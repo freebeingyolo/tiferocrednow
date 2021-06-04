@@ -28,7 +28,8 @@ object FragmentUtils {
         return changeFragment(cls, opt, id, fmgr)
     }
 
-    fun <T : Fragment> changeFragment(cls: Class<T>, opt: Option, id: Int = R.id.container, supportFragmentManager: FragmentManager): T {
+    fun <T : Fragment> changeFragment(cls: Class<T>, opt: Option, id: Int = R.id.container, supportFragmentManager: FragmentManager):
+            T {
         var tag = cls.simpleName
         var fragment: T? = supportFragmentManager.findFragmentByTag(tag) as T?
         val addOprt: (Fragment, Int) -> Unit = { f, o ->

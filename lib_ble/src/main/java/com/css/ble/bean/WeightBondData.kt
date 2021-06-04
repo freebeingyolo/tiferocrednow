@@ -141,7 +141,7 @@ class WeightBondData() {
                 1 -> scale *= 0.5f
                 4, 6 -> scale *= 0.4536f
             }
-            for (i in 0 until weightDecimal) {
+            for (i in 0 until  weightDecimal) {
                 scale *= 0.1f
             }
             return weight * scale

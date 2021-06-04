@@ -429,7 +429,7 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
     /**
      * 页面显示时调用。注意和InitView区分.可做页面显示时更新UI,或加载数据
      */
-    protected open fun onVisible() {}
+    protected open fun onVisible() { initImmersionBar()}
 
     override fun initLazyData() {
     }

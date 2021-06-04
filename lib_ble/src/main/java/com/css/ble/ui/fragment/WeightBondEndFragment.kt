@@ -1,19 +1,22 @@
 package com.css.ble.ui.fragment
 
-import android.app.Activity
+import LogUtils
 import android.os.Bundle
-import android.text.Html
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.alibaba.android.arouter.facade.Postcard
+import com.alibaba.android.arouter.facade.callback.NavCallback
+import com.alibaba.android.arouter.facade.callback.NavigationCallback
 import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.ActivityUtils
-import com.css.base.uibase.BaseFragment
 import com.css.ble.R
 import com.css.ble.databinding.LayoutWeightBondBondedBinding
 import com.css.ble.viewmodel.WeightBondVM
 import com.css.service.router.ARouterConst
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -28,15 +31,24 @@ class WeightBondEndFragment : BaseWeightFragment<WeightBondVM, LayoutWeightBondB
         val TAG = "WeightBond"
     }
 
+    private var selfDestroyJob: Job? = null
+
     override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): LayoutWeightBondBondedBinding {
         return LayoutWeightBondBondedBinding.inflate(inflater, parent, false).apply {
             //返回主页
             back.setOnClickListener {
-                var activitis = ActivityUtils.getActivityList()
-                ActivityUtils.finishToActivity(activitis[activitis.size - 1], false)
                 ARouter.getInstance() //测量首页
                     .build(ARouterConst.PATH_APP_BLE_WEIGHTMEASURE)
-                    .navigation()
+                    .navigation(requireContext(), object : NavCallback() {
+                        override fun onArrival(postcard: Postcard?) {
+                            //Log.d("MainActivity" , "onArrival : " + postcard?.getPath());
+                            val activities = ActivityUtils.getActivityList()
+                            for (i in 0 until activities.size-1) {//后加的activity在队首
+                                ActivityUtils.finishActivity(activities[i])
+                            }
+                        }
+                    })
+                selfDestroyJob?.cancel()
             }
         }
     }
@@ -47,7 +59,7 @@ class WeightBondEndFragment : BaseWeightFragment<WeightBondVM, LayoutWeightBondB
 
     override fun initData() {
         super.initData()
-        startSelfDestroy()
+        selfDestroyJob = startSelfDestroy()
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -55,9 +67,9 @@ class WeightBondEndFragment : BaseWeightFragment<WeightBondVM, LayoutWeightBondB
         setToolBarLeftTitle(getString(R.string.device_weight))
     }
 
-    private fun startSelfDestroy() {
-        var sec = 3
-        lifecycleScope.launch {
+    private fun startSelfDestroy(): Job {
+        val sec = 3
+        return lifecycleScope.launch {
             flow {
                 for (i in sec downTo 0) {
                     emit(i)
@@ -68,6 +80,7 @@ class WeightBondEndFragment : BaseWeightFragment<WeightBondVM, LayoutWeightBondB
                 if (it <= 0) {
                     mViewBinding!!.back.performClick()
                 }
+                selfDestroyJob = null
             }
         }
     }

@@ -37,19 +37,10 @@ import razerdp.basepopup.BasePopupWindow
 class WeightMeasureBeginFragment : BaseWeightFragment<WeightMeasureVM, ActivityWeightMeasureBeginBinding>() {
 
     override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): ActivityWeightMeasureBeginBinding {
-        return ActivityWeightMeasureBeginBinding.inflate(inflater, parent, false).also {
+        return ActivityWeightMeasureBeginBinding.inflate(inflater, parent, false).also { it ->
             it.tvToMeasure.setOnClickListener {
                 mViewModel.state.value = WeightMeasureVM.State.doing
             }
-            WeightBondData.lastWeightInfoObsvr.let { it2 ->
-                it2.observe(this) { it3 ->
-                    it.tips.text = it3?.weightKgFmt("你上一次的体重是:%.1f kg")
-                }
-                it2.value?.let { it3 ->
-                    it.tips.text = it3.weightKgFmt("你上一次的体重是:%.1f kg")
-                }
-            }
-
         }
     }
 
@@ -62,6 +53,7 @@ class WeightMeasureBeginFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
                 }
             }
         }
+        mViewBinding!!.lifecycleOwner = this
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -105,6 +97,6 @@ class WeightMeasureBeginFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
                 }
             }.show()
         }
-        mViewModel.stopScanBle()
+        mViewBinding!!.weightbonddata = WeightBondData.lastWeightInfoObsvr.value
     }
 }

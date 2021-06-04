@@ -4,15 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.css.ble.R
-import com.css.ble.bean.BondDeviceData
+import com.css.ble.bean.WeightBondData
 import com.css.ble.databinding.ActivityBleEntryBinding
-import com.css.ble.ui.fragment.*
+import com.css.ble.ui.fragment.WeightMeasureBeginFragment
+import com.css.ble.ui.fragment.WeightMeasureEndDeailFragment
 import com.css.ble.utils.FragmentUtils
-import com.css.ble.viewmodel.ErrorType
 import com.css.ble.viewmodel.WeightMeasureVM
-import com.css.ble.viewmodel.WeightMeasureVM.State
 import com.css.service.router.ARouterConst
 
 
@@ -24,11 +23,12 @@ class WeightMeasureActivity : BaseWeightActivity<WeightMeasureVM, ActivityBleEnt
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        FragmentUtils.changeFragment(WeightMeasureBeginFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
-    }
-
-    override fun initData() {
-        super.initData()
+        if (WeightBondData.lastWeightInfo == null) {
+            FragmentUtils.changeFragment(WeightMeasureBeginFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
+        } else {
+            mViewModel.bondData.value = WeightBondData.lastWeightInfo
+            FragmentUtils.changeFragment(WeightMeasureEndDeailFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
+        }
     }
 
     override fun initViewModel(): WeightMeasureVM {

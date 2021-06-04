@@ -74,6 +74,8 @@ class WeightMeasureVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPars
 
             if (status == 0x00 && state.value != State.receiving) {
                 _state.value = State.receiving
+//                cancelTimeOutTimer()
+//                startTimeoutTimer(5 * 1000)
             } else if (status == 0xFF && state.value != State.done) {
                 if (0 == weight) { //数据异常，直接回到测量首页
                     _state.value = State.begin

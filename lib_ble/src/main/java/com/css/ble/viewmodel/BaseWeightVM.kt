@@ -17,6 +17,7 @@ import com.pinwang.ailinkble.AiLinkPwdUtil
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.lang.IllegalStateException
 
 /**
  * @author yuedong
@@ -134,13 +135,16 @@ abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastD
     }
 
     protected fun startTimeoutTimer(timeOut: Long) {
+        if (timeOutJob != null) {
+            cancelTimeOutTimer()
+            LogUtils.e(TAG, "timeOutJob not null,call cancelTimeOutTimer first", 3)
+        }
+        Log.d(TAG, "startTimeoutTimer")
         timeOutJob = viewModelScope.launch {
             delay(timeOut)
-            if (!timeOutJob!!.isCancelled) {
-                stopScanBle()
-                mOnCallbackBle.onScanTimeOut()
-            }
+            mOnCallbackBle.onScanTimeOut()
             timeOutJob = null
+            stopScanBle() //这里只会执行stopScan，不会执行cancelTimOutTimer
         }
     }
 
@@ -161,7 +165,7 @@ abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastD
         if (mBluetoothService?.isScanStatus == true) {
             LogUtils.d(TAG, "stopScanBle", 3)
             this.mBluetoothService?.stopScan()
-            cancelTimeOutTimer()
+            if (timeOutJob != null) cancelTimeOutTimer()
             onScanStop()
         }
     }

@@ -20,6 +20,7 @@ class BodyFatDataWrapper(var data: BodyFatData, var weight: Float, var ui: UserD
         arrayOf("体脂率", tizhilvJudge, String.format("%.1f%%", tizhilv * 100)),
         arrayOf("脂肪重量", zhifangliangJudge, String.format("%.1fkg", zhifangliang)),
         arrayOf("骨骼肌率", gugejilvJudge, String.format("%.1f%%", gugejilv * 100)),
+        arrayOf("骨骼肌重量", gugejizhongliangJudge, String.format("%.1fkg", gugejizhongliang)),
         arrayOf("肌肉率", jiroulvJudge, String.format("%.1f%%", jiroulv * 100)),
         arrayOf("肌肉重量", jirouzhongliangJudge, String.format("%.1fkg", jirouzhongliang)),
         arrayOf("内脏脂肪", neizhangzhifangJudge, String.format("%d级", neizhangzhifang)),
@@ -104,6 +105,8 @@ class BodyFatDataWrapper(var data: BodyFatData, var weight: Float, var ui: UserD
             val valueRegion = arrayOf("不足", "标准", "优")
             findT(input, keyRegion, valueRegion)
         }
+    val gugejizhongliang get() = gugejilv * weight
+    val gugejizhongliangJudge get() = gugejilvJudge
 
     //肌肉率rate of muscle
     val jiroulv get() = data.rom / 100f

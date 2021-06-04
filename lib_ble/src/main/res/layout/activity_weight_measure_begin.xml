@@ -3,6 +3,9 @@
 
     <data>
 
+        <variable
+            name="weightbonddata"
+            type="com.css.ble.bean.WeightBondData" />
     </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -34,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="60dp"
-                android:text="@string/measure_first_tips"
+                android:text='@{weightbonddata == null ?@string/measure_first_tips :weightbonddata.weightKgFmt(`你上一次的体重是:%.1f kg`),default=`@string/measure_first_tips`}'
                 android:textColor="@color/black"
                 android:textSize="13sp" />
 

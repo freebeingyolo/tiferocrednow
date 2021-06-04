@@ -47,6 +47,7 @@ class WeightMeasureDoingFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
 
     override fun initData() {
         super.initData()
+        mViewModel.state.value = WeightMeasureVM.State.doing
         mViewModel.state.observe(viewLifecycleOwner) {
             when (it) {
                 WeightMeasureVM.State.begin -> {
@@ -98,5 +99,10 @@ class WeightMeasureDoingFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
                 }
             }.show()
         }
+    }
+
+    override fun onInVisible() {
+        super.onInVisible()
+        mViewModel.stopScanBle()
     }
 }

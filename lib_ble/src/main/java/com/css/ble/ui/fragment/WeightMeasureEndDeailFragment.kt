@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.css.base.uibase.BaseFragment
 import com.css.base.view.ToolBarView
 import com.css.ble.BodyDetailAdapter
-import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.WeightDetailBean
 import com.css.ble.databinding.ActivityWeightMeasureEndDetailBinding
@@ -52,7 +52,7 @@ class WeightMeasureEndDeailFragment :
         mViewBinding!!.rvData.adapter = mBodyDetailAdapter
         mViewBinding?.apply {
             btnMeasureWeight.setOnClickListener {
-                mViewModel.initOrReset()
+                FragmentUtils.changeFragment(WeightMeasureDoingFragment::class.java, FragmentUtils.Option.OPT_ADD)
                 Log.d(TAG, "btnMeasureWeight#click")
             }
             mViewModel.bondData.value!!.apply {
@@ -64,23 +64,16 @@ class WeightMeasureEndDeailFragment :
                 score.text = bodyFatData.bodyScore.toString()
             }
         }
-
     }
 
     override fun initData() {
         super.initData()
         loadData()
-        mViewModel.state.observe(viewLifecycleOwner) {
-            when (it) {
-                WeightMeasureVM.State.begin -> {
-                    FragmentUtils.changeFragment(WeightMeasureBeginFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
-                }
-            }
-        }
     }
 
     fun loadData() {
         mBodyDetailAdapter.setItems(mViewModel.bondData.value!!.getBodyFatDataList())
         mBodyDetailAdapter.notifyDataSetChanged()
     }
+
 }
