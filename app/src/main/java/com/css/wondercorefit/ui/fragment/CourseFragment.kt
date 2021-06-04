@@ -25,6 +25,7 @@ import com.css.wondercorefit.viewmodel.CourseViewModel
 
 class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
     private val TAG = "CourseFragment"
+    private var toast: Toast? = null
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         SystemBarHelper.immersiveStatusBar(activity, 0f)
@@ -66,7 +67,13 @@ class CourseFragment : BaseFragment<DefaultViewModel, FragmentCourseBinding>() {
                         startIntent()
                     }
                     else -> {
-                        Toast.makeText(context, "网络请求失败，请确认网络环境是否正常", Toast.LENGTH_SHORT).show()
+                        if (toast == null) {
+                            toast = Toast.makeText(context, "网络请求失败，请确认网络环境是否正常", Toast.LENGTH_SHORT)
+                        }else {
+                            toast?.setText("网络请求失败，请确认网络环境是否正常")
+                            toast?.duration = Toast.LENGTH_SHORT
+                        }
+                        toast?.show()
                     }
                 }
             }
