@@ -59,7 +59,7 @@ class StringUtils {
          * @return
          */
         fun getCheckSymbol(content: String): Boolean {
-            val speChat = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！￥……&*（）——+|{}【】‘；：”“’。，、？'\'-_\"]"
+            val speChat = "[`~!@#\$%^&*()_\\-+=<>?:\"{},.\\\\/;'\\[\\]·！#￥（——）：；“”‘、，|《。》？、【】0-9]"
             val pattern: Pattern = Pattern.compile(speChat)
             val matcher: Matcher = pattern.matcher(content)
             return matcher.find()
