@@ -61,7 +61,7 @@ class MallFragment : BaseFragment<DefaultViewModel, FragmentMallBinding>(), View
                 openUrl("https://www.tmall.com/")
             }
             R.id.tv_store_details_2->{
-                openUrl("https://www.jd.com/")
+                openUrl("https://mall.jd.com/index-1000096602.html")
             }
         }
     }
