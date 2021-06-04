@@ -3,8 +3,8 @@ package com.css.ble.viewmodel
 import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.css.ble.bean.WeightBondData
 import com.css.ble.bean.BondDeviceData
+import com.css.ble.bean.WeightBondData
 import com.pingwang.bluetoothlib.BroadcastDataParsing
 import com.pingwang.bluetoothlib.bean.BleValueBean
 
