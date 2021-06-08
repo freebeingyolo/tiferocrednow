@@ -10,11 +10,17 @@ object LogUtils {
     var curLogLevel: Int = Log.VERBOSE
 
     @Synchronized
-    fun initTrace(msg: String, vararg isPrintStack: Int) {
+    fun initTrace(tag: String?, msg: String, vararg isPrintStack: Int) {
         val isPrintStackOne = if (isPrintStack.isNotEmpty()) isPrintStack[0] else 10
         currentThread = Thread.currentThread().stackTrace
+        var curentIndex = 0
         // vm调用栈中此方法所在index：2：VMStack.java:-2:getThreadStackTrace()<--Thread.java:737:getStackTrace()<--
-        val curentIndex = 4
+        for (i in 2..10) {
+            if (currentThread[i].className != javaClass.simpleName) {
+                curentIndex = i;
+                break
+            }
+        }
         val className = currentThread[curentIndex].fileName
         val endIndex = className.lastIndexOf(".")
         tagName = if (endIndex < 0) className else className.substring(0, endIndex)
@@ -81,7 +87,7 @@ object LogUtils {
         if (curLogLevel > Log.ERROR) {
             return
         }
-        initTrace(msg, if (printStackNum.isNotEmpty()) printStackNum[0] else 0)
+        initTrace(tag, msg, if (printStackNum.isNotEmpty()) printStackNum[0] else 0)
         Log.e(tag ?: tagName, msgT + msgC)
     }
 
@@ -89,7 +95,7 @@ object LogUtils {
         if (curLogLevel > Log.WARN) {
             return
         }
-        initTrace(msg, if (printStackNum.isNotEmpty()) printStackNum[0] else 0)
+        initTrace(tag, msg, if (printStackNum.isNotEmpty()) printStackNum[0] else 0)
         Log.w(tag ?: tagName, msgT + msgC)
     }
 
@@ -97,7 +103,7 @@ object LogUtils {
         if (curLogLevel > Log.DEBUG) {
             return
         }
-        initTrace(msg, if (printStackNum.isNotEmpty()) printStackNum[0] else 0)
+        initTrace(tag, msg, if (printStackNum.isNotEmpty()) printStackNum[0] else 0)
         Log.d(tag ?: tagName, msgT + msgC)
     }
 
@@ -105,7 +111,7 @@ object LogUtils {
         if (curLogLevel > Log.VERBOSE) {
             return
         }
-        initTrace(msg, if (printStackNum.isNotEmpty()) printStackNum[0] else 0)
+        initTrace(tag, msg, if (printStackNum.isNotEmpty()) printStackNum[0] else 0)
         Log.v(tag ?: tagName, msgT + msgC)
     }
 
@@ -113,7 +119,7 @@ object LogUtils {
         if (curLogLevel > Log.INFO) {
             return
         }
-        initTrace(msg, if (printStackNum.isNotEmpty()) printStackNum[0] else 0)
+        initTrace(tag, msg, if (printStackNum.isNotEmpty()) printStackNum[0] else 0)
         Log.i(tag ?: tagName, msgT + msgC)
     }
 }

@@ -1,15 +1,14 @@
 package com.css.ble.ui.fragment
 
+import LogUtils
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import com.css.base.uibase.BaseFragment
 import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.databinding.LayoutWeightBondFoundBinding
 import com.css.ble.utils.FragmentUtils
-import com.css.ble.viewmodel.ErrorType
 import com.css.ble.viewmodel.WeightBondVM
 import com.css.service.utils.WonderCoreCache
 
@@ -22,14 +21,15 @@ class WeightBondDoingFragment : BaseWeightFragment<WeightBondVM, LayoutWeightBon
     override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): LayoutWeightBondFoundBinding {
         return LayoutWeightBondFoundBinding.inflate(inflater, parent, false).apply {
             research.setOnClickListener {
+                LogUtils.d("research#mViewModel.state:${mViewModel.state.value}")
                 if (mViewModel.state.value == WeightBondVM.State.begin) return@setOnClickListener
                 mViewModel.stopScanBle()
                 mViewModel.state.value = WeightBondVM.State.begin
             }
             bond.setOnClickListener {
-                var d = BondDeviceData(
-                    mViewModel.bondDevice.value!!.mac,
-                    mViewModel.bondDevice.value!!.manifactureHex,
+                val d = BondDeviceData(
+                    mViewModel.filterDevice!!.mac,
+                    mViewModel.filterDevice!!.manifactureHex,
                     BondDeviceData.TYPE_WEIGHT
                 )
                 WonderCoreCache.saveData(WonderCoreCache.BOND_WEIGHT_INFO, d)
@@ -58,6 +58,7 @@ class WeightBondDoingFragment : BaseWeightFragment<WeightBondVM, LayoutWeightBon
                     FragmentUtils.changeFragment(WeightBondBeginFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
                 }
                 WeightBondVM.State.done -> {
+                    mViewModel.stopScanBle()
                     FragmentUtils.changeFragment(WeightBondEndFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
                 }
             }

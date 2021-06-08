@@ -17,7 +17,6 @@ import com.pinwang.ailinkble.AiLinkPwdUtil
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.lang.IllegalStateException
 
 /**
  * @author yuedong
@@ -37,6 +36,7 @@ abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastD
             (mBluetoothServiceObsvr as MutableLiveData).value = v
         }
     val mBluetoothServiceObsvr: LiveData<ELinkBleServer> by lazy { MutableLiveData() }
+
     private val mOnScanFilterListener: OnScanFilterListener = object : OnScanFilterListener {
         override fun onFilter(bleValueBean: BleValueBean): Boolean {
             return this@BaseWeightVM.onFilter(bleValueBean)
@@ -73,6 +73,7 @@ abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastD
             } else {
                 val manufacturerDatax = bleValueBean.manufacturerData
                 if (manufacturerDatax != null && manufacturerDatax.size >= 15) {
+                    LogUtils.d(TAG, "manufacturerDatax.size:${manufacturerDatax.size}")
                     vid = (manufacturerDatax[6].toInt() and 255) shl 8 or (manufacturerDatax[7].toInt() and 255)
                     if (vid == 2) {//匹配成功
                         val hex = BleStrUtils.byte2HexStr(manufacturerDatax)
@@ -107,7 +108,7 @@ abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastD
 
     fun onBindService(service: ELinkBleServer) {
         mBluetoothService = service
-        mBluetoothService?.setOnScanFilterListener(mOnScanFilterListener)
+        //mBluetoothService?.setOnScanFilterListener(mOnScanFilterListener)
         mBluetoothService?.setOnCallback(mOnCallbackBle)
     }
 
@@ -123,7 +124,6 @@ abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastD
             this@BaseWeightVM.onScanTimeOut()
         }
     }
-
 
     protected fun cancelTimeOutTimer() {
         if (timeOutJob != null) {
@@ -155,6 +155,7 @@ abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastD
                 startTimeoutTimer(timeOut)
                 scanLeDevice(0)
                 onScanStart()
+                mBluetoothService?.setOnScanFilterListener(mOnScanFilterListener)
             } else {
                 Log.e(TAG, "startScanBle call repeated!!")
             }
@@ -167,7 +168,17 @@ abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastD
             this.mBluetoothService?.stopScan()
             if (timeOutJob != null) cancelTimeOutTimer()
             onScanStop()
+            mBluetoothService?.setOnScanFilterListener(null)
         }
     }
 
+    class BondDeviceInfo {
+        var mac: String = ""
+        var name: String = ""
+        var isAilink: Boolean = false
+        var manifactureHex: String = ""
+        override fun toString(): String {
+            return "BondDeviceInfo(mac='$mac', manifactureHex='$manifactureHex')"
+        }
+    }
 }

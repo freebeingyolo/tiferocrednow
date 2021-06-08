@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.css.base.uibase.BaseFragment
 import com.css.base.view.ToolBarView
@@ -29,7 +31,6 @@ class WeightMeasureEndDeailFragment :
         inflater: LayoutInflater,
         parent: ViewGroup?
     ): ActivityWeightMeasureEndDetailBinding {
-
         return ActivityWeightMeasureEndDetailBinding.inflate(inflater, parent, false)
     }
 
@@ -55,25 +56,28 @@ class WeightMeasureEndDeailFragment :
                 FragmentUtils.changeFragment(WeightMeasureDoingFragment::class.java, FragmentUtils.Option.OPT_ADD)
                 Log.d(TAG, "btnMeasureWeight#click")
             }
-            mViewModel.bondData.value!!.apply {
-                var weightList = weightKgFmt.split(".")
-                tvWeightNum.text = " ${weightList[0]}."
-                tvWeightFloatNum.text = weightList[1]
-                tvTodayBodyStatus.text = String.format("BMI%.1f|%s", bodyFatData.bmi, bodyFatData.bmiJudge)
-                pbWeight.setProgress(bodyFatData.weightProgress.toInt())
-                score.text = bodyFatData.bodyScore.toString()
+            mViewModel.bondData.observe(viewLifecycleOwner) {
+                it.apply {
+                    val weightList = weightKgFmt.split(".")
+                    tvWeightNum.text = " ${weightList[0]}."
+                    tvWeightFloatNum.text = weightList[1]
+                    tvTodayBodyStatus.text = String.format("BMI%.1f|%s", bodyFatData.bmi, bodyFatData.bmiJudge)
+                    pbWeight.setProgress(bodyFatData.weightProgress.toInt())
+                    score.text = bodyFatData.bodyScore.toString()
+                    loadData()
+                }
             }
         }
-    }
-
-    override fun initData() {
-        super.initData()
-        loadData()
     }
 
     fun loadData() {
         mBodyDetailAdapter.setItems(mViewModel.bondData.value!!.getBodyFatDataList())
         mBodyDetailAdapter.notifyDataSetChanged()
+    }
+
+    override fun onVisible() {
+        super.onVisible()
+        mViewBinding!!.scrollView.scrollTo(0, 0)
     }
 
 }

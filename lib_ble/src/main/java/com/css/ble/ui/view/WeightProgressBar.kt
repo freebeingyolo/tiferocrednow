@@ -1,4 +1,4 @@
-package com.css.ble.utils
+package com.css.ble.ui.view
 
 import android.content.Context
 import android.graphics.Canvas

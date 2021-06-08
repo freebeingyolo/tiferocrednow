@@ -1,15 +1,12 @@
 package com.css.ble.ui.fragment
 
-import LogUtils
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.alibaba.android.arouter.facade.Postcard
 import com.alibaba.android.arouter.facade.callback.NavCallback
-import com.alibaba.android.arouter.facade.callback.NavigationCallback
 import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.ActivityUtils
 import com.css.ble.R
@@ -43,7 +40,7 @@ class WeightBondEndFragment : BaseWeightFragment<WeightBondVM, LayoutWeightBondB
                         override fun onArrival(postcard: Postcard?) {
                             //Log.d("MainActivity" , "onArrival : " + postcard?.getPath());
                             val activities = ActivityUtils.getActivityList()
-                            for (i in 0 until activities.size-1) {//后加的activity在队首
+                            for (i in 0 until activities.size - 1) {//后加的activity在队首
                                 ActivityUtils.finishActivity(activities[i])
                             }
                         }

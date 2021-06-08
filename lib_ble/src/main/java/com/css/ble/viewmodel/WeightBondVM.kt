@@ -5,11 +5,17 @@ import androidx.lifecycle.MutableLiveData
 import com.css.ble.bean.WeightBondData
 import com.pingwang.bluetoothlib.BroadcastDataParsing
 import com.pingwang.bluetoothlib.bean.BleValueBean
+import com.tencent.bugly.crashreport.CrashReport
 
 class WeightBondVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataParsing {
-    val bondDevice: MutableLiveData<BondDeviceInfo> by lazy { MutableLiveData<BondDeviceInfo>() }
+    companion object {
+        const val WEIGHT_UPPER = 180;
+        const val WEIGHT_LOWER = 0;
+    }
+
     val state: MutableLiveData<State> by lazy { MutableLiveData<State>(State.begin) }
-    private var filterDevice: BondDeviceInfo? = null
+    var filterDevice: BondDeviceInfo? = null
+    private val filterDeviceTemp: BondDeviceInfo by lazy { BondDeviceInfo() }
 
     enum class State {
         begin,
@@ -28,35 +34,14 @@ class WeightBondVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataParsing
         data: ByteArray,
         isAilink: Boolean
     ) {
-        Log.d(TAG, "mac:$mac,${isAilink},${(filterDevice == null)},${state.value}")
-        BondDeviceInfo().apply {
+        Log.d(TAG, "mac:$mac,$dataHexStr,${isAilink},${(filterDevice == null)},${state.value}")
+        filterDeviceTemp.apply {
             this.mac = mac
             this.manifactureHex = dataHexStr
-            bondDevice.value = this
-            if (filterDevice == null) filterDevice = this
-            if (state.value == State.begin) {
-                state.value = State.found
-                if (timeOutJob != null) cancelTimeOutTimer() //搜索到设备就取消超时
-            }
+            this.isAilink = isAilink
         }
         mBroadcastDataParsing.dataParsing(data, isAilink)
-    }
-
-    override fun onScanTimeOut() {
-        Log.d(TAG, "onScanTimeOut")
-        state.value = State.timeOut
-    }
-
-    override fun onScanStart() {
-
-    }
-
-    override fun onScanStop() {
-        filterDevice = null
-    }
-
-    override fun onScanTimerOutCancel() {
-
+        mBroadcastDataParsing.reset()
     }
 
     override fun getWeightData(
@@ -77,18 +62,53 @@ class WeightBondVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataParsing
                 status, tempUnit, weightUnit, weightDecimal,
                 weightStatus, weightNegative, weight, adc, algorithmId, tempNegative, temp
             )
+            if (weightKg < WEIGHT_LOWER || weightKg > WEIGHT_UPPER) { //错误的体重信息
+                LogUtils.e(TAG, "错误设备：DeviceInfo:${filterDeviceTemp},WeightInfo:$this")
+                val throwable = Throwable("错误设备：DeviceInfo:${filterDeviceTemp},WeightInfo:$this")
+                CrashReport.postCatchedException(throwable)
+                return
+            }
+            LogUtils.d(TAG, "getWeightData#$this")
             bondData.value = this
+            if (filterDevice == null) {
+                filterDevice = filterDeviceTemp
+                state.value = State.found
+                if (timeOutJob != null) cancelTimeOutTimer() //搜索到设备就取消超时
+            }
         }
     }
 
-    class BondDeviceInfo {
-        var mac: String = ""
-        var name: String = ""
-        var manifactureHex: String = ""
-        override fun toString(): String {
-            return "BondDeviceInfo(mac='$mac', manifactureHex='$manifactureHex')"
+    //绑定时，重置BroadcastDataParsing中的两个变量，即使本次与上次数据重复也透传
+    private fun BroadcastDataParsing.reset() {
+        val clz = javaClass
+        clz.getDeclaredField("mOldNumberId").let {
+            it.isAccessible = true
+            it.set(this, -1)
+        }
+        clz.getDeclaredField("mOldStatus").let {
+            it.isAccessible = true
+            it.set(this, -1)
         }
     }
+
+    override fun onScanTimeOut() {
+        Log.d(TAG, "onScanTimeOut")
+        state.value = State.timeOut
+    }
+
+    override fun onScanStart() {
+
+    }
+
+    override fun onScanStop() {
+        filterDevice = null
+    }
+
+    override fun onScanTimerOutCancel() {
+
+    }
+
+
 }
 
 

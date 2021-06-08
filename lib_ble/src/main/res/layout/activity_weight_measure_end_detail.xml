@@ -13,6 +13,7 @@
         android:background="@color/white">
 
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/btn_measure_weight"
@@ -34,7 +35,7 @@
                     android:background="@drawable/bg_while_radius4">
 
 
-                    <com.css.ble.utils.WeightProgressBar
+                    <com.css.ble.ui.view.WeightProgressBar
                         android:id="@+id/pb_weight"
                         style="?android:attr/progressBarStyleLarge"
                         android:layout_width="match_parent"

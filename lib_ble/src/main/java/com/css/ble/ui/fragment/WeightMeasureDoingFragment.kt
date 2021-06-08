@@ -32,6 +32,7 @@ import razerdp.basepopup.BasePopupWindow
  * @date 2021-05-17
  */
 class WeightMeasureDoingFragment : BaseWeightFragment<WeightMeasureVM, ActivityWeightMeasureDoingBinding>() {
+    private var startTime = 0L
 
     override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): ActivityWeightMeasureDoingBinding {
         return ActivityWeightMeasureDoingBinding.inflate(inflater, parent, false).also {
@@ -68,6 +69,8 @@ class WeightMeasureDoingFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
         lifecycleScope.launch {
             while (!checkEnvDone) delay(100)
             if (BleEnvVM.isBleEnvironmentOk) {
+                //至少停留200ms
+                if (System.currentTimeMillis() - startTime < 200) delay(startTime + 200 - System.currentTimeMillis() )
                 mViewModel.startScanBle()
             } else {
                 BleErrorFragment.Builder.errorType(BleEnvVM.bleErrType)
@@ -79,13 +82,16 @@ class WeightMeasureDoingFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
     }
+
     override fun initCommonToolBarBg(): ToolBarView.ToolBarBg {
         return ToolBarView.ToolBarBg.GRAY
     }
+
     override fun enabledVisibleToolBar(): Boolean = true
 
     override fun onVisible() {
         super.onVisible()
+        startTime = System.currentTimeMillis()
         if (BondDeviceData.bondWeight == null) {//如果已经解绑了，回到此界面在回退
             CommonAlertDialog(requireContext()).apply {
                 type = CommonAlertDialog.DialogType.Image
