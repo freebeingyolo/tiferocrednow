@@ -1,31 +1,27 @@
 package com.css.ble.ui.fragment
 
 import android.os.Bundle
-import android.os.Looper
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.alibaba.android.arouter.launcher.ARouter
 import com.css.base.dialog.CommonAlertDialog
-import com.css.base.uibase.BaseFragment
-import com.css.base.uibase.inner.OnToolBarClickListener
 import com.css.base.view.ToolBarView
 import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
+import com.css.ble.bean.DeviceType
+import com.css.ble.bean.WeightBondData
 import com.css.ble.databinding.ActivityWeightMeasureDoingBinding
-import com.css.ble.ui.DeviceInfoActivity
 import com.css.ble.utils.FragmentUtils
 import com.css.ble.viewmodel.BleEnvVM
 import com.css.ble.viewmodel.ErrorType
 import com.css.ble.viewmodel.WeightMeasureVM
 import com.css.service.router.ARouterConst
-import com.css.service.utils.ImageUtils
-import com.css.service.utils.WonderCoreCache
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import razerdp.basepopup.BasePopupWindow
+import com.css.ble.viewmodel.WeightMeasureVM.State
 
 /**
  * @author yuedong
@@ -51,15 +47,15 @@ class WeightMeasureDoingFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
         mViewModel.state.value = WeightMeasureVM.State.doing
         mViewModel.state.observe(viewLifecycleOwner) {
             when (it) {
-                WeightMeasureVM.State.begin -> {
+                State.begin -> {
                     FragmentUtils.changeFragment(WeightMeasureBeginFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
                 }
-                WeightMeasureVM.State.done -> {
+                State.done -> {
                     FragmentUtils.changeFragment(WeightMeasureDoneFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
                 }
-                WeightMeasureVM.State.timeout -> {
-                    BleErrorFragment.Builder.errorType(ErrorType.SEARCH_TIMEOUT)
-                        .leftTitle(BondDeviceData.displayName(BondDeviceData.TYPE_WEIGHT)).create()
+                State.timeout -> {
+                    BleErrorFragment.Builder.errorType(ErrorType.SEARCH_TIMEOUT).leftTitle(BondDeviceData.displayName(DeviceType.WEIGHT))
+                        .create()
                 }
             }
         }
@@ -70,11 +66,11 @@ class WeightMeasureDoingFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
             while (!checkEnvDone) delay(100)
             if (BleEnvVM.isBleEnvironmentOk) {
                 //至少停留200ms
-                if (System.currentTimeMillis() - startTime < 200) delay(startTime + 200 - System.currentTimeMillis() )
+                if (System.currentTimeMillis() - startTime < 200) delay(startTime + 200 - System.currentTimeMillis())
                 mViewModel.startScanBle()
             } else {
                 BleErrorFragment.Builder.errorType(BleEnvVM.bleErrType)
-                    .leftTitle(BondDeviceData.displayName(BondDeviceData.TYPE_WEIGHT)).create()
+                    .leftTitle(BondDeviceData.displayName(DeviceType.WEIGHT)).create()
             }
         }
     }

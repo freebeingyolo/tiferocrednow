@@ -6,8 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.css.base.uibase.viewmodel.BaseViewModel
-import com.css.ble.bean.WeightBondData
-import com.pingwang.bluetoothlib.BroadcastDataParsing
 import com.pingwang.bluetoothlib.bean.BleValueBean
 import com.pingwang.bluetoothlib.listener.OnCallbackBle
 import com.pingwang.bluetoothlib.listener.OnScanFilterListener
@@ -20,19 +18,17 @@ import kotlinx.coroutines.launch
 
 /**
  * @author yuedong
- * @date 2021-05-27
+ * @date 2021-06-09
  */
-abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastDataParsing {
+abstract class BaseDeviceVM : BaseViewModel() {
     companion object {
         const val TIMEOUT_NEVER = -1L
         private val TianShengKey = intArrayOf(0x54493049, 0x4132794E, 0x53783148, 0x476c6531)
     }
     val TAG: String = javaClass.simpleName
-    var bondData: MutableLiveData<WeightBondData> = MutableLiveData<WeightBondData>()
-    protected val mBroadcastDataParsing by lazy { BroadcastDataParsing(this) }
     protected var decryptKey: IntArray = TianShengKey
     protected var timeOutJob: Job? = null;
-    protected var mBluetoothService: ELinkBleServer?
+    private var mBluetoothService: ELinkBleServer?
         get() = mBluetoothServiceObsvr.value
         set(v) {
             (mBluetoothServiceObsvr as MutableLiveData).value = v
@@ -41,7 +37,7 @@ abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastD
 
     private val mOnScanFilterListener: OnScanFilterListener = object : OnScanFilterListener {
         override fun onFilter(bleValueBean: BleValueBean): Boolean {
-            return this@BaseWeightVM.onFilter(bleValueBean)
+            return this@BaseDeviceVM.onFilter(bleValueBean)
         }
 
         override fun onScanRecord(bleValueBean: BleValueBean) {
@@ -122,7 +118,7 @@ abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastD
     private val mOnCallbackBle: OnCallbackBle = object : OnCallbackBle {
         override fun onScanTimeOut() {
             super.onScanTimeOut()
-            this@BaseWeightVM.onScanTimeOut()
+            this@BaseDeviceVM.onScanTimeOut()
         }
     }
 
@@ -131,7 +127,7 @@ abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastD
             LogUtils.d(TAG, "cancelTimeOutTimer")
             timeOutJob!!.cancel()
             timeOutJob = null
-            this@BaseWeightVM.onScanTimerOutCancel()
+            this@BaseDeviceVM.onScanTimerOutCancel()
         }
     }
 
@@ -183,6 +179,4 @@ abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastD
             return "BondDeviceInfo(mac='$mac', manifactureHex='$manifactureHex')"
         }
     }
-
-
 }

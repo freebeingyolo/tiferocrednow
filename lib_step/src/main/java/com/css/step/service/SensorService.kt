@@ -16,6 +16,7 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import com.css.service.data.StepData
+import com.css.service.utils.CacheKey
 import com.css.service.utils.WonderCoreCache
 import com.css.step.R
 import com.css.step.data.ConstantData
@@ -113,7 +114,7 @@ class SensorService : Service(), SensorEventListener {
      * 初始化当天数据
      */
     private fun initTodayData() {
-        stepData = WonderCoreCache.getData(WonderCoreCache.STEP_DATA, StepData::class.java)
+        stepData = WonderCoreCache.getData(CacheKey.STEP_DATA, StepData::class.java)
         //获取当前时间
         currentDate = TimeUtil.getCurrentDate()
         Thread(Runnable { getStepDetector() }).start()
@@ -190,7 +191,7 @@ class SensorService : Service(), SensorEventListener {
             stepData.saveDate = currentDate.toString()
         }
         stepData.sensorSteps = systemSteps
-        WonderCoreCache.saveData(WonderCoreCache.STEP_DATA, stepData)
+        WonderCoreCache.saveData(CacheKey.STEP_DATA, stepData)
     }
 
     override fun onDestroy() {

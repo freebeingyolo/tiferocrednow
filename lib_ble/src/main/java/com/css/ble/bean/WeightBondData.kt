@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import cn.net.aicare.algorithmutil.AlgorithmUtil
 import cn.net.aicare.algorithmutil.BodyFatData
+import com.css.service.utils.CacheKey
 import com.css.service.utils.WonderCoreCache
 
 /**
@@ -54,7 +55,7 @@ class WeightBondData() {
             get() = firstWeightInfoObsvr.value
             set(value) {
                 (firstWeightInfoObsvr as MutableLiveData).value = value
-                WonderCoreCache.saveData(WonderCoreCache.FIRST_WEIGHT_INFO, value)
+                WonderCoreCache.saveData(CacheKey.FIRST_WEIGHT_INFO, value)
             }
 
         //上次测量体重信息，有backfield的需要才能有initializer
@@ -62,14 +63,14 @@ class WeightBondData() {
             get() = lastWeightInfoObsvr.value
             set(value) {
                 (lastWeightInfoObsvr as MutableLiveData).value = value
-                WonderCoreCache.saveData(WonderCoreCache.LAST_WEIGHT_INFO, value)
+                WonderCoreCache.saveData(CacheKey.LAST_WEIGHT_INFO, value)
             }
 
         //第一次测量体重信息监听
         val firstWeightInfoObsvr: LiveData<WeightBondData> by lazy {
             MutableLiveData<WeightBondData>().apply {
-                value = WonderCoreCache.takeIf { it.containsKey(WonderCoreCache.FIRST_WEIGHT_INFO) }?.getData(
-                    WonderCoreCache.FIRST_WEIGHT_INFO, WeightBondData::class.java
+                value = WonderCoreCache.takeIf { it.containsKey(CacheKey.FIRST_WEIGHT_INFO) }?.getData(
+                    CacheKey.FIRST_WEIGHT_INFO, WeightBondData::class.java
                 )
             }
         }
@@ -77,8 +78,8 @@ class WeightBondData() {
         //上次测量体重信息监听
         val lastWeightInfoObsvr: LiveData<WeightBondData> by lazy {
             MutableLiveData<WeightBondData>().apply {
-                value = WonderCoreCache.takeIf { it.containsKey(WonderCoreCache.LAST_WEIGHT_INFO) }
-                    ?.getData(WonderCoreCache.LAST_WEIGHT_INFO, WeightBondData::class.java)
+                value = WonderCoreCache.takeIf { it.containsKey(CacheKey.LAST_WEIGHT_INFO) }
+                    ?.getData(CacheKey.LAST_WEIGHT_INFO, WeightBondData::class.java)
             }
         }
     }

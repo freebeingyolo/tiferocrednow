@@ -12,6 +12,7 @@ import android.os.IBinder
 import android.os.Message
 import android.util.Log
 import com.css.service.data.StepData
+import com.css.service.utils.CacheKey
 import com.css.service.utils.WonderCoreCache
 import com.css.step.*
 import com.css.step.data.ConstantData
@@ -89,7 +90,7 @@ class TodayStepService : Service(), Handler.Callback {
 
     override fun onCreate() {
         super.onCreate()
-        stepData = WonderCoreCache.getData(WonderCoreCache.STEP_DATA, StepData::class.java)
+        stepData = WonderCoreCache.getData(CacheKey.STEP_DATA, StepData::class.java)
         mTodayStepDBHelper = TodayStepDBHelper(applicationContext)
         sensorManager = this
             .getSystemService(Context.SENSOR_SERVICE) as SensorManager?
@@ -175,7 +176,7 @@ class TodayStepService : Service(), Handler.Callback {
         nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
         nm!!.notify(R.string.app_name, notification)
         stepData.todaySteps = currentStep
-        WonderCoreCache.saveData(WonderCoreCache.STEP_DATA, stepData)
+        WonderCoreCache.saveData(CacheKey.STEP_DATA, stepData)
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -314,7 +315,7 @@ class TodayStepService : Service(), Handler.Callback {
 //        EventBus.getDefault()
 //            .post(EventMessage<StepData>(EventMessage.Code.MAIN_INDEX_BACK, StepData(1, 2, 3, "")))
         stepData.todaySteps = realSteps
-        WonderCoreCache.saveData(WonderCoreCache.STEP_DATA, stepData)
+        WonderCoreCache.saveData(CacheKey.STEP_DATA, stepData)
     }
 
     private fun isStepCounter(): Boolean {

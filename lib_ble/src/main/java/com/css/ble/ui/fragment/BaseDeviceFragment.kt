@@ -3,11 +3,15 @@ package com.css.ble.ui.fragment
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
+import android.icu.text.CaseMap
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.constant.PermissionConstants
@@ -31,20 +35,25 @@ import kotlinx.coroutines.launch
  * @author yuedong
  * @date 2021-05-27
  */
-abstract class BaseWeightFragment<VM : BaseViewModel, VB : ViewBinding> : BaseFragment<VM, VB>() {
-    protected var checkEnvDone = false
+abstract class BaseDeviceFragment<VM : BaseViewModel, VB : ViewBinding>(protected val deviceType: DeviceType) : BaseFragment<VM, VB>() {
+    abstract val vmCls: Class<VM>
+    abstract val vbCls: Class<VB>
+
+    override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): VB {
+        val method = vbCls.getDeclaredMethod("inflate", LayoutInflater::class.java, ViewGroup::class.java, Boolean::class.java)
+        return method.invoke(null, inflater, parent, false) as VB
+    }
+
+    override fun initViewModel(): VM {
+        return ViewModelProvider(requireActivity()).get(vmCls)
+    }
 
     override fun enabledVisibleToolBar() = true
-
-    override fun initView(savedInstanceState: Bundle?) {
-        super.initView(savedInstanceState)
-        //设置标题栏
-        setToolBarLeftText(BondDeviceData.displayName(DeviceType.WEIGHT))
-    }
+    protected var checkEnvDone = false
 
     override fun onVisible() {
         super.onVisible()
-        setToolBarLeftText(BondDeviceData.displayName(DeviceType.WEIGHT))
+        setToolBarLeftText(BondDeviceData.displayName(deviceType))
     }
 
     protected fun checkBleEnv() {
