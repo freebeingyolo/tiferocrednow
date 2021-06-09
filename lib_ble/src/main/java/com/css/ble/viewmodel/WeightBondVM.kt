@@ -16,6 +16,7 @@ class WeightBondVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataParsing
     val state: MutableLiveData<State> by lazy { MutableLiveData<State>(State.begin) }
     var filterDevice: BondDeviceInfo? = null
     private val filterDeviceTemp: BondDeviceInfo by lazy { BondDeviceInfo() }
+    private val weigthDataTemp: WeightBondData by lazy { WeightBondData() }
 
     enum class State {
         begin,
@@ -57,7 +58,7 @@ class WeightBondVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataParsing
         tempNegative: Int,
         temp: Int
     ) {
-        WeightBondData().apply {
+        weigthDataTemp.apply {
             setValue(
                 status, tempUnit, weightUnit, weightDecimal,
                 weightStatus, weightNegative, weight, adc, algorithmId, tempNegative, temp

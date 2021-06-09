@@ -23,9 +23,11 @@ import kotlinx.coroutines.launch
  * @date 2021-05-27
  */
 abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastDataParsing {
-    private val TianShengKey = intArrayOf(0x54493049, 0x4132794E, 0x53783148, 0x476c6531)
-    protected val TAG: String = javaClass.simpleName
-
+    companion object {
+        const val TIMEOUT_NEVER = -1L
+        private val TianShengKey = intArrayOf(0x54493049, 0x4132794E, 0x53783148, 0x476c6531)
+    }
+    val TAG: String = javaClass.simpleName
     var bondData: MutableLiveData<WeightBondData> = MutableLiveData<WeightBondData>()
     protected val mBroadcastDataParsing by lazy { BroadcastDataParsing(this) }
     protected var decryptKey: IntArray = TianShengKey
@@ -72,10 +74,9 @@ abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastD
                 }
             } else {
                 val manufacturerDatax = bleValueBean.manufacturerData
-                if (manufacturerDatax != null && manufacturerDatax.size >= 15) {
-                    LogUtils.d(TAG, "manufacturerDatax.size:${manufacturerDatax.size}")
+                if (manufacturerDatax != null && manufacturerDatax.size == 15) {
                     vid = (manufacturerDatax[6].toInt() and 255) shl 8 or (manufacturerDatax[7].toInt() and 255)
-                    if (vid == 2) {//匹配成功
+                    if (vid == 2) {//匹配成功，第7,8位组成的数据是2
                         val hex = BleStrUtils.byte2HexStr(manufacturerDatax)
                         onBroadCastData(bleValueBean.mac, hex, manufacturerDatax, false)
                     }
@@ -135,6 +136,7 @@ abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastD
     }
 
     protected fun startTimeoutTimer(timeOut: Long) {
+        if (timeOut == TIMEOUT_NEVER) return
         if (timeOutJob != null) {
             cancelTimeOutTimer()
             LogUtils.e(TAG, "timeOutJob not null,call cancelTimeOutTimer first", 3)
@@ -181,4 +183,6 @@ abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastD
             return "BondDeviceInfo(mac='$mac', manifactureHex='$manifactureHex')"
         }
     }
+
+
 }
