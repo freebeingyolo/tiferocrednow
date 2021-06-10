@@ -6,18 +6,15 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.IBinder
-import android.provider.Settings
 import android.util.Log
-import android.view.View
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
-import com.blankj.utilcode.constant.PermissionConstants
-import com.blankj.utilcode.util.PermissionUtils
-import com.css.base.dialog.CommonAlertDialog
-import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseActivity
-import com.css.ble.utils.QuickTransUtils
+import com.css.ble.bean.DeviceType
 import com.css.ble.utils.BleUtils
-import com.css.ble.viewmodel.BaseWeightVM
+import com.css.ble.viewmodel.BaseDeviceVM
 import com.css.ble.viewmodel.BleEnvVM
 import com.pingwang.bluetoothlib.AILinkSDK
 import com.pingwang.bluetoothlib.server.ELinkBleServer
@@ -27,7 +24,19 @@ import com.pingwang.bluetoothlib.utils.BleLog
  * @author yuedong
  * @date 2021-05-27
  */
-abstract class BaseWeightActivity<VM : BaseWeightVM, VB : ViewBinding> : BaseActivity<VM, VB>() {
+abstract class BaseDeviceActivity<VM : BaseDeviceVM, VB : ViewBinding>(protected val deviceType: DeviceType) : BaseActivity<VM, VB>() {
+    abstract val vmCls: Class<VM>
+    abstract val vbCls: Class<VB>
+
+    override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): VB {
+        val method = vbCls.getDeclaredMethod("inflate", LayoutInflater::class.java, ViewGroup::class.java, Boolean::class.java)
+        return method.invoke(null, inflater, parent, false) as VB
+    }
+
+    override fun initViewModel(): VM {
+        return ViewModelProvider(this).get(vmCls)
+    }
+
     private var mBluetoothService: ELinkBleServer? = null
     private val mFhrSCon: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
@@ -46,7 +55,7 @@ abstract class BaseWeightActivity<VM : BaseWeightVM, VB : ViewBinding> : BaseAct
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         AILinkSDK.getInstance().init(this)
-        BleLog.init(false)
+        BleLog.init(true)
         //服务
         val bindIntent = Intent(this, ELinkBleServer::class.java)
         bindService(bindIntent, mFhrSCon, Context.BIND_AUTO_CREATE)
@@ -67,58 +76,6 @@ abstract class BaseWeightActivity<VM : BaseWeightVM, VB : ViewBinding> : BaseAct
     }
 
     override fun enabledVisibleToolBar() = false
-
-    protected fun openBLE() {
-        CommonAlertDialog(baseContext).apply {
-            type = CommonAlertDialog.DialogType.Confirm
-            title = "打开蓝牙"
-            leftBtnText = "取消"
-            rightBtnText = "确认"
-            listener = object : DialogClickListener.DefaultLisener() {
-                override fun onRightBtnClick(view: View) {
-                    super.onRightBtnClick(view)
-                    BluetoothAdapter.getDefaultAdapter().enable()
-                }
-            }
-        }.show()
-    }
-
-    protected fun requestLocationPermission() {
-        PermissionUtils.permission(PermissionConstants.LOCATION)
-            .rationale { _, shouldRequest ->
-                shouldRequest.again(true)
-            }
-            .callback(object : PermissionUtils.FullCallback {
-                override fun onGranted(granted: MutableList<String>) {
-                    BleEnvVM.locationPermission = true
-                }
-
-                override fun onDenied(
-                    deniedForever: MutableList<String>,
-                    denied: MutableList<String>
-                ) {
-                    BleEnvVM.locationPermission = false
-                }
-            })
-            .request()
-    }
-
-    protected fun openLocation() {
-        CommonAlertDialog(this).apply {
-            type = CommonAlertDialog.DialogType.Confirm
-            title = "打开定位"
-            leftBtnText = "取消"
-            rightBtnText = "确认"
-            listener = object : DialogClickListener.DefaultLisener() {
-                override fun onRightBtnClick(view: View) {
-                    super.onRightBtnClick(view)
-                    QuickTransUtils.startActivityForResult(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) { activity, _, _, _ ->
-                        BleEnvVM.locationOpened = BleUtils.isLocationEnabled(activity)
-                    }
-                }
-            }
-        }.show()
-    }
 
     private var receiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
