@@ -12,10 +12,12 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.css.base.dialog.ToastDialog
 import com.css.base.uibase.BaseFragment
 import com.css.ble.bean.BondDeviceData
+import com.css.ble.bean.DeviceType
 import com.css.ble.bean.WeightBondData
 import com.css.service.data.StepData
 import com.css.service.data.UserData
 import com.css.service.router.ARouterConst
+import com.css.service.utils.CacheKey
 import com.css.service.utils.SystemBarHelper
 import com.css.service.utils.WonderCoreCache
 import com.css.step.ISportStepInterface
@@ -99,7 +101,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     private fun showDevice() {
         //是否已绑定体脂秤
         if (WonderCoreCache.getData(
-                WonderCoreCache.BOND_WEIGHT_INFO,
+                CacheKey.BOND_WEIGHT_INFO,
                 BondDeviceData::class.java
             ).mac.isNotEmpty()
         ) {
@@ -115,7 +117,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         }
         //是否已绑定健腹轮
         if (WonderCoreCache.getData(
-                WonderCoreCache.BOND_WHEEL_INFO,
+                CacheKey.BOND_WHEEL_INFO,
                 BondDeviceData::class.java
             ).mac.isNotEmpty()
         ) {
@@ -130,9 +132,9 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     private val spLis by lazy {
         SharedPreferences.OnSharedPreferenceChangeListener { sp, key ->
             when (key) {
-                WonderCoreCache.BOND_WEIGHT_INFO -> {
+                CacheKey.BOND_WEIGHT_INFO.k -> {
                     if (WonderCoreCache.getData(
-                            WonderCoreCache.BOND_WEIGHT_INFO,
+                            CacheKey.BOND_WEIGHT_INFO,
                             BondDeviceData::class.java
                         ).mac.isNotEmpty()
                     ) {
@@ -149,7 +151,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
                     }
 
                     if (WonderCoreCache.getData(
-                            WonderCoreCache.BOND_WHEEL_INFO,
+                            CacheKey.BOND_WHEEL_INFO,
                             BondDeviceData::class.java
                         ).mac.isNotEmpty()
                     ) {
@@ -159,7 +161,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
                         mViewBinding?.deviceWheel?.visibility = View.INVISIBLE
                     }
                 }
-                WonderCoreCache.USER_INFO -> {
+                CacheKey.USER_INFO.k -> {
                     mUserData = WonderCoreCache.getUserInfo()
                     mViewBinding?.tvTargetWeightNum?.text =
                         mUserData.targetWeight
@@ -179,7 +181,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     private fun initProgressRate() {
         mUserData = WonderCoreCache.getUserInfo()
         targetStep = mUserData.targetStep
-        stepData = WonderCoreCache.getData(WonderCoreCache.STEP_DATA, StepData::class.java)
+        stepData = WonderCoreCache.getData(CacheKey.STEP_DATA, StepData::class.java)
         currentStep = stepData.todaySteps
         result = ((currentStep * 100) / targetStep.toInt()).toFloat()
         Log.d(TAG, "ProgressInformation   :  $currentStep    $targetStep    $result")
@@ -308,9 +310,8 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
 
     override fun onVisible() {
         super.onVisible()
-        mViewBinding!!.weightDeviceName.text =
-            BondDeviceData.displayName(BondDeviceData.TYPE_WEIGHT)
-        mViewBinding!!.wheelDeviceName.text = BondDeviceData.displayName(BondDeviceData.TYPE_WHEEL)
+        mViewBinding!!.weightDeviceName.text = BondDeviceData.displayName(DeviceType.WEIGHT)
+        mViewBinding!!.wheelDeviceName.text = BondDeviceData.displayName(DeviceType.WHEEL)
     }
 
     override fun onHiddenChanged(hidden: Boolean) {

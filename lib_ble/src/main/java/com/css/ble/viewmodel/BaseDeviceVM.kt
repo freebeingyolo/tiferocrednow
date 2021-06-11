@@ -6,8 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.css.base.uibase.viewmodel.BaseViewModel
-import com.css.ble.bean.WeightBondData
-import com.pingwang.bluetoothlib.BroadcastDataParsing
 import com.pingwang.bluetoothlib.bean.BleValueBean
 import com.pingwang.bluetoothlib.listener.OnCallbackBle
 import com.pingwang.bluetoothlib.listener.OnScanFilterListener
@@ -20,17 +18,17 @@ import kotlinx.coroutines.launch
 
 /**
  * @author yuedong
- * @date 2021-05-27
+ * @date 2021-06-09
  */
-abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastDataParsing {
-    private val TianShengKey = intArrayOf(0x54493049, 0x4132794E, 0x53783148, 0x476c6531)
-    protected val TAG: String = javaClass.simpleName
-
-    var bondData: MutableLiveData<WeightBondData> = MutableLiveData<WeightBondData>()
-    protected val mBroadcastDataParsing by lazy { BroadcastDataParsing(this) }
+abstract class BaseDeviceVM : BaseViewModel() {
+    companion object {
+        const val TIMEOUT_NEVER = -1L
+        private val TianShengKey = intArrayOf(0x54493049, 0x4132794E, 0x53783148, 0x476c6531)
+    }
+    val TAG: String = javaClass.simpleName
     protected var decryptKey: IntArray = TianShengKey
     protected var timeOutJob: Job? = null;
-    protected var mBluetoothService: ELinkBleServer?
+    private var mBluetoothService: ELinkBleServer?
         get() = mBluetoothServiceObsvr.value
         set(v) {
             (mBluetoothServiceObsvr as MutableLiveData).value = v
@@ -39,7 +37,7 @@ abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastD
 
     private val mOnScanFilterListener: OnScanFilterListener = object : OnScanFilterListener {
         override fun onFilter(bleValueBean: BleValueBean): Boolean {
-            return this@BaseWeightVM.onFilter(bleValueBean)
+            return this@BaseDeviceVM.onFilter(bleValueBean)
         }
 
         override fun onScanRecord(bleValueBean: BleValueBean) {
@@ -72,10 +70,9 @@ abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastD
                 }
             } else {
                 val manufacturerDatax = bleValueBean.manufacturerData
-                if (manufacturerDatax != null && manufacturerDatax.size >= 15) {
-                    LogUtils.d(TAG, "manufacturerDatax.size:${manufacturerDatax.size}")
+                if (manufacturerDatax != null && manufacturerDatax.size == 15) {
                     vid = (manufacturerDatax[6].toInt() and 255) shl 8 or (manufacturerDatax[7].toInt() and 255)
-                    if (vid == 2) {//匹配成功
+                    if (vid == 2) {//匹配成功，第7,8位组成的数据是2
                         val hex = BleStrUtils.byte2HexStr(manufacturerDatax)
                         onBroadCastData(bleValueBean.mac, hex, manufacturerDatax, false)
                     }
@@ -121,7 +118,7 @@ abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastD
     private val mOnCallbackBle: OnCallbackBle = object : OnCallbackBle {
         override fun onScanTimeOut() {
             super.onScanTimeOut()
-            this@BaseWeightVM.onScanTimeOut()
+            this@BaseDeviceVM.onScanTimeOut()
         }
     }
 
@@ -130,11 +127,12 @@ abstract class BaseWeightVM : BaseViewModel(), BroadcastDataParsing.OnBroadcastD
             LogUtils.d(TAG, "cancelTimeOutTimer")
             timeOutJob!!.cancel()
             timeOutJob = null
-            this@BaseWeightVM.onScanTimerOutCancel()
+            this@BaseDeviceVM.onScanTimerOutCancel()
         }
     }
 
     protected fun startTimeoutTimer(timeOut: Long) {
+        if (timeOut == TIMEOUT_NEVER) return
         if (timeOutJob != null) {
             cancelTimeOutTimer()
             LogUtils.e(TAG, "timeOutJob not null,call cancelTimeOutTimer first", 3)

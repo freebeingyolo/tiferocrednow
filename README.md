@@ -23,7 +23,6 @@ ActivityHolder		#Activity的栈列表
 
 
 
-
 ## 第一期功能点
 
 | 扫码       | 扫描设备二维码进行跳转至绑定设备页面                         | 基于zxing二维码扫描库二次开发，扫描获取设备信息（设备名、设备类型、mac地址），扫描后跳转绑定页面 | zxing/zbar/scankit                                           |      |
@@ -46,3 +45,8 @@ ActivityHolder		#Activity的栈列表
 
 
 
+keystore:
+MindSpore.jks
+hongmong2021
+mindspore
+hongmong2021

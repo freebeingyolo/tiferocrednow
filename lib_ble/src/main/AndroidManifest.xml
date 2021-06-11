@@ -27,6 +27,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/WonderTheme.NoExitEnterAnimation" />
         <activity
+            android:name=".ui.WheelBondActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/WonderTheme.NoExitEnterAnimation" />
+        <activity
             android:name=".ui.DeviceListActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"

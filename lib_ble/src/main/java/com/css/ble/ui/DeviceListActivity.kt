@@ -10,11 +10,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
-import com.blankj.utilcode.util.ToastUtils
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseActivity
 import com.css.ble.R
+import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.FragmentDeviceListBinding
 import com.css.ble.databinding.LayoutDeviceItemBinding
 import com.css.ble.ui.view.SpaceItemDecoration
@@ -54,14 +54,12 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
                     position: Int,
                     deviceInfo: DeviceListVM.DeviceInfo
                 ) {
-                    if (deviceInfo.icon == R.mipmap.icon_abroller) {
-                        ToastUtils.showShort(context.getString(R.string.developping))
-                        return
-                    }
-                    var d = deviceInfo.getBondDeviceData()
+                    val d = deviceInfo.getBondDeviceData()
                     if (d == null) {
-                        ARouter.getInstance().build(ARouterConst.PATH_APP_BLE_WEIGHTBOND)
-                            .navigation()
+                        when(deviceInfo.deviceType){
+                            DeviceType.WEIGHT ->  ARouter.getInstance().build(ARouterConst.PATH_APP_BLE_WEIGHTBOND).navigation()
+                            DeviceType.WHEEL -> ARouter.getInstance().build(ARouterConst.PATH_APP_BLE_WHEELBOND).navigation()
+                        }
                     } else {
                         CommonAlertDialog(context).apply {
                             type = CommonAlertDialog.DialogType.Confirm

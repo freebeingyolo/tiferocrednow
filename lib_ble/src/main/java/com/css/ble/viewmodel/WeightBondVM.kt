@@ -7,15 +7,17 @@ import com.pingwang.bluetoothlib.BroadcastDataParsing
 import com.pingwang.bluetoothlib.bean.BleValueBean
 import com.tencent.bugly.crashreport.CrashReport
 
-class WeightBondVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataParsing {
+class WeightBondVM : BaseDeviceVM(), BroadcastDataParsing.OnBroadcastDataParsing {
     companion object {
         const val WEIGHT_UPPER = 180;
         const val WEIGHT_LOWER = 0;
     }
-
+    protected val mBroadcastDataParsing by lazy { BroadcastDataParsing(this) }
     val state: MutableLiveData<State> by lazy { MutableLiveData<State>(State.begin) }
     var filterDevice: BondDeviceInfo? = null
     private val filterDeviceTemp: BondDeviceInfo by lazy { BondDeviceInfo() }
+    private val weigthDataTemp: WeightBondData by lazy { WeightBondData() }
+    var bondData: MutableLiveData<WeightBondData> = MutableLiveData<WeightBondData>()
 
     enum class State {
         begin,
@@ -57,7 +59,7 @@ class WeightBondVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataParsing
         tempNegative: Int,
         temp: Int
     ) {
-        WeightBondData().apply {
+        weigthDataTemp.apply {
             setValue(
                 status, tempUnit, weightUnit, weightDecimal,
                 weightStatus, weightNegative, weight, adc, algorithmId, tempNegative, temp
@@ -107,7 +109,6 @@ class WeightBondVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataParsing
     override fun onScanTimerOutCancel() {
 
     }
-
 
 }
 

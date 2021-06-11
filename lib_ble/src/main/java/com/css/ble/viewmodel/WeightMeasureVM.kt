@@ -9,10 +9,13 @@ import com.pingwang.bluetoothlib.BroadcastDataParsing
 import com.pingwang.bluetoothlib.bean.BleValueBean
 
 
-class WeightMeasureVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataParsing {
+class WeightMeasureVM : BaseDeviceVM(), BroadcastDataParsing.OnBroadcastDataParsing {
     private val _state: MutableLiveData<State> by lazy { MutableLiveData<State>(State.begin) }
     val state: MutableLiveData<State> get() = _state
-    protected override val timeOut = 10 * 1000L
+    override val timeOut = 10 * 1000L
+    private val weigthDataTemp: WeightBondData by lazy { WeightBondData() }
+    private val mBroadcastDataParsing by lazy { BroadcastDataParsing(this) }
+    var bondData: MutableLiveData<WeightBondData> = MutableLiveData<WeightBondData>()
 
     enum class State {
         begin,
@@ -64,14 +67,12 @@ class WeightMeasureVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPars
         tempNegative: Int,
         temp: Int
     ) {
-        WeightBondData().let {
-            it.setValue(
+        weigthDataTemp.apply {
+            setValue(
                 status, tempUnit, weightUnit, weightDecimal,
                 weightStatus, weightNegative, weight, adc, algorithmId, tempNegative, temp
             )
-            bondData.value = it
-            Log.d(TAG, "getWeightData:$it")
-
+            Log.d(TAG, "getWeightData:$weigthDataTemp")
             if (status == 0x00 && state.value != State.receiving) {
                 _state.value = State.receiving
                 //cancelTimeOutTimer()
@@ -81,6 +82,7 @@ class WeightMeasureVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPars
                     _state.value = State.begin
                     stopScanBle()
                 } else {
+                    bondData.value = this
                     _state.value = State.done
                     WeightBondData.firstWeightInfo ?: let { WeightBondData.firstWeightInfo = bondData.value }
                     WeightBondData.lastWeightInfo = bondData.value
@@ -88,6 +90,7 @@ class WeightMeasureVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPars
                 }
             }
         }
+
     }
 
 }

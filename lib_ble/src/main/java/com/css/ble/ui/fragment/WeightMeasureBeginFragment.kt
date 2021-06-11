@@ -23,6 +23,7 @@ import com.css.ble.viewmodel.BleEnvVM
 import com.css.ble.viewmodel.ErrorType
 import com.css.ble.viewmodel.WeightMeasureVM
 import com.css.service.router.ARouterConst
+import com.css.service.utils.CacheKey
 import com.css.service.utils.ImageUtils
 import com.css.service.utils.WonderCoreCache
 import kotlinx.coroutines.delay
@@ -65,7 +66,7 @@ class WeightMeasureBeginFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
                 when (event) {
                     ToolBarView.ViewType.LEFT_IMAGE -> onBackPressed()
                     ToolBarView.ViewType.RIGHT_IMAGE -> {
-                        DeviceInfoActivity.start(WonderCoreCache.BOND_WEIGHT_INFO)
+                        DeviceInfoActivity.start(CacheKey.BOND_WEIGHT_INFO.k)
                     }
                 }
             }

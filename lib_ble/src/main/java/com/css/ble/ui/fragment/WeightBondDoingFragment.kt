@@ -7,9 +7,11 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
+import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.LayoutWeightBondFoundBinding
 import com.css.ble.utils.FragmentUtils
 import com.css.ble.viewmodel.WeightBondVM
+import com.css.service.utils.CacheKey
 import com.css.service.utils.WonderCoreCache
 
 /**
@@ -30,9 +32,9 @@ class WeightBondDoingFragment : BaseWeightFragment<WeightBondVM, LayoutWeightBon
                 val d = BondDeviceData(
                     mViewModel.filterDevice!!.mac,
                     mViewModel.filterDevice!!.manifactureHex,
-                    BondDeviceData.TYPE_WEIGHT
+                    DeviceType.WEIGHT
                 )
-                WonderCoreCache.saveData(WonderCoreCache.BOND_WEIGHT_INFO, d)
+                WonderCoreCache.saveData(CacheKey.BOND_WEIGHT_INFO, d)
                 mViewModel.state.value = WeightBondVM.State.done
             }
         }
