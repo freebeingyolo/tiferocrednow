@@ -32,6 +32,7 @@ class WheelMeasureBeginFragment :
 
     override fun initData() {
         super.initData()
+        mViewBinding?.electricityView?.setProgress(100)
         mViewModel.batteryLevel.observe(viewLifecycleOwner) {
             mViewBinding!!.batteryLevel.text = if (it == -1f) {
                 "--"
