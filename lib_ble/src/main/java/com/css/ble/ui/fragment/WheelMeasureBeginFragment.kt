@@ -1,9 +1,12 @@
 package com.css.ble.ui.fragment
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import androidx.lifecycle.lifecycleScope
+import com.css.base.dialog.CommonAlertDialog
+import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.inner.OnToolBarClickListener
 import com.css.base.view.ToolBarView
 import com.css.ble.R
@@ -23,7 +26,8 @@ import kotlinx.coroutines.launch
  * @author yuedong
  * @date 2021-05-17
  */
-class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbrollerBinding>(DeviceType.WHEEL) {
+class WheelMeasureBeginFragment :
+    BaseDeviceFragment<WheelMeasureVM, ActivityAbrollerBinding>(DeviceType.WHEEL) {
     private var startTime: Long = 0
 
     override fun initData() {
@@ -40,9 +44,22 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
                 State.begin, State.disconnected -> {
                     mViewBinding!!.connectState.text = getString(R.string.device_disconnected)
                 }
-                State.timeOut -> {//Todo 这里弹框
+                State.timeOut -> {
+                    activity?.let { it1 ->
+                        CommonAlertDialog(it1).apply {
+                            type = CommonAlertDialog.DialogType.Tip
+                            gravity = Gravity.BOTTOM
+                            listener = object : DialogClickListener.DefaultLisener() {
 
+                                override fun onRightEditBtnClick(view: View, content: String?) {
+                                    //TODO 重新连接
+                                }
+                            }
+                        }.show()
+                    }
                 }
+
+
             }
         }
     }
@@ -86,7 +103,8 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        val view = LayoutInflater.from(context).inflate(R.layout.layout_weight_measure_header, null, false)
+        val view =
+            LayoutInflater.from(context).inflate(R.layout.layout_weight_measure_header, null, false)
         setRightImage(ImageUtils.getBitmap(view))
         getCommonToolBarView()?.setToolBarClickListener(object : OnToolBarClickListener {
             override fun onClickToolBarView(view: View, event: ToolBarView.ViewType) {
@@ -101,7 +119,7 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
         mViewBinding?.apply {
             left.setOnClickListener {
                 when (mViewModel.state.value) {
-                    State.begin,State.disconnected -> {
+                    State.begin, State.disconnected -> {
                         startConnect()
                     }
                     State.connecting -> {
@@ -146,7 +164,8 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
                 if (System.currentTimeMillis() - startTime < 200) delay(startTime + 200 - System.currentTimeMillis())
                 mViewModel.connect()
             } else {
-                BleErrorFragment.Builder.errorType(BleEnvVM.bleErrType).leftTitle(BondDeviceData.displayName(deviceType)).create()
+                BleErrorFragment.Builder.errorType(BleEnvVM.bleErrType)
+                    .leftTitle(BondDeviceData.displayName(deviceType)).create()
             }
         }
     }

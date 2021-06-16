@@ -3,13 +3,16 @@ package com.css.wondercorefit.ui.fragment
 import android.content.*
 import android.os.*
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.launcher.ARouter
+import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.ToastDialog
+import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseFragment
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
@@ -261,7 +264,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.device_wheel ->{
+            R.id.device_wheel -> {
                 ARouter.getInstance()
                     .build(ARouterConst.PATH_APP_BLE_WHEELMEASURE)
                     .navigation()

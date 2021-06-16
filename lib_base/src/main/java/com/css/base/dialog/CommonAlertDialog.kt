@@ -49,6 +49,7 @@ class CommonAlertDialog {
     var confirmBtnColorInt: Int? = null
     var imageResources: Int = 0
     var openBackgroudColor: Boolean = true
+    var gravity: Int = Gravity.CENTER
     var outSideDismiss = true//设置BasePopup是否允许点击外部触发Dismiss
     var backPressEnable = true//设置BasePopup是否允许返回键dismiss
 
@@ -68,7 +69,8 @@ class CommonAlertDialog {
         Confirm, // 从上往下显示: 标题、内容、两个操作按钮
         SINGLE,// 从上往下显示: 标题、内容、一个操作按钮
         Edit,//从上往下显示: 标题、编辑框、两个操作按钮
-        Image//图片 文字
+        Image,//图片 文字
+        Tip,//从上往下显示: 标题、编辑框、两个操作按钮
     }
 
     fun show() {
@@ -89,6 +91,9 @@ class CommonAlertDialog {
                 DialogType.Image -> {
                     dialog = ImageDialog(context)
                 }
+                DialogType.Tip -> {
+                    dialog = TipAlertDialog(context)
+                }
             }
         } else {
             when (type) {
@@ -103,6 +108,9 @@ class CommonAlertDialog {
                 }
                 DialogType.Image -> {
                     dialog = ImageDialog(context)
+                }
+                DialogType.Tip -> {
+                    dialog = TipAlertDialog(context)
                 }
             }
         }
@@ -258,6 +266,31 @@ class CommonAlertDialog {
                     imageDialog.setImage(imageResources)
                 }
             }
+            is TipAlertDialog -> {
+                val tipAlertDialog = dialog as TipAlertDialog
+                if (titleResId != null) {
+                    tipAlertDialog.setTitle(titleResId)
+                } else if (!TextUtils.isEmpty(title)) {
+                    tipAlertDialog.setTitle(title)
+                }
+                if (contentResId != null) {
+                    tipAlertDialog.setContent(contentResId)
+                } else if (!TextUtils.isEmpty(content)) {
+                    tipAlertDialog.setContent(content)
+                }
+                if (leftBtnTextResId != null) {
+                    tipAlertDialog.setLeftBtn(leftBtnTextResId)
+                } else if (!TextUtils.isEmpty(leftBtnText)) {
+                    tipAlertDialog.setLeftBtn(leftBtnText)
+                }
+                if (rightBtnTextResId != null) {
+                    tipAlertDialog.setRightBtn(rightBtnTextResId)
+                } else if (!TextUtils.isEmpty(rightBtnText)) {
+                    tipAlertDialog.setRightBtn(rightBtnText)
+                }
+
+                tipAlertDialog.setListener(listener)
+            }
         }
         dialog!!.onDismissListener = onDismissListener
         if (openBackgroudColor) {
@@ -265,7 +298,7 @@ class CommonAlertDialog {
         } else {
             dialog!!.setBackground(0)
         }
-        dialog!!.setPopupGravity(Gravity.CENTER)
+        dialog!!.setPopupGravity(gravity)
             .setOutSideDismiss(outSideDismiss)
             .setBackPressEnable(backPressEnable)
         dialog!!.showPopupWindow()
