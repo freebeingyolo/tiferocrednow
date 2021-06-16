@@ -1,7 +1,6 @@
 package com.css.ble.viewmodel
 
 import LogUtils
-import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattService
 import androidx.annotation.NonNull
 import androidx.lifecycle.LiveData
@@ -17,6 +16,7 @@ import cn.wandersnail.commons.poster.ThreadMode
 import cn.wandersnail.commons.util.StringUtils
 import cn.wandersnail.commons.util.ToastUtils
 import com.css.ble.bean.BondDeviceData
+import com.css.ble.utils.DataUtils
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
@@ -26,8 +26,11 @@ import java.util.*
  * @date 2021-05-12
  */
 class WheelMeasureVM : BaseWheelVM(), EventObserver {
-    private val _state: MutableLiveData<State> by lazy { MutableLiveData<State>(State.begin) }
-    val state: LiveData<State> get() = _state
+    val state: LiveData<State> by lazy { MutableLiveData<State>(State.begin) }
+    val batteryLevel: LiveData<Float> by lazy { MutableLiveData(-1f) }
+    val exerciseCount: LiveData<Int> by lazy { MutableLiveData(-1) }
+    val exerciseDuration: LiveData<Long> by lazy { MutableLiveData(-1) }
+    val exerciseKcal: Float get() = if (exerciseCount.value == -1) -1f else exerciseCount.value!! * 0.00175f
 
     enum class State {
         begin,
@@ -63,7 +66,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
     }
 
     override fun onScanTimeOut() {
-        _state.value = State.timeOut
+        (state as MutableLiveData).value = State.timeOut
         EasyBLE.getInstance().disconnectAllConnections()
     }
 
@@ -80,19 +83,19 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
         LogUtils.d("onConnectionStateChanged:${device.connectionState},${device.name}")
         when (device.connectionState) {
             ConnectionState.DISCONNECTED -> {
-                _state.value = State.disconnected
+                (state as MutableLiveData).value = State.disconnected
             }
             ConnectionState.CONNECTING -> {
-                _state.value = State.connecting
+                (state as MutableLiveData).value = State.connecting
             }
             ConnectionState.SCANNING_FOR_RECONNECTION -> {
-                _state.value = State.reconnecting
+                (state as MutableLiveData).value = State.reconnecting
             }
             ConnectionState.CONNECTED -> {
-                _state.value = State.connected
+                (state as MutableLiveData).value = State.connected
             }
             ConnectionState.SERVICE_DISCOVERING -> {
-                _state.value = State.discovering
+                (state as MutableLiveData).value = State.discovering
             }
             ConnectionState.SERVICE_DISCOVERED -> {
                 val services: List<BluetoothGattService> = EasyBLE.getInstance().getConnection(device)!!.gatt!!.services
@@ -103,13 +106,13 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
                 }
             }
             ConnectionState.RELEASED -> {
-                _state.value = State.released
+                (state as MutableLiveData).value = State.released
             }
         }
     }
 
     private fun discovered(device: Device) {
-        _state.value = State.discovered
+        (state as MutableLiveData).value = State.discovered
         cancelTimeOutTimer()
         viewModelScope.launch {
             //开启通知
@@ -124,7 +127,8 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
             })
             delay(200)
             //获取电量
-            var data = StringUtils.toByteArray("F1-F1-FF-01-00-00-7E","-")
+            //val data = StringUtils.toByteArray("F1F1FF0100007E","")
+            val data = StringUtils.toByteArray("54", "")
             writeCharacter(UUID_SRVC2, UUID_WRITE2, data, object : WriteCharacteristicCallback {
                 override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
                     LogUtils.d("discovered#onCharacteristicWrite#onRequestFailed：$failType")
@@ -199,6 +203,16 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
     override fun onCharacteristicChanged(device: Device, service: UUID, characteristic: UUID, value: ByteArray) {
         super.onCharacteristicChanged(device, service, characteristic, value)
         LogUtils.d("onCharacteristicChanged：" + StringUtils.toHex(value, " "))
+        if (value.size > 3) {
+            (batteryLevel as MutableLiveData).value = 1f / value[value.size - 1]
+            when (value[0]) {
+                0x54.toByte() -> { //查询当前健腹轮个数
+                    val count = DataUtils.bytes2IntBig(value[2], value[3], value[4])
+                    (exerciseCount as MutableLiveData).value = count
+                }
+            }
+        }
+
     }
 
     private fun sendNotification(serviceUUID: UUID, characterUUID: UUID, isEnabled: Boolean, cb: NotificationChangeCallback) {

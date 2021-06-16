@@ -122,7 +122,7 @@ class TodayStepCounter : SensorEventListener{
     }
 
     private fun shutdown(counterStep: Int) {
-        val tmpCurrStep = mContext?.let { PreferencesHelper().getCurrentStep(it) } as Int
+        val tmpCurrStep = mContext?.let { PreferencesHelper().getCurrentStep(it) }!!.toInt()
         //重新设置offset
         sOffsetStep = (counterStep - tmpCurrStep).toFloat()
         mContext?.let { PreferencesHelper().setStepOffset(it, sOffsetStep.toFloat()) }

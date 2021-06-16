@@ -32,34 +32,62 @@ class WheelMeasureBeginFragment :
 
     override fun initData() {
         super.initData()
+        mViewModel.batteryLevel.observe(viewLifecycleOwner) {
+            mViewBinding!!.batteryLevel.text = if (it == -1f) {
+                "--"
+            } else {
+                String.format("%d%%", (it * 100).toInt())
+            }
+        }
+        mViewModel.exerciseDuration.observe(viewLifecycleOwner) {
+            mViewBinding!!.exerciseDuration.text = if (it == -1L) {
+                "--"
+            } else {
+
+                String.format("%d", it)
+            }
+
+        }
+        mViewModel.exerciseCount.observe(viewLifecycleOwner) {
+            mViewBinding!!.exerciseCount.text = if (it == -1) {
+                "--"
+            } else {
+                String.format("%d", it)
+            }
+            mViewBinding!!.exerciseKcal.text = if (it == -1) {
+                "--"
+            } else {
+                String.format("%f", mViewModel.exerciseKcal)
+            }
+        }
+
         mViewModel.state.observe(viewLifecycleOwner) {
             refreshBottom(it)
             when (it) {
                 State.connecting -> {
-                    mViewBinding!!.connectState.text = getString(R.string.device_connecting)
+                    mViewBinding!!.connectState.setText(R.string.device_connecting)
                 }
                 State.discovered -> {
-                    mViewBinding!!.connectState.text = getString(R.string.device_connected)
+                    mViewBinding!!.connectState.setText(R.string.device_connected)
                 }
                 State.begin, State.disconnected -> {
-                    mViewBinding!!.connectState.text = getString(R.string.device_disconnected)
+                    mViewBinding!!.connectState.setText(R.string.device_disconnected)
                 }
                 State.timeOut -> {
-                    activity?.let { it1 ->
-                        CommonAlertDialog(it1).apply {
-                            type = CommonAlertDialog.DialogType.Tip
-                            gravity = Gravity.BOTTOM
-                            listener = object : DialogClickListener.DefaultLisener() {
-
-                                override fun onRightEditBtnClick(view: View, content: String?) {
-                                    //TODO 重新连接
-                                }
+                    CommonAlertDialog(requireContext()).apply {
+                        type = CommonAlertDialog.DialogType.Tip
+                        gravity = Gravity.BOTTOM
+                        listener = object : DialogClickListener.DefaultLisener() {
+                            override fun onLeftBtnClick(view: View) {
                             }
-                        }.show()
-                    }
+
+                            override fun onRightBtnClick(view: View) {
+                                //TODO 重新连接
+                                mViewModel.connect()
+                            }
+                        }
+                    }.show()
                 }
-
-
             }
         }
     }
@@ -83,7 +111,6 @@ class WheelMeasureBeginFragment :
                         }
                         State.discovered -> {
                             left.text = "开始训练"
-
 
                         }
                         State.exercise_start -> {

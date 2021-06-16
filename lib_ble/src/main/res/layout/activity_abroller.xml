@@ -52,7 +52,38 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/exerciseDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:30:00"
+                android:textColor="@color/black"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/exerciseDurationTips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="累计使用时长"
+                android:textColor="#666666"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+
         <TextView
+            android:id="@+id/batteryLevel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="28dp"
@@ -80,6 +111,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/exerciseCount"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1.5"
@@ -106,13 +138,14 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/exerciseKcal"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1.5"
                 android:gravity="center"
                 android:text="--"
                 android:textColor="@color/black"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <TextView
