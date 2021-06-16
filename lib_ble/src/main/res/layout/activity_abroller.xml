@@ -88,7 +88,7 @@
             android:layout_height="10dp"
             android:layout_marginEnd="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintEnd_toStartOf="@+id/batteryLevel"
+            app:layout_constraintEnd_toStartOf="@+id/batteryLevel"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -174,23 +174,28 @@
         android:layout_height="0dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
+        android:orientation="vertical"
         android:layout_marginEnd="20dp"
         android:layout_weight="1"
         android:background="@drawable/bg_while_radius4">
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="24dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
+            android:layout_marginTop="11dp"
             android:gravity="center_vertical"
             android:text="玩法推荐"
             android:textColor="@color/black"
-            android:textSize="12sp"
+            android:textSize="10sp"
             android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_play_recommend"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            tools:itemCount="3"
+            tools:listitem="@layout/layout_play_recommend_item" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <LinearLayout
