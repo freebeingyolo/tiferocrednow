@@ -2,30 +2,30 @@ package com.css.ble.viewmodel
 
 import LogUtils
 import android.bluetooth.BluetoothGattService
-import android.util.Log
 import androidx.annotation.NonNull
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import cn.wandersnail.ble.*
 import cn.wandersnail.ble.callback.ScanListener
 import cn.wandersnail.commons.observer.Observe
 import cn.wandersnail.commons.poster.RunOn
 import cn.wandersnail.commons.poster.Tag
 import cn.wandersnail.commons.poster.ThreadMode
-import cn.wandersnail.commons.util.StringUtils
-import cn.wandersnail.commons.util.ToastUtils
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.service.utils.CacheKey
-import com.css.service.utils.WonderCoreCache
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import java.lang.IllegalStateException
 import java.util.*
 
 /*
+0x02010614FF2301010700000000000000000010FFFFFF00010E094162526F6C6C65722D3246434605120600E803020A00
+解析：
+LEN     TYPE    VALUE
+0x02    0x01    0x06
+0x14    0x06    0X2301010700000000000000000010FFFFFF0001
+0x0E    0x09    0x4162526F6C6C65722D32464346
+0x05    0x12    0x0600E803
+0x02    0x0A    0x00
+
 AbRoller-2FD0
 AbRoller-2FCF
 mac:84:c2:e4:05:2f:d0
@@ -64,7 +64,7 @@ case 9	 ELinkBleServer.this.finish() //结束服务
 class WheelBondVM : BaseWheelVM(), EventObserver {
     private val _state: MutableLiveData<State> by lazy { MutableLiveData<State>(State.begin) }
     val state: LiveData<State> get() = _state
-    private var bondDevice: Device? = null
+    private var avaliableDevice: Device? = null
     private val timeOut = 5 * 1000L
     private val fondMethod = FoundByName
 
@@ -154,15 +154,15 @@ class WheelBondVM : BaseWheelVM(), EventObserver {
         }
     }
 
-    private fun foundDevice(device: Device) {
-        _state.value = State.found
-        bondDevice = device
+    private fun foundDevice(d: Device) {
+        avaliableDevice = d
         cancelTimeOutTimer()
+        _state.value = State.found
     }
 
     //ui收到去调用bondDevice
     fun bondDevice() {
-        bondDevice?.let {
+        avaliableDevice?.let {
             val bondRst = EasyBLE.getInstance().createBond(it.address)
             LogUtils.d("bondRst:$bondRst")
             val d = BondDeviceData(
