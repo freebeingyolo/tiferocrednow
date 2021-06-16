@@ -1,16 +1,13 @@
 package com.css.base.uibase.base
 
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
-import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.Toast
-import androidx.annotation.*
+import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.contains
 import androidx.lifecycle.Observer

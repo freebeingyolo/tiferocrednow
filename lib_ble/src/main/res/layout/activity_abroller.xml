@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,7 +9,7 @@
     android:background="@color/bg_gray"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context=".ui.activity.index.ABRollerActivity">
+    tools:context=".ui.WeightMeasureActivity">
 
     <com.css.base.view.ToolBarView
         android:id="@+id/toolBarView"
@@ -18,6 +19,7 @@
         android:background="@color/bg_gray"
         android:minHeight="44dp"
         android:navigationIcon="@null"
+        android:visibility="gone"
         app:centerText=""
         app:centerTextColor="@color/common_black_color"
         app:leftImageView="@drawable/ic_common_back_black"
@@ -39,10 +41,11 @@
         android:background="@drawable/bg_while_radius4">
 
         <TextView
+            android:id="@+id/connectState"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="22dp"
-            android:text="已连接"
+            android:text="@string/device_disconnected"
             android:textColor="@color/black"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -148,13 +151,18 @@
             android:layout_height="match_parent" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="54dp"
+        android:layout_marginTop="45dp"
         android:background="@color/white"
-        android:orientation="horizontal">
+        android:divider="#848484"
+        android:dividerPadding="20dp"
+        android:orientation="horizontal"
+        android:showDividers="middle">
 
         <TextView
+            android:id="@+id/left"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -163,14 +171,8 @@
             android:textColor="#F2682A"
             android:textSize="14sp" />
 
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:background="#848484" />
-
         <TextView
+            android:id="@+id/right"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -178,5 +180,7 @@
             android:text="开始运动"
             android:textColor="#F2682A"
             android:textSize="14sp" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
+    </LinearLayout>
 </LinearLayout>
+
+

@@ -21,6 +21,7 @@ import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.databinding.FragmentDeviceInfoBinding
 import com.css.pickerview.listener.OnDismissListener
+import com.css.service.utils.CacheKey
 import com.css.service.utils.WonderCoreCache
 import razerdp.basepopup.BasePopupWindow
 
@@ -59,14 +60,14 @@ class DeviceInfoActivity : BaseActivity<DefaultViewModel, FragmentDeviceInfoBind
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         key = intent.getStringExtra("DeviceKey")!!
-        data = WonderCoreCache.getData(key, BondDeviceData::class.java)
+        data = BondDeviceData.getDevice(CacheKey.valueOf(key))!!
         mViewBinding?.apply {
             tvDeviceName.text = data.displayName
             tvMacAddress.text = data.mac
         }
         setToolBarLeftText(data.displayName)
         mViewBinding!!.rlDeleteDevice.setOnClickListener {
-            WonderCoreCache.removeKey(key)
+            BondDeviceData.setDevice(data.cacheKey, null)
         }
 
         mViewBinding?.apply {
@@ -90,15 +91,15 @@ class DeviceInfoActivity : BaseActivity<DefaultViewModel, FragmentDeviceInfoBind
                                 showToast("设备名称只可为10个汉字或英文字母，包含其他字符将无法保存")
                             } else {
                                 var validContent: String
-                                if (content.isNullOrEmpty()){
-                                     validContent = data.displayName
-                                }else{
+                                if (content.isNullOrEmpty()) {
+                                    validContent = data.displayName
+                                } else {
                                     validContent = content
                                 }
 
                                 tvDeviceName.text = validContent
                                 data.alias = validContent
-                                WonderCoreCache.saveData(key, data)
+                                BondDeviceData.setDevice(CacheKey.valueOf(key), data)
                                 dialog?.dismiss()
                                 setToolBarLeftText(data.displayName)
                             }
@@ -116,7 +117,7 @@ class DeviceInfoActivity : BaseActivity<DefaultViewModel, FragmentDeviceInfoBind
                     listener = object : DialogClickListener.DefaultLisener() {
                         override fun onRightBtnClick(view: View) {
                             super.onRightBtnClick(view)
-                            WonderCoreCache.removeKey(data.getCacheKey())
+                            BondDeviceData.setDevice(data.cacheKey, null)
                             data.alias = null
                             CommonAlertDialog(context).apply {
                                 type = CommonAlertDialog.DialogType.Image

@@ -35,7 +35,6 @@ class WheelBondBeginFragment : BaseDeviceFragment<WheelBondVM, LayoutWheelBondBe
                 }
             }
         }
-
     }
 
     override fun initData() {
@@ -43,7 +42,8 @@ class WheelBondBeginFragment : BaseDeviceFragment<WheelBondVM, LayoutWheelBondBe
         mViewModel.state.observe(viewLifecycleOwner) {
             when (it) {
                 found -> {
-                    FragmentUtils.changeFragment(WeightBondDoingFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
+                    mViewModel.bondDevice()
+                    FragmentUtils.changeFragment(WheelBondEndFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
                 }
                 timeOut -> {
                     BleErrorFragment.Builder.errorType(ErrorType.SEARCH_TIMEOUT)

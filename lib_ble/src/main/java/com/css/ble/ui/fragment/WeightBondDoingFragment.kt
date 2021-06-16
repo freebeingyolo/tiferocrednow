@@ -34,7 +34,7 @@ class WeightBondDoingFragment : BaseWeightFragment<WeightBondVM, LayoutWeightBon
                     mViewModel.filterDevice!!.manifactureHex,
                     DeviceType.WEIGHT
                 )
-                WonderCoreCache.saveData(CacheKey.BOND_WEIGHT_INFO, d)
+                BondDeviceData.setDevice(CacheKey.BOND_WEIGHT_INFO,d)
                 mViewModel.state.value = WeightBondVM.State.done
             }
         }

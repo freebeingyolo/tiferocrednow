@@ -1,0 +1,719 @@
+package com.css.ble.ui
+
+import android.app.*
+import android.app.NotificationManager.IMPORTANCE_MIN
+import android.bluetooth.*
+import android.bluetooth.le.ScanCallback
+import android.bluetooth.le.ScanResult
+import android.bluetooth.le.ScanSettings
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.graphics.drawable.Icon
+import android.os.*
+import androidx.annotation.DrawableRes
+import androidx.annotation.RequiresApi
+import androidx.annotation.RequiresPermission
+import com.pingwang.bluetoothlib.AILinkSDK
+import com.pingwang.bluetoothlib.bean.BleValueBean
+import com.pingwang.bluetoothlib.config.BroadcastConfig
+import com.pingwang.bluetoothlib.device.BleDevice
+import com.pingwang.bluetoothlib.listener.CallbackDisIm
+import com.pingwang.bluetoothlib.listener.OnCallbackBle
+import com.pingwang.bluetoothlib.listener.OnScanFilterListener
+import com.pingwang.bluetoothlib.server.ELinkBleServer.*
+import com.pingwang.bluetoothlib.utils.BleLog
+import com.pingwang.bluetoothlib.utils.MyBleDeviceUtils
+import java.util.*
+
+class ELinkBleServer : Service() {
+    companion object {
+        private val SCAN_BLE_DEVICE = 1
+        private val STOP_BLE_DEVICE = 2
+        private val GET_BLE_SERVICE = 5
+        private val GET_BLE_SERVICE_OK = 6
+        private val CONNECT_BLE_TIMEOUT = 7
+        private const val STOP_SERVER = 9
+        private val TAG = ELinkBleServer::class.java.name
+    }
+
+    private var mBinder: BluetoothBinder? = null
+    private var mBluMainService: ELinkBleServer? = null
+    private var mBleManager: BluetoothManager? = null
+    var bluetoothAdapter: BluetoothAdapter? = null
+        private set
+    private val scanOut = 30000
+    var isScanStatus = false
+        private set
+    private var connectBleTimeout = 10000
+    private var mBleObjectMap: MutableMap<String, BleDevice?>? = null
+    private var mScanUUID: Array<out UUID>? = null
+    private var mTimeOut = 30000L
+    private val mHandler: Handler = object : Handler(Objects.requireNonNull(Looper.myLooper())!!) {
+        override fun handleMessage(msg: Message) {
+            when (msg.what) {
+                SCAN_BLE_DEVICE -> this@ELinkBleServer.scanLeDevice(mTimeOut, *mScanUUID!!)
+                STOP_BLE_DEVICE -> {
+                    val timeOut = msg.arg1
+                    if (timeOut > 0) {
+                        mCallback?.onScanTimeOut()
+                        stopScan()
+                    }
+                }
+                3, 4, GET_BLE_SERVICE_OK, 8 -> {
+                }
+                GET_BLE_SERVICE -> {
+                    val gatt = msg.obj as BluetoothGatt?
+                    if (gatt != null) {
+                        gatt.discoverServices()
+                        BleLog.i(TAG, "获取蓝牙服务")
+                        this.removeMessages(CONNECT_BLE_TIMEOUT)
+                        this.sendEmptyMessageDelayed(CONNECT_BLE_TIMEOUT, connectBleTimeout.toLong())
+                    }
+                }
+                CONNECT_BLE_TIMEOUT -> if (mConnectGatt != null) {
+                    val address = mConnectGatt!!.device.address
+                    BleLog.e(TAG, "连接超时:" + mConnectGatt + "||mac:" + address)
+                    mConnectGatt?.disconnect()
+                    mConnectGatt?.close()
+                    mConnectGatt = null
+                    gattOld = null
+                    runOnMainThread {
+                        mCallback?.onDisConnected(address, -1)
+                        CallbackDisIm.getInstance().onDisConnected(address, -1)
+                    }
+                } else {
+                    BleLog.e(TAG, "蓝牙连接超时:mConnectGatt=null")
+                    this.sendEmptyMessage(STOP_BLE_DEVICE)
+                }
+                STOP_SERVER -> try {
+                    finish()
+                } catch (var5: Exception) {
+                    var5.printStackTrace()
+                }
+
+            }
+        }
+    }
+    private var mId = 0
+
+    @DrawableRes
+    private var mIcon = 0
+    private var mTitle: String? = null
+    private var mActivityClass: Class<*>? = null
+    private var mOnScanFilterListener: OnScanFilterListener? = null
+
+    @Volatile
+    private var mMap: Map<String, String>? = null
+    private val mLeScanCallback = BluetoothAdapter.LeScanCallback { device: BluetoothDevice?, rssi: Int, scanRecord: ByteArray? ->
+        if (device != null && scanRecord != null) {
+            var mBle: BleValueBean? = BleValueBean(device, rssi, scanRecord, mMap)
+            if (mScanUUID != null && mScanUUID!!.isNotEmpty()) {
+                var uuidOk = false
+                val parcelUuids = mBle!!.parcelUuids ?: return@LeScanCallback
+                val var7: Iterator<*> = parcelUuids.iterator()
+                while (true) {
+                    while (var7.hasNext()) {
+                        val uuid = var7.next() as ParcelUuid
+                        val var9 = mScanUUID
+                        val var10 = var9!!.size
+                        var var11 = 0
+                        while (var11 < var10) {
+                            val uuid1 = var9[var11]
+                            if (uuid.toString().equals(uuid1.toString(), true)) {
+                                uuidOk = true
+                                break
+                            }
+                            ++var11
+                        }
+                    }
+                    if (!uuidOk) {
+                        mBle = null
+                        return@LeScanCallback
+                    }
+                    break
+                }
+            }
+            saveScanData(mBle)
+        }
+    }
+    private var mScanCallback: MyScanCallback? = null
+    private var mScanErr = 0
+
+    @Volatile
+    private var mConnectGatt: BluetoothGatt? = null
+    private var discoverServicesTime = 0L
+    private var mGattCallback: MyBluetoothGattCallback? = null
+    private var gattOld: BluetoothGatt? = null
+    private var mCallback: OnCallbackBle? = null
+    private var mBleStateReceiver: BleStateReceiver? = null
+    private val threadHandler = Handler(Looper.getMainLooper())
+    override fun onBind(intent: Intent): IBinder? {
+        return mBinder
+    }
+
+    override fun onUnbind(intent: Intent): Boolean {
+        return super.onUnbind(intent)
+    }
+
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+        return START_STICKY_COMPATIBILITY
+    }
+
+    fun initForegroundService(id: Int, @DrawableRes icon: Int, title: String?, activityClass: Class<*>?) {
+        mId = id
+        mIcon = icon
+        mTitle = title
+        mActivityClass = activityClass
+    }
+
+    @RequiresPermission(allOf = ["android.permission.FOREGROUND_SERVICE"])
+    fun startForeground() {
+        val intent = Intent(this, mActivityClass)
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
+        var notification: Notification? = null
+        notification = if (Build.VERSION.SDK_INT >= 26) {
+            val channelId = "channel_id"
+            val channelName = "channel_name"
+            val notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationChannel = NotificationChannel(channelId, channelName, IMPORTANCE_MIN)
+            notificationManager.createNotificationChannel(notificationChannel)
+            Notification.Builder(this, channelId).setContentIntent(pendingIntent).setSmallIcon(mIcon).setLargeIcon(
+                Icon.createWithResource(
+                    this,
+                    mIcon
+                )
+            ).setContentTitle(mTitle).setOngoing(true).build()
+        } else {
+            Notification.Builder(this).setContentIntent(pendingIntent).setSmallIcon(mIcon).setContentTitle(mTitle).setOngoing(true).build()
+        }
+        this.startForeground(mId, notification)
+    }
+
+    @RequiresPermission(allOf = ["android.permission.FOREGROUND_SERVICE"])
+    fun stopForeground() {
+        this.stopForeground(true)
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        BleLog.i(TAG, "onCreate")
+        initStart()
+    }
+
+    private fun initStart() {
+        BleLog.i(TAG, "初始化启动信息")
+        if (!AILinkSDK.getInstance().isInitOk) {
+            throw SecurityException("请先调用AILinkSDK.getInstance().isInitOk(),判断初始化是否成功.(Please call AILinkSDK.getInstance().isInitOk() to judge whether the initialization is successful. ())")
+        } else {
+            if (mBinder == null) {
+                mBinder = BluetoothBinder()
+            }
+            if (mBleManager == null) {
+                mBleManager = this.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+            }
+            if (bluetoothAdapter == null && mBleManager != null) {
+                bluetoothAdapter = mBleManager!!.adapter
+                mBluMainService = this
+                mBleObjectMap = mutableMapOf()
+                mGattCallback = MyBluetoothGattCallback()
+                bleState()
+            } else {
+                mHandler.sendEmptyMessage(STOP_SERVER)
+            }
+        }
+    }
+
+    fun setOnScanFilterListener(onScanFilterListener: OnScanFilterListener?) {
+        mOnScanFilterListener = onScanFilterListener
+    }
+
+    @RequiresPermission(allOf = ["android.permission.BLUETOOTH_ADMIN", "android.permission.BLUETOOTH"])
+    fun scanLeDevice(timeOut: Long) {
+        this.scanLeDevice(timeOut, null)
+    }
+
+    @RequiresPermission(allOf = ["android.permission.BLUETOOTH_ADMIN", "android.permission.BLUETOOTH"])
+    fun scanLeDevice(timeOut: Long, map: Map<String, String>?, vararg scanUUID: UUID) {
+        mMap = map
+        this.scanLeDevice(timeOut, *scanUUID)
+    }
+
+    @RequiresPermission(allOf = ["android.permission.BLUETOOTH_ADMIN", "android.permission.BLUETOOTH"])
+    fun scanLeDevice(timeOut: Long, vararg scanUUID: UUID) {
+        BleLog.i(TAG, "搜索设备timeOut=$timeOut")
+        mTimeOut = timeOut
+        mHandler.removeMessages(STOP_BLE_DEVICE)
+        val message: Message
+        if (isScanStatus) {
+            BleLog.i(TAG, "是扫描状态就重置定时")
+            message = Message.obtain()
+            message.what = STOP_BLE_DEVICE
+            message.arg1 = timeOut.toInt()
+            mHandler.sendMessageDelayed(message, timeOut)
+        } else if (!bluetoothAdapter!!.isEnabled) {
+            BleLog.e(TAG, "蓝牙未开启.")
+            bleClose()
+        } else {
+            try {
+                if (scanUUID.isNotEmpty()) {
+                    mScanUUID = scanUUID
+                } else {
+                    mScanUUID = null
+                }
+                if (Build.VERSION.SDK_INT >= 21) {
+                    if (mScanCallback == null) {
+                        mScanCallback = MyScanCallback()
+                    }
+                    val settings = ScanSettings.Builder().setScanMode(2).build()
+                    bluetoothAdapter!!.bluetoothLeScanner.startScan(null, settings, mScanCallback)
+                } else {
+                    bluetoothAdapter!!.startLeScan(mLeScanCallback)
+                }
+                isScanStatus = true
+                runOnMainThread {
+                    mCallback?.onStartScan()
+                }
+            } catch (var5: Exception) {
+                var5.printStackTrace()
+            }
+            message = Message.obtain()
+            message.what = 2
+            message.arg1 = timeOut.toInt()
+            mHandler.sendMessageDelayed(message, timeOut)
+        }
+    }
+
+    fun stopScan() {
+        mHandler.removeMessages(SCAN_BLE_DEVICE)
+        mHandler.removeMessages(STOP_BLE_DEVICE)
+        if (bluetoothAdapter != null) {
+            if (Build.VERSION.SDK_INT >= 21) {
+                if (bluetoothAdapter!!.bluetoothLeScanner != null) {
+                    bluetoothAdapter!!.bluetoothLeScanner.stopScan(mScanCallback)
+                }
+            } else {
+                bluetoothAdapter!!.stopLeScan(mLeScanCallback)
+            }
+        }
+        isScanStatus = false
+        mMap = null
+    }
+
+    private fun saveScanData(mBle: BleValueBean?) {
+        var isMeBle = true
+        if (mOnScanFilterListener != null) {
+            isMeBle = mOnScanFilterListener!!.onFilter(mBle)
+        }
+        if (isMeBle) {
+            mOnScanFilterListener?.onScanRecord(mBle)
+            synchronized(this) {
+                runOnMainThread {
+                    mCallback?.onScanning(mBle)
+                }
+            }
+        }
+    }
+
+    fun connectDevice(mAddress: String) {
+        connectBleDevice(mAddress)
+    }
+
+    private fun connectBleDevice(mAddress: String) {
+        if (!bluetoothAdapter!!.isEnabled) {
+            BleLog.e(TAG, "蓝牙未开启.")
+            bleClose()
+        } else {
+            if (mConnectGatt != null) {
+                BleLog.e(TAG, "断开之前的连接连接")
+                mConnectGatt!!.disconnect()
+                mConnectGatt!!.close()
+            }
+            val device: BluetoothDevice?
+            try {
+                device = bluetoothAdapter!!.getRemoteDevice(mAddress)
+                if (device == null) {
+                    BleLog.e(TAG, "找不到需要连接的设备:$mAddress")
+                    return
+                }
+            } catch (var4: IllegalArgumentException) {
+                BleLog.e(TAG, "连接的设备地址无效:$mAddress")
+                var4.printStackTrace()
+                return
+            }
+            if (mBleObjectMap!!.size > 5) {
+                disconnectAll()
+            }
+            mConnectGatt = device.connectGatt(mBluMainService, false, mGattCallback)
+            runOnMainThread {
+                mCallback?.onConnecting(mAddress)
+                CallbackDisIm.getInstance().onConnecting(mAddress)
+            }
+            BleLog.i(TAG, "开始连接:" + mConnectGatt)
+            mHandler.removeMessages(CONNECT_BLE_TIMEOUT)
+            mHandler.sendEmptyMessageDelayed(CONNECT_BLE_TIMEOUT, connectBleTimeout.toLong())
+        }
+    }
+
+    fun getConnectStatus(mac: String): Boolean {
+        return mBleObjectMap!![mac.toUpperCase()]?.isConnectSuccess ?: false
+    }
+
+    fun getBleDevice(mac: String?): BleDevice? {
+        return if (mac != null && mac.isNotEmpty()) mBleObjectMap!![mac.toUpperCase()] else null
+    }
+
+    private fun disconnect(mac: String, code: Int, gatt: BluetoothGatt?) {
+        mHandler.removeMessages(GET_BLE_SERVICE_OK)
+        gatt?.close()
+        runOnMainThread {
+            BleLog.iw(TAG, "通知连接断开:$code")
+            mCallback?.onDisConnected(mac, code)
+            CallbackDisIm.getInstance().onDisConnected(mac, code)
+            mBleObjectMap!![mac]?.onDisConnected()
+        }
+        removeConnect(mac)
+        discoverServicesTime = 0L
+    }
+
+    fun removeConnect(mac: String?) {
+        if (mBleObjectMap != null) {
+            mBleObjectMap!!.remove(mac)
+        }
+    }
+
+    fun disconnectAll() {
+        BleLog.i(TAG, "disconnectAll:断开所有蓝牙连接")
+        mHandler.removeMessages(CONNECT_BLE_TIMEOUT)
+        if (mConnectGatt != null) {
+            mConnectGatt!!.disconnect()
+            if (mConnectGatt != null) {
+                mConnectGatt!!.close()
+            }
+            mConnectGatt = null
+        }
+        if (mBleObjectMap != null) {
+            synchronized(mBleObjectMap!!) {
+                if (mBleObjectMap != null) {
+                    val var2: Iterator<*> = mBleObjectMap!!.keys.iterator()
+                    while (var2.hasNext()) {
+                        val mAddress = var2.next() as String
+                        mBleObjectMap!![mAddress]?.disconnect()
+                    }
+                    mBleObjectMap!!.clear()
+                }
+            }
+        }
+    }
+
+    fun setOnCallback(callback: OnCallbackBle?) {
+        mCallback = callback
+    }
+
+    private fun bleState() {
+        try {
+            if (mBleStateReceiver == null) {
+                val intentFilter = IntentFilter()
+                mBleStateReceiver = BleStateReceiver()
+                intentFilter.addAction("android.bluetooth.adapter.action.STATE_CHANGED")
+                intentFilter.addAction(BroadcastConfig.APP_FRONT_DESK)
+                this.registerReceiver(mBleStateReceiver, intentFilter)
+                BleLog.i(TAG, "注册广播成功")
+            }
+        } catch (var2: IllegalArgumentException) {
+            BleLog.e(TAG, "注册广播失败:" + var2.message)
+            var2.printStackTrace()
+        }
+    }
+
+    private fun bleOpen() {
+        BleLog.i(TAG, "蓝牙打开")
+        runOnMainThread {
+            mCallback?.bleOpen()
+            CallbackDisIm.getInstance().bleOpen()
+        }
+    }
+
+    private fun bleClose() {
+        BleLog.i(TAG, "蓝牙关闭")
+        stopScan()
+        runOnMainThread {
+            mCallback?.bleClose()
+            CallbackDisIm.getInstance().bleClose()
+        }
+        isScanStatus = false
+        mHandler.removeMessages(STOP_BLE_DEVICE)
+    }
+
+    private fun runOnMainThread(runnable: Runnable) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            runnable.run()
+        } else {
+            threadHandler.post(runnable)
+        }
+    }
+
+    override fun stopService(name: Intent): Boolean {
+        return super.stopService(name)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mHandler.removeCallbacksAndMessages(null)
+        finish()
+        BleLog.i(TAG, "onDestroy")
+    }
+
+    private fun finish() {
+        BleLog.i(TAG, "退出释放资源")
+        stopScan()
+        disconnectAll()
+        mBleManager = null
+        mCallback = null
+        if (mBleStateReceiver != null) {
+            unregisterReceiver(mBleStateReceiver)
+            BleLog.i(TAG, "注销蓝牙广播")
+            mBleStateReceiver = null
+        }
+        this.stopSelf()
+    }
+
+    fun setConnectBleTimeout(connectBleTimeout: Int) {
+        this.connectBleTimeout = connectBleTimeout
+    }
+
+    val isConnectStatus: Boolean
+        get() = mConnectGatt != null
+
+    private inner class BleStateReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val action = intent.action
+            if (action != null && action == "android.bluetooth.adapter.action.STATE_CHANGED") {
+                val state = intent.getIntExtra("android.bluetooth.adapter.extra.STATE", -2147483648)
+                when (state) {
+                    10 -> {
+                        BleLog.i(TAG, "STATE_OFF 手机蓝牙关闭")
+                        bleClose()
+                    }
+                    11 -> BleLog.d(TAG, "STATE_TURNING_ON 手机蓝牙正在开启")
+                    12 -> {
+                        BleLog.i(TAG, "STATE_ON 手机蓝牙开启")
+                        bleOpen()
+                    }
+                    13 -> BleLog.i(TAG, "STATE_TURNING_OFF 手机蓝牙正在关闭")
+                }
+            } else if (action == BroadcastConfig.APP_FRONT_DESK) {
+                val booleanExtra = intent.getBooleanExtra(BroadcastConfig.APP_FRONT_DESK_DATA, false)
+                if (booleanExtra) {
+                    this@ELinkBleServer.stopForeground()
+                } else {
+                    this@ELinkBleServer.startForeground()
+                }
+            }
+        }
+    }
+
+    private inner class MyBluetoothGattCallback : BluetoothGattCallback() {
+        override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
+            try {
+                BleLog.e(TAG, "连接返回的状态status:" + status + "||newState:" + newState + "||mac:" + gatt.device.address)
+                mHandler.removeMessages(GET_BLE_SERVICE)
+                val mAddress: String
+                if (status == BluetoothGatt.GATT_SUCCESS) {
+                    if (newState == BluetoothProfile.STATE_CONNECTED && gattOld != gatt) {
+                        runOnMainThread {
+                            val mac = gatt.device.address
+                            BleLog.i(TAG, "通知连接成功:$newState")
+                            mCallback?.onConnectionSuccess(mac)
+                            CallbackDisIm.getInstance().onConnectionSuccess(mac)
+                        }
+                        gattOld = gatt
+                        BleLog.i(TAG, "连接成功的对象:$gatt")
+                        val message = Message.obtain()
+                        message.what = GET_BLE_SERVICE
+                        message.obj = gatt
+                        mHandler.sendMessageDelayed(message, 100L)
+                    } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+                        if (System.currentTimeMillis() - discoverServicesTime > 500L) {
+                            mAddress = gatt.device.address.toUpperCase()
+                            BleLog.e(TAG, "连接断开gatt:$gatt")
+                            if (mConnectGatt != null && mAddress == mConnectGatt!!.device.address) {
+                                mConnectGatt = null
+                            }
+                            discoverServicesTime = System.currentTimeMillis()
+                            disconnect(mAddress, status, gatt)
+                        } else {
+                            BleLog.e(TAG, "连接断开间隔过短")
+                        }
+                    }
+                } else {
+                    mAddress = gatt.device.address.toUpperCase()
+                    if (mConnectGatt != null && mAddress == mConnectGatt!!.device.address.toUpperCase()) {
+                        mConnectGatt = null
+                    }
+                    disconnect(mAddress, status, gatt)
+                    MyBleDeviceUtils.refreshDeviceCache(gatt)
+                }
+            } catch (var5: NullPointerException) {
+                BleLog.e(TAG, "连接/断开异常:$var5")
+                var5.printStackTrace()
+            }
+        }
+
+        override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                gattOld = null
+                runOnMainThread {
+                    val mServices = gatt.services
+                    val var4: Iterator<*> = mServices.iterator()
+                    while (var4.hasNext()) {
+                        val mService = var4.next() as BluetoothGattService
+                        BleLog.i(TAG, "发现新服务:" + mService.uuid)
+                    }
+                    discoverServicesTime = 0L
+                    mHandler.removeMessages(CONNECT_BLE_TIMEOUT)
+                    mHandler.removeMessages(GET_BLE_SERVICE)
+                    mHandler.removeMessages(SCAN_BLE_DEVICE)
+                    val mac: String
+                    if (mServices.size > 0) {
+                        mac = gatt.device.address.toUpperCase()
+                        synchronized(mBleObjectMap!!) {
+                            var mConnectBleObject: BleDevice?
+                            if (mBleObjectMap!!.keys.contains(mac)) {
+                                BleLog.i(TAG, "标签中已包含")
+                                mConnectBleObject = mBleObjectMap!![mac]
+                                mConnectBleObject?.disconnect()
+                            }
+                            mConnectBleObject = BleDevice(gatt, mac)
+                            mBleObjectMap!![mac] = mConnectBleObject
+                            mConnectGatt = null
+                            mCallback?.onServicesDiscovered(mac)
+                            CallbackDisIm.getInstance().onServicesDiscovered(mac)
+                        }
+                    } else {
+                        BleLog.e(TAG, "连接失败:服务读取失败:")
+                        mac = gatt.device.address
+                        disconnect(mac, status, gatt)
+                        gatt.disconnect()
+                        gatt.close()
+                        MyBleDeviceUtils.refreshDeviceCache(gatt)
+                        mConnectGatt = null
+                    }
+                }
+            } else {
+                BleLog.e(TAG, "服务读取失败")
+            }
+        }
+
+        override fun onCharacteristicRead(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, status: Int) {
+            val mac = gatt.device.address.toUpperCase()
+            if (status == 0) {
+                mBleObjectMap!![mac]?.readData(characteristic)
+            }
+        }
+
+        override fun onCharacteristicWrite(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, status: Int) {
+            val mac = gatt.device.address.toUpperCase()
+            if (status == 0) {
+                mBleObjectMap!![mac]?.writeData(characteristic)
+            }
+        }
+
+        override fun onDescriptorRead(gatt: BluetoothGatt, descriptor: BluetoothGattDescriptor, status: Int) {
+            super.onDescriptorRead(gatt, descriptor, status)
+        }
+
+        override fun onDescriptorWrite(gatt: BluetoothGatt, descriptor: BluetoothGattDescriptor, status: Int) {
+            super.onDescriptorWrite(gatt, descriptor, status)
+        }
+
+        override fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
+            val mac = gatt.device.address.toUpperCase()
+            BleLog.i(TAG, "通知返回数据:$mac")
+            mBleObjectMap!![mac]?.notifyData(characteristic)
+        }
+
+        override fun onReliableWriteCompleted(gatt: BluetoothGatt, status: Int) {
+            super.onReliableWriteCompleted(gatt, status)
+            BleLog.i(TAG, "回调写操作已经完成:onReliableWriteCompleted")
+        }
+
+        override fun onReadRemoteRssi(gatt: BluetoothGatt, rssi: Int, status: Int) {
+            if (status == 0) {
+                val mac = gatt.device.address.toUpperCase()
+                val mConnectBleObject = mBleObjectMap!![mac]
+                if (mConnectBleObject != null) {
+                    mConnectBleObject.rssi = rssi
+                }
+            }
+        }
+
+        override fun onMtuChanged(gatt: BluetoothGatt, mtu: Int, status: Int) {
+            super.onMtuChanged(gatt, mtu, status)
+        }
+    }
+
+    @RequiresApi(api = 21)
+    private inner class MyScanCallback : ScanCallback() {
+        override fun onScanResult(callbackType: Int, result: ScanResult) {
+            super.onScanResult(callbackType, result)
+            mScanErr = 0
+            val mBle = BleValueBean(result, mMap)
+            if (mScanUUID != null && mScanUUID!!.size > 0) {
+                var uuidOk = false
+                if (result.scanRecord == null) {
+                    return
+                }
+                val parcelUuids = mBle.parcelUuids ?: return
+                val var6: Iterator<*> = parcelUuids.iterator()
+                while (true) {
+                    while (var6.hasNext()) {
+                        val uuid = var6.next() as ParcelUuid
+                        val var8 = mScanUUID
+                        val var9 = var8!!.size
+                        for (var10 in 0 until var9) {
+                            val uuid1 = var8[var10]
+                            if (uuid.toString().equals(uuid1.toString(), ignoreCase = true)) {
+                                uuidOk = true
+                                break
+                            }
+                        }
+                    }
+                    if (!uuidOk) {
+                        return
+                    }
+                    break
+                }
+            }
+            saveScanData(mBle)
+        }
+
+        override fun onBatchScanResults(results: List<ScanResult>) {
+            super.onBatchScanResults(results)
+            mScanErr = 0
+            mCallback?.onScanTimeOut()
+        }
+
+        override fun onScanFailed(errorCode: Int) {
+            super.onScanFailed(errorCode)
+            BleLog.e(TAG, "扫描失败:$errorCode")
+            if (mScanErr < 3) {
+                mScanErr++
+                stopScan()
+                mHandler.removeMessages(SCAN_BLE_DEVICE)
+                mHandler.sendEmptyMessageDelayed(SCAN_BLE_DEVICE, 2000L)
+            } else {
+                val status = bluetoothAdapter!!.disable()
+                if (status) {
+                    bleClose()
+                }
+            }
+        }
+    }
+
+    inner class BluetoothBinder : Binder() {
+        val service: ELinkBleServer get() = this@ELinkBleServer
+    }
+
+}

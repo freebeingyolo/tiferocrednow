@@ -16,7 +16,7 @@ import com.css.service.router.ARouterConst
 
 
 @Route(path = ARouterConst.PATH_APP_BLE_WEIGHTMEASURE)
-class WeightMeasureActivity() : BaseDeviceActivity<WeightMeasureVM, ActivityBleEntryBinding>(DeviceType.WEIGHT) {
+class WeightMeasureActivity : BaseWeightActivity<WeightMeasureVM, ActivityBleEntryBinding>() {
     override val vmCls: Class<WeightMeasureVM> = WeightMeasureVM::class.java
     override val vbCls: Class<ActivityBleEntryBinding> = ActivityBleEntryBinding::class.java
 

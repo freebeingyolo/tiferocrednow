@@ -97,14 +97,8 @@ class BodyFatDataWrapper(var data: BodyFatData, var weight: Float, var ui: UserD
     val zhifangliangJudge get() = tizhilvJudge
 
     //骨骼肌率
-    val gugejilv get() = 22.6f / 100f
-    val gugejilvJudge
-        get() = run {
-            val input = gugejilv
-            val keyRegion = intArrayOf(25, 30, Int.MAX_VALUE)
-            val valueRegion = arrayOf("不足", "标准", "优")
-            findT(input, keyRegion, valueRegion)
-        }
+    val gugejilv get() = jiroulv
+    val gugejilvJudge get() = jiroulvJudge
     val gugejizhongliang get() = gugejilv * weight
     val gugejizhongliangJudge get() = gugejilvJudge
 

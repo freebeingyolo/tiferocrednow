@@ -14,12 +14,14 @@ import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseActivity
 import com.css.ble.R
+import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.FragmentDeviceListBinding
 import com.css.ble.databinding.LayoutDeviceItemBinding
 import com.css.ble.ui.view.SpaceItemDecoration
 import com.css.ble.viewmodel.DeviceListVM
 import com.css.service.router.ARouterConst
+import com.css.service.utils.CacheKey
 import com.css.service.utils.WonderCoreCache
 import kotlin.concurrent.thread
 
@@ -70,7 +72,7 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
                             listener = object : DialogClickListener.DefaultLisener() {
                                 override fun onRightBtnClick(view: View) {
                                     super.onRightBtnClick(view)
-                                    WonderCoreCache.removeKey(d.getCacheKey())
+                                    BondDeviceData.setDevice(d.cacheKey,null)
                                     CommonAlertDialog(context).apply {
                                         type = CommonAlertDialog.DialogType.Image
                                         imageResources = R.mipmap.icon_tick

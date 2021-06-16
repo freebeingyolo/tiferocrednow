@@ -1,11 +1,13 @@
 package com.css.ble.ui
 
 import android.os.Bundle
+import cn.wandersnail.ble.EasyBLE
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.ActivityBleEntryBinding
 import com.css.ble.ui.fragment.WheelBondBeginFragment
 import com.css.ble.utils.FragmentUtils
+import com.css.ble.utils.UiUtils
 import com.css.ble.viewmodel.WheelBondVM
 import com.css.service.router.ARouterConst
 
@@ -24,4 +26,21 @@ class WheelBondActivity : BaseDeviceActivity<WheelBondVM, ActivityBleEntryBindin
         super.initView(savedInstanceState)
         FragmentUtils.changeFragment(WheelBondBeginFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
     }
+
+    override fun initData() {
+        super.initData()
+        EasyBLE.getInstance().initialize(UiUtils.getApplication())
+        EasyBLE.getInstance().registerObserver(mViewModel);
+    }
+
+
+    override fun onStop() {
+        super.onStop()
+        if (isFinishing) {
+            EasyBLE.getInstance().unregisterObserver(mViewModel)
+            EasyBLE.getInstance().disconnectAllConnections()
+            EasyBLE.getInstance().release()
+        }
+    }
+
 }
