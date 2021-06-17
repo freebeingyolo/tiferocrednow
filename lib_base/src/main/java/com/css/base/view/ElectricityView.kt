@@ -55,7 +55,7 @@ class ElectricityView : View {
          */
         mPowerPaint = Paint()
         mPowerPaint!!.isAntiAlias = true
-        mPowerPaint!!.style = Paint.Style.FILL
+        mPowerPaint!!.style = Paint.Style.FILL_AND_STROKE
 
     }
 
@@ -66,6 +66,7 @@ class ElectricityView : View {
         setMeasuredDimension(mSpecWidthSize, mSpecHeightSize);
     }
 
+    @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         if (mPower <= 20) {
@@ -87,7 +88,7 @@ class ElectricityView : View {
          * 设置电池盖矩形
          */
         mCapRect = RectF(
-            mSpecWidthSize  - 10 - mCapWidth,
+            mSpecWidthSize  - 8 - mCapWidth,
             (mSpecHeightSize - 2) * 0.25f,
             (mSpecWidthSize - 10).toFloat(),
             (mSpecHeightSize - 4) * 0.75f
@@ -111,7 +112,7 @@ class ElectricityView : View {
 
         canvas!!.drawRoundRect(mBatteryRect!!, 5f, 5f, mBatteryPaint!!)
 
-        canvas.drawRoundRect(mCapRect!!, 5f, 5f, mBatteryPaint!!) // 画电池盖
+        canvas.drawRoundRect(mCapRect!!, 5f, 5f, mPowerPaint!!) // 画电池盖
 
         canvas.drawRoundRect(mPowerRect!!, 5f, 5f, mPowerPaint!!) // 画电量
 
