@@ -103,6 +103,7 @@
                             android:textSize="13sp" />
 
                         <TextView
+                            android:id="@+id/weight_device_state"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
@@ -142,6 +143,7 @@
                             android:textSize="13sp" />
 
                         <TextView
+                            android:id="@+id/wheel_device_state"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"

@@ -26,62 +26,29 @@ import kotlinx.coroutines.launch
  * @author yuedong
  * @date 2021-05-17
  */
-class WheelMeasureBeginFragment :
-    BaseDeviceFragment<WheelMeasureVM, ActivityAbrollerBinding>(DeviceType.WHEEL) {
-    private var startTime: Long = 0
+class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbrollerBinding>(DeviceType.WHEEL) {
+
+    override fun initViewModel(): WheelMeasureVM {
+        return WheelMeasureVM
+    }
 
     override fun initData() {
         super.initData()
-        mViewBinding?.electricityView?.setProgress(60)
+        mViewModel.state = mViewModel.state
+        mViewBinding!!.model = mViewModel
+        mViewBinding!!.lifecycleOwner = viewLifecycleOwner
+
         mViewModel.batteryLevel.observe(viewLifecycleOwner) {
-            mViewBinding!!.batteryLevel.text = if (it == -1f) {
-                "--"
-            } else {
-                String.format("%d%%", (it * 100).toInt())
-            }
+            mViewBinding!!.electricityView.setProgress((it * 100).toInt())
         }
-        mViewModel.exerciseDuration.observe(viewLifecycleOwner) {
-            mViewBinding!!.exerciseDuration.text = if (it == -1L) {
-                "--"
-            } else {
-
-                String.format("%d", it)
-            }
-
-        }
-        mViewModel.exerciseCount.observe(viewLifecycleOwner) {
-            mViewBinding!!.exerciseCount.text = if (it == -1) {
-                "--"
-            } else {
-                String.format("%d", it)
-            }
-            mViewBinding!!.exerciseKcal.text = if (it == -1) {
-                "--"
-            } else {
-                String.format("%f", mViewModel.exerciseKcal)
-            }
-        }
-
-        mViewModel.state.observe(viewLifecycleOwner) {
+        mViewModel.stateObsrv.observe(viewLifecycleOwner) {
             refreshBottom(it)
             when (it) {
-                State.connecting -> {
-                    mViewBinding!!.connectState.setText(R.string.device_connecting)
-                }
-                State.discovered -> {
-                    mViewBinding!!.connectState.setText(R.string.device_connected)
-                }
-                State.begin, State.disconnected -> {
-                    mViewBinding!!.connectState.setText(R.string.device_disconnected)
-                }
                 State.timeOut -> {
                     CommonAlertDialog(requireContext()).apply {
                         type = CommonAlertDialog.DialogType.Tip
                         gravity = Gravity.BOTTOM
                         listener = object : DialogClickListener.DefaultLisener() {
-                            override fun onLeftBtnClick(view: View) {
-                            }
-
                             override fun onRightBtnClick(view: View) {
                                 //TODO 重新连接
                                 mViewModel.connect()
@@ -100,20 +67,7 @@ class WheelMeasureBeginFragment :
                 State.exercise_pause,
                 State.exercise_finish -> {
                     right.visibility = View.VISIBLE
-                }
-                else -> {
-                    right.visibility = View.GONE
                     when (s) {
-                        State.begin, State.disconnected -> {
-                            left.text = "连接设备"
-                        }
-                        State.connecting -> {
-                            left.text = "取消连接"
-                        }
-                        State.discovered -> {
-                            left.text = "开始训练"
-
-                        }
                         State.exercise_start -> {
                             left.text = "暂停训练"
                             right.text = "结束训练"
@@ -121,6 +75,20 @@ class WheelMeasureBeginFragment :
                         State.exercise_pause -> {
                             left.text = "继续训练"
                             right.text = "结束训练"
+                        }
+                    }
+                }
+                else -> {
+                    right.visibility = View.GONE
+                    when (s) {
+                        State.disconnected -> {
+                            left.text = "连接设备"
+                        }
+                        State.connecting -> {
+                            left.text = "取消连接"
+                        }
+                        State.discovered -> {
+                            left.text = "开始训练"
                         }
                     }
                 }
@@ -146,12 +114,12 @@ class WheelMeasureBeginFragment :
         })
         mViewBinding?.apply {
             left.setOnClickListener {
-                when (mViewModel.state.value) {
-                    State.begin, State.disconnected -> {
+                when (mViewModel.stateObsrv.value) {
+                    State.disconnected -> {
                         startConnect()
                     }
                     State.connecting -> {
-                        mViewModel.stopConnect()
+                        mViewModel.disconnect()
                     }
                     State.discovered -> {
                         mViewModel.startExercise()
@@ -165,9 +133,9 @@ class WheelMeasureBeginFragment :
                 }
             }
             right.setOnClickListener {
-                when (mViewModel.state.value) {
+                when (mViewModel.stateObsrv.value) {
                     State.exercise_start, State.exercise_pause -> {
-                        mViewModel.finishExercise()
+                        mViewModel.stopExercise()
                     }
                 }
             }
@@ -183,24 +151,21 @@ class WheelMeasureBeginFragment :
 
     fun startConnect() {
         //检查环境并搜搜
-        startTime = System.currentTimeMillis()
         checkBleEnv()
         lifecycleScope.launch {
             while (!checkEnvDone) delay(100)
             if (BleEnvVM.isBleEnvironmentOk) {
-                //至少停留200ms
-                if (System.currentTimeMillis() - startTime < 200) delay(startTime + 200 - System.currentTimeMillis())
-                mViewModel.connect()
+                if (mViewModel.state == State.disconnected) {
+                    //至少停留200ms
+                    mViewModel.connect()
+                }
             } else {
-                BleErrorFragment.Builder.errorType(BleEnvVM.bleErrType)
-                    .leftTitle(BondDeviceData.displayName(deviceType)).create()
+                BleErrorFragment.Builder.errorType(BleEnvVM.bleErrType).leftTitle(BondDeviceData.displayName(deviceType)).create()
             }
         }
     }
 
 
-    override val vmCls: Class<WheelMeasureVM>
-        get() = WheelMeasureVM::class.java
-    override val vbCls: Class<ActivityAbrollerBinding>
-        get() = ActivityAbrollerBinding::class.java
+    override val vmCls: Class<WheelMeasureVM> get() = WheelMeasureVM::class.java
+    override val vbCls: Class<ActivityAbrollerBinding> get() = ActivityAbrollerBinding::class.java
 }

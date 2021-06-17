@@ -17,6 +17,7 @@ import com.css.base.uibase.BaseFragment
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.bean.WeightBondData
+import com.css.ble.viewmodel.WheelMeasureVM
 import com.css.service.data.StepData
 import com.css.service.data.UserData
 import com.css.service.router.ARouterConst
@@ -79,24 +80,14 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             }
         }
 
-        WeightBondData.lastWeightInfoObsvr.let {
-            it.observe(this) { it2 ->
-                if (it2 != null) {
-                    mViewBinding?.tvCurrentWeight?.text = it2.weightKgFmt("%.1f")
-                    mViewBinding?.llBmi?.visibility = View.VISIBLE
-                    mViewBinding?.tvBmi?.text = "BMI${it2?.bodyFatData.bmi}"
-                    mViewBinding?.tvBodyType?.text = it2.bodyFatData.bmiJudge
-                } else {
-                    mViewBinding?.llBmi?.visibility = View.GONE
-                }
-            }
-        }
-
-        WeightBondData.lastWeightInfo.let {
-            if (it?.bodyFatData?.bmi != null) {
+        WeightBondData.lastWeightInfoObsvr.observe(this) { it2 ->
+            if (it2 != null) {
+                mViewBinding?.tvCurrentWeight?.text = it2.weightKgFmt("%.1f")
                 mViewBinding?.llBmi?.visibility = View.VISIBLE
-                mViewBinding?.tvBmi?.text = "BMI${it.bodyFatData?.bmi}"
-                mViewBinding?.tvBodyType?.text = it.bodyFatData.bmiJudge
+                mViewBinding?.tvBmi?.text = "BMI${it2?.bodyFatData.bmi}"
+                mViewBinding?.tvBodyType?.text = it2.bodyFatData.bmiJudge
+            } else {
+                mViewBinding?.llBmi?.visibility = View.GONE
             }
         }
     }
@@ -117,13 +108,18 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
                 mViewBinding?.llCurrentWeight?.visibility = View.GONE
             }
         }
+
         BondDeviceData.bondWheelObsrv.observe(viewLifecycleOwner) {
             if (it != null) {
                 mViewBinding?.llDevice?.visibility = View.VISIBLE
                 mViewBinding?.deviceWheel?.visibility = View.VISIBLE
+
             } else {
                 mViewBinding?.deviceWheel?.visibility = View.INVISIBLE
             }
+        }
+        WheelMeasureVM.stateObsrv.observe(viewLifecycleOwner) {
+            mViewBinding!!.wheelDeviceState.text = WheelMeasureVM.stateStr
         }
         //绑定监听
         sp?.registerOnSharedPreferenceChangeListener(spLis)

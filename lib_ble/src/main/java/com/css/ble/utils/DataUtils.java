@@ -38,7 +38,7 @@ public class DataUtils {
      */
     public static int bytes2IntLittle(byte[] bytes) {
         int ret = 0;
-        int count = 4;
+        int count = Math.min(4, bytes.length);
         for (int i = 0; i < count; i++) {
             ret |= ((short) bytes[i] & 0xff) << (8 * i);
         }
@@ -50,12 +50,13 @@ public class DataUtils {
      * 0x1234 存储方式
      * 0 - 0x12
      * 1 - 0x34
+     *
      * @param bytes
      * @return
      */
     public static int bytes2IntBig(byte... bytes) {
         int ret = 0;
-        int count = 4;
+        int count = Math.min(4, bytes.length);
         for (int i = 0; i < count; i++) {
             ret |= ((short) bytes[i] & 0xff) << (8 * (count - 1 - i));
         }
@@ -93,14 +94,14 @@ public class DataUtils {
     /**
      * 读取小端byte数组为short
      *
-     * @param b
+     * @param bytes
      * @return
      */
-    public static short byteToShortLittle(byte[] b) {
+    public static short byteToShortLittle(byte[] bytes) {
         short ret = 0;
-        int count = 2;
+        int count = Math.min(2, bytes.length);
         for (int i = 0; i < count; i++) {
-            ret |= ((short) b[i] & 0xff) << (8 * (i));
+            ret |= ((short) bytes[i] & 0xff) << (8 * (i));
         }
         return ret;
     }
@@ -108,14 +109,14 @@ public class DataUtils {
     /**
      * 读取大端byte数组为short
      *
-     * @param b
+     * @param bytes
      * @return
      */
-    public static short byteToShortBig(byte[] b) {
+    public static short byteToShortBig(byte[] bytes) {
         short ret = 0;
-        int count = 2;
+        int count =  Math.min(2, bytes.length);
         for (int i = 0; i < count; i++) {
-            ret |= ((short) b[i] & 0xff) << (8 * (count - 1 - i));
+            ret |= ((short) bytes[i] & 0xff) << (8 * (count - 1 - i));
         }
         return ret;
     }

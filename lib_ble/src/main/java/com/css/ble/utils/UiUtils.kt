@@ -5,6 +5,7 @@ import android.graphics.Rect
 import android.os.Looper
 import android.view.TouchDelegate
 import android.view.View
+import cn.wandersnail.commons.util.UiUtils
 import com.blankj.utilcode.util.ActivityUtils
 
 /**
@@ -49,4 +50,6 @@ object UiUtils {
         val app = appMethod.invoke(acThread) as Application
         return app
     }
+
+
 }

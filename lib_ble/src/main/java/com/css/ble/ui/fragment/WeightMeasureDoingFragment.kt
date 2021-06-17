@@ -75,10 +75,6 @@ class WeightMeasureDoingFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
         }
     }
 
-    override fun initView(savedInstanceState: Bundle?) {
-        super.initView(savedInstanceState)
-    }
-
     override fun initCommonToolBarBg(): ToolBarView.ToolBarBg {
         return ToolBarView.ToolBarBg.GRAY
     }

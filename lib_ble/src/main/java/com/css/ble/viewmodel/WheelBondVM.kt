@@ -163,8 +163,8 @@ class WheelBondVM : BaseWheelVM(), EventObserver {
     //ui收到去调用bondDevice
     fun bondDevice() {
         avaliableDevice?.let {
-            val bondRst = EasyBLE.getInstance().createBond(it.address)
-            LogUtils.d("bondRst:$bondRst")
+//            val bondRst = EasyBLE.getInstance().createBond(it.address)
+//            LogUtils.d("bondRst:$bondRst")
             val d = BondDeviceData(
                 it.address,
                 "",
