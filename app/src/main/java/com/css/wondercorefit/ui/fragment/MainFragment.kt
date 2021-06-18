@@ -94,12 +94,20 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         BondDeviceData.bondWeightObsrv.observe(viewLifecycleOwner) {
             if (it != null) {
                 mViewBinding?.llDevice?.visibility = View.VISIBLE
+                mViewBinding?.deviceSpace?.visibility = View.GONE
                 mViewBinding?.deviceWeight?.visibility = View.VISIBLE
                 mViewBinding?.llCurrentWeight?.visibility = View.VISIBLE
                 mViewBinding?.gotoMeasure?.visibility = View.GONE
                 mViewBinding?.tvNoneWeight?.visibility = View.GONE
             } else {
-                mViewBinding?.llDevice?.visibility = View.GONE
+                if (mViewBinding?.deviceWheel?.visibility == View.VISIBLE) {
+                    mViewBinding?.deviceWeight?.visibility = View.GONE
+                    mViewBinding?.deviceSpace?.visibility = View.VISIBLE
+                } else {
+                    mViewBinding?.llDevice?.visibility = View.GONE
+                    mViewBinding?.deviceWeight?.visibility = View.GONE
+                }
+
                 mViewBinding?.gotoMeasure?.visibility = View.VISIBLE
                 mViewBinding?.tvNoneWeight?.visibility = View.VISIBLE
                 mViewBinding?.llCurrentWeight?.visibility = View.GONE
@@ -111,14 +119,20 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
                 mViewBinding?.llDevice?.visibility = View.VISIBLE
                 if (mViewBinding?.deviceWeight?.visibility == View.GONE) {
                     mViewBinding?.deviceSpace?.visibility = View.VISIBLE
-                }else{
+                } else {
                     mViewBinding?.deviceSpace?.visibility = View.GONE
                 }
                 mViewBinding?.deviceWheel?.visibility = View.VISIBLE
 
             } else {
-                mViewBinding?.deviceWheel?.visibility = View.INVISIBLE
-                mViewBinding?.deviceSpace?.visibility = View.GONE
+                if (mViewBinding?.deviceWeight?.visibility == View.VISIBLE) {
+                    mViewBinding?.deviceWheel?.visibility = View.INVISIBLE
+                    mViewBinding?.deviceSpace?.visibility = View.GONE
+                } else {
+                    mViewBinding?.deviceWheel?.visibility = View.INVISIBLE
+                    mViewBinding?.deviceSpace?.visibility = View.GONE
+                    mViewBinding?.llDevice?.visibility = View.GONE
+                }
             }
         }
         WheelMeasureVM.stateObsrv.observe(viewLifecycleOwner) {
