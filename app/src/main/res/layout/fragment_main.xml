@@ -68,15 +68,13 @@
                     android:layout_marginTop="10dp"
                     android:text="我的设备"
                     android:textColor="@color/text_color"
-                    android:textSize="12sp"
-                    tools:ignore="MissingConstraints" />
+                    android:textSize="12sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="61dp"
                     android:layout_marginTop="6dp"
-                    android:orientation="horizontal"
-                    app:layout_constraintTop_toBottomOf="@id/device_text">
+                    android:orientation="horizontal">
 
                     <RelativeLayout
                         android:id="@+id/device_weight"
@@ -86,7 +84,7 @@
                         android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/bg_main_device"
-                        android:visibility="invisible"
+                        android:visibility="gone"
                         tools:visibility="visible">
 
                         <TextView
@@ -96,8 +94,8 @@
                             android:layout_marginLeft="10dp"
                             android:layout_marginTop="12dp"
                             android:ellipsize="end"
-                            android:maxLines="1"
                             android:maxEms="6"
+                            android:maxLines="1"
                             android:text="@string/device_weight"
                             android:textColor="@color/text_color"
                             android:textSize="13sp" />
@@ -161,6 +159,14 @@
                             android:src="@mipmap/card_wheel" />
                     </RelativeLayout>
 
+                    <Space
+                        android:id="@+id/device_space"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="1"
+                        android:visibility="gone" />
                 </LinearLayout>
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -247,13 +253,13 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
-                    app:layout_constraintStart_toStartOf="@+id/pb_step"
-                    app:layout_constraintTop_toTopOf="@+id/pb_step"
-                    app:layout_constraintEnd_toEndOf="@+id/pb_step"
-                    app:layout_constraintBottom_toBottomOf="@+id/pb_step"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:src="@mipmap/bg_main_person"/>
+                    android:src="@mipmap/bg_main_person"
+                    app:layout_constraintBottom_toBottomOf="@+id/pb_step"
+                    app:layout_constraintEnd_toEndOf="@+id/pb_step"
+                    app:layout_constraintStart_toStartOf="@+id/pb_step"
+                    app:layout_constraintTop_toTopOf="@+id/pb_step" />
 
                 <TextView
                     android:id="@+id/tv_step_num"
@@ -446,8 +452,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:background="@mipmap/bg_main_hourse"
                         android:layout_weight="1"
+                        android:background="@mipmap/bg_main_hourse"
                         android:orientation="horizontal">
 
                         <androidx.constraintlayout.widget.ConstraintLayout

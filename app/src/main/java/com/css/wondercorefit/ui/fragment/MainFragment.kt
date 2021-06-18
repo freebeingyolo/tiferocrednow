@@ -3,16 +3,13 @@ package com.css.wondercorefit.ui.fragment
 import android.content.*
 import android.os.*
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.launcher.ARouter
-import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.ToastDialog
-import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseFragment
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
@@ -112,10 +109,16 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         BondDeviceData.bondWheelObsrv.observe(viewLifecycleOwner) {
             if (it != null) {
                 mViewBinding?.llDevice?.visibility = View.VISIBLE
+                if (mViewBinding?.deviceWeight?.visibility == View.GONE) {
+                    mViewBinding?.deviceSpace?.visibility = View.VISIBLE
+                }else{
+                    mViewBinding?.deviceSpace?.visibility = View.GONE
+                }
                 mViewBinding?.deviceWheel?.visibility = View.VISIBLE
 
             } else {
                 mViewBinding?.deviceWheel?.visibility = View.INVISIBLE
+                mViewBinding?.deviceSpace?.visibility = View.GONE
             }
         }
         WheelMeasureVM.stateObsrv.observe(viewLifecycleOwner) {
