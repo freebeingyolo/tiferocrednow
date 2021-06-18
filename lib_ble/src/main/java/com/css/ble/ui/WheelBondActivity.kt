@@ -1,5 +1,6 @@
 package com.css.ble.ui
 
+import android.content.Intent
 import android.os.Bundle
 import cn.wandersnail.ble.EasyBLE
 import com.alibaba.android.arouter.facade.annotation.Route
@@ -31,22 +32,13 @@ class WheelBondActivity : BaseDeviceActivity<WheelMeasureVM, ActivityBleEntryBin
 
     override fun initData() {
         super.initData()
-        if (!EasyBLE.getInstance().isInitialized) {
-            EasyBLE.getInstance().initialize(UiUtils.getApplication())
-        }
+        startService(Intent(this, WheelMeasureService::class.java))
     }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        EasyBLE.getInstance().registerObserver(mViewModel)
-    }
-
 
     override fun onStop() {
         super.onStop()
         if (isFinishing) {
             LogUtils.d("WheelBondActivity#onStop")
-            EasyBLE.getInstance().unregisterObserver(mViewModel)
         }
     }
 }

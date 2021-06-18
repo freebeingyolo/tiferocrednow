@@ -46,13 +46,8 @@ class WheelMeasureActivity : BaseDeviceActivity<WheelMeasureVM, ActivityBleEntry
         if (isFinishing) {
             LogUtils.d("WheelMeasureActivity#onStop")
             mViewModel.stopExercise()
-            EasyBLE.getInstance().unregisterObserver(mViewModel)
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (!EasyBLE.getInstance().isObserverRegistered(mViewModel)) EasyBLE.getInstance().registerObserver(mViewModel)
-    }
 }
 

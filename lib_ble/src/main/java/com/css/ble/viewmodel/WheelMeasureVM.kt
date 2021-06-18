@@ -316,10 +316,10 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         if (state > State.discovered) {
             exerciseDurationJob?.cancel()
             exerciseDurationJob = null
-            (exerciseCount as MutableLiveData).value = -1
-            (exerciseDuration as MutableLiveData).value = -1
             (stateObsrv as MutableLiveData).value = State.discovered
         }
+        (exerciseCount as MutableLiveData).value = -1
+        (exerciseDuration as MutableLiveData).value = -1
     }
 
 

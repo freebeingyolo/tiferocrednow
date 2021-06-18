@@ -39,6 +39,7 @@ class WheelMeasureService : LifecycleService() {
         if (!EasyBLE.getInstance().isInitialized) {
             EasyBLE.getInstance().initialize(UiUtils.getApplication())
         }
+        EasyBLE.getInstance().registerObserver(mViewModel)
         LogUtils.d("BleDeviceService#onCreate")
     }
 
@@ -46,6 +47,7 @@ class WheelMeasureService : LifecycleService() {
         super.onDestroy()
         unregisterReceiver(receiver)
         LogUtils.d("BleDeviceService#onDestroy")
+        EasyBLE.getInstance().unregisterObserver(mViewModel)
     }
 
     private var receiver: BroadcastReceiver = object : BroadcastReceiver() {
