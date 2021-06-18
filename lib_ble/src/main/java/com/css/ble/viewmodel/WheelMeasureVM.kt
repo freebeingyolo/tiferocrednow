@@ -3,7 +3,6 @@ package com.css.ble.viewmodel
 import LogUtils
 import android.bluetooth.BluetoothGattService
 import android.os.Looper
-import android.view.View
 import androidx.annotation.NonNull
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,6 +10,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
 import cn.wandersnail.ble.*
 import cn.wandersnail.ble.callback.NotificationChangeCallback
+import cn.wandersnail.ble.callback.ScanListener
 import cn.wandersnail.ble.callback.WriteCharacteristicCallback
 import cn.wandersnail.commons.observer.Observe
 import cn.wandersnail.commons.poster.RunOn
@@ -21,15 +21,15 @@ import cn.wandersnail.commons.util.ToastUtils
 import com.blankj.utilcode.util.ActivityUtils
 import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
+import com.css.ble.bean.DeviceType
 import com.css.ble.utils.DataUtils
+import com.css.service.utils.CacheKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import java.util.*
-import java.util.concurrent.atomic.AtomicInteger
-import kotlin.concurrent.thread
 
 /**
  * 连接超时:无法连接搜索到设备
@@ -80,19 +80,109 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         return sb.toString()
     }
 
+    //绑定
+    private val bondTimeout = 6 * 1000L
+    private val fondMethod = FoundByUuid
+    private var avaliableDevice: Device? = null
+    private var workMode = WorkMode.BOND
+
+    enum class WorkMode { BOND, MEASURE }
     enum class State {
+
         disconnected,
+        scanStart,
         timeOut,
         connecting,
         reconnecting,
         connected,
         discovering,
+        found,
         discovered,
 
         //训练
         exercise_start,
         exercise_pause,
         exercise_finish,
+    }
+
+    fun startScanBle() {
+        if (EasyBLE.getInstance().isScanning) return
+        EasyBLE.getInstance().scanConfiguration.isOnlyAcceptBleDevice = true
+        EasyBLE.getInstance().scanConfiguration.scanPeriodMillis = 5 * 1000
+        EasyBLE.getInstance().startScan()
+        EasyBLE.getInstance().addScanListener(scanListener)
+        startTimeoutTimer(bondTimeout)
+        workMode = WorkMode.BOND
+    }
+
+    fun stopScanBle() {
+        LogUtils.d("stopScan")
+        if (EasyBLE.getInstance().isScanning) {
+            EasyBLE.getInstance().stopScan()
+            state = State.disconnected
+        }
+    }
+
+    private val scanListener = object : ScanListener {
+        override fun onScanStart() {
+            LogUtils.d("onScanStart")
+            state = State.scanStart
+        }
+
+        override fun onScanStop() {
+            LogUtils.d("onScanStop")
+        }
+
+        override fun onScanResult(device: Device, isConnectedBySys: Boolean) {
+            if (device.name.startsWith("AbRoller")) {
+                LogUtils.d("device:$device")
+                EasyBLE.getInstance().stopScanQuietly()
+                if (fondMethod == FoundByName) {
+                    foundDevice(device)
+                }
+                //连接配置，举个例随意配置两项
+                val config = ConnectionConfiguration()
+                config.setRequestTimeoutMillis(5000)
+                config.setDiscoverServicesDelayMillis(300)
+                config.setAutoReconnect(false)
+                connection = EasyBLE.getInstance().connect(device, config)!!
+            }
+        }
+
+        override fun onScanError(errorCode: Int, errorMsg: String) {
+            LogUtils.d("onScanError:$errorCode,$errorMsg", 5)
+            when (errorCode) {
+                ScanListener.ERROR_LACK_LOCATION_PERMISSION -> {//缺少定位权限
+                }
+                ScanListener.ERROR_LOCATION_SERVICE_CLOSED -> {//位置服务未开启
+                }
+                ScanListener.ERROR_SCAN_FAILED -> {
+                }
+            }
+        }
+    }
+
+    private fun foundDevice(d: Device) {
+        if (avaliableDevice == null) {
+            avaliableDevice = d
+            cancelTimeOutTimer()
+            state = State.found
+        }
+    }
+
+    //ui收到去调用bondDevice
+    fun bondDevice() {
+        avaliableDevice?.let {
+            //val bondRst = EasyBLE.getInstance().createBond(it.address)
+            //LogUtils.d("bondRst:$bondRst")
+            val d = BondDeviceData(
+                it.address,
+                "",
+                DeviceType.WHEEL
+            )
+            BondDeviceData.setDevice(CacheKey.BOND_WHEEL_INFO, d)
+            avaliableDevice = null
+        }
     }
 
     fun connect() {
@@ -103,15 +193,20 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         config.setAutoReconnect(false)
         val mac = BondDeviceData.bondWheel!!.mac
         connection = EasyBLE.getInstance().connect(mac, config)!!
-        startTimeoutTimer(10 * 1000)
+        startTimeoutTimer(5 * 1000)
+        workMode = WorkMode.MEASURE
     }
 
     fun disconnect() {
         cancelTimeOutTimer()
-        connection.disconnect()
+        if (state > State.disconnected) {
+            connection.disconnect()
+            state = State.disconnected
+        }
     }
 
     override fun onScanTimeOut() {
+        LogUtils.d("onScanTimeOut")
         state = State.timeOut
         EasyBLE.getInstance().disconnectAllConnections()
     }
@@ -157,6 +252,9 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
                 val services: List<BluetoothGattService> = EasyBLE.getInstance().getConnection(device)!!.gatt!!.services
                 for (service in services) {
                     if (service.uuid == UUID.fromString(UUID_SRVC)) {
+                        if (workMode == WorkMode.BOND) {
+                            foundDevice(device)
+                        }
                         discovered(device)
                     }
                 }

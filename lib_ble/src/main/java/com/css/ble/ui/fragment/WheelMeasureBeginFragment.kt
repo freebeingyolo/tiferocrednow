@@ -35,7 +35,7 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
 
     override fun initData() {
         super.initData()
-        arguments?.takeIf { it.getBoolean("autoConnect") }?.let { startConnect() }
+//        arguments?.takeIf { it.getBoolean("autoConnect") }?.let { mViewBinding!!.left.performClick() }
         mViewModel.state = mViewModel.state
         mViewBinding!!.model = mViewModel
         mViewBinding!!.lifecycleOwner = viewLifecycleOwner

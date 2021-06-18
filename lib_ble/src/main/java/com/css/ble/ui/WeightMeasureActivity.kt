@@ -1,11 +1,7 @@
 package com.css.ble.ui
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.css.ble.bean.DeviceType
 import com.css.ble.bean.WeightBondData
 import com.css.ble.databinding.ActivityBleEntryBinding
 import com.css.ble.ui.fragment.WeightMeasureBeginFragment
@@ -31,5 +27,4 @@ class WeightMeasureActivity : BaseWeightActivity<WeightMeasureVM, ActivityBleEnt
             FragmentUtils.changeFragment(WeightMeasureEndDeailFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
         }
     }
-
 }

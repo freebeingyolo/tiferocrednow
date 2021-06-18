@@ -2,6 +2,7 @@ package com.css.ble.ui
 
 import android.content.Intent
 import android.os.Bundle
+import cn.wandersnail.ble.EasyBLE
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
@@ -39,10 +40,19 @@ class WheelMeasureActivity : BaseDeviceActivity<WheelMeasureVM, ActivityBleEntry
         startService(Intent(this, WheelMeasureService::class.java))
     }
 
+
     override fun onStop() {
         super.onStop()
         if (isFinishing) {
+            LogUtils.d("WheelMeasureActivity#onStop")
             mViewModel.stopExercise()
+            EasyBLE.getInstance().unregisterObserver(mViewModel)
         }
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (!EasyBLE.getInstance().isObserverRegistered(mViewModel)) EasyBLE.getInstance().registerObserver(mViewModel)
+    }
 }
+
