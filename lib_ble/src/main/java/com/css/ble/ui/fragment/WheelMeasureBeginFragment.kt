@@ -3,6 +3,7 @@ package com.css.ble.ui.fragment
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import androidx.lifecycle.lifecycleScope
 import com.css.base.dialog.CommonAlertDialog
@@ -34,6 +35,7 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
 
     override fun initData() {
         super.initData()
+        arguments?.takeIf { it.getBoolean("autoConnect") }?.let { startConnect() }
         mViewModel.state = mViewModel.state
         mViewBinding!!.model = mViewModel
         mViewBinding!!.lifecycleOwner = viewLifecycleOwner
@@ -156,7 +158,6 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
             while (!checkEnvDone) delay(100)
             if (BleEnvVM.isBleEnvironmentOk) {
                 if (mViewModel.state == State.disconnected) {
-                    //至少停留200ms
                     mViewModel.connect()
                 }
             } else {

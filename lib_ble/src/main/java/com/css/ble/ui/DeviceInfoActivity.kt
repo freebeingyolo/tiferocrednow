@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.css.base.dialog.CommonAlertDialog
@@ -23,6 +24,8 @@ import com.css.ble.databinding.FragmentDeviceInfoBinding
 import com.css.pickerview.listener.OnDismissListener
 import com.css.service.utils.CacheKey
 import com.css.service.utils.WonderCoreCache
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import razerdp.basepopup.BasePopupWindow
 
 /**
@@ -108,6 +111,10 @@ class DeviceInfoActivity : BaseActivity<DefaultViewModel, FragmentDeviceInfoBind
                 }.show()
             }
             rlDeleteDevice.setOnClickListener {
+                if (BondDeviceData.getDevice(data.cacheKey) == null) {
+                    ToastUtils.showLong("设备已经解绑")
+                    return@setOnClickListener
+                }
                 CommonAlertDialog(baseContext).apply {
                     type = CommonAlertDialog.DialogType.Confirm
                     title = "解除绑定"

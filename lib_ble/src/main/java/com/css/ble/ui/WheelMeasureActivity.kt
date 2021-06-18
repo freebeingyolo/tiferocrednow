@@ -3,6 +3,7 @@ package com.css.ble.ui
 import android.content.Intent
 import android.os.Bundle
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.ActivityBleEntryBinding
 import com.css.ble.ui.fragment.WheelMeasureBeginFragment
@@ -24,6 +25,13 @@ class WheelMeasureActivity : BaseDeviceActivity<WheelMeasureVM, ActivityBleEntry
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         FragmentUtils.changeFragment(WheelMeasureBeginFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
+            .apply { arguments = Bundle().apply { putBoolean("autoConnect", intent.getBooleanExtra("autoConnect", false)) } }
+        BondDeviceData.bondWheelObsrv.observe(this) { //解绑自动断开并结束
+            if (it == null) {
+                mViewModel.disconnect()
+                finish()
+            }
+        }
     }
 
     override fun initData() {

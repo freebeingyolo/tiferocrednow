@@ -131,10 +131,8 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             when (key) {
                 CacheKey.USER_INFO.k -> {
                     mUserData = WonderCoreCache.getUserInfo()
-                    mViewBinding?.tvTargetWeightNum?.text =
-                        mUserData.targetWeight
-                    mViewBinding?.tvTodayStepTarget?.text =
-                        "目标 ${mUserData.targetStep}"
+                    mViewBinding?.tvTargetWeightNum?.text = mUserData.targetWeight
+                    mViewBinding?.tvTodayStepTarget?.text = "目标 ${mUserData.targetStep}"
                 }
 
             }

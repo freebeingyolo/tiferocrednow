@@ -32,16 +32,13 @@ class WheelBondActivity : BaseDeviceActivity<WheelBondVM, ActivityBleEntryBindin
         if (!EasyBLE.getInstance().isInitialized) {
             EasyBLE.getInstance().initialize(UiUtils.getApplication())
         }
-        EasyBLE.getInstance().registerObserver(mViewModel);
+        EasyBLE.getInstance().registerObserver(mViewModel)
     }
-
 
     override fun onStop() {
         super.onStop()
         if (isFinishing) {
             EasyBLE.getInstance().unregisterObserver(mViewModel)
-            EasyBLE.getInstance().disconnectAllConnections()
         }
     }
-
 }

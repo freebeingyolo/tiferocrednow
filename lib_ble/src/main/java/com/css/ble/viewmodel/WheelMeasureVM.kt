@@ -28,6 +28,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import java.util.*
+import java.util.concurrent.atomic.AtomicInteger
+import kotlin.concurrent.thread
 
 /**
  * 连接超时:无法连接搜索到设备
@@ -96,17 +98,17 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
     fun connect() {
         //连接配置，举个例随意配置两项
         val config = ConnectionConfiguration()
-        config.setRequestTimeoutMillis(1000)
+        config.setRequestTimeoutMillis(10000)
         config.setDiscoverServicesDelayMillis(500)
         config.setAutoReconnect(false)
         val mac = BondDeviceData.bondWheel!!.mac
-        EasyBLE.getInstance().connect(mac, config)
+        connection = EasyBLE.getInstance().connect(mac, config)!!
         startTimeoutTimer(10 * 1000)
     }
 
     fun disconnect() {
         cancelTimeOutTimer()
-        EasyBLE.getInstance().disconnectAllConnections()
+        connection.disconnect()
     }
 
     override fun onScanTimeOut() {
@@ -279,6 +281,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         LogUtils.d("onCharacteristicChanged：" + StringUtils.toHex(value, " ") + (Looper.myLooper() == Looper.getMainLooper()))
         if (value.size > 3) {
             (batteryLevel as MutableLiveData).value = 1f / value[value.size - 1]
+            if (state <= State.discovered) return //点击开始训练才接收数据
             when (value[0]) {
                 0x54.toByte() -> { //查询当前健腹轮个数
                     ActivityUtils.getTopActivity().runOnUiThread {
@@ -364,6 +367,24 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         connection.execute(builder.build())
     }
 
-    private val connection: Connection get() = EasyBLE.getInstance().getConnection(BondDeviceData.bondWheel!!.mac)!!
+    private lateinit var connection: Connection
+
+    object EasterEggs {
+        //volatile适用于改的所有操作或者写的所有操作在同一线程
+        private var count = 0
+        private var clickTime = 0L
+
+        fun click() {
+            if (count == 0) clickTime = System.currentTimeMillis()
+            count++
+            if (count > 5) {//1s之内点击次数大于5，触发disconnect
+                if (System.currentTimeMillis() - clickTime < 1000) {
+                    disconnect()
+                }
+                count = 0
+            }
+
+        }
+    }
 
 }

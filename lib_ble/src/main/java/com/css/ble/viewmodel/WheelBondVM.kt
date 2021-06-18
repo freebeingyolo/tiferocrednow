@@ -62,21 +62,20 @@ case 9	 ELinkBleServer.this.finish() //结束服务
 */
 
 class WheelBondVM : BaseWheelVM(), EventObserver {
-    private val _state: MutableLiveData<State> by lazy { MutableLiveData<State>(State.begin) }
+    private val _state: MutableLiveData<State> by lazy { MutableLiveData<State>(State.disconnect) }
     val state: LiveData<State> get() = _state
     private var avaliableDevice: Device? = null
     private val timeOut = 5 * 1000L
     private val fondMethod = FoundByName
 
     enum class State {
+        disconnect,
         scanStart,
         connecting,
         discovering,
-        begin,
         timeOut,
         found,
         done,
-        disconnect,
         reconnecting,
         connected,
         discovered,
@@ -98,7 +97,7 @@ class WheelBondVM : BaseWheelVM(), EventObserver {
         EasyBLE.getInstance().stopScan()
     }
 
-    private fun disconnect() {
+    fun disconnect() {
         EasyBLE.getInstance().disconnectAllConnections()
     }
 
@@ -193,9 +192,9 @@ class WheelBondVM : BaseWheelVM(), EventObserver {
                 } else {
                     //连接配置，举个例随意配置两项
                     val config = ConnectionConfiguration()
-                    config.setRequestTimeoutMillis(1000)
-                    config.setDiscoverServicesDelayMillis(300)
-                    config.setAutoReconnect(true)
+                    config.setRequestTimeoutMillis(3000)
+                    config.setDiscoverServicesDelayMillis(500)
+                    config.setAutoReconnect(false)
                     EasyBLE.getInstance().connect(device, config)
                 }
             }

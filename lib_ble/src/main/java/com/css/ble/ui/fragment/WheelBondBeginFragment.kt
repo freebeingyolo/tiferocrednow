@@ -2,6 +2,7 @@ package com.css.ble.ui.fragment
 
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
+import cn.wandersnail.ble.EasyBLE
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.LayoutWheelBondBeginBinding
@@ -24,6 +25,8 @@ class WheelBondBeginFragment : BaseDeviceFragment<WheelBondVM, LayoutWheelBondBe
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
+        mViewBinding!!.model = mViewModel
+        mViewBinding!!.lifecycleOwner = viewLifecycleOwner
         mViewBinding!!.startBond.setOnClickListener {
             checkBleEnv()
             lifecycleScope.launch {
@@ -35,6 +38,11 @@ class WheelBondBeginFragment : BaseDeviceFragment<WheelBondVM, LayoutWheelBondBe
                 }
             }
         }
+    }
+    override fun onStop() {
+        super.onStop()
+        mViewModel.stopScanBle()
+        mViewModel.disconnect()
     }
 
     override fun initData() {

@@ -49,6 +49,7 @@ class WheelBondEndFragment : BaseDeviceFragment<WheelBondVM, LayoutWeightBondBon
         mViewBinding!!.back.setOnClickListener {
             ARouter.getInstance() //测量首页
                 .build(ARouterConst.PATH_APP_BLE_WHEELMEASURE)
+                .withBoolean("autoConnect", true)
                 .navigation(requireContext(), object : NavCallback() {
                     override fun onArrival(postcard: Postcard?) {
                         //Log.d("MainActivity" , "onArrival : " + postcard?.getPath());

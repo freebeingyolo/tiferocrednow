@@ -39,8 +39,8 @@ class WheelMeasureService : LifecycleService() {
         if (!EasyBLE.getInstance().isInitialized) {
             EasyBLE.getInstance().initialize(UiUtils.getApplication())
         }
-        EasyBLE.getInstance().registerObserver(mViewModel)
         LogUtils.d("BleDeviceService#onCreate")
+        EasyBLE.getInstance().registerObserver(mViewModel)
     }
 
     override fun onDestroy() {
