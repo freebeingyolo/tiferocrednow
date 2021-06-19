@@ -37,6 +37,8 @@ import java.util.*
  * @date 2021-05-12
  */
 object WheelMeasureVM : BaseWheelVM(), EventObserver {
+    //测量
+    private val connectTimeout = 5 * 1000L
     private var exerciseDurationJob: Job? = null
     val stateObsrv: LiveData<State> by lazy { MutableLiveData(State.disconnected) }
     val batteryLevel: LiveData<Float> by lazy { MutableLiveData(-1f) }
@@ -108,7 +110,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
     fun startScanBle() {
         if (EasyBLE.getInstance().isScanning) return
         EasyBLE.getInstance().scanConfiguration.isOnlyAcceptBleDevice = true
-        EasyBLE.getInstance().scanConfiguration.scanPeriodMillis = 5 * 1000
+        EasyBLE.getInstance().scanConfiguration.scanPeriodMillis = bondTimeout.toInt()
         EasyBLE.getInstance().startScan()
         EasyBLE.getInstance().addScanListener(scanListener)
         startTimeoutTimer(bondTimeout)
@@ -188,12 +190,12 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
     fun connect() {
         //连接配置，举个例随意配置两项
         val config = ConnectionConfiguration()
-        config.setRequestTimeoutMillis(10000)
-        config.setDiscoverServicesDelayMillis(500)
+        config.setRequestTimeoutMillis(connectTimeout.toInt())
+        config.setDiscoverServicesDelayMillis(300)
         config.setAutoReconnect(false)
         val mac = BondDeviceData.bondWheel!!.mac
         connection = EasyBLE.getInstance().connect(mac, config)!!
-        startTimeoutTimer(5 * 1000)
+        startTimeoutTimer(connectTimeout)
         workMode = WorkMode.MEASURE
     }
 
@@ -314,10 +316,10 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
 
     fun stopExercise() {
         if (state > State.discovered) {
-            exerciseDurationJob?.cancel()
-            exerciseDurationJob = null
             (stateObsrv as MutableLiveData).value = State.discovered
         }
+        exerciseDurationJob?.cancel()
+        exerciseDurationJob = null
         (exerciseCount as MutableLiveData).value = -1
         (exerciseDuration as MutableLiveData).value = -1
     }
