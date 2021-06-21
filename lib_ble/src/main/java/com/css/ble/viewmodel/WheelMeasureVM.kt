@@ -38,12 +38,14 @@ import java.util.*
  */
 object WheelMeasureVM : BaseWheelVM(), EventObserver {
     //测量
-    private val connectTimeout = 5 * 1000L
+    private const val connectTimeout = 5 * 1000L
     private var exerciseDurationJob: Job? = null
     val stateObsrv: LiveData<State> by lazy { MutableLiveData(State.disconnected) }
     val batteryLevel: LiveData<Float> by lazy { MutableLiveData(-1f) }
-    val exerciseCount: LiveData<Int> by lazy { MutableLiveData(-1) }
+    val exerciseCount: LiveData<Int> by lazy { MutableLiveData(-1) } //锻炼个数
     val exerciseDuration: LiveData<Long> by lazy { MutableLiveData(-1) }
+    private var exerciseLiveCount: Int = 0 //锻炼长存计数
+    private var exercisePauseCount = 0 //暂停期间的计数
 
     //Transformations
     val isConnecting = Transformations.map(stateObsrv) {
@@ -302,6 +304,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         //重置锻炼次数
         setExerciseCount(0)
         (exerciseCount as MutableLiveData).value = 0
+        exercisePauseCount = 0
     }
 
     fun pauseExercise() {
@@ -312,6 +315,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
     fun resumeExercise() {
         startExerciseTimer(false)
         (stateObsrv as MutableLiveData).value = State.exercise_start
+        exercisePauseCount = exerciseLiveCount - exerciseCount.value!!
     }
 
     fun stopExercise() {
@@ -322,6 +326,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         exerciseDurationJob = null
         (exerciseCount as MutableLiveData).value = -1
         (exerciseDuration as MutableLiveData).value = -1
+        exercisePauseCount = 0
     }
 
 
@@ -381,12 +386,14 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         LogUtils.d("onCharacteristicChanged：" + StringUtils.toHex(value, " ") + (Looper.myLooper() == Looper.getMainLooper()))
         if (value.size > 3) {
             (batteryLevel as MutableLiveData).value = 1f / value[value.size - 1]
-            if (state <= State.discovered) return //点击开始训练才接收数据
             when (value[0]) {
                 0x54.toByte() -> { //查询当前健腹轮个数
                     ActivityUtils.getTopActivity().runOnUiThread {
                         val count = DataUtils.bytes2IntBig(value[2], value[3], value[4])
-                        (exerciseCount as MutableLiveData).value = count
+                        exerciseLiveCount = count
+                        if (state == State.exercise_start) {
+                            (exerciseCount as MutableLiveData).value = count - exercisePauseCount
+                        }
                     }
                 }
             }

@@ -3,6 +3,7 @@ package com.css.ble.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.alibaba.android.arouter.launcher.ARouter
@@ -51,6 +52,10 @@ class WeightMeasureDoingFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
                     FragmentUtils.changeFragment(WeightMeasureBeginFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
                 }
                 State.done -> {
+                    if (WeightBondData.firstWeightInfo == null) {
+                        //去掉WeightMeasureBeginFragment
+                        FragmentUtils.changeFragment(WeightMeasureBeginFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
+                    }
                     FragmentUtils.changeFragment(WeightMeasureDoneFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
                 }
                 State.timeout -> {
@@ -69,8 +74,7 @@ class WeightMeasureDoingFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
                 if (System.currentTimeMillis() - startTime < 200) delay(startTime + 200 - System.currentTimeMillis())
                 mViewModel.startScanBle()
             } else {
-                BleErrorFragment.Builder.errorType(BleEnvVM.bleErrType)
-                    .leftTitle(BondDeviceData.displayName(DeviceType.WEIGHT)).create()
+                BleErrorFragment.Builder.errorType(BleEnvVM.bleErrType).leftTitle(BondDeviceData.displayName(DeviceType.WEIGHT)).create()
             }
         }
     }
