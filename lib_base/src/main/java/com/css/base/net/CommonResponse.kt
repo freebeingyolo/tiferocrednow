@@ -7,7 +7,7 @@ import com.css.base.keep.KeepClass
  * @date 2021/5/6
  */
 class CommonResponse<T> : KeepClass {
-    var status: Int = 0
-    var message: String? = null
+    var code: Int = 0
+    var msg: String? = null
     var data: T? = null
 }

@@ -6,10 +6,10 @@ package com.css.base.net
  */
 fun <T> CommonResponse<T>.process(success: (msg: String?, d: T?) -> Unit, failed: (status: Int, msg: String?, d: T?) -> Unit) {
     try {
-        if (status == HttpNetCode.SUCCESS) {
-            success(message, data)
+        if (code == HttpNetCode.SUCCESS) {
+            success(msg, data)
         } else {
-            failed(status, message, data)
+            failed(code, msg, data)
         }
     } catch (e: Throwable) {
         failed(HttpNetCode.DATA_ERROR, e.message, null)

@@ -138,6 +138,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         WheelMeasureVM.stateObsrv.observe(viewLifecycleOwner) {
             mViewBinding!!.wheelDeviceState.text = WheelMeasureVM.stateStr
         }
+
         //绑定监听
         sp?.registerOnSharedPreferenceChangeListener(spLis)
     }
