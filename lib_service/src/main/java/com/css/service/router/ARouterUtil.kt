@@ -7,4 +7,9 @@ object ARouterUtil {
             ARouter.getInstance().build(ARouterConst.PATH_APP_MAIN)
                 .navigation()
         }
+
+    fun openRegister(){
+        ARouter.getInstance().build(ARouterConst.PATH_APP_REGISTER)
+            .navigation()
+    }
 }

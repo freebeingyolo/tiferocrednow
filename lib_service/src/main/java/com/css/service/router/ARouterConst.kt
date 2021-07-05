@@ -9,4 +9,5 @@ object ARouterConst {
     const val PATH_APP_BLE_WEIGHTMEASURE = "/lib_ble/main/weightmeasure"
     const val PATH_APP_BLE_WHEELMEASURE = "/lib_ble/main/wheelmeasure"
     const val PATH_APP_QRSCAN = "/lib_qrscan/main"
+    const val PATH_APP_REGISTER = "/lib_login/register"
 }

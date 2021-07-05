@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.blankj.utilcode.constant.PermissionConstants
 import com.blankj.utilcode.util.PermissionUtils
 import com.css.base.uibase.BaseActivity
+import com.css.service.router.ARouterUtil
 import com.css.wondercorefit.databinding.ActivitySplashBinding
 import com.css.wondercorefit.viewmodel.SplashViewModel
 
@@ -29,6 +30,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
         super.registorUIChangeLiveDataCallBack()
         mViewModel.mDownSecondNormalEvent.observe(this, Observer {
             gotoActMain()
+//            ARouterUtil.openRegister()
         })
     }
 
@@ -87,7 +89,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
                 })
                 .request()
         }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P){
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
             start()
         }
     }
@@ -117,6 +119,9 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
         mViewModel.downTimeNormalTask(2)
     }
 
-    override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): ActivitySplashBinding =
-        ActivitySplashBinding.inflate(layoutInflater,parent,false)
+    override fun initViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?
+    ): ActivitySplashBinding =
+        ActivitySplashBinding.inflate(layoutInflater, parent, false)
 }

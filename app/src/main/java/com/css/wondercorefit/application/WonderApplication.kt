@@ -23,7 +23,7 @@ class WonderApplication : BaseApplication() {
     private fun configNet() {
         val httpLoggingInterceptor = HttpLoggingInterceptor(NetLongLogger())
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-        NetManager.Builer(URLConfig.HOST_WEB, 15)
+        NetManager.Builer(URLConfig.HOST_WEB!!, 15)
             .addInterceptor(httpLoggingInterceptor)
             .addInterceptor(HeaderInterceptor())
             .addInterceptor(LoginInterceptor())
