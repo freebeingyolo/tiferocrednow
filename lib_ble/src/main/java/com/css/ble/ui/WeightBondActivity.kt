@@ -10,7 +10,7 @@ import com.css.ble.viewmodel.WeightBondVM
 import com.css.service.router.ARouterConst
 
 @Route(path = ARouterConst.PATH_APP_BLE_WEIGHTBOND)
-class WeightBondActivity : BaseDeviceActivity<WeightBondVM, ActivityBleEntryBinding>(DeviceType.WEIGHT) {
+class WeightBondActivity : BaseWeightActivity<WeightBondVM, ActivityBleEntryBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)

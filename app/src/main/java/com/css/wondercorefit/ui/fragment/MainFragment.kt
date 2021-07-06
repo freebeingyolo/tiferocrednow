@@ -14,6 +14,7 @@ import com.css.base.uibase.BaseFragment
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.bean.WeightBondData
+import com.css.ble.viewmodel.WheelMeasureVM
 import com.css.service.data.StepData
 import com.css.service.data.UserData
 import com.css.service.router.ARouterConst
@@ -76,54 +77,68 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             }
         }
 
-        WeightBondData.lastWeightInfoObsvr.let {
-            it.observe(this) { it2 ->
-                if (it2 != null) {
-                    mViewBinding?.tvCurrentWeight?.text = it2.weightKgFmt("%.1f")
-                    mViewBinding?.llBmi?.visibility = View.VISIBLE
-                    mViewBinding?.tvBmi?.text = "BMI${it2?.bodyFatData.bmi}"
-                    mViewBinding?.tvBodyType?.text = it2.bodyFatData.bmiJudge
-                } else {
-                    mViewBinding?.llBmi?.visibility = View.GONE
-                }
-            }
-        }
-
-        WeightBondData.lastWeightInfo.let {
-            if (it?.bodyFatData?.bmi != null) {
+        WeightBondData.lastWeightInfoObsvr.observe(this) { it2 ->
+            if (it2 != null) {
+                mViewBinding?.tvCurrentWeight?.text = it2.weightKgFmt("%.1f")
                 mViewBinding?.llBmi?.visibility = View.VISIBLE
-                mViewBinding?.tvBmi?.text = "BMI${it.bodyFatData?.bmi}"
-                mViewBinding?.tvBodyType?.text = it.bodyFatData.bmiJudge
+                mViewBinding?.tvBmi?.text = "BMI${it2?.bodyFatData.bmi}"
+                mViewBinding?.tvBodyType?.text = it2.bodyFatData.bmiJudge
+            } else {
+                mViewBinding?.llBmi?.visibility = View.GONE
             }
         }
     }
 
     private fun showDevice() {
-        //是否已绑定体脂秤
-        if (WonderCoreCache.getData(
-                CacheKey.BOND_WEIGHT_INFO,
-                BondDeviceData::class.java
-            ).mac.isNotEmpty()
-        ) {
-            mViewBinding?.llDevice?.visibility = View.VISIBLE
-            mViewBinding?.deviceWeight?.visibility = View.VISIBLE
-            mViewBinding?.llCurrentWeight?.visibility = View.VISIBLE
-            mViewBinding?.gotoMeasure?.visibility = View.GONE
-            mViewBinding?.tvNoneWeight?.visibility = View.GONE
-        } else {
-            mViewBinding?.gotoMeasure?.visibility = View.VISIBLE
-            mViewBinding?.tvNoneWeight?.visibility = View.VISIBLE
-            mViewBinding?.llCurrentWeight?.visibility = View.GONE
+        //使用LiveData代替SharedPreference更新体脂秤、健腹轮绑定状态
+        BondDeviceData.bondWeightObsrv.observe(viewLifecycleOwner) {
+            if (it != null) {
+                mViewBinding?.llDevice?.visibility = View.VISIBLE
+                mViewBinding?.deviceSpace?.visibility = View.GONE
+                mViewBinding?.deviceWeight?.visibility = View.VISIBLE
+                mViewBinding?.llCurrentWeight?.visibility = View.VISIBLE
+                mViewBinding?.gotoMeasure?.visibility = View.GONE
+                mViewBinding?.tvNoneWeight?.visibility = View.GONE
+            } else {
+                if (mViewBinding?.deviceWheel?.visibility == View.VISIBLE) {
+                    mViewBinding?.deviceWeight?.visibility = View.GONE
+                    mViewBinding?.deviceSpace?.visibility = View.VISIBLE
+                } else {
+                    mViewBinding?.llDevice?.visibility = View.GONE
+                    mViewBinding?.deviceWeight?.visibility = View.GONE
+                }
+
+                mViewBinding?.gotoMeasure?.visibility = View.VISIBLE
+                mViewBinding?.tvNoneWeight?.visibility = View.VISIBLE
+                mViewBinding?.llCurrentWeight?.visibility = View.GONE
+            }
         }
-        //是否已绑定健腹轮
-        if (WonderCoreCache.getData(
-                CacheKey.BOND_WHEEL_INFO,
-                BondDeviceData::class.java
-            ).mac.isNotEmpty()
-        ) {
-            mViewBinding?.llDevice?.visibility = View.VISIBLE
-            mViewBinding?.deviceWheel?.visibility = View.VISIBLE
+
+        BondDeviceData.bondWheelObsrv.observe(viewLifecycleOwner) {
+            if (it != null) {
+                mViewBinding?.llDevice?.visibility = View.VISIBLE
+                if (mViewBinding?.deviceWeight?.visibility == View.GONE) {
+                    mViewBinding?.deviceSpace?.visibility = View.VISIBLE
+                } else {
+                    mViewBinding?.deviceSpace?.visibility = View.GONE
+                }
+                mViewBinding?.deviceWheel?.visibility = View.VISIBLE
+
+            } else {
+                if (mViewBinding?.deviceWeight?.visibility == View.VISIBLE) {
+                    mViewBinding?.deviceWheel?.visibility = View.INVISIBLE
+                    mViewBinding?.deviceSpace?.visibility = View.GONE
+                } else {
+                    mViewBinding?.deviceWheel?.visibility = View.INVISIBLE
+                    mViewBinding?.deviceSpace?.visibility = View.GONE
+                    mViewBinding?.llDevice?.visibility = View.GONE
+                }
+            }
         }
+        WheelMeasureVM.stateObsrv.observe(viewLifecycleOwner) {
+            mViewBinding!!.wheelDeviceState.text = WheelMeasureVM.stateStr
+        }
+
         //绑定监听
         sp?.registerOnSharedPreferenceChangeListener(spLis)
     }
@@ -132,41 +147,10 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     private val spLis by lazy {
         SharedPreferences.OnSharedPreferenceChangeListener { sp, key ->
             when (key) {
-                CacheKey.BOND_WEIGHT_INFO.k -> {
-                    if (WonderCoreCache.getData(
-                            CacheKey.BOND_WEIGHT_INFO,
-                            BondDeviceData::class.java
-                        ).mac.isNotEmpty()
-                    ) {
-                        mViewBinding?.llDevice?.visibility = View.VISIBLE
-                        mViewBinding?.deviceWeight?.visibility = View.VISIBLE
-                        mViewBinding?.gotoMeasure?.visibility = View.GONE
-                        mViewBinding?.tvNoneWeight?.visibility = View.GONE
-                        mViewBinding?.llCurrentWeight?.visibility = View.VISIBLE
-                    } else {
-                        mViewBinding?.llDevice?.visibility = View.GONE
-                        mViewBinding?.gotoMeasure?.visibility = View.VISIBLE
-                        mViewBinding?.tvNoneWeight?.visibility = View.VISIBLE
-                        mViewBinding?.llCurrentWeight?.visibility = View.GONE
-                    }
-
-                    if (WonderCoreCache.getData(
-                            CacheKey.BOND_WHEEL_INFO,
-                            BondDeviceData::class.java
-                        ).mac.isNotEmpty()
-                    ) {
-                        mViewBinding?.llDevice?.visibility = View.VISIBLE
-                        mViewBinding?.deviceWheel?.visibility = View.VISIBLE
-                    } else {
-                        mViewBinding?.deviceWheel?.visibility = View.INVISIBLE
-                    }
-                }
                 CacheKey.USER_INFO.k -> {
                     mUserData = WonderCoreCache.getUserInfo()
-                    mViewBinding?.tvTargetWeightNum?.text =
-                        mUserData.targetWeight
-                    mViewBinding?.tvTodayStepTarget?.text =
-                        "目标 ${mUserData.targetStep}"
+                    mViewBinding?.tvTargetWeightNum?.text = mUserData.targetWeight
+                    mViewBinding?.tvTodayStepTarget?.text = "目标 ${mUserData.targetStep}"
                 }
 
             }
@@ -191,6 +175,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     private fun initClickListenr() {
         mViewBinding!!.gotoMeasure.setOnClickListener(this)
         mViewBinding!!.deviceWeight.setOnClickListener(this)
+        mViewBinding!!.deviceWheel.setOnClickListener(this)
         mViewBinding!!.addBleDevice.setOnClickListener(this)
     }
 
@@ -291,6 +276,11 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
 
     override fun onClick(v: View) {
         when (v.id) {
+            R.id.device_wheel -> {
+                ARouter.getInstance()
+                    .build(ARouterConst.PATH_APP_BLE_WHEELMEASURE)
+                    .navigation()
+            }
             R.id.device_weight -> {
                 ARouter.getInstance()
                     .build(ARouterConst.PATH_APP_BLE_WEIGHTMEASURE)

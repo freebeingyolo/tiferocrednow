@@ -15,8 +15,4 @@ data class BodyDetail(
     val sfr:Float = 10.8f,  //皮下脂肪
     val uvi:Int = 4,        //内脏脂肪指数
     val vwc:Float = 64.2f,  //身体水分
-){
-
-
-
-}
+)

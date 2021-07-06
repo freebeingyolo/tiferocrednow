@@ -1,9 +1,12 @@
 package com.css.ble.utils
 
+import android.app.Application
 import android.graphics.Rect
 import android.os.Looper
 import android.view.TouchDelegate
 import android.view.View
+import cn.wandersnail.commons.util.UiUtils
+import com.blankj.utilcode.util.ActivityUtils
 
 /**
  * @author yuedong
@@ -37,5 +40,16 @@ object UiUtils {
             parent.post(action)
         }
     }
+
+    fun getApplication(): Application {
+        val clazz = Class.forName("android.app.ActivityThread")
+        val acThreadMethod = clazz.getMethod("currentActivityThread")
+        acThreadMethod.isAccessible = true
+        val acThread = acThreadMethod.invoke(null)
+        val appMethod = acThread.javaClass.getMethod("getApplication")
+        val app = appMethod.invoke(acThread) as Application
+        return app
+    }
+
 
 }

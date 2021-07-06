@@ -7,12 +7,12 @@ import com.pingwang.bluetoothlib.BroadcastDataParsing
 import com.pingwang.bluetoothlib.bean.BleValueBean
 import com.tencent.bugly.crashreport.CrashReport
 
-class WeightBondVM : BaseDeviceVM(), BroadcastDataParsing.OnBroadcastDataParsing {
+open class WeightBondVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataParsing {
     companion object {
         const val WEIGHT_UPPER = 180;
         const val WEIGHT_LOWER = 0;
     }
-    protected val mBroadcastDataParsing by lazy { BroadcastDataParsing(this) }
+    private val mBroadcastDataParsing by lazy { BroadcastDataParsing(this) }
     val state: MutableLiveData<State> by lazy { MutableLiveData<State>(State.begin) }
     var filterDevice: BondDeviceInfo? = null
     private val filterDeviceTemp: BondDeviceInfo by lazy { BondDeviceInfo() }
@@ -26,7 +26,7 @@ class WeightBondVM : BaseDeviceVM(), BroadcastDataParsing.OnBroadcastDataParsing
         done,
     }
 
-    override fun onFilter(bleValueBean: BleValueBean): Boolean {
+    override fun onScanFilter(bleValueBean: BleValueBean): Boolean {
         return filterDevice?.run { mac == bleValueBean.mac } ?: true
     }
 
@@ -106,10 +106,7 @@ class WeightBondVM : BaseDeviceVM(), BroadcastDataParsing.OnBroadcastDataParsing
         filterDevice = null
     }
 
-    override fun onScanTimerOutCancel() {
-
-    }
-
+    override fun onScanTimerOutCancel() {}
 }
 
 

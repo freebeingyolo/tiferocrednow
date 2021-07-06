@@ -65,21 +65,10 @@ class BleErrorFragment : BaseFragment<DefaultViewModel, LayoutBleErrorBinding>()
         setToolBarLeftText(builder.leftTitle)
     }
 
-
-    private fun solveError() {
-        when (errorType) {
-            ErrorType.BLE_OFF -> BleEnvVM.openBLE()
-            ErrorType.LOCATION_OFF -> BleEnvVM.openLocation()
-            ErrorType.LOCATION_PERMISSION_OFF -> BleEnvVM.requestLocationPermission()
-            ErrorType.SEARCH_TIMEOUT -> BleEnvVM.doTimeout()
-        }
-    }
-
     private fun startSelfDestroy() {//启动1s自毁
         lifecycleScope.launch {
             delay(1000)
             onBackPressed()
-            solveError()
         }
     }
 

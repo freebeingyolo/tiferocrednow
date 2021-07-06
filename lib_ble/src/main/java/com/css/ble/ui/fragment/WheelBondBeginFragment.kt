@@ -2,28 +2,32 @@ package com.css.ble.ui.fragment
 
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
+import cn.wandersnail.ble.EasyBLE
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.LayoutWheelBondBeginBinding
 import com.css.ble.utils.FragmentUtils
 import com.css.ble.viewmodel.BleEnvVM
 import com.css.ble.viewmodel.ErrorType
-import com.css.ble.viewmodel.WheelBondVM
-import com.css.ble.viewmodel.WheelBondVM.State.*
+import com.css.ble.viewmodel.WheelMeasureVM
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.css.ble.viewmodel.WheelMeasureVM.State;
 
 /**
  * @author yuedong
  * @date 2021-05-17
  */
-class WheelBondBeginFragment : BaseDeviceFragment<WheelBondVM, LayoutWheelBondBeginBinding>(DeviceType.WHEEL) {
-    override val vmCls get() = WheelBondVM::class.java
+class WheelBondBeginFragment : BaseDeviceFragment<WheelMeasureVM, LayoutWheelBondBeginBinding>(DeviceType.WHEEL) {
+    override val vmCls get() = WheelMeasureVM::class.java
     override val vbCls get() = LayoutWheelBondBeginBinding::class.java
 
+    override fun initViewModel(): WheelMeasureVM = WheelMeasureVM
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
+        mViewBinding!!.model = mViewModel
+        mViewBinding!!.lifecycleOwner = viewLifecycleOwner
         mViewBinding!!.startBond.setOnClickListener {
             checkBleEnv()
             lifecycleScope.launch {
@@ -35,22 +39,28 @@ class WheelBondBeginFragment : BaseDeviceFragment<WheelBondVM, LayoutWheelBondBe
                 }
             }
         }
+    }
 
+    override fun onStop() {
+        super.onStop()
+        mViewModel.stopScanBle()
+        //mViewModel.disconnect()
     }
 
     override fun initData() {
         super.initData()
-        mViewModel.state.observe(viewLifecycleOwner) {
+        mViewModel.state = State.disconnected
+        mViewModel.stateObsrv.observe(viewLifecycleOwner) {
             when (it) {
-                found -> {
-                    FragmentUtils.changeFragment(WeightBondDoingFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
+                State.found -> {
+                    mViewModel.bondDevice()
+                    FragmentUtils.changeFragment(WheelBondEndFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
                 }
-                timeOut -> {
-                    BleErrorFragment.Builder.errorType(ErrorType.SEARCH_TIMEOUT)
-                        .leftTitle(BondDeviceData.displayName(deviceType))
-                        .create()
+                State.timeOut -> {
+                    BleErrorFragment.Builder.errorType(ErrorType.SEARCH_TIMEOUT).leftTitle(BondDeviceData.displayName(deviceType)).create()
                 }
             }
         }
     }
+
 }

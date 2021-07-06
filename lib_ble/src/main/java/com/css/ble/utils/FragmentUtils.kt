@@ -80,7 +80,10 @@ object FragmentUtils {
                 }
                 false
             }
-            if (findInBackEntry) supportFragmentManager.popBackStack(tag, 1)
+            if (findInBackEntry) {
+                supportFragmentManager.popBackStackImmediate(tag, 1)
+                supportFragmentManager.popBackStackImmediate()
+            }
         }
 
         /*GlobalScope.launch {

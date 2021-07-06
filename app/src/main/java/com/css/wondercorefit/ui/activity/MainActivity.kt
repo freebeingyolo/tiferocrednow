@@ -49,33 +49,33 @@ class MainActivity : BaseActivity<DefaultViewModel, ActivityMainBinding>() {
         mTabSettingFragment = SettingFragment()
         mViewBinding.tablayout.initTab(callback = {
             mViewBinding.tablayout.tag = it
-//            val fragment = getFragment(it)
-//            when (it) {
-//                BaseInner.TabIndex.HOME -> {
-//                    if (mCurFragment == fragment) {
-//                        mTabMainFragment.scrollTopRefresh()
-//                    }
-//
-//                }
-//                BaseInner.TabIndex.MALL -> {
-//                    if (curFragment == fragment) {
-//                        tabMallFragment.scrollTopRefresh()
-//                    }
-//
-//                }
-//                BaseInner.TabIndex.COURSE -> {
-//                    if (curFragment == fragment) {
-//                        tabCartFragment.scrollTopRefresh()
-//                    }
-//
-//                }
-//                BaseInner.TabIndex.SETTING -> {
-//                    if (curFragment == fragment) {
-//                        tabMyFragment.scrollTopRefresh()
-//                    }
-//
-//                }
-//            }
+/*            val fragment = getFragment(it)
+            when (it) {
+                BaseInner.TabIndex.HOME -> {
+                    if (mCurFragment == fragment) {
+                        mTabMainFragment.scrollTopRefresh()
+                    }
+
+                }
+                BaseInner.TabIndex.MALL -> {
+                    if (curFragment == fragment) {
+                        tabMallFragment.scrollTopRefresh()
+                    }
+
+                }
+                BaseInner.TabIndex.COURSE -> {
+                    if (curFragment == fragment) {
+                        tabCartFragment.scrollTopRefresh()
+                    }
+
+                }
+                BaseInner.TabIndex.SETTING -> {
+                    if (curFragment == fragment) {
+                        tabMyFragment.scrollTopRefresh()
+                    }
+
+                }
+            }*/
             changeFragment(it)
         })
 

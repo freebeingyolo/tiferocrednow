@@ -35,7 +35,7 @@ import com.css.service.utils.WonderCoreCache
  * @param tempNegative   0 ：正温度;1 ：负单位 ;-1代表不支持  positive temperature; 1: negative unit; -1 means not supported
  * @param temp           温度值,精度 0.1 ;-1代表不支持   Temperature value, accuracy 0.1; -1 means not supported
  */
-class WeightBondData() {
+class WeightBondData {
     var status: Int = 0
     var tempUnit: Int = 0
     var weightUnit: Int = 0

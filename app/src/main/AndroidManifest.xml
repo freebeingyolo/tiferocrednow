@@ -36,13 +36,10 @@
             android:name=".ui.activity.setting.TermsActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity android:name=".ui.activity.index.ABRollerActivity"
+        <activity android:name="com.css.ble.ui.ABRollerActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
-        <activity android:name=".ui.activity.index.BfsMeasureResultsActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            />
+
         <activity android:name=".ui.activity.setting.AboutUsActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>

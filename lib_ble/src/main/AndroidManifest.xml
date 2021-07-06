@@ -12,9 +12,14 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <application android:theme="@style/Wonder.Base">
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <application
+        android:process="com.css.ble"
+        android:theme="@style/Wonder.Base">
 
         <service android:name="com.pingwang.bluetoothlib.server.ELinkBleServer" />
+        <service android:name="com.css.ble.ui.WheelMeasureService" />
 
         <activity
             android:name=".ui.WeightMeasureActivity"
@@ -32,6 +37,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/WonderTheme.NoExitEnterAnimation" />
         <activity
+            android:name=".ui.WheelMeasureActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/WonderTheme.NoExitEnterAnimation" />
+        <activity
             android:name=".ui.DeviceListActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
@@ -39,9 +49,6 @@
         <activity
             android:name=".ui.DeviceInfoActivity"
             android:theme="@style/WonderTheme.NoExitEnterAnimation" />
-        <!-- <activity android:name=".ui.WeightMeasureEndDetailActivity" />
-              <activity android:name=".ui.WeightMeasureDoingActivity" />
-               -->
     </application>
 
 </manifest>

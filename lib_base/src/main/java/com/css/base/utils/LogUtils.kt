@@ -16,7 +16,7 @@ object LogUtils {
         var curentIndex = 0
         // vm调用栈中此方法所在index：2：VMStack.java:-2:getThreadStackTrace()<--Thread.java:737:getStackTrace()<--
         for (i in 2..10) {
-            if (currentThread[i].className != javaClass.simpleName) {
+            if (currentThread[i].className != javaClass.name) {
                 curentIndex = i;
                 break
             }

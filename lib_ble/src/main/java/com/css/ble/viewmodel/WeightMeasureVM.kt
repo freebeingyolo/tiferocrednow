@@ -9,7 +9,7 @@ import com.pingwang.bluetoothlib.BroadcastDataParsing
 import com.pingwang.bluetoothlib.bean.BleValueBean
 
 
-class WeightMeasureVM : BaseDeviceVM(), BroadcastDataParsing.OnBroadcastDataParsing {
+class WeightMeasureVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataParsing {
     private val _state: MutableLiveData<State> by lazy { MutableLiveData<State>(State.begin) }
     val state: MutableLiveData<State> get() = _state
     override val timeOut = 10 * 1000L
@@ -30,7 +30,7 @@ class WeightMeasureVM : BaseDeviceVM(), BroadcastDataParsing.OnBroadcastDataPars
         bondData = MutableLiveData<WeightBondData>()
     }
 
-    override fun onFilter(bleValueBean: BleValueBean): Boolean {
+    override fun onScanFilter(bleValueBean: BleValueBean): Boolean {
         val d: BondDeviceData? = BondDeviceData.bondWeight
         return if (d == null) true else d.mac == bleValueBean.mac
     }

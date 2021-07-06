@@ -91,7 +91,10 @@ abstract class BaseDeviceFragment<VM : BaseViewModel, VB : ViewBinding>(protecte
                                 checkEnvDone = true //拒绝
                             } else {
                                 BleEnvVM.locationOpened = true //使用activity打开，不等定位打开广播，直接置true
-                                checkBleEnv()
+                                lifecycleScope.launch {
+                                    delay(300)//等待300ms再去检查
+                                    checkBleEnv()
+                                }
                             }
                         }
                     }

@@ -100,7 +100,7 @@ class TodayStepCounter : SensorEventListener{
                 Logger().e(TAG, "容错处理，无论任何原因步数不能小于0，如果小于0，直接清零")
                 cleanStep(counterStep)
             }
-            mContext?.let { PreferencesHelper().setCurrentStep(it, sCurrStep) }
+            mContext?.let { PreferencesHelper().setCurrentStep(it, sCurrStep.toFloat()) }
             mContext?.let { PreferencesHelper().setElapsedRealtime(it, SystemClock.elapsedRealtime()) }
             mContext?.let { PreferencesHelper().setLastSensorStep(it, counterStep.toFloat()) }
             Logger().e(
@@ -115,17 +115,17 @@ class TodayStepCounter : SensorEventListener{
         //清除步数，步数归零，优先级最高
         sCurrStep = 0f
         sOffsetStep = counterStep.toFloat()
-        mContext?.let { PreferencesHelper().setStepOffset(it, sOffsetStep) }
+        mContext?.let { PreferencesHelper().setStepOffset(it, sOffsetStep.toFloat()) }
         mCleanStep = false
         mContext?.let { PreferencesHelper().setCleanStep(it, mCleanStep) }
         Logger().e(TAG, "mCleanStep : " + "清除步数，步数归零")
     }
 
     private fun shutdown(counterStep: Int) {
-        val tmpCurrStep = mContext?.let { PreferencesHelper().getCurrentStep(it).toInt() }
+        val tmpCurrStep = mContext?.let { PreferencesHelper().getCurrentStep(it) }!!.toInt()
         //重新设置offset
-        sOffsetStep = (counterStep - tmpCurrStep!!).toFloat()
-        mContext?.let { PreferencesHelper().setStepOffset(it, sOffsetStep) }
+        sOffsetStep = (counterStep - tmpCurrStep).toFloat()
+        mContext?.let { PreferencesHelper().setStepOffset(it, sOffsetStep.toFloat()) }
         mShutdown = false
         mContext?.let { PreferencesHelper().setShutdown(it, mShutdown) }
     }
@@ -165,7 +165,7 @@ class TodayStepCounter : SensorEventListener{
             mBoot = false
             mSeparate = false
             sCurrStep = 0f
-            mContext?.let { PreferencesHelper().setCurrentStep(it, sCurrStep) }
+            mContext?.let { PreferencesHelper().setCurrentStep(it, sCurrStep.toFloat()) }
             if (null != mOnStepCounterListener) {
                 mOnStepCounterListener!!.onStepCounterClean()
             }

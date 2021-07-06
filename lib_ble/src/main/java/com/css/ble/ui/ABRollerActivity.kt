@@ -1,8 +1,7 @@
-package com.css.wondercorefit.ui.activity.index
+package com.css.ble.ui
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,8 +11,7 @@ import com.css.base.uibase.BaseActivity
 import com.css.base.uibase.inner.OnToolBarClickListener
 import com.css.base.uibase.viewmodel.DefaultViewModel
 import com.css.base.view.ToolBarView
-import com.css.wondercorefit.R
-import com.css.wondercorefit.databinding.ActivityAbrollerBinding
+import com.css.ble.databinding.ActivityAbrollerBinding
 
 class ABRollerActivity : BaseActivity<DefaultViewModel, ActivityAbrollerBinding>() ,
     OnToolBarClickListener {
