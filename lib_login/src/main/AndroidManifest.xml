@@ -3,7 +3,8 @@
     package="com.css.login">
 
     <application>
-        <activity android:name=".ui.RegisterActivity"></activity>
+        <activity android:name=".ui.ResetPasswordActivity"></activity>
+        <activity android:name=".ui.RegisterActivity" />
         <activity android:name=".ui.LoginActivity" />
     </application>
 

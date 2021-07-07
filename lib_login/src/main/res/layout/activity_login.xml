@@ -11,49 +11,86 @@
     android:paddingEnd="15dp"
     tools:context=".ui.LoginActivity">
 
+    <View
+        android:id="@+id/top_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white" />
+
     <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="80dp"
-        android:src="@mipmap/icon" />
+        android:layout_width="108dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="62dp"
+        android:src="@drawable/icon_jd_jz" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/login"
+        android:textColor="#000000"
+        android:textSize="27sp"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/et_telephone"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="100dp"
-        android:background="@drawable/ble_device_icon_frame"
-        android:hint="请输入手机号码"
+        android:layout_height="30dp"
+        android:layout_marginStart="61dp"
+        android:layout_marginTop="47dp"
+        android:layout_marginEnd="61dp"
+        android:background="@drawable/login_edittext_bg"
+        android:hint="@string/register_phone_tip"
         android:inputType="phone"
         android:maxLength="11"
-        android:paddingStart="10dp"
-        android:textSize="14sp" />
+        android:paddingStart="7dp"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tv_phone_tip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="68dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="61dp"
+        android:text="请输入符合大陆手机号格式的11位数字"
+        android:textColor="#FFFF0000"
+        android:textSize="9dp" />
 
     <EditText
         android:id="@+id/et_password"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/ble_device_icon_frame"
-        android:hint="请输入登录密码"
+        android:layout_height="30dp"
+        android:layout_marginStart="61dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginEnd="61dp"
+        android:background="@drawable/login_edittext_bg"
+        android:hint="@string/login_input_password"
         android:inputType="textPassword"
-        android:paddingStart="10dp"
-        android:textSize="14sp" />
+        android:maxLength="11"
+        android:paddingStart="7dp"
+        android:textSize="12sp" />
 
-    <TextView
+    <com.css.base.view.RoundTextView
         android:id="@+id/tv_login"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_marginTop="20dp"
-        android:background="#F2682A"
+        android:layout_height="40dp"
+        android:layout_marginStart="61dp"
+        android:layout_marginTop="27dp"
+        android:layout_marginEnd="61dp"
         android:gravity="center"
-        android:text="登录"
-        android:textColor="@color/white" />
+        android:text="@string/login"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        app:rv_backgroundColor="#FFF2682A"
+        app:rv_cornerRadius="164dp" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginStart="62dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="62dp"
         android:gravity="end"
         android:orientation="horizontal">
 
@@ -61,12 +98,17 @@
             android:id="@+id/tv_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="15dp"
-            android:text="注册新用户" />
+            android:layout_marginEnd="17dp"
+            android:text="注册新用户"
+            android:textColor="#FFF2682A"
+            android:textSize="10dp" />
 
         <TextView
+            android:id="@+id/forget_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="忘记密码？" />
+            android:text="忘记密码？"
+            android:textColor="#FFF2682A"
+            android:textSize="10dp" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.appcompat.widget.LinearLayoutCompat>
