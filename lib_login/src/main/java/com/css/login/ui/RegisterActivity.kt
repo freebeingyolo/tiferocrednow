@@ -16,6 +16,7 @@ import com.css.login.model.LoginViewModel
 import com.css.login.model.RegisterViewModel
 import com.css.service.router.ARouterConst.PATH_APP_REGISTER
 import com.css.service.router.ARouterUtil
+import com.css.service.utils.SystemBarHelper
 
 @Route(path = PATH_APP_REGISTER)
 class RegisterActivity : BaseActivity<RegisterViewModel, ActivityRegisterBinding>(),
@@ -23,8 +24,9 @@ class RegisterActivity : BaseActivity<RegisterViewModel, ActivityRegisterBinding
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        setToolBarLeftTitle("注册")
-        mViewBinding.tvRegister.setOnClickListener(this)
+        SystemBarHelper.immersiveStatusBar(this, 0f)
+        SystemBarHelper.setHeightAndPadding(this, mViewBinding.topView)
+        mViewBinding.tvRegisterBtn.setOnClickListener(this)
         mViewBinding.tvToLogin.setOnClickListener(this)
     }
 
@@ -37,14 +39,6 @@ class RegisterActivity : BaseActivity<RegisterViewModel, ActivityRegisterBinding
         })
     }
 
-    override fun initCommonToolBarBg(): ToolBarView.ToolBarBg {
-        return ToolBarView.ToolBarBg.WHITE
-    }
-
-    override fun enabledVisibleToolBar(): Boolean {
-        return true
-    }
-
     override fun initViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?
@@ -52,7 +46,7 @@ class RegisterActivity : BaseActivity<RegisterViewModel, ActivityRegisterBinding
 
     override fun onClick(v: View) {
         when (v) {
-            mViewBinding.tvRegister -> {
+            mViewBinding.tvRegisterBtn -> {
                 mViewModel.register("15959994075", "123456", "1234", "ruis")
             }
             mViewBinding.tvToLogin -> {

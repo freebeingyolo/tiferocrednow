@@ -35,7 +35,10 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
 
             val loginData = WonderCoreCache.getData(CacheKey.LOGIN_DATA, LoginUserData::class.java)
             if (loginData.userId == 0) {
+                var userinfo = WonderCoreCache.getUserInfo()
                 if (WonderCoreCache.getUserInfo().isFirstOpenApp) {
+                    userinfo.isFirstOpenApp = false
+                    WonderCoreCache.saveUserInfo(userinfo)
                     ARouterUtil.openRegister()
                 } else {
                     ARouterUtil.openLogin()

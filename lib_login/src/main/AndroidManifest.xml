@@ -3,8 +3,15 @@
     package="com.css.login">
 
     <application>
-        <activity android:name=".ui.RegisterActivity"></activity>
-        <activity android:name=".ui.LoginActivity" />
+        <activity
+            android:name=".ui.ResetPasswordActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".ui.RegisterActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".ui.LoginActivity"
+            android:launchMode="singleTask" />
     </application>
 
 </manifest>

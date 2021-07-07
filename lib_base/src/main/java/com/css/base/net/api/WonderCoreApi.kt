@@ -30,7 +30,7 @@ internal interface WonderCoreApi {
 
         //密码重置
         @POST("app/user/reset")
-        suspend fun reset(@Body requestBody: RequestBody): CommonResponse<Any>
+        suspend fun resetPassword(@Body requestBody: RequestBody): CommonResponse<Any>
 
         //版本更新
         @POST("app/user/upgrade")

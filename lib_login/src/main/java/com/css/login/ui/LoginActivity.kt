@@ -11,14 +11,18 @@ import com.css.login.databinding.ActivityLoginBinding
 import com.css.login.model.LoginViewModel
 import com.css.service.router.ARouterConst
 import com.css.service.router.ARouterUtil
+import com.css.service.utils.SystemBarHelper
 
 @Route(path = ARouterConst.PATH_APP_LOGIN)
 class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>(), View.OnClickListener {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
+        SystemBarHelper.immersiveStatusBar(this, 0f)
+        SystemBarHelper.setHeightAndPadding(this, mViewBinding.topView)
         mViewBinding.tvRegister.setOnClickListener(this)
         mViewBinding.tvLogin.setOnClickListener(this)
+        mViewBinding.forgetPassword.setOnClickListener(this)
     }
 
     override fun initViewModel(): LoginViewModel =
@@ -42,9 +46,10 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>(), View
                 ARouterUtil.openRegister()
             }
             mViewBinding.tvLogin -> {
-                var phone = mViewBinding.etTelephone.text.toString()
-                var password = mViewBinding.etPassword.text.toString()
-                mViewModel.checkPhoneAnddPassword(phone, password)
+                mViewModel.checkPhoneAnddPassword(mViewBinding.etTelephone.text.toString(), mViewBinding.etPassword.text.toString())
+            }
+            mViewBinding.forgetPassword -> {
+                ARouterUtil.openForgetPassword()
             }
         }
     }
