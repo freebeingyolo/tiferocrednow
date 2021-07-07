@@ -13,7 +13,9 @@ import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import java.io.EOFException
+import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.text.ParseException
 import javax.net.ssl.SSLException
@@ -26,6 +28,8 @@ abstract class BaseViewModel : ViewModel(), IBaseViewModel, INetView {
     val showLongToastResEvent = MutableLiveData<Int>()
     val showCenterToastStrEvent = MutableLiveData<String?>()
     val showCenterLongToastStrEvent = MutableLiveData<String?>()
+    val showLoadingEvent = MutableLiveData<String?>()
+    val hideLoadingEvent = MutableLiveData<String?>()
     val showCenterToastResEvent = MutableLiveData<Int>()
     val showCenterLongToastResEvent = MutableLiveData<Int>()
     val finishAcEvent = MutableLiveData<String>()
@@ -53,7 +57,13 @@ abstract class BaseViewModel : ViewModel(), IBaseViewModel, INetView {
         isViewDestroyed = true
     }
 
+    override fun showLoading() {
+        showLoadingEvent.value = ""
+    }
 
+    override fun hideLoading() {
+        hideLoadingEvent.value = ""
+    }
 
     override fun showToast(msg: String?) {
         showToastStrEvent.value = msg
@@ -164,9 +174,9 @@ abstract class BaseViewModel : ViewModel(), IBaseViewModel, INetView {
             when (t) {
                 is EOFException -> {
                     if (UICoreConfig.mode) {
-                        failed(HttpNetCode.NET_CONNECT_ERROR, "网络读取异常：${t.message}")
+                        failed(HttpNetCode.NET_CONNECT_ERROR, "网络异常：${t.message}")
                     } else {
-                        failed(HttpNetCode.NET_CONNECT_ERROR, "网络读取异常")
+                        failed(HttpNetCode.NET_CONNECT_ERROR, "网络异常")
                     }
                 }
                 is SocketTimeoutException -> {
@@ -197,6 +207,9 @@ abstract class BaseViewModel : ViewModel(), IBaseViewModel, INetView {
                         failed(HttpNetCode.JSON_ERROR, "Json解析异常")
                     }
                 }
+                is ConnectException -> {
+                    failed(HttpNetCode.NET_CONNECT_ERROR, "网络异常")
+                }
                 else -> {
                     if (UICoreConfig.mode) {
                         failed(HttpNetCode.NET_CONNECT_ERROR, "网络繁忙：${t.message}")
@@ -215,9 +228,9 @@ abstract class BaseViewModel : ViewModel(), IBaseViewModel, INetView {
             when (t) {
                 is EOFException -> {
                     if (UICoreConfig.mode) {
-                        failed(HttpNetCode.NET_CONNECT_ERROR, "网络读取异常：${t.message}", null)
+                        failed(HttpNetCode.NET_CONNECT_ERROR, "网络异常：${t.message}", null)
                     } else {
-                        failed(HttpNetCode.NET_CONNECT_ERROR, "网络读取异常", null)
+                        failed(HttpNetCode.NET_CONNECT_ERROR, "网络异常", null)
                     }
                 }
                 is SocketTimeoutException -> {
@@ -247,6 +260,12 @@ abstract class BaseViewModel : ViewModel(), IBaseViewModel, INetView {
                     } else {
                         failed(HttpNetCode.JSON_ERROR, "Json解析异常", null)
                     }
+                }
+                is ConnectException -> {
+                    failed(HttpNetCode.NET_CONNECT_ERROR, "网络异常", null)
+                }
+                is HttpException -> {
+                    failed(HttpNetCode.NET_CONNECT_ERROR, "请求失败，您访问的资源可能不存在", null)
                 }
                 else -> {
                     if (UICoreConfig.mode) {

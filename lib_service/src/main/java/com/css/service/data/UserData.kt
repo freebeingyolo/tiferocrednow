@@ -7,6 +7,7 @@ data class UserData(
     var targetWeight: String = "60",
     var targetStep: String = "8000",
     var isFirst: Boolean = true,
+    var isFirstOpenApp: Boolean = true,
     var sexLocation: Int = 0,
     var ageLocation: Int = 70,
     var statureLocation: Int = 75,

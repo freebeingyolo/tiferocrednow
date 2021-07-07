@@ -14,6 +14,7 @@ import androidx.viewbinding.ViewBinding
 //import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.css.base.R
+import com.css.base.dialog.LoadingDialog
 import com.css.base.uibase.BaseActivity
 import com.css.base.uibase.inner.IBaseView
 import com.css.base.uibase.inner.OnToolBarClickListener
@@ -23,7 +24,8 @@ import com.css.base.view.ToolBarView
 import java.lang.ref.Reference
 import java.lang.ref.WeakReference
 
-abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), IBaseView, OnToolBarClickListener {
+abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), IBaseView,
+    OnToolBarClickListener {
     lateinit var mViewModel: VM
 
     var mViewBinding: VB? = null
@@ -64,6 +66,8 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
     private var isInitLazyData = false
 
     private var isAttachViewModelOk = false
+
+    lateinit var mLoadingDialog: LoadingDialog
 
     /**
      * onAttach(Context) is not called on pre API 23 versions of Android and onAttach(Activity) is deprecated
@@ -286,6 +290,12 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
         mViewModel.finishAcEvent.observe(viewLifecycleOwner, Observer {
             finishAc()
         })
+        mViewModel.showLoadingEvent.observe(viewLifecycleOwner, Observer {
+            showLoading()
+        })
+        mViewModel.hideLoadingEvent.observe(viewLifecycleOwner, Observer {
+            hideLoading()
+        })
         registorUIChangeLiveDataCallBack()
     }
 
@@ -423,7 +433,9 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
     /**
      * 页面显示时调用。注意和InitView区分.可做页面显示时更新UI,或加载数据
      */
-    protected open fun onVisible() { initImmersionBar()}
+    protected open fun onVisible() {
+        initImmersionBar()
+    }
 
     override fun initLazyData() {
     }
@@ -511,6 +523,17 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
     override fun showCenterLongToast(resId: Int) {
         ToastUtils.setGravity(Gravity.CENTER, 0, 0)
         ToastUtils.showLong(resId)
+    }
+
+    override fun showLoading() {
+        mLoadingDialog = activity?.let { LoadingDialog(it) }!!
+        mLoadingDialog.showPopupWindow()
+    }
+
+    override fun hideLoading() {
+        if (mLoadingDialog != null) {
+            mLoadingDialog.dismiss()
+        }
     }
 
     /**

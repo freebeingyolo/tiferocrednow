@@ -17,7 +17,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.blankj.utilcode.constant.PermissionConstants
 import com.blankj.utilcode.util.PermissionUtils
 import com.css.base.uibase.BaseActivity
+import com.css.service.data.LoginUserData
 import com.css.service.router.ARouterUtil
+import com.css.service.utils.CacheKey
+import com.css.service.utils.WonderCoreCache
 import com.css.wondercorefit.databinding.ActivitySplashBinding
 import com.css.wondercorefit.viewmodel.SplashViewModel
 
@@ -29,8 +32,18 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
         mViewModel.mDownSecondNormalEvent.observe(this, Observer {
-            gotoActMain()
-//            ARouterUtil.openRegister()
+
+            val loginData = WonderCoreCache.getData(CacheKey.LOGIN_DATA, LoginUserData::class.java)
+            if (loginData.userId == 0) {
+                if (WonderCoreCache.getUserInfo().isFirstOpenApp) {
+                    ARouterUtil.openRegister()
+                } else {
+                    ARouterUtil.openLogin()
+                }
+            } else {
+                gotoActMain()
+            }
+            finish()
         })
     }
 
