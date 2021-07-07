@@ -17,4 +17,8 @@ object ARouterUtil {
         ARouter.getInstance().build(ARouterConst.PATH_APP_LOGIN)
             .navigation()
     }
+    fun openForgetPassword(){
+        ARouter.getInstance().build(ARouterConst.PATH_APP_RESET_PWD)
+            .navigation()
+    }
 }

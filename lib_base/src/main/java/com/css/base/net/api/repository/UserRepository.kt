@@ -11,18 +11,18 @@ object UserRepository {
         NetManager.create(WonderCoreApi.User::class.java)
     }
 
-    suspend fun login(phone: String, password: String): CommonResponse<LoginUserData> {
-        val param = RequestBodyBuilder()
-            .addParams("phone", phone)
-            .addParams("password", password)
-            .build()
-        return userApi.login(param)
-    }
+    //    suspend fun login(phone: String, password: String): CommonResponse<LoginUserData> {
+//        val param = RequestBodyBuilder()
+//            .addParams("phone", phone)
+//            .addParams("password", password)
+//            .build()
+//        return userApi.login(param)
+//    }
     suspend fun loginGet(phone: String, password: String): CommonResponse<LoginUserData> {
-        val paramas: MutableMap<String, String> = HashMap()
-        paramas["phone"] =phone
-        paramas["password"] =password
-        return userApi.loginGet(paramas)
+        val map: MutableMap<String, String> = HashMap()
+        map["phone"] = phone
+        map["password"] = password
+        return userApi.loginGet(map)
     }
 
     suspend fun register(
@@ -38,5 +38,18 @@ object UserRepository {
             .addParams("userName", userName)
             .build()
         return userApi.register(param)
+    }
+
+    suspend fun resetPassword(
+        phone: String,
+        password: String,
+        smsCode: String
+    ): CommonResponse<Any> {
+        val param = RequestBodyBuilder()
+            .addParams("phone", phone)
+            .addParams("password", password)
+            .addParams("code", smsCode)
+            .build()
+        return userApi.resetPassword(param)
     }
 }
