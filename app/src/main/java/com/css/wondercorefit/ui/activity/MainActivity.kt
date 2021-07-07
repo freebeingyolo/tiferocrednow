@@ -31,7 +31,6 @@ class MainActivity : BaseActivity<DefaultViewModel, ActivityMainBinding>() {
         ViewModelProvider(this).get(DefaultViewModel::class.java)
 
 
-
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         if (BuildConfig.DEBUG) {

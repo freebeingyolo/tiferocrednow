@@ -12,4 +12,9 @@ object ARouterUtil {
         ARouter.getInstance().build(ARouterConst.PATH_APP_REGISTER)
             .navigation()
     }
+
+    fun openLogin(){
+        ARouter.getInstance().build(ARouterConst.PATH_APP_LOGIN)
+            .navigation()
+    }
 }

@@ -92,9 +92,9 @@ object GlobalNetHelper : INetView {
             when (t) {
                 is EOFException -> {
                     if (UICoreConfig.mode) {
-                        failed(HttpNetCode.NET_CONNECT_ERROR, "网络读取异常：${t.message}")
+                        failed(HttpNetCode.NET_CONNECT_ERROR, "网络异常：${t.message}")
                     } else {
-                        failed(HttpNetCode.NET_CONNECT_ERROR, "网络读取异常")
+                        failed(HttpNetCode.NET_CONNECT_ERROR, "网络异常")
                     }
                 }
                 is SocketTimeoutException -> {
@@ -143,9 +143,9 @@ object GlobalNetHelper : INetView {
             when (t) {
                 is EOFException -> {
                     if (UICoreConfig.mode) {
-                        failed(HttpNetCode.NET_CONNECT_ERROR, "网络读取异常：${t.message}", null)
+                        failed(HttpNetCode.NET_CONNECT_ERROR, "网络异常：${t.message}", null)
                     } else {
-                        failed(HttpNetCode.NET_CONNECT_ERROR, "网络读取异常", null)
+                        failed(HttpNetCode.NET_CONNECT_ERROR, "网络异常", null)
                     }
                 }
                 is SocketTimeoutException -> {

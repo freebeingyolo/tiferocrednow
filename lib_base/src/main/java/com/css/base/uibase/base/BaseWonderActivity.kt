@@ -17,6 +17,8 @@ import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.css.base.R
+import com.css.base.dialog.LoadingDialog
+import com.css.base.dialog.ToastDialog
 import com.css.base.uibase.inner.IBaseView
 import com.css.base.uibase.inner.OnToolBarClickListener
 import com.css.base.uibase.viewmodel.BaseViewModel
@@ -62,7 +64,7 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
      * 在使用自定义toolbar时候的根布局 =toolBarView+childView
      */
     private var mRootView: View? = null
-
+     lateinit var mLoadingDialog: LoadingDialog
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         attachViewModelAndLifecycle()
@@ -111,6 +113,12 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
         mViewModel.finishAcEvent.observe(this, Observer {
             finishAc()
         })
+        mViewModel.showLoadingEvent.observe(this, Observer {
+            showLoading()
+        })
+        mViewModel.hideLoadingEvent.observe(this, Observer {
+            hideLoading()
+        })
         registorUIChangeLiveDataCallBack()
     }
 
@@ -147,6 +155,7 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
     abstract fun initViewModel(): VM
 
     abstract fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): VB
+
 
     private fun initContentView() {
         if (mRootView == null) {
@@ -295,6 +304,17 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
         ToastUtils.showLong(resId)
     }
 
+    override fun showLoading() {
+        mLoadingDialog = LoadingDialog(this)
+        mLoadingDialog.showPopupWindow()
+    }
+
+    override fun hideLoading() {
+        if (mLoadingDialog != null){
+            mLoadingDialog.dismiss()
+        }
+    }
+
     override fun finishAc() {
         finish()
     }
@@ -378,7 +398,13 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
     }
 
     open fun setGrayFakeStatus(contentParentViewId: Int, enbaleFixImmersionAndEditBug: Boolean) {
-        setFakeStatus(contentParentViewId, true, 0, R.color.common_gray_color, enbaleFixImmersionAndEditBug)
+        setFakeStatus(
+            contentParentViewId,
+            true,
+            0,
+            R.color.common_gray_color,
+            enbaleFixImmersionAndEditBug
+        )
     }
 
     open fun setTransparentStatus(contentParentViewId: Int, enbaleFixImmersionAndEditBug: Boolean) {
@@ -449,8 +475,13 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
      * @param cls
      * @param data
      */
-    open fun pushFragmentToBackStack(@IdRes containerId: Int, cls: Class<out BaseWonderFragment<*, *>>?, data: Any?) {
-        mCurrentFragment = FragmentStarter.pushFragmentToBackStack(this, containerId, cls, data, true)
+    open fun pushFragmentToBackStack(
+        @IdRes containerId: Int,
+        cls: Class<out BaseWonderFragment<*, *>>?,
+        data: Any?
+    ) {
+        mCurrentFragment =
+            FragmentStarter.pushFragmentToBackStack(this, containerId, cls, data, true)
         mCloseWarned = false
 
     }

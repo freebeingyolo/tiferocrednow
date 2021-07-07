@@ -53,5 +53,12 @@ interface ICoreView {
      * 关闭Activity
      */
     fun finishAc()
-
+    /**
+     * 显示loading
+     */
+    fun showLoading()
+    /**
+     * 显示在屏幕中间的吐司
+     */
+    fun hideLoading()
 }

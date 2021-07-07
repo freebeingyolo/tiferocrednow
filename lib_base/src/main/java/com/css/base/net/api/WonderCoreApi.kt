@@ -1,17 +1,18 @@
 package com.css.base.net.api
 
 import com.css.base.net.CommonResponse
+import com.css.service.data.LoginUserData
 import okhttp3.RequestBody
-import retrofit2.http.Body
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 internal interface WonderCoreApi {
     interface User {
         //登录
         @POST("app/user/login")
-        suspend fun login(@Body requestBody: RequestBody): CommonResponse<Any>
-
+        suspend fun login(@Body requestBody: RequestBody): CommonResponse<LoginUserData>
+        //登录
+        @GET("app/user/login")
+        suspend fun loginGet(@QueryMap map: Map<String, String>): CommonResponse<LoginUserData>
         //注册
         @POST("app/user/register")
         suspend fun register(@Body requestBody: RequestBody): CommonResponse<Any>

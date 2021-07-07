@@ -6,6 +6,7 @@ import com.css.base.uibase.viewmodel.BaseViewModel
 
 class RegisterViewModel : BaseViewModel() {
     val registerData = MutableLiveData<String>()
+
     fun register(
         phone: String,
         password: String,
@@ -22,4 +23,5 @@ class RegisterViewModel : BaseViewModel() {
             }
         )
     }
+
 }

@@ -10,6 +10,7 @@ enum class CacheKey(val k: String) {
     BOND_WHEEL_INFO("BOND_WHEEL_INFO"), //健腹轮
     FIRST_WEIGHT_INFO("FIRST_WEIGHT_INFO"),//第一次体脂秤数据
     LAST_WEIGHT_INFO("LAST_WEIGHT_INFO"),//上次体脂秤数据
+    LOGIN_DATA("LOGIN_USER_DATA"),//上次体脂秤数据
     STEP_DATA("stepdata");
 }
 
@@ -26,7 +27,10 @@ class WonderCoreCache {
 
         fun getUserInfo(): UserData {
             return if (!SPUtils.getInstance().getString(CacheKey.USER_INFO.k).isNullOrEmpty()) {
-                mGson.fromJson(SPUtils.getInstance().getString(CacheKey.USER_INFO.k), UserData::class.java)
+                mGson.fromJson(
+                    SPUtils.getInstance().getString(CacheKey.USER_INFO.k),
+                    UserData::class.java
+                )
             } else {
                 UserData()
             }
@@ -51,7 +55,8 @@ class WonderCoreCache {
         fun containsKey(k: String) = SPUtils.getInstance().contains(k)
 
         //apply：异步  commit:同步
-        fun removeKey(k: String, isCommit: Boolean = true) = SPUtils.getInstance().remove(k, isCommit)
+        fun removeKey(k: String, isCommit: Boolean = true) =
+            SPUtils.getInstance().remove(k, isCommit)
 
         //extension
         fun removeKey(k: CacheKey, isCommit: Boolean = true) = removeKey(k.k)
