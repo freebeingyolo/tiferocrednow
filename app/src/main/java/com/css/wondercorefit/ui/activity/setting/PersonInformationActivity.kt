@@ -11,9 +11,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.css.base.uibase.BaseActivity
-import com.css.base.uibase.viewmodel.DefaultViewModel
+import com.css.base.view.ToolBarView
 import com.css.pickerview.builder.OptionsPickerBuilder
 import com.css.pickerview.listener.CustomListener
 import com.css.pickerview.view.OptionsPickerView
@@ -21,9 +22,10 @@ import com.css.service.data.UserData
 import com.css.service.utils.WonderCoreCache
 import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.ActivityPersonInformationBinding
+import com.css.wondercorefit.ui.viewmodel.PersonInformationViewModel
 
 class PersonInformationActivity :
-    BaseActivity<DefaultViewModel, ActivityPersonInformationBinding>(),
+    BaseActivity<PersonInformationViewModel, ActivityPersonInformationBinding>(),
     View.OnClickListener {
     var mSexPickerDialog: OptionsPickerView<String>? = null
     var mAgePickerDialog: OptionsPickerView<String>? = null
@@ -48,6 +50,17 @@ class PersonInformationActivity :
         return true
     }
 
+    override fun registorUIChangeLiveDataCallBack() {
+        super.registorUIChangeLiveDataCallBack()
+        mViewModel.personInfoData.observe(this, {
+
+        })
+        mViewModel.upPersonInfoData.observe(this, {
+            showToast(it)
+            finish()
+        })
+    }
+
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
 
@@ -68,11 +81,12 @@ class PersonInformationActivity :
         mViewBinding.tvStature.text = mUserData.stature + "cm"
         mViewBinding.tvAge.text = mUserData.age + "岁"
         mViewBinding.tvSex.text = mUserData.sex
+        mViewModel.getPersonInfo()
 
     }
 
-    override fun initViewModel(): DefaultViewModel =
-        ViewModelProvider(this).get(DefaultViewModel::class.java)
+    override fun initViewModel(): PersonInformationViewModel =
+        ViewModelProvider(this).get(PersonInformationViewModel::class.java)
 
     override fun initViewBinding(
         inflater: LayoutInflater,
@@ -103,6 +117,7 @@ class PersonInformationActivity :
             mUserData = WonderCoreCache.getUserInfo()
             mUserData.sex = str
             WonderCoreCache.saveUserInfo(mUserData)
+            mViewModel.upDataPersonInfo(str,"","","","")
 
         }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
             override fun customLayout(v: View?) {
@@ -151,6 +166,7 @@ class PersonInformationActivity :
             mUserData.age = str
             mUserData.ageLocation = options1
             WonderCoreCache.saveUserInfo(mUserData)
+            mViewModel.upDataPersonInfo("",str,"","","")
 
         }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
             override fun customLayout(v: View?) {
@@ -201,6 +217,7 @@ class PersonInformationActivity :
             mUserData.stature = str
             mUserData.statureLocation = options1
             WonderCoreCache.saveUserInfo(mUserData)
+            mViewModel.upDataPersonInfo("","",str,"","")
 
         }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
             override fun customLayout(v: View?) {
@@ -251,7 +268,7 @@ class PersonInformationActivity :
             mUserData.targetWeight = str
             mUserData.targetWeightLocation = options1
             WonderCoreCache.saveUserInfo(mUserData)
-
+            mViewModel.upDataPersonInfo("","","",str,"")
         }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
             override fun customLayout(v: View?) {
                 var title = v?.findViewById<TextView>(R.id.tv_title)
@@ -303,7 +320,7 @@ class PersonInformationActivity :
             mUserData.targetStep = str
             mUserData.targetStepLocation = options1
             WonderCoreCache.saveUserInfo(mUserData)
-
+            mViewModel.upDataPersonInfo("","","","",str)
         }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
             override fun customLayout(v: View?) {
                 var title = v?.findViewById<TextView>(R.id.tv_title)

@@ -6,10 +6,6 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 
 
-/**
- * 创建：LJY
- * 时间: 2019/8/1
- */
 class RequestBodyBuilder {
     private val paramsMap = hashMapOf<String, Any>()
 

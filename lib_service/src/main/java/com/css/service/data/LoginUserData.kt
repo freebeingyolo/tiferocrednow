@@ -11,7 +11,7 @@ data class LoginUserData(
     var phone: String="",
     var pushSet: String="",
     var sex: String="",
-    var userId: Int=0,
+    var userId: Int=-1,
     var userName: String="",
     var userRegisterTime: String=""
 )

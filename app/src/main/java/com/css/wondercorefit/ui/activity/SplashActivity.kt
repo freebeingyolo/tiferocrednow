@@ -34,7 +34,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
         mViewModel.mDownSecondNormalEvent.observe(this, Observer {
 
             val loginData = WonderCoreCache.getData(CacheKey.LOGIN_DATA, LoginUserData::class.java)
-            if (loginData.userId == 0) {
+            if (loginData.userId == -1) {
                 var userinfo = WonderCoreCache.getUserInfo()
                 if (WonderCoreCache.getUserInfo().isFirstOpenApp) {
                     userinfo.isFirstOpenApp = false
