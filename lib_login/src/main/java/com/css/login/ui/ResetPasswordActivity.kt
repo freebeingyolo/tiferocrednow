@@ -21,6 +21,7 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel, ActivityReset
         SystemBarHelper.immersiveStatusBar(this, 0f)
         SystemBarHelper.setHeightAndPadding(this, mViewBinding.topView)
         mViewBinding.tvSubmit.setOnClickListener(this)
+        mViewBinding.tvSendCode.setOnClickListener(this)
     }
 
     override fun registorUIChangeLiveDataCallBack() {
@@ -33,7 +34,11 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel, ActivityReset
             mViewBinding.tvSendCode.isEnabled = false
             mViewBinding.tvSendCode.text = "${it}秒后可重发"
         })
+        mViewModel.resetPwdData.observe(this, {
+            finish()
+        })
     }
+
     override fun initViewModel(): ResetPasswordViewModel =
         ViewModelProvider(this).get(ResetPasswordViewModel::class.java)
 
@@ -52,6 +57,9 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel, ActivityReset
                     mViewBinding.etPasswordAgain.text.toString(),
                     mViewBinding.etSmsCode.text.toString()
                 )
+            }
+            mViewBinding.tvSendCode -> {
+                mViewModel.sendCode(mViewBinding.etPhone.text.toString())
             }
         }
     }

@@ -10,7 +10,7 @@ class ResetPasswordViewModel : BaseViewModel() {
     val timeDownData = MutableLiveData<Long>()
     val resetCodeData = MutableLiveData<String>()
     private var mTimer: CountDownTimer? = null
-    fun resetPassword(
+    private fun resetPassword(
         phone: String,
         password: String,
         smsCode: String
