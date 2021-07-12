@@ -39,7 +39,7 @@ internal interface WonderCoreApi {
 
         //个人信息查询
         @GET("appSetUp/queryPersonalInformation")
-        suspend fun queryPersonalInformation(@QueryMap map: Map<String, String>): CommonResponse<List<UserData>>
+        suspend fun queryPersonalInformation(@QueryMap map: Map<String, String>): CommonResponse<ArrayList<UserData>>
 
         //编辑个人信息
         @POST("appSetUp/updatePersonalInformation")

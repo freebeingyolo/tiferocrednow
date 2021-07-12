@@ -9,7 +9,7 @@ import com.css.service.utils.CacheKey
 import com.css.service.utils.WonderCoreCache
 
 class PersonInformationViewModel : BaseViewModel() {
-    val personInfoData = MutableLiveData<List<UserData>>()
+    val personInfoData = MutableLiveData<ArrayList<UserData>>()
     val upPersonInfoData = MutableLiveData<String>()
 
     fun getPersonInfo() {

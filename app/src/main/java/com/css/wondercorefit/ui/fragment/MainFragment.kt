@@ -65,7 +65,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
 
     override fun initData() {
         super.initData()
-        mViewBinding?.tvTargetWeightNum?.text = WonderCoreCache.getUserInfo().targetWeight
+        mViewBinding?.tvTargetWeightNum?.text = WonderCoreCache.getUserInfo().goalBodyWeight
 
         WeightBondData.firstWeightInfoObsvr.let {
             it.observe(this) { it2 ->
@@ -149,8 +149,8 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             when (key) {
                 CacheKey.USER_INFO.k -> {
                     mUserData = WonderCoreCache.getUserInfo()
-                    mViewBinding?.tvTargetWeightNum?.text = mUserData.targetWeight
-                    mViewBinding?.tvTodayStepTarget?.text = "目标 ${mUserData.targetStep}"
+                    mViewBinding?.tvTargetWeightNum?.text = mUserData.goalBodyWeight
+                    mViewBinding?.tvTodayStepTarget?.text = "目标 ${mUserData.goalStepCount}"
                 }
 
             }
@@ -164,7 +164,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
 
     private fun initProgressRate() {
         mUserData = WonderCoreCache.getUserInfo()
-        targetStep = mUserData.targetStep
+        targetStep = mUserData.goalStepCount
         stepData = WonderCoreCache.getData(CacheKey.STEP_DATA, StepData::class.java)
         currentStep = stepData.todaySteps
         result = ((currentStep * 100) / targetStep.toInt()).toFloat()

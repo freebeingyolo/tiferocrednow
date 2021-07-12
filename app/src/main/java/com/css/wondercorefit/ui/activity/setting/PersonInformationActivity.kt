@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -53,11 +54,17 @@ class PersonInformationActivity :
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
         mViewModel.personInfoData.observe(this, {
-
+            var userData = it[0]
+            Log.v("suisui", "age=" + userData.age)
+            Log.v("suisui", "username=" + userData.userName)
+            mViewBinding.tvTargetWeight.text = "${userData.goalBodyWeight}kg"
+            mViewBinding.tvTargetStep.text = "${userData.goalStepCount}步"
+            mViewBinding.tvStature.text = "${userData.height}cm"
+            mViewBinding.tvAge.text = "${userData.age}岁"
+            mViewBinding.tvSex.text = userData.sex
         })
         mViewModel.upPersonInfoData.observe(this, {
             showToast(it)
-            finish()
         })
     }
 
@@ -75,12 +82,12 @@ class PersonInformationActivity :
     @SuppressLint("SetTextI18n")
     override fun initData() {
         super.initData()
-        mUserData = WonderCoreCache.getUserInfo()
-        mViewBinding.tvTargetWeight.text = mUserData.targetWeight + "kg"
-        mViewBinding.tvTargetStep.text = mUserData.targetStep + "步"
-        mViewBinding.tvStature.text = mUserData.stature + "cm"
-        mViewBinding.tvAge.text = mUserData.age + "岁"
-        mViewBinding.tvSex.text = mUserData.sex
+//        mUserData = WonderCoreCache.getUserInfo()
+//        mViewBinding.tvTargetWeight.text = mUserData.targetWeight + "kg"
+//        mViewBinding.tvTargetStep.text = mUserData.targetStep + "步"
+//        mViewBinding.tvStature.text = mUserData.stature + "cm"
+//        mViewBinding.tvAge.text = mUserData.age + "岁"
+//        mViewBinding.tvSex.text = mUserData.sex
         mViewModel.getPersonInfo()
 
     }
@@ -117,7 +124,7 @@ class PersonInformationActivity :
             mUserData = WonderCoreCache.getUserInfo()
             mUserData.sex = str
             WonderCoreCache.saveUserInfo(mUserData)
-            mViewModel.upDataPersonInfo(str,"","","","")
+            mViewModel.upDataPersonInfo(str, "", "", "", "")
 
         }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
             override fun customLayout(v: View?) {
@@ -166,24 +173,23 @@ class PersonInformationActivity :
             mUserData.age = str
             mUserData.ageLocation = options1
             WonderCoreCache.saveUserInfo(mUserData)
-            mViewModel.upDataPersonInfo("",str,"","","")
+            mViewModel.upDataPersonInfo("", str, "", "", "")
 
-        }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
-            override fun customLayout(v: View?) {
-                var title = v?.findViewById<TextView>(R.id.tv_title)
-                var cancel = v?.findViewById<TextView>(R.id.btn_cancel)
-                var submit = v?.findViewById<TextView>(R.id.btn_submit)
-                title?.text = "年龄"
-                cancel?.setOnClickListener {
-                    mAgePickerDialog?.dismiss()
-                }
-                submit?.setOnClickListener {
-                    mAgePickerDialog?.returnData()
-                    mAgePickerDialog?.dismiss()
-                }
+        }.setLayoutRes(
+            R.layout.dialog_person_info_setting
+        ) { v ->
+            var title = v?.findViewById<TextView>(R.id.tv_title)
+            var cancel = v?.findViewById<TextView>(R.id.btn_cancel)
+            var submit = v?.findViewById<TextView>(R.id.btn_submit)
+            title?.text = "年龄"
+            cancel?.setOnClickListener {
+                mAgePickerDialog?.dismiss()
             }
-
-        }).setLabels("岁", "", "")
+            submit?.setOnClickListener {
+                mAgePickerDialog?.returnData()
+                mAgePickerDialog?.dismiss()
+            }
+        }.setLabels("岁", "", "")
             .isCenterLabel(true)
             .setSelectOptions(WonderCoreCache.getUserInfo().ageLocation)
             .setLineSpacingMultiplier(3.0F)
@@ -214,27 +220,26 @@ class PersonInformationActivity :
             var str = mStatureList[options1]
             mViewBinding.tvStature.text = str + "cm"
             mUserData = WonderCoreCache.getUserInfo()
-            mUserData.stature = str
+            mUserData.height = str
             mUserData.statureLocation = options1
             WonderCoreCache.saveUserInfo(mUserData)
-            mViewModel.upDataPersonInfo("","",str,"","")
+            mViewModel.upDataPersonInfo("", "", str, "", "")
 
-        }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
-            override fun customLayout(v: View?) {
-                var title = v?.findViewById<TextView>(R.id.tv_title)
-                var cancel = v?.findViewById<TextView>(R.id.btn_cancel)
-                var submit = v?.findViewById<TextView>(R.id.btn_submit)
-                title?.text = "身高"
-                cancel?.setOnClickListener {
-                    mStaturePickerDialog?.dismiss()
-                }
-                submit?.setOnClickListener {
-                    mStaturePickerDialog?.returnData()
-                    mStaturePickerDialog?.dismiss()
-                }
+        }.setLayoutRes(
+            R.layout.dialog_person_info_setting
+        ) { v ->
+            var title = v?.findViewById<TextView>(R.id.tv_title)
+            var cancel = v?.findViewById<TextView>(R.id.btn_cancel)
+            var submit = v?.findViewById<TextView>(R.id.btn_submit)
+            title?.text = "身高"
+            cancel?.setOnClickListener {
+                mStaturePickerDialog?.dismiss()
             }
-
-        }).setLabels("cm", "", "")
+            submit?.setOnClickListener {
+                mStaturePickerDialog?.returnData()
+                mStaturePickerDialog?.dismiss()
+            }
+        }.setLabels("cm", "", "")
             .isCenterLabel(true)
             .setSelectOptions(WonderCoreCache.getUserInfo().statureLocation)
             .setLineSpacingMultiplier(3.0F)
@@ -265,10 +270,10 @@ class PersonInformationActivity :
             var str = mTargetWeightList[options1]
             mViewBinding.tvTargetWeight.text = str + "kg"
             mUserData = WonderCoreCache.getUserInfo()
-            mUserData.targetWeight = str
+            mUserData.goalBodyWeight = str
             mUserData.targetWeightLocation = options1
             WonderCoreCache.saveUserInfo(mUserData)
-            mViewModel.upDataPersonInfo("","","",str,"")
+            mViewModel.upDataPersonInfo("", "", "", str, "")
         }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
             override fun customLayout(v: View?) {
                 var title = v?.findViewById<TextView>(R.id.tv_title)
@@ -317,10 +322,10 @@ class PersonInformationActivity :
             var str = mTargetStepList[options1]
             mViewBinding.tvTargetStep.text = str + "步"
             mUserData = WonderCoreCache.getUserInfo()
-            mUserData.targetStep = str
+            mUserData.goalStepCount = str
             mUserData.targetStepLocation = options1
             WonderCoreCache.saveUserInfo(mUserData)
-            mViewModel.upDataPersonInfo("","","","",str)
+            mViewModel.upDataPersonInfo("", "", "", "", str)
         }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
             override fun customLayout(v: View?) {
                 var title = v?.findViewById<TextView>(R.id.tv_title)

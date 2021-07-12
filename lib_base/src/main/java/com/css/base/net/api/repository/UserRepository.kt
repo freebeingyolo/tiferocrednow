@@ -56,7 +56,7 @@ object UserRepository {
 
     suspend fun queryPersonalInformation(
         userId: String
-    ): CommonResponse<List<UserData>> {
+    ): CommonResponse<ArrayList<UserData>> {
         val map: MutableMap<String, String> = HashMap()
         map["userId"] = userId
         return userApi.queryPersonalInformation(map)
