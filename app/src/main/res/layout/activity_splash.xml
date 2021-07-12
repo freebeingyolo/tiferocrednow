@@ -4,24 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@mipmap/splash_bg"
     android:orientation="vertical"
     tools:context=".ui.activity.SplashActivity">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_height="28dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="146dp"
         android:src="@mipmap/icon" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:text="发掘全球惊喜好物"
+        android:layout_marginTop="200dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="100dp"
-        android:text="@string/app_name"
-        android:textColor="@color/black"
-        android:textSize="20dp"
-        android:textStyle="bold" />
+        android:textColor="#ff000000"
+        android:textSize="29sp"
+        />
 </RelativeLayout>

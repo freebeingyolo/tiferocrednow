@@ -3,9 +3,14 @@ package com.css.service.data
 data class UserData(
     var sex: String = "男",
     var age: String = "30",
-    var stature: String = "175",
-    var targetWeight: String = "60",
-    var targetStep: String = "8000",
+    var height: String = "175",
+    var goalBodyWeight: String = "60",
+    var goalStepCount: String = "8000",
+    var phone: String = "",
+    var userName: String = "",
+    var userId: Int = 0,
+    var pushSet: String = "开",
+    var isDel: String = "0",
     var isFirst: Boolean = true,
     var isFirstOpenApp: Boolean = true,
     var sexLocation: Int = 0,
@@ -16,8 +21,8 @@ data class UserData(
 ) {
     val setInt: Int get() = if (sex == "男") 0 else 1
     val ageInt: Int get() = age.toInt()
-    val statureFloat: Float get() = stature.toFloat()
-    val targetWeightFloat get() = targetWeight.toFloat()
+    val statureFloat: Float get() = height.toFloat()
+    val targetWeightFloat get() = goalBodyWeight.toFloat()
 }
 
 data class StepData(

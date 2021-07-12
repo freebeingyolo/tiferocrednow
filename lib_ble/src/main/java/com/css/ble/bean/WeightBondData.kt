@@ -90,7 +90,7 @@ class WeightBondData {
             val sex = userInfo.setInt
             val age = userInfo.ageInt
             val weight_kg = weightKg * 1.0
-            val height_cm = userInfo.stature.toInt()
+            val height_cm = userInfo.height.toInt()
             val adc = adc
             val ret = AlgorithmUtil.getBodyFatData(AlgorithmUtil.AlgorithmType.TYPE_AICARE, sex, age, weight_kg, height_cm, adc)
             BodyFatDataWrapper(ret, weightKg, WonderCoreCache.getUserInfo())

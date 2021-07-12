@@ -2,6 +2,7 @@ package com.css.base.net.api
 
 import com.css.base.net.CommonResponse
 import com.css.service.data.LoginUserData
+import com.css.service.data.UserData
 import okhttp3.RequestBody
 import retrofit2.http.*
 
@@ -35,20 +36,20 @@ internal interface WonderCoreApi {
         //版本更新
         @POST("app/user/upgrade")
         suspend fun upgrade(@Body requestBody: RequestBody): CommonResponse<Any>
-    }
 
-    interface Setting {
         //个人信息查询
-        @POST("appSetUp/queryPersonalInformation")
-        suspend fun queryPersonalInformation(@Body requestBody: RequestBody): CommonResponse<Any>
-
-        //推送设置查询
-        @POST("appSetUp/queryPushSet")
-        suspend fun queryPushSet(@Body requestBody: RequestBody): CommonResponse<Any>
+        @GET("appSetUp/queryPersonalInformation")
+        suspend fun queryPersonalInformation(@QueryMap map: Map<String, String>): CommonResponse<ArrayList<UserData>>
 
         //编辑个人信息
         @POST("appSetUp/updatePersonalInformation")
         suspend fun updatePersonalInformation(@Body requestBody: RequestBody): CommonResponse<Any>
+    }
+
+    interface Setting {
+        //推送设置查询
+        @POST("appSetUp/queryPushSet")
+        suspend fun queryPushSet(@Body requestBody: RequestBody): CommonResponse<Any>
     }
 
     interface Mall {
