@@ -28,14 +28,27 @@ class RegisterActivity : BaseActivity<RegisterViewModel, ActivityRegisterBinding
         SystemBarHelper.setHeightAndPadding(this, mViewBinding.topView)
         mViewBinding.tvRegisterBtn.setOnClickListener(this)
         mViewBinding.tvToLogin.setOnClickListener(this)
+        mViewBinding.tvSendCode.setOnClickListener(this)
     }
 
     override fun initViewModel(): RegisterViewModel =
         ViewModelProvider(this).get(RegisterViewModel::class.java)
 
     override fun registorUIChangeLiveDataCallBack() {
-        mViewModel.registerData.observe(this, Observer {
+        mViewModel.registerData.observe(this, {
             showToast(it)
+        })
+        mViewModel.resetCodeData.observe(this, {
+            mViewBinding.tvSendCode.isEnabled = true
+            mViewBinding.tvSendCode.text = it
+        })
+        mViewModel.timeDownData.observe(this, {
+            mViewBinding.tvSendCode.isEnabled = false
+            mViewBinding.tvSendCode.text = "${it}秒后可重发"
+        })
+        mViewModel.registerData.observe(this, {
+            finish()
+            ARouterUtil.openLogin()
         })
     }
 
@@ -47,11 +60,21 @@ class RegisterActivity : BaseActivity<RegisterViewModel, ActivityRegisterBinding
     override fun onClick(v: View) {
         when (v) {
             mViewBinding.tvRegisterBtn -> {
-                mViewModel.register("15959994075", "123456", "1234", "ruis")
+                mViewModel.checkData(
+                    mViewBinding.etTelephone.text.toString(),
+                    mViewBinding.etPassword.text.toString(),
+                    mViewBinding.etPasswordAgain.text.toString(),
+                    mViewBinding.etSmsCode.text.toString(),
+                    mViewBinding.etUsername.text.toString(),
+                    mViewBinding.cbAgreement.isChecked
+                )
             }
             mViewBinding.tvToLogin -> {
                 ARouterUtil.openLogin()
                 finish()
+            }
+            mViewBinding.tvSendCode -> {
+                mViewModel.sendCode(mViewBinding.etTelephone.text.toString())
             }
         }
     }

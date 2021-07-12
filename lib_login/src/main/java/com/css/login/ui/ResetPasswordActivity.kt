@@ -20,10 +20,20 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel, ActivityReset
         super.initView(savedInstanceState)
         SystemBarHelper.immersiveStatusBar(this, 0f)
         SystemBarHelper.setHeightAndPadding(this, mViewBinding.topView)
-
         mViewBinding.tvSubmit.setOnClickListener(this)
     }
 
+    override fun registorUIChangeLiveDataCallBack() {
+        super.registorUIChangeLiveDataCallBack()
+        mViewModel.resetCodeData.observe(this, {
+            mViewBinding.tvSendCode.isEnabled = true
+            mViewBinding.tvSendCode.text = it
+        })
+        mViewModel.timeDownData.observe(this, {
+            mViewBinding.tvSendCode.isEnabled = false
+            mViewBinding.tvSendCode.text = "${it}秒后可重发"
+        })
+    }
     override fun initViewModel(): ResetPasswordViewModel =
         ViewModelProvider(this).get(ResetPasswordViewModel::class.java)
 
@@ -36,17 +46,12 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel, ActivityReset
     override fun onClick(v: View) {
         when (v) {
             mViewBinding.tvSubmit -> {
-                if (mViewBinding.etPassword.text.toString() != mViewBinding.etPasswordAgain.text.toString()) {
-                    showToast("两次密码输入不一致，请重新输入")
-                    mViewBinding.etPassword.setText("")
-                    mViewBinding.etPasswordAgain.setText("")
-                } else {
-                    mViewModel.checkPhoneAnddPassword(
-                        mViewBinding.etPhone.text.toString(),
-                        mViewBinding.etPassword.text.toString(),
-                        mViewBinding.etSmsCode.text.toString()
-                    )
-                }
+                mViewModel.checkData(
+                    mViewBinding.etPhone.text.toString(),
+                    mViewBinding.etPassword.text.toString(),
+                    mViewBinding.etPasswordAgain.text.toString(),
+                    mViewBinding.etSmsCode.text.toString()
+                )
             }
         }
     }
