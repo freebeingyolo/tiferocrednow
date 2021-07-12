@@ -10,6 +10,7 @@ import com.css.service.utils.WonderCoreCache
 
 class PersonInformationViewModel : BaseViewModel() {
     val personInfoData = MutableLiveData<ArrayList<UserData>>()
+    val nonePersonInfoData = MutableLiveData<String>()
     val upPersonInfoData = MutableLiveData<String>()
 
     fun getPersonInfo() {
@@ -27,6 +28,7 @@ class PersonInformationViewModel : BaseViewModel() {
                 personInfoData.value = d
             }, { _, msg, _ ->
                 hideLoading()
+                nonePersonInfoData.value = ""
                 showToast(msg)
             }
         )

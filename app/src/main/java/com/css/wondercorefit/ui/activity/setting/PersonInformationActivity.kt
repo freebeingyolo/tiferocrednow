@@ -274,22 +274,20 @@ class PersonInformationActivity :
             mUserData.targetWeightLocation = options1
             WonderCoreCache.saveUserInfo(mUserData)
             mViewModel.upDataPersonInfo("", "", "", str, "")
-        }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
-            override fun customLayout(v: View?) {
-                var title = v?.findViewById<TextView>(R.id.tv_title)
-                var cancel = v?.findViewById<TextView>(R.id.btn_cancel)
-                var submit = v?.findViewById<TextView>(R.id.btn_submit)
-                title?.text = "目标体重"
-                cancel?.setOnClickListener {
-                    mTargetWeightPickerDialog?.dismiss()
-                }
-                submit?.setOnClickListener {
-                    mTargetWeightPickerDialog?.returnData()
-                    mTargetWeightPickerDialog?.dismiss()
-                }
+        }.setLayoutRes(R.layout.dialog_person_info_setting
+        ) { v ->
+            var title = v?.findViewById<TextView>(R.id.tv_title)
+            var cancel = v?.findViewById<TextView>(R.id.btn_cancel)
+            var submit = v?.findViewById<TextView>(R.id.btn_submit)
+            title?.text = "目标体重"
+            cancel?.setOnClickListener {
+                mTargetWeightPickerDialog?.dismiss()
             }
-
-        }).setLabels("kg", "", "")
+            submit?.setOnClickListener {
+                mTargetWeightPickerDialog?.returnData()
+                mTargetWeightPickerDialog?.dismiss()
+            }
+        }.setLabels("kg", "", "")
             .isCenterLabel(true)
             .setSelectOptions(WonderCoreCache.getUserInfo().targetWeightLocation)
             .setLineSpacingMultiplier(3.0F)
