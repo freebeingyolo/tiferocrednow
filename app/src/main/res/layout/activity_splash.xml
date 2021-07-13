@@ -15,13 +15,11 @@
         android:layout_marginTop="146dp"
         android:src="@mipmap/icon" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="发掘全球惊喜好物"
-        android:layout_marginTop="200dp"
         android:layout_centerHorizontal="true"
-        android:textColor="#ff000000"
-        android:textSize="29sp"
-        />
+        android:layout_marginTop="200dp"
+        android:src="@mipmap/splash_text" />
+
 </RelativeLayout>
