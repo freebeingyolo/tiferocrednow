@@ -23,6 +23,11 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>(), View
         mViewBinding.tvRegister.setOnClickListener(this)
         mViewBinding.tvLogin.setOnClickListener(this)
         mViewBinding.forgetPassword.setOnClickListener(this)
+
+        //yh
+        mViewBinding.etTelephone.setText("13388886666")
+        mViewBinding.etPassword.setText("666666")
+
     }
 
     override fun initViewModel(): LoginViewModel =

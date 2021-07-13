@@ -11,6 +11,7 @@
     <color name="text_color">#333333</color>
     <color name="bg_gray">#F6F6F6</color>
     <color name="text_666666">#666666</color>
+    <color name="text_AAAAAA">#AAAAAA</color>
 
     <color name="colorPrimary">#ffffff</color>
     <color name="colorPrimaryDark">#ffffff</color>
