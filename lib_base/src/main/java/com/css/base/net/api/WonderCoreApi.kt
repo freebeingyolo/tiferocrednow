@@ -2,6 +2,7 @@ package com.css.base.net.api
 
 import com.css.base.net.CommonResponse
 import com.css.service.data.LoginUserData
+import com.css.service.data.MallData
 import com.css.service.data.UserData
 import okhttp3.RequestBody
 import retrofit2.http.*
@@ -55,7 +56,7 @@ internal interface WonderCoreApi {
     interface Mall {
         //查询商城数据
         @GET("appMall/queryMall")
-        suspend fun queryMall(): CommonResponse<Any>
+        suspend fun queryMall(): CommonResponse<List<MallData>>
     }
 
     interface History {

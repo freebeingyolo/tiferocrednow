@@ -1,6 +1,7 @@
 package com.css.service.utils
 
 import com.blankj.utilcode.util.SPUtils
+import com.css.service.data.LoginUserData
 import com.css.service.data.UserData
 import com.google.gson.Gson
 
@@ -33,6 +34,17 @@ class WonderCoreCache {
                 )
             } else {
                 UserData()
+            }
+        }
+
+        fun getLoginInfo(): LoginUserData? {
+            return if (!SPUtils.getInstance().getString(CacheKey.LOGIN_DATA.k).isNullOrEmpty()) {
+                mGson.fromJson(
+                    SPUtils.getInstance().getString(CacheKey.LOGIN_DATA.k),
+                    LoginUserData::class.java
+                )
+            } else {
+                 null
             }
         }
 

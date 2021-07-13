@@ -18,10 +18,7 @@ class PersonInformationViewModel : BaseViewModel() {
             {
                 showLoading()
                 UserRepository.queryPersonalInformation(
-                    WonderCoreCache.getData(
-                        CacheKey.LOGIN_DATA,
-                        LoginUserData::class.java
-                    ).userId.toString()
+                    WonderCoreCache.getLoginInfo()?.userInfo?.userId.toString()
                 )
             }, { _, d ->
                 hideLoading()
@@ -48,7 +45,7 @@ class PersonInformationViewModel : BaseViewModel() {
                     WonderCoreCache.getData(
                         CacheKey.LOGIN_DATA,
                         LoginUserData::class.java
-                    ).userId.toString(), sex, age, height, goalBodyWeight, goalStepCount
+                    ).userInfo.userId.toString(), sex, age, height, goalBodyWeight, goalStepCount
                 )
             }, { msg, _ ->
                 upPersonInfoData.value = msg

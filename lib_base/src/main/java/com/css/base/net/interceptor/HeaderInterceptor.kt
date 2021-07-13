@@ -2,6 +2,9 @@ package com.css.base.net.interceptor
 
 import com.blankj.utilcode.util.EncryptUtils
 import com.blankj.utilcode.util.LogUtils
+import com.css.service.data.LoginUserData
+import com.css.service.utils.CacheKey
+import com.css.service.utils.WonderCoreCache
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -17,7 +20,7 @@ class HeaderInterceptor : Interceptor {
         val request = chain.request()
         val newRequestBuilder = request.newBuilder()
         newRequestBuilder.header("contentType", "application/json")
-//        val session = WonderCoreCache.getData(CacheKey.LOGIN_DATA, LoginUserData::class.java)
+        var session = WonderCoreCache.getLoginInfo()
         var mNonce = Random().nextInt(99999999) + Random().nextInt(9999)
         var mTimestamp = System.currentTimeMillis() + Random().nextInt(9999)
         if (mNonce == mNonce) {
@@ -27,9 +30,9 @@ class HeaderInterceptor : Interceptor {
             mTimestamp += 1000
         }
         var mMethod = request.method.toLowerCase(Locale.getDefault())
-//        if (session != null) {
-//            newRequestBuilder.header("Authorization", "Bearer ${session.token}")
-//        }
+        if (session != null) {
+            newRequestBuilder.header("token", session.token)
+        }
         newRequestBuilder.header("method", mMethod)
         newRequestBuilder.header("nonce", mNonce.toString())
         newRequestBuilder.header("timestamp", mTimestamp.toString())
