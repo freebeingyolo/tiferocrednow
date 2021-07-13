@@ -81,6 +81,7 @@
                 android:textSize="12sp" />
 
             <TextView
+                android:id="@+id/tv_send_code"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -118,11 +119,13 @@
             android:textSize="12sp" />
 
         <CheckBox
+            android:id="@+id/cb_agreement"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="61dp"
             android:layout_marginTop="12dp"
             android:layout_marginEnd="61dp"
+            android:checked="true"
             android:text="勾选同意《用户服务协议》"
             android:textColor="#FFAAAAAA"
             android:textSize="10dp" />

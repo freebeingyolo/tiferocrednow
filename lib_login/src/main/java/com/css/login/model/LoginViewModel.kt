@@ -31,8 +31,6 @@ class LoginViewModel : BaseViewModel() {
     }
 
     fun checkPhoneAnddPassword(phone: String, password: String) {
-        var phone = phone
-        var password = password
         if (phone.isEmpty()) {
             showCenterToast("请输入手机号码")
         } else if (phone.length != 11) {
