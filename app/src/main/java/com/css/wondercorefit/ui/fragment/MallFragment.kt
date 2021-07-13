@@ -15,8 +15,9 @@ import com.css.wondercorefit.R
 import com.css.wondercorefit.adapter.MallProductAdapter
 import com.css.wondercorefit.bean.ProductBean
 import com.css.wondercorefit.databinding.FragmentMallBinding
+import com.css.wondercorefit.ui.viewmodel.MallViewModel
 
-class MallFragment : BaseFragment<DefaultViewModel, FragmentMallBinding>(), View.OnClickListener {
+class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(), View.OnClickListener {
     var mData = ArrayList<ProductBean>()
     lateinit var mAdapter: MallProductAdapter
     override fun initView(savedInstanceState: Bundle?) {
@@ -35,6 +36,7 @@ class MallFragment : BaseFragment<DefaultViewModel, FragmentMallBinding>(), View
 
     override fun initData() {
         super.initData()
+        mViewModel.getMallInfo()
         mData.add(ProductBean(R.mipmap.icon_product_1, "计数单杠"))
         mData.add(ProductBean(R.mipmap.icon_product_2, "计数俯卧撑板"))
         mData.add(ProductBean(R.mipmap.icon_product_3, "计数健腹轮"))
@@ -47,8 +49,15 @@ class MallFragment : BaseFragment<DefaultViewModel, FragmentMallBinding>(), View
         mAdapter.setItems(mData)
     }
 
-    override fun initViewModel(): DefaultViewModel =
-        ViewModelProvider(this).get(DefaultViewModel::class.java)
+    override fun registorUIChangeLiveDataCallBack() {
+        super.registorUIChangeLiveDataCallBack()
+        mViewModel.mallData.observe(viewLifecycleOwner, {
+
+        })
+    }
+
+    override fun initViewModel(): MallViewModel =
+        ViewModelProvider(this).get(MallViewModel::class.java)
 
     override fun initViewBinding(
         inflater: LayoutInflater,
@@ -56,16 +65,17 @@ class MallFragment : BaseFragment<DefaultViewModel, FragmentMallBinding>(), View
     ): FragmentMallBinding = FragmentMallBinding.inflate(inflater, viewGroup, false)
 
     override fun onClick(v: View) {
-        when(v.id){
-            R.id.tv_store_details_1->{
+        when (v.id) {
+            R.id.tv_store_details_1 -> {
                 openUrl("https://www.tmall.com/")
             }
-            R.id.tv_store_details_2->{
+            R.id.tv_store_details_2 -> {
                 openUrl("https://mall.jd.com/index-1000096602.html")
             }
         }
     }
-    private fun openUrl(url:String){
+
+    private fun openUrl(url: String) {
         val uri: Uri = Uri.parse(url)
         val intent = Intent()
         intent.action = "android.intent.action.VIEW"
