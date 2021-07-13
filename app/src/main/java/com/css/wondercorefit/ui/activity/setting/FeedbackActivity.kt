@@ -76,8 +76,8 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
             e.printStackTrace()
         }
 
-
         //加载历史反馈数据
+
     }
 
     override fun initViewModel(): FeedbackViewModel =
@@ -100,7 +100,12 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
             }
             mViewBinding.rtSubmit -> {
                 //提交
-                mViewModel.doSubmit(isSubmitStatus);
+                mViewModel.doSubmit(isSubmitStatus,
+                    mViewBinding.etContent.text.toString(),
+                    mViewBinding.tvErrorData.text.toString(),
+                    mViewBinding.tvErrorTime.text.toString(),
+                    mViewBinding.etPhone.text.toString(),
+                "userid");
             }
 
         }
@@ -146,11 +151,13 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
     }
 
     private fun showSelectedData() {
+
         mDataPickerDialog = TimePickerBuilder(
             this
         ) { date, v ->
             // 这里回调过来的v,就是show()方法里面所添加的 View 参数，如果show的时候没有添加参数，v则为null
             mViewBinding.tvErrorData.text = DateTimeHelper.formatToString(date, "yyyy-MM-dd")
+            checkSubmitStatus()
         }
 //         .setDecorView((RelativeLayout) findViewById(R.id.ll_pickerView))//必须是RelativeLayout，不设置setDecorView的话，底部虚拟导航栏会显示在弹出的选择器区域
             //年月日时分秒 的显示与否，不设置则默认全部显示
@@ -184,11 +191,16 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
     }
 
     private fun showSelectedTime() {
+        if (TextUtils.isEmpty(mViewBinding.tvErrorData.text)){
+            showCenterToast("请先选择日期")
+            return
+        }
         mTimePickerDialog = TimePickerBuilder(
             this
         ) { date, v ->
             // 这里回调过来的v,就是show()方法里面所添加的 View 参数，如果show的时候没有添加参数，v则为null
             mViewBinding.tvErrorTime.text = DateTimeHelper.formatToString(date, "HH:mm")
+            checkSubmitStatus()
         }
 //         .setDecorView((RelativeLayout) findViewById(R.id.ll_pickerView))//必须是RelativeLayout，不设置setDecorView的话，底部虚拟导航栏会显示在弹出的选择器区域
             //年月日时分秒 的显示与否，不设置则默认全部显示

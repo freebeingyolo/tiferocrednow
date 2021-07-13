@@ -53,4 +53,8 @@ public class RoundTextView extends AppCompatTextView {
             delegate.setBgSelector();
         }
     }
+
+    public void setBackgroundColor(int backgroundColor) {
+        delegate.setBackgroundColor(backgroundColor);
+    }
 }
