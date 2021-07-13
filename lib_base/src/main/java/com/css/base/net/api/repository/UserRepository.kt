@@ -89,4 +89,10 @@ object UserRepository {
         }
         return userApi.updatePersonalInformation(param.build())
     }
+
+    suspend fun sendCode(phone: String): CommonResponse<String> {
+        val map: MutableMap<String, String> = HashMap()
+        map["phone"] = phone
+        return userApi.code(map)
+    }
 }

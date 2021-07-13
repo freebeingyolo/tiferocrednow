@@ -19,8 +19,8 @@ internal interface WonderCoreApi {
         suspend fun register(@Body requestBody: RequestBody): CommonResponse<Any>
 
         //发送验证码
-        @POST("app/user/code")
-        suspend fun code(@Body requestBody: RequestBody): CommonResponse<Any>
+        @GET("app/user/code")
+        suspend fun code(@QueryMap map: Map<String, String>): CommonResponse<String>
 
         //发送验证码
         @POST("app/user/bind/{userId}")
@@ -54,8 +54,8 @@ internal interface WonderCoreApi {
 
     interface Mall {
         //查询商城数据
-        @POST("appMall/queryMall")
-        suspend fun queryMall(@Body requestBody: RequestBody): CommonResponse<Any>
+        @GET("appMall/queryMall")
+        suspend fun queryMall(): CommonResponse<Any>
     }
 
     interface History {
