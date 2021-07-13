@@ -23,6 +23,9 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>(), View
         mViewBinding.tvRegister.setOnClickListener(this)
         mViewBinding.tvLogin.setOnClickListener(this)
         mViewBinding.forgetPassword.setOnClickListener(this)
+
+
+
     }
 
     override fun initViewModel(): LoginViewModel =

@@ -18,6 +18,7 @@ import com.css.service.utils.WonderCoreCache
 import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.FragmentSettingBinding
 import com.css.wondercorefit.ui.activity.setting.AboutUsActivity
+import com.css.wondercorefit.ui.activity.setting.FeedbackActivity
 import com.css.wondercorefit.ui.activity.setting.PersonInformationActivity
 
 
@@ -31,6 +32,7 @@ class SettingFragment : BaseFragment<DefaultViewModel, FragmentSettingBinding>()
         mViewBinding?.rlPersonInfo?.setOnClickListener(this)
         mViewBinding?.rlAboutUs?.setOnClickListener(this)
         mViewBinding?.exitLogin?.setOnClickListener(this)
+        mViewBinding?.rlFeedback?.setOnClickListener(this)
     }
 
     override fun initViewModel(): DefaultViewModel =
@@ -43,6 +45,9 @@ class SettingFragment : BaseFragment<DefaultViewModel, FragmentSettingBinding>()
             }
             R.id.rl_about_us -> {
                 activity?.let { AboutUsActivity.starActivity(it) }
+            }
+            R.id.rl_feedback -> {
+                activity?.let { FeedbackActivity.starActivity(it) }
             }
             R.id.exit_login -> {
                 activity?.let {
