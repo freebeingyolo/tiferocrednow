@@ -10,8 +10,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.alibaba.android.arouter.launcher.ARouter
 import com.css.base.dialog.CommonAlertDialog
+import com.css.base.net.api.repository.HistoryRepository
 import com.css.base.uibase.BaseFragment
 import com.css.base.uibase.inner.OnToolBarClickListener
+import com.css.base.utils.LiveDataBus
 import com.css.base.view.ToolBarView
 import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
@@ -19,6 +21,7 @@ import com.css.ble.databinding.*
 import com.css.ble.ui.DeviceInfoActivity
 import com.css.ble.utils.FragmentUtils
 import com.css.ble.viewmodel.WeightMeasureVM
+import com.css.service.data.LoginUserData
 import com.css.service.router.ARouterConst
 import com.css.service.utils.ImageUtils
 import com.css.service.utils.WonderCoreCache
@@ -31,7 +34,6 @@ import razerdp.basepopup.BasePopupWindow
  * @date 2021-05-17
  */
 class WeightMeasureDoneFragment : BaseWeightFragment<WeightMeasureVM, ActivityWeightMeasureDoneBinding>() {
-    private var dialog: ProgressDialog? = null
 
     override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): ActivityWeightMeasureDoneBinding {
         return ActivityWeightMeasureDoneBinding.inflate(inflater, parent, false).also {
@@ -50,23 +52,35 @@ class WeightMeasureDoneFragment : BaseWeightFragment<WeightMeasureVM, ActivityWe
 
     override fun initData() {
         super.initData()
-        dialog = ProgressDialog.show(requireContext(), "", "正在处理数据")
-        lifecycleScope.launch {
-            delay(2000)
-            FragmentUtils.changeFragment(WeightMeasureEndDeailFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
-            dialog?.dismiss()
-        }
+        uploadData(mViewModel.bondData.value!!.weightKg)
+    }
+
+    private fun uploadData(weight: Float) {
+        mViewModel.netLaunch(
+            {
+                showLoading()
+                var uid = LiveDataBus.get().with<LoginUserData>("LoginUserData").value!!.userInfo.userId;
+                HistoryRepository.uploadMeasureWeight(uid, weight)
+            }, { msg, d ->
+                hideLoading()
+                FragmentUtils.changeFragment(WeightMeasureEndDeailFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
+            }, { _, msg, _ ->
+                hideLoading()
+                showToast(msg)
+            }
+        )
     }
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
     }
+
     override fun initCommonToolBarBg(): ToolBarView.ToolBarBg {
         return ToolBarView.ToolBarBg.GRAY
     }
+
     override fun onDetach() {
         super.onDetach()
-        dialog?.dismiss()
     }
 
     override fun onVisible() {

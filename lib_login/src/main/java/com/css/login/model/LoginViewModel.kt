@@ -1,15 +1,14 @@
 package com.css.login.model
 
-import androidx.lifecycle.MutableLiveData
 import com.css.base.net.api.repository.UserRepository
 import com.css.base.uibase.viewmodel.BaseViewModel
+import com.css.base.utils.LiveDataBus
 import com.css.service.data.LoginUserData
 import com.css.service.utils.CacheKey
 import com.css.service.utils.WonderCoreCache
 
 class LoginViewModel : BaseViewModel() {
-
-    val loginData = MutableLiveData<LoginUserData>()
+    //val loginData = MutableLiveData<LoginUserData>()
 
     fun login(
         phone: String,
@@ -21,7 +20,8 @@ class LoginViewModel : BaseViewModel() {
                 UserRepository.loginGet(phone, password)
             }, { msg, d ->
                 hideLoading()
-                loginData.value = d
+                //loginData.value = d
+                LiveDataBus.get().with<LoginUserData>("LoginUserData").value  = d;
                 WonderCoreCache.saveData(CacheKey.LOGIN_DATA, d)
             }, { _, msg, _ ->
                 hideLoading()

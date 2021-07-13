@@ -3,8 +3,14 @@ package com.css.ble.viewmodel
 import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.css.base.net.api.repository.HistoryRepository
+import com.css.base.net.api.repository.UserRepository
+import com.css.base.utils.LiveDataBus
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.WeightBondData
+import com.css.service.data.LoginUserData
+import com.css.service.utils.CacheKey
+import com.css.service.utils.WonderCoreCache
 import com.pingwang.bluetoothlib.BroadcastDataParsing
 import com.pingwang.bluetoothlib.bean.BleValueBean
 
@@ -92,5 +98,6 @@ class WeightMeasureVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPars
         }
 
     }
+
 
 }

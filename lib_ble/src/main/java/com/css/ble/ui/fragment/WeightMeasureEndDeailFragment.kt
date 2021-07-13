@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.css.base.net.api.repository.HistoryRepository
 import com.css.base.uibase.BaseFragment
 import com.css.base.view.ToolBarView
 import com.css.ble.BodyDetailAdapter
@@ -69,6 +70,7 @@ class WeightMeasureEndDeailFragment :
                     loadData()
                 }
             }
+
         }
     }
 
