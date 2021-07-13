@@ -24,9 +24,7 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>(), View
         mViewBinding.tvLogin.setOnClickListener(this)
         mViewBinding.forgetPassword.setOnClickListener(this)
 
-        //yh
-        mViewBinding.etTelephone.setText("13388886666")
-        mViewBinding.etPassword.setText("666666")
+
 
     }
 
