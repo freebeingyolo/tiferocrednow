@@ -2,9 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/ll_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     tools:context=".ui.activity.setting.AboutUsActivity">
@@ -38,18 +38,25 @@
         android:id="@+id/rl_terms_service"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginTop="20dp"
-        android:gravity="center_vertical"
-        android:paddingStart="15dp"
-        android:paddingEnd="15dp">
+        android:layout_marginTop="20dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
             android:text="@string/tos"
             android:textColor="@color/black"
             android:textSize="13sp" />
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+
+            android:layout_marginEnd="17dp"
+            android:src="@mipmap/icon_next" />
     </RelativeLayout>
 
     <View
@@ -62,18 +69,24 @@
     <RelativeLayout
         android:id="@+id/rl_terms_liability"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:gravity="center_vertical"
-        android:paddingStart="15dp"
-        android:paddingEnd="15dp">
+        android:layout_height="50dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
             android:text="@string/disclaimer"
             android:textColor="@color/black"
             android:textSize="13sp" />
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="17dp"
+            android:src="@mipmap/icon_next" />
     </RelativeLayout>
 
     <View
@@ -86,18 +99,64 @@
     <RelativeLayout
         android:id="@+id/rl_terms_privacy"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:gravity="center_vertical"
-        android:paddingStart="15dp"
-        android:paddingEnd="15dp">
+        android:layout_height="50dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
             android:text="@string/privacy_policy"
             android:textColor="@color/black"
             android:textSize="13sp" />
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="17dp"
+            android:src="@mipmap/icon_next" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:background="@color/gray" />
+
+    <RelativeLayout
+        android:id="@+id/rl_check_update"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:text="@string/check_update"
+            android:textColor="@color/black"
+            android:textSize="13sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/next_iv"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="5dp"
+            android:text="V1.0"
+            android:textSize="13sp" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/next_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="17dp"
+            android:src="@mipmap/icon_next" />
     </RelativeLayout>
 
     <View
