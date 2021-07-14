@@ -1,6 +1,7 @@
 package com.css.base.net.api
 
 import com.css.base.net.CommonResponse
+import com.css.service.data.FeedbackData
 import com.css.service.data.LoginUserData
 import com.css.service.data.MallData
 import com.css.service.data.UserData
@@ -58,6 +59,9 @@ internal interface WonderCoreApi {
         @POST(" appFeedback/addFeedback")
         suspend fun submit(@Body requestBody: RequestBody): CommonResponse<Any>
         //查询反馈记录
+        //发送验证码
+        @GET("appFeedback/?")
+        suspend fun queryFeedbackHistory(@QueryMap map: Map<String, String>): CommonResponse<ArrayList<FeedbackData>>
 
     }
 
