@@ -4,6 +4,7 @@ import com.css.base.net.CommonResponse
 import com.css.base.net.NetManager
 import com.css.base.net.RequestBodyBuilder
 import com.css.base.net.api.WonderCoreApi
+import com.css.service.data.FeedbackData
 
 /**
  * Created by YH
@@ -39,4 +40,11 @@ object SettingRepository {
         return settingApi.submit(param)
     }
 
+    suspend fun queryFeedBackHistory(
+        userId: String
+    ): CommonResponse<ArrayList<FeedbackData>> {
+        val map: MutableMap<String, String> = HashMap()
+        map["userId"] = userId
+        return settingApi.queryFeedbackHistory(map);
+    }
 }

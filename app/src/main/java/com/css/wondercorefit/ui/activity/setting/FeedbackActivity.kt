@@ -104,11 +104,16 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
                     mViewBinding.etContent.text.toString(),
                     mViewBinding.tvErrorData.text.toString(),
                     mViewBinding.tvErrorTime.text.toString(),
-                    mViewBinding.etPhone.text.toString(),
-                "userid");
+                    mViewBinding.etPhone.text.toString());
             }
 
         }
+    }
+    override fun registorUIChangeLiveDataCallBack(){
+        mViewModel.submitDate.observe(this, {
+            showToast(it)
+        })
+
     }
 
     private fun initListener() {
