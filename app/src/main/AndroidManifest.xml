@@ -32,6 +32,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Wonder.Base">
+        <service
+            android:name=".utils.BootstrapService"
+            android:enabled="true"
+            android:exported="true"></service>
+
         <activity
             android:name=".ui.activity.setting.TermsActivity"
             android:launchMode="singleTask"
