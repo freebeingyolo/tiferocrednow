@@ -6,15 +6,15 @@
 
         <variable
             name="data"
-            type="com.css.wondercorefit.bean.ProductBean" />
+            type="com.css.service.data.MallData" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_item"
-        android:layout_marginEnd="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_product_img"
@@ -22,7 +22,7 @@
             android:layout_height="0dp"
             android:background="@drawable/bg_mall_goods"
             android:padding="5dp"
-            android:src="@{data.productImg}"
+            android:src="@{data.mallPreview}"
             app:layout_constraintDimensionRatio="106:77"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="@{data.productName}"
+            android:text="@{data.titleCopywriting}"
             android:textColor="@color/black"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="@+id/iv_product_img"

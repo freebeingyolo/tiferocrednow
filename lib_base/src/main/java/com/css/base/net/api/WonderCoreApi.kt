@@ -69,7 +69,7 @@ internal interface WonderCoreApi {
     interface Mall {
         //查询商城数据
         @GET("appMall/queryMall")
-        suspend fun queryMall(): CommonResponse<List<MallData>>
+        suspend fun queryMall(): CommonResponse<ArrayList<MallData>>
     }
 
     interface History {

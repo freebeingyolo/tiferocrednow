@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.css.base.uibase.BaseFragment
+import com.css.service.data.MallData
 import com.css.service.utils.SystemBarHelper
 import com.css.wondercorefit.R
 import com.css.wondercorefit.adapter.MallProductAdapter
@@ -17,7 +18,7 @@ import com.css.wondercorefit.databinding.FragmentMallBinding
 import com.css.wondercorefit.viewmodel.MallViewModel
 
 class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(), View.OnClickListener {
-    var mData = ArrayList<ProductBean>()
+    var mData = ArrayList<MallData>()
     lateinit var mAdapter: MallProductAdapter
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
@@ -29,29 +30,30 @@ class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(), View.On
         mViewBinding?.productList?.layoutManager = GridLayoutManager(activity, 3)
         mViewBinding?.productList?.adapter = mAdapter
         mAdapter.setOnItemClickListener {
-            openUrl("https://www.taobao.com/")
+            openUrl(it.mallLink)
         }
     }
 
     override fun initData() {
         super.initData()
         mViewModel.getMallInfo()
-        mData.add(ProductBean(R.mipmap.icon_product_1, "计数单杠"))
-        mData.add(ProductBean(R.mipmap.icon_product_2, "计数俯卧撑板"))
-        mData.add(ProductBean(R.mipmap.icon_product_3, "计数健腹轮"))
-//        mData.add(ProductBean(R.mipmap.icon_product_4, "计数跳绳"))
-        mData.add(ProductBean(R.mipmap.icon_product_5, "计数羽毛球拍"))
-        mData.add(ProductBean(R.mipmap.icon_product_6, "家用跑步机"))
-//        mData.add(ProductBean(R.mipmap.icon_product_7, "腕力球"))
-//        mData.add(ProductBean(R.mipmap.icon_product_8, "智能计数跳绳"))
-        mData.add(ProductBean(R.mipmap.icon_product_9, "智能体脂秤"))
-        mAdapter.setItems(mData)
+//        mData.add(ProductBean(R.mipmap.icon_product_1, "计数单杠"))
+//        mData.add(ProductBean(R.mipmap.icon_product_2, "计数俯卧撑板"))
+//        mData.add(ProductBean(R.mipmap.icon_product_3, "计数健腹轮"))
+////        mData.add(ProductBean(R.mipmap.icon_product_4, "计数跳绳"))
+//        mData.add(ProductBean(R.mipmap.icon_product_5, "计数羽毛球拍"))
+//        mData.add(ProductBean(R.mipmap.icon_product_6, "家用跑步机"))
+////        mData.add(ProductBean(R.mipmap.icon_product_7, "腕力球"))
+////        mData.add(ProductBean(R.mipmap.icon_product_8, "智能计数跳绳"))
+//        mData.add(ProductBean(R.mipmap.icon_product_9, "智能体脂秤"))
+//        mAdapter.setItems(mData)
     }
 
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
         mViewModel.mallData.observe(viewLifecycleOwner, {
-
+            mData.addAll(it)
+            mAdapter.setItems(mData)
         })
     }
 

@@ -6,7 +6,7 @@ import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.service.data.MallData
 
 class MallViewModel : BaseViewModel() {
-    val mallData = MutableLiveData<List<MallData>>()
+    val mallData = MutableLiveData<ArrayList<MallData>>()
     fun getMallInfo() {
         netLaunch(
             {
