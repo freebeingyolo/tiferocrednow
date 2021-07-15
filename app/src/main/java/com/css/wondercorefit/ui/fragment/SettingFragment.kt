@@ -6,11 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.blankj.utilcode.util.CleanUtils
+import com.blankj.utilcode.util.FileUtils
+import com.blankj.utilcode.util.Utils
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseFragment
 import com.css.base.uibase.viewmodel.DefaultViewModel
-import com.css.ble.bean.BondDeviceData
 import com.css.service.router.ARouterUtil
 import com.css.service.utils.CacheKey
 import com.css.service.utils.SystemBarHelper
@@ -33,6 +35,8 @@ class SettingFragment : BaseFragment<DefaultViewModel, FragmentSettingBinding>()
         mViewBinding?.rlAboutUs?.setOnClickListener(this)
         mViewBinding?.exitLogin?.setOnClickListener(this)
         mViewBinding?.rlFeedback?.setOnClickListener(this)
+        mViewBinding?.rlCleanCache?.setOnClickListener(this)
+        mViewBinding?.tvCache?.text = FileUtils.getSize(Utils.getApp().cacheDir)
     }
 
     override fun initViewModel(): DefaultViewModel =
@@ -69,6 +73,10 @@ class SettingFragment : BaseFragment<DefaultViewModel, FragmentSettingBinding>()
                         }
                     }.show()
                 }
+            }
+            R.id.rl_clean_cache -> {
+                CleanUtils.cleanInternalCache()
+                mViewBinding?.tvCache?.text = FileUtils.getSize(Utils.getApp().cacheDir)
             }
         }
     }

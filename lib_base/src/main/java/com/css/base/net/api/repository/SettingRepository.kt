@@ -4,6 +4,8 @@ import com.css.base.net.CommonResponse
 import com.css.base.net.NetManager
 import com.css.base.net.RequestBodyBuilder
 import com.css.base.net.api.WonderCoreApi
+import com.css.service.data.UpGradeData
+import com.css.service.data.UserData
 
 /**
  * Created by YH
@@ -39,4 +41,11 @@ object SettingRepository {
         return settingApi.submit(param)
     }
 
+    suspend fun upGrade(
+        version: String
+    ): CommonResponse<UpGradeData> {
+        val map: MutableMap<String, String> = HashMap()
+        map["version"] = version
+        return settingApi.upGrade(map)
+    }
 }
