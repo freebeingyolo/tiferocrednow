@@ -1,11 +1,15 @@
 package com.css.wondercorefit.ui.activity
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.css.base.dialog.CommonAlertDialog
+import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseActivity
 import com.css.base.uibase.viewmodel.DefaultViewModel
 import com.css.service.BuildConfig
@@ -17,18 +21,19 @@ import com.css.wondercorefit.ui.fragment.CourseFragment
 import com.css.wondercorefit.ui.fragment.MainFragment
 import com.css.wondercorefit.ui.fragment.MallFragment
 import com.css.wondercorefit.ui.fragment.SettingFragment
+import com.css.wondercorefit.viewmodel.MainActivityViewModel
 import com.tencent.bugly.Bugly
 
 @Route(path = ARouterConst.PATH_APP_MAIN)
-class MainActivity : BaseActivity<DefaultViewModel, ActivityMainBinding>() {
+class MainActivity : BaseActivity<MainActivityViewModel, ActivityMainBinding>() {
     private var mCurFragment: Fragment? = null
     private lateinit var mTabMainFragment: MainFragment
     lateinit var mTabCourseFragment: CourseFragment
     private lateinit var mTabMallFragment: MallFragment
     private lateinit var mTabSettingFragment: SettingFragment
 
-    override fun initViewModel(): DefaultViewModel =
-        ViewModelProvider(this).get(DefaultViewModel::class.java)
+    override fun initViewModel(): MainActivityViewModel =
+        ViewModelProvider(this).get(MainActivityViewModel::class.java)
 
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -40,6 +45,31 @@ class MainActivity : BaseActivity<DefaultViewModel, ActivityMainBinding>() {
         }
         initTablayout()
     }
+
+    override fun initData() {
+        super.initData()
+        mViewModel.getUpGrade()
+    }
+    override fun registorUIChangeLiveDataCallBack() {
+        super.registorUIChangeLiveDataCallBack()
+        mViewModel.upGradeData.observe(this, {
+            CommonAlertDialog(this).apply {
+                gravity = Gravity.BOTTOM
+                type = CommonAlertDialog.DialogType.Confirm
+                title = "检测更新?"
+                content = "检测到新版本${it.version}\n更新内容：\n${it.updateContent}"
+                leftBtnText = "暂不更新"
+                rightBtnText = "立即更新"
+                listener = object : DialogClickListener.DefaultLisener() {
+                    override fun onRightBtnClick(view: View) {
+                        super.onRightBtnClick(view)
+                        //更新操作
+                    }
+                }
+            }.show()
+        })
+    }
+
 
     private fun initTablayout() {
         mTabMainFragment = MainFragment()

@@ -3,6 +3,7 @@ package com.css.base.net.api
 import com.css.base.net.CommonResponse
 import com.css.service.data.LoginUserData
 import com.css.service.data.MallData
+import com.css.service.data.UpGradeData
 import com.css.service.data.UserData
 import okhttp3.RequestBody
 import retrofit2.http.*
@@ -53,6 +54,10 @@ internal interface WonderCoreApi {
         //推送设置查询
         @POST("appSetUp/queryPushSet")
         suspend fun queryPushSet(@Body requestBody: RequestBody): CommonResponse<Any>
+
+        //检查更新
+        @GET("appSetUp/upgrade")
+        suspend fun upGrade(@QueryMap map: Map<String, String>): CommonResponse<UpGradeData>
 
         //提交意见和反馈
         @POST(" appFeedback/addFeedback")

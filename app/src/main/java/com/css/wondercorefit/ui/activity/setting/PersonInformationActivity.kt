@@ -12,10 +12,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.css.base.uibase.BaseActivity
-import com.css.base.view.ToolBarView
 import com.css.pickerview.builder.OptionsPickerBuilder
 import com.css.pickerview.listener.CustomListener
 import com.css.pickerview.view.OptionsPickerView
@@ -23,7 +21,7 @@ import com.css.service.data.UserData
 import com.css.service.utils.WonderCoreCache
 import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.ActivityPersonInformationBinding
-import com.css.wondercorefit.ui.viewmodel.PersonInformationViewModel
+import com.css.wondercorefit.viewmodel.PersonInformationViewModel
 
 class PersonInformationActivity :
     BaseActivity<PersonInformationViewModel, ActivityPersonInformationBinding>(),
