@@ -28,6 +28,7 @@ import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.FragmentSettingBinding
 import com.css.wondercorefit.ui.activity.setting.AboutUsActivity
 import com.css.wondercorefit.ui.activity.setting.FeedbackActivity
+import com.css.wondercorefit.ui.activity.setting.MyDeviceActivity
 import com.css.wondercorefit.ui.activity.setting.PersonInformationActivity
 import com.css.wondercorefit.utils.BootstrapService
 
@@ -42,6 +43,7 @@ class SettingFragment : BaseFragment<DefaultViewModel, FragmentSettingBinding>()
         userInfo = WonderCoreCache.getUserInfo()
         mViewBinding?.rlNotificationSet?.isChecked = userInfo.pushSet == "开"
         mViewBinding?.rlPersonInfo?.setOnClickListener(this)
+        mViewBinding?.rlMyDevice?.setOnClickListener(this)
         mViewBinding?.rlAboutUs?.setOnClickListener(this)
         mViewBinding?.rlNotificationSet?.setOnCheckedChangeListener(this)
         mViewBinding?.exitLogin?.setOnClickListener(this)
@@ -57,6 +59,9 @@ class SettingFragment : BaseFragment<DefaultViewModel, FragmentSettingBinding>()
         when (v.id) {
             R.id.rl_person_info -> {
                 activity?.let { PersonInformationActivity.starActivity(it) }
+            }
+            R.id.rl_my_device -> {
+                activity?.let { MyDeviceActivity.starActivity(it) }
             }
             R.id.rl_about_us -> {
                 activity?.let { AboutUsActivity.starActivity(it) }

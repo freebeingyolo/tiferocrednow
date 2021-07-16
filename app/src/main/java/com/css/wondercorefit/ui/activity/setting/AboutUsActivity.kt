@@ -8,9 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import com.blankj.utilcode.util.AppUtils
+import com.blankj.utilcode.util.FragmentUtils
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
+import com.blankj.utilcode.util.AppUtils
 import com.css.base.uibase.BaseActivity
 import com.css.base.view.ToolBarView
 import com.css.wondercorefit.databinding.ActivityAboutUsBinding
@@ -35,6 +36,7 @@ class AboutUsActivity : BaseActivity<AboutUsViewModel, ActivityAboutUsBinding>()
         mViewBinding.rlTermsService.setOnClickListener(this)
         mViewBinding.rlTermsLiability.setOnClickListener(this)
         mViewBinding.rlTermsPrivacy.setOnClickListener(this)
+        mViewBinding.rlCheckUpdate.setOnClickListener(this)
         mViewBinding.rlCheckUpdate.setOnClickListener(this)
     }
 
@@ -86,6 +88,22 @@ class AboutUsActivity : BaseActivity<AboutUsViewModel, ActivityAboutUsBinding>()
             }
             mViewBinding.rlTermsPrivacy -> {
                 TermsActivity.starActivity(this, TermsActivity.TERMS_PRIVACY)
+            }
+            mViewBinding.rlCheckUpdate -> {
+                CommonAlertDialog(baseContext).apply {
+                    type = CommonAlertDialog.DialogType.Confirm
+                    gravity = Gravity.BOTTOM
+                    title = "检测更新"
+                    content = "检测到新版本$"
+                    leftBtnText = "暂不更新"
+                    rightBtnText = "立即更新"
+                    listener = object : DialogClickListener.DefaultLisener() {
+                        override fun onRightBtnClick(view: View) {
+                            super.onRightBtnClick(view)
+
+                        }
+                    }
+                }.show()
             }
             mViewBinding.rlCheckUpdate -> {
                 mViewModel.getUpGrade()
