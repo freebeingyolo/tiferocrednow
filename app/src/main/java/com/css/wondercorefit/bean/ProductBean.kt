@@ -7,7 +7,7 @@ import com.bumptech.glide.Glide
 
 data class ProductBean(
     var productImg: Int,
-    var productName: String
+    var productName: String,
 ) {
     companion object {
         @BindingAdapter("android:src")

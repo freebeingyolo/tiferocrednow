@@ -10,6 +10,9 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import com.blankj.utilcode.util.CleanUtils
+import com.blankj.utilcode.util.FileUtils
+import com.blankj.utilcode.util.Utils
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseFragment
@@ -43,6 +46,8 @@ class SettingFragment : BaseFragment<DefaultViewModel, FragmentSettingBinding>()
         mViewBinding?.rlNotificationSet?.setOnCheckedChangeListener(this)
         mViewBinding?.exitLogin?.setOnClickListener(this)
         mViewBinding?.rlFeedback?.setOnClickListener(this)
+        mViewBinding?.rlCleanCache?.setOnClickListener(this)
+        mViewBinding?.tvCache?.text = FileUtils.getSize(Utils.getApp().cacheDir)
     }
 
     override fun initViewModel(): DefaultViewModel =
@@ -79,6 +84,10 @@ class SettingFragment : BaseFragment<DefaultViewModel, FragmentSettingBinding>()
                         }
                     }.show()
                 }
+            }
+            R.id.rl_clean_cache -> {
+                CleanUtils.cleanInternalCache()
+                mViewBinding?.tvCache?.text = FileUtils.getSize(Utils.getApp().cacheDir)
             }
         }
     }
