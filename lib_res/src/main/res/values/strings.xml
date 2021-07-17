@@ -67,4 +67,11 @@
     <string name="device_disconnected">未连接</string>
     <string name="device_connecting">连接中</string>
 
+    <string name="device_my_device">我的设备</string>
+    <string name="device_device_name">设备名称</string>
+    <string name="device_device_model">设备型号</string>
+    <string name="device_device_address">Mac地址</string>
+    <string name="device_device_hardware">固件版本</string>
+    <string name="device_device_delete">解除绑定</string>
+
 </resources>

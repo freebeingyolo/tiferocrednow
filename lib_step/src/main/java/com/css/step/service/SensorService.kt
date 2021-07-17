@@ -59,8 +59,8 @@ class SensorService : Service(), SensorEventListener {
             )
             notificationManager.createNotificationChannel(mChannel)
             var notification: Notification =
-                Notification.Builder(getApplicationContext(), ConstantData.CHANNEL_ID).build()
-            startForeground(R.string.app_name, notification);
+                Notification.Builder(applicationContext, ConstantData.CHANNEL_ID).build()
+            startForeground(R.string.app_name, notification)
         }
         return START_STICKY
     }

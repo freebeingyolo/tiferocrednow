@@ -32,22 +32,33 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Wonder.Base">
+        <activity android:name=".ui.activity.setting.MyDeviceActivity"></activity>
+
+        <service
+            android:name=".utils.BootstrapService"
+            android:enabled="true"
+            android:exported="true" />
+
         <activity
             android:name=".ui.activity.setting.TermsActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity android:name="com.css.ble.ui.ABRollerActivity"
+        <activity
+            android:name="com.css.ble.ui.ABRollerActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ui.activity.setting.FeedbackActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.setting.FeedbackActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ui.activity.setting.AboutUsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.setting.AboutUsActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ui.activity.setting.PersonInformationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.setting.PersonInformationActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity android:name=".ui.activity.TestActivity" />
         <activity
             android:name=".ui.activity.SplashActivity"
@@ -62,8 +73,8 @@
         </activity>
         <activity
             android:name=".ui.activity.MainActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.css.Notification.action" />
 

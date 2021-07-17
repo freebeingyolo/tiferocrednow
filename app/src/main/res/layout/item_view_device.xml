@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <RelativeLayout
+        android:id="@+id/my_device_recycle"
+        android:layout_height="50dp"
+        android:layout_width="match_parent"
+        tools:ignore="MissingConstraints">
+    <TextView
+        android:id="@+id/my_device_name"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/device_my_device"
+        android:gravity="center"
+        android:layout_centerVertical="true"
+        tools:ignore="MissingConstraints"
+        android:textSize="10sp" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/device_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/icon_next"
+        android:layout_centerVertical="true"
+        tools:ignore="MissingConstraints"
+        android:layout_alignParentEnd="true"
+        />
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/ln_device_info"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/my_device_recycle"
+        tools:ignore="MissingConstraints"
+        android:orientation="vertical">
+    <RelativeLayout
+        android:id="@+id/rel_device_name"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/device_device_name"
+            android:textColor="@color/black"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/text_device_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:textColor="@color/black"
+            android:text="@string/device_device_name"
+            android:textSize="11sp" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="5dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/color_e5e5e5"
+            tools:ignore="MissingConstraints" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rel_device_model"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_constraintTop_toBottomOf="@id/rel_device_name"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/device_device_model"
+            android:textColor="@color/black"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/device_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:text="@string/device_device_model"
+            android:textColor="@color/black"
+            android:textSize="11sp" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="5dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/color_e5e5e5"
+            tools:ignore="MissingConstraints" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rel_device_address"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_constraintTop_toBottomOf="@id/rel_device_model"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/device_device_address"
+            android:textColor="@color/black"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/device_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:text="@string/device_device_address"
+            android:textColor="@color/black"
+            android:textSize="11sp" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="5dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/color_e5e5e5"
+            tools:ignore="MissingConstraints" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rel_device_hardware"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_constraintTop_toBottomOf="@id/rel_device_address"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/device_device_hardware"
+            android:textColor="@color/black"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/device_model"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:text="@string/device_device_hardware"
+            android:textColor="@color/black"
+            android:textSize="11sp" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="5dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/color_e5e5e5"
+            tools:ignore="MissingConstraints" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rel_device_delete"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_constraintTop_toBottomOf="@id/rel_device_hardware"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/device_device_delete"
+            android:textColor="@color/black"
+            android:textSize="13sp" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_next"
+            android:layout_centerVertical="true"
+            tools:ignore="MissingConstraints"
+            android:layout_alignParentEnd="true"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="5dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/color_e5e5e5"
+            tools:ignore="MissingConstraints" />
+    </RelativeLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
