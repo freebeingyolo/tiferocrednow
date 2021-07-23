@@ -1,4 +1,4 @@
-package com.css.wondercorefit.ui.viewmodel
+package com.css.wondercorefit.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.css.base.net.api.repository.UserRepository

@@ -11,7 +11,7 @@ object MallRepository {
         NetManager.create(WonderCoreApi.Mall::class.java)
     }
 
-    suspend fun queryMall(): CommonResponse<List<MallData>> {
+    suspend fun queryMall(): CommonResponse<ArrayList<MallData>> {
         return otherApi.queryMall()
     }
 }

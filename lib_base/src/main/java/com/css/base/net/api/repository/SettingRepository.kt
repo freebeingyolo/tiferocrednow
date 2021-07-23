@@ -5,6 +5,7 @@ import com.css.base.net.NetManager
 import com.css.base.net.RequestBodyBuilder
 import com.css.base.net.api.WonderCoreApi
 import com.css.service.data.FeedbackData
+import com.css.service.data.UpGradeData
 
 /**
  * Created by YH
@@ -39,5 +40,13 @@ object SettingRepository {
     suspend fun queryFeedBackHistoryDetail(
     ): CommonResponse<ArrayList<FeedbackData>> {
         return settingApi.queryFeedbackHistoryDetail();
+    }
+
+    suspend fun upGrade(
+        version: String
+    ): CommonResponse<UpGradeData> {
+        val map: MutableMap<String, String> = HashMap()
+        map["version"] = version
+        return settingApi.upGrade(map)
     }
 }
