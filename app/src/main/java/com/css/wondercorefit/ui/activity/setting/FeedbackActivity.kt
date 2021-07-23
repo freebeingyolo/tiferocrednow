@@ -13,10 +13,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.lifecycle.ViewModelProvider
+import com.blankj.utilcode.util.LogUtils
 import com.css.base.uibase.BaseActivity
 import com.css.base.utils.DateTimeHelper
 import com.css.pickerview.builder.TimePickerBuilder
 import com.css.pickerview.view.TimePickerView
+import com.css.service.data.FeedbackData
 import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.ActivityFeedbackBinding
 import com.css.wondercorefit.viewmodel.FeedbackViewModel
@@ -33,17 +35,12 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
 
     //提交按钮是否可用，false不可用，true可用
     private var isSubmitStatus = false;
-    private var mDataPickerDialog: TimePickerView? = null
-    private var mTimePickerDialog: TimePickerView? = null
+    private var feedbackId = 0;
+    private var selectPosition = 0;
 
-    //默认选中日期
-    private val selectedDate = Calendar.getInstance()
+    private var feedbackData = ArrayList<FeedbackData>()
+    private var feedbackDetails = ArrayList<FeedbackData>()
 
-    //设置最小日期和最大日期
-    private val startDate = Calendar.getInstance()
-
-    //最大日期是今天
-    private val endDate = Calendar.getInstance()
 
     companion object {
         fun starActivity(context: Context) {
@@ -59,8 +56,8 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         setToolBarLeftTitle("意见和反馈")
-        mViewBinding.tvErrorData.setOnClickListener(this)
-        mViewBinding.tvErrorTime.setOnClickListener(this)
+//        mViewBinding.tvErrorData.setOnClickListener(this)
+//        mViewBinding.tvErrorTime.setOnClickListener(this)
         mViewBinding.etContent.setOnClickListener(this)
         mViewBinding.rtSubmit.setOnClickListener(this)
 
@@ -70,14 +67,15 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
     override fun initData() {
         super.initData()
         //初始化日期数据
-        try {
-            startDate.time = DateTimeHelper.parseStringToDate("1970-01-01")
-        } catch (e: ParseException) {
-            e.printStackTrace()
-        }
+        setFeedbackDate(Calendar.getInstance().time);
+//        try {
+//            startDate.time = DateTimeHelper.parseStringToDate("1970-01-01")
+//        } catch (e: ParseException) {
+//            e.printStackTrace()
+//        }
 
         //加载历史反馈数据
-
+        mViewModel.queryFeedBackHistory();
     }
 
     override fun initViewModel(): FeedbackViewModel =
@@ -90,30 +88,56 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
 
     override fun onClick(v: View?) {
         when (v) {
-            mViewBinding.tvErrorData -> {
-                //选择日期
-                showSelectedData()
-            }
-            mViewBinding.tvErrorTime -> {
-                //选择时间
-                showSelectedTime()
-            }
+//            mViewBinding.tvErrorData -> {
+//                //选择日期
+//                showSelectedData()
+//            }
+//            mViewBinding.tvErrorTime -> {
+//                //选择时间
+//                showSelectedTime()
+//            }
             mViewBinding.rtSubmit -> {
                 //提交
-                mViewModel.doSubmit(isSubmitStatus,
+                mViewModel.doSubmit(
+                    isSubmitStatus,
+                    feedbackId,
+                    mViewBinding.etPhone.text.toString(),
                     mViewBinding.etContent.text.toString(),
-                    mViewBinding.tvErrorData.text.toString(),
-                    mViewBinding.tvErrorTime.text.toString(),
-                    mViewBinding.etPhone.text.toString());
+                );
             }
 
         }
     }
-    override fun registorUIChangeLiveDataCallBack(){
-        mViewModel.submitDate.observe(this, {
+
+    override fun registorUIChangeLiveDataCallBack() {
+        mViewModel.submitData.observe(this, {
             showToast(it)
         })
 
+        mViewModel.historyData.observe(this, {
+            //意见反馈历史数据
+            feedbackData = it
+
+            //刷新UI
+
+        })
+
+        mViewModel.historyDetails.observe(this, {
+            //意见反馈历史数据详情
+            feedbackDetails = it
+            //刷新UI
+
+        })
+
+    }
+
+
+    /**
+     * 设置意见反馈出现问题时间，默认为当前时间，选中反馈记录时候，填充反馈记录的出问题时间，该字段不需要提交
+     */
+    private fun setFeedbackDate(date: Date) {
+        mViewBinding.tvErrorData.text = DateTimeHelper.formatToString(date, "yyyy-MM-dd")
+        mViewBinding.tvErrorTime.text = DateTimeHelper.formatToString(date, "HH:mm")
     }
 
     private fun initListener() {
@@ -129,7 +153,6 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
             override fun afterTextChanged(s: Editable?) {
                 checkSubmitStatus()
             }
-
         })
         //输入反馈内容
         mViewBinding.etContent.addTextChangedListener(object : TextWatcher {
@@ -151,12 +174,40 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
             override fun afterTextChanged(s: Editable?) {
                 checkSubmitStatus()
             }
-
         })
     }
 
-    private fun showSelectedData() {
+    /**
+     * 必要字段填充完才可点击提交
+     */
+    private fun checkSubmitStatus() {
+        //手机、内容必填之后，按钮才高亮可点击
+        if (!TextUtils.isEmpty(mViewBinding.etPhone.text) && !TextUtils.isEmpty(mViewBinding.etContent.text)
+//        日期、时间、 && !TextUtils.isEmpty(mViewBinding.tvErrorData.text) && !TextUtils.isEmpty(mViewBinding.tvErrorTime.text)
+        ) {
+            isSubmitStatus = true
+            mViewBinding.rtSubmit.setTextColor(resources.getColor(R.color.white))
+            mViewBinding.rtSubmit.setBackgroundColor(resources.getColor(R.color.colorAccent))
+        } else {
+            isSubmitStatus = false
+            mViewBinding.rtSubmit.setTextColor(resources.getColor(R.color.black))
+            mViewBinding.rtSubmit.setBackgroundColor(resources.getColor(R.color.color_e5e5e5))
+        }
+    }
 
+/* 日期与时间不可选
+    private var mDataPickerDialog: TimePickerView? = null
+    private var mTimePickerDialog: TimePickerView? = null
+    //默认选中日期
+    private val selectedDate = Calendar.getInstance()
+
+    //设置最小日期和最大日期
+    private val startDate = Calendar.getInstance()
+
+    //最大日期是今天
+    private val endDate = Calendar.getInstance()
+
+    private fun showSelectedData() {
         mDataPickerDialog = TimePickerBuilder(
             this
         ) { date, v ->
@@ -196,7 +247,7 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
     }
 
     private fun showSelectedTime() {
-        if (TextUtils.isEmpty(mViewBinding.tvErrorData.text)){
+        if (TextUtils.isEmpty(mViewBinding.tvErrorData.text)) {
             showCenterToast("请先选择日期")
             return
         }
@@ -236,22 +287,8 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
         mTimePickerDialog!!.dialog.window?.setWindowAnimations(R.style.picker_view_slide_anim)
         mTimePickerDialog?.show()
 
-    }
+    }*/
 
-    private fun checkSubmitStatus() {
-        //日期、时间、手机、内容必填之后，按钮才高亮可点击
-        if (!TextUtils.isEmpty(mViewBinding.tvErrorData.text) && !TextUtils.isEmpty(mViewBinding.tvErrorTime.text) &&
-            !TextUtils.isEmpty(mViewBinding.etPhone.text) && !TextUtils.isEmpty(mViewBinding.etContent.text)
-        ) {
-            isSubmitStatus = true
-            mViewBinding.rtSubmit.setTextColor(resources.getColor(R.color.white))
-            mViewBinding.rtSubmit.setBackgroundColor(resources.getColor(R.color.colorAccent))
-        } else {
-            isSubmitStatus = false
-            mViewBinding.rtSubmit.setTextColor(resources.getColor(R.color.black))
-            mViewBinding.rtSubmit.setBackgroundColor(resources.getColor(R.color.color_e5e5e5))
-        }
-    }
 }
 
 

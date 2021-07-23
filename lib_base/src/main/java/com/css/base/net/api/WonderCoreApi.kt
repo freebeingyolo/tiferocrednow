@@ -58,10 +58,12 @@ internal interface WonderCoreApi {
         //提交意见和反馈
         @POST(" appFeedback/addFeedback")
         suspend fun submit(@Body requestBody: RequestBody): CommonResponse<Any>
-        //查询反馈记录
-        //发送验证码
-        @GET("appFeedback/?")
-        suspend fun queryFeedbackHistory(@QueryMap map: Map<String, String>): CommonResponse<ArrayList<FeedbackData>>
+        //查询反馈信息
+        @GET("appFeedback/queryFeedback")
+        suspend fun queryFeedbackHistory(): CommonResponse<ArrayList<FeedbackData>>
+        //查询反馈信息详情
+        @GET("appFeedback/queryFeedbackDetails")
+        suspend fun queryFeedbackHistoryDetail(): CommonResponse<ArrayList<FeedbackData>>
 
     }
 

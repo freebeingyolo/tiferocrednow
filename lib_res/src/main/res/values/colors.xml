@@ -18,6 +18,8 @@
     <color name="colorAccent">#F2682A</color>
     <color name="text_color_hint">#BBBBBB</color>
     <color name="color_e5e5e5">#e5e5e5</color>
+    <color name="color_f6f6f6">#f6f6f6</color>
+    <color name="color_F8B698">#F8B698</color>
     <color name="tab_textcolor_focus">#212121</color>
     <color name="tab_textcolor_unfocus">#464646</color>
     <color name="course_black">#FF333333</color>

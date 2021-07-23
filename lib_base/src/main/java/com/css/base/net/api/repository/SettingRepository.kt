@@ -16,35 +16,28 @@ object SettingRepository {
         NetManager.create(WonderCoreApi.Setting::class.java)
     }
 
-    //    "feedbackContent": "string",
-//    "feedbackDate": "string",
-//    "feedbackTime": "string",
-//    "id": 0,
-//    "isDel": "string",
-//    "replyAccountId": 0,
-//    "userId": 0
     suspend fun submit(
-        Content: String,
-        Date: String,
-        Time: String,
+        userId: Int?,
+        id: Int,
         phone: String,
-        userId: String
+        content: String
     ): CommonResponse<Any> {
         val param = RequestBodyBuilder()
-            .addParams("feedbackContent", Content)
-            .addParams("feedbackDate", Date)
-            .addParams("feedbackTime", Time)
+            .addParams("feedbackUserId", userId)
+            .addParams("feedbackId", id)
             .addParams("phone", phone)
-            .addParams("userId", userId)
+            .addParams("feedbackContent", content)
             .build()
         return settingApi.submit(param)
     }
 
     suspend fun queryFeedBackHistory(
-        userId: String
     ): CommonResponse<ArrayList<FeedbackData>> {
-        val map: MutableMap<String, String> = HashMap()
-        map["userId"] = userId
-        return settingApi.queryFeedbackHistory(map);
+        return settingApi.queryFeedbackHistory();
+    }
+
+    suspend fun queryFeedBackHistoryDetail(
+    ): CommonResponse<ArrayList<FeedbackData>> {
+        return settingApi.queryFeedbackHistoryDetail();
     }
 }

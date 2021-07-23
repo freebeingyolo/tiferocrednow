@@ -1,14 +1,9 @@
 package com.css.wondercorefit.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import com.css.base.net.CommonResponse
 import com.css.base.net.api.repository.SettingRepository
-import com.css.base.net.api.repository.UserRepository
 import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.service.data.FeedbackData
-import com.css.service.data.LoginUserData
-import com.css.service.data.UserData
-import com.css.service.utils.CacheKey
 import com.css.service.utils.WonderCoreCache
 
 /**
@@ -18,14 +13,15 @@ import com.css.service.utils.WonderCoreCache
  */
 class FeedbackViewModel : BaseViewModel() {
 
-    val submitDate = MutableLiveData<String>()
+    val submitData = MutableLiveData<String>()
+    val historyData = MutableLiveData<ArrayList<FeedbackData>>()
+    val historyDetails = MutableLiveData<ArrayList<FeedbackData>>()
 
     fun doSubmit(
         isShowSubmit: Boolean,
-        content: String,
-        data: String,
-        time: String,
-        phone: String
+        id: Int,
+        phone: String,
+        content: String
     ) {
         if (isShowSubmit) {
             //可以提交
@@ -36,18 +32,15 @@ class FeedbackViewModel : BaseViewModel() {
                 netLaunch(
                     {
                         showLoading()
-                        val loginData =
-                            WonderCoreCache.getData(CacheKey.LOGIN_DATA, LoginUserData::class.java)
                         SettingRepository.submit(
-                            content,
-                            data,
-                            time,
+                            WonderCoreCache.getLoginInfo()?.userInfo?.userId,
+                            id,
                             phone,
-                            loginData.userId.toString()
+                            content
                         )
                     }, { msg, _ ->
                         hideLoading()
-                        submitDate.value = msg
+                        submitData.value = msg
                     }, { _, msg, _ ->
                         hideLoading()
                         showToast(msg)
@@ -57,26 +50,34 @@ class FeedbackViewModel : BaseViewModel() {
         }
     }
 
-    fun getFeedBackHistory() {
-//        netLaunch(
-//            {
-//                showLoading()
-//                SettingRepository.queryFeedBackHistory
-//                (“”
-////                    WonderCoreCache.getData(
-////                        CacheKey.LOGIN_DATA,
-////                        LoginUserData::class.java
-////                    ).userId.toString()
-//                )
-//            }, { _, d ->
-//                hideLoading()
-////                personInfoData.value = d
-//            }, { _, msg, _ ->
-//                hideLoading()
-////                nonePersonInfoData.value = ""
-//                showToast(msg)
-//            }
-//        )
+    fun queryFeedBackHistory() {
+        netLaunch(
+            {
+                showLoading()
+                SettingRepository.queryFeedBackHistory()
+            }, { _, d ->
+                hideLoading()
+                historyData.value = d
+            }, { _, msg, _ ->
+                hideLoading()
+                showToast(msg)
+            }
+        )
+    }
+
+    fun queryFeedBackHistoryDetail() {
+        netLaunch(
+            {
+                showLoading()
+                SettingRepository.queryFeedBackHistoryDetail()
+            }, { _, d ->
+                hideLoading()
+                historyDetails.value = d
+            }, { _, msg, _ ->
+                hideLoading()
+                showToast(msg)
+            }
+        )
     }
 
 }
