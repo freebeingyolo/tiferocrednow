@@ -1,4 +1,6 @@
-package com.css.base.utils;
+package com.css.service.bus;
+
+import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,6 +42,17 @@ public final class LiveDataBus {
         return (MutableLiveData<T>) bus.get(key);
     }
 
+    public <T> MutableLiveData<T> with(Class<T> cls) {
+        return with(cls.getName());
+    }
+
+    public MutableLiveData with2(String key) {
+        if (!bus.containsKey(key)) {
+            bus.put(key, new BusMutableLiveData<>());
+        }
+        return bus.get(key);
+    }
+
     private static class ObserverWrapper<T> implements Observer<T> {
 
         private Observer<T> observer;
@@ -72,9 +85,17 @@ public final class LiveDataBus {
         }
     }
 
-    private static class BusMutableLiveData<T> extends MutableLiveData<T> {
+    public static class BusMutableLiveData<T> extends MutableLiveData<T> {
 
         private Map<Observer, Observer> observerMap = new HashMap<>();
+
+        public void setValue(T value) {
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                super.setValue(value);
+            } else {
+                super.postValue(value);
+            }
+        }
 
         @Override
         public void observe(@NonNull LifecycleOwner owner, @NonNull Observer<? super T> observer) {

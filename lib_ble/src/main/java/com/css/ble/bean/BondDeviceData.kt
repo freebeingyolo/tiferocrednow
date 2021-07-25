@@ -4,18 +4,33 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.ActivityUtils
 import com.css.ble.R
+import com.css.service.bus.LiveDataBus
 import com.css.service.data.BaseData
+import com.css.service.data.DeviceData
 import com.css.service.utils.CacheKey
 import com.css.service.utils.WonderCoreCache
+import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 
 /**
  * @author yuedong
  * @date 2021-05-13
  */
-enum class DeviceType {
-    WEIGHT, WHEEL;
+enum class DeviceType(val alias: String) {
+    WEIGHT("体脂秤"),
+    WHEEL("健腹轮");
+    //HORIZONTAL_BAR("单杠");
+
+    companion object {
+        fun findByAlias(alias: String): DeviceType {
+            for (d in values()) {
+                if (d.alias == alias) return d
+            }
+            throw IllegalArgumentException("$alias is not match DeviceType.values")
+        }
+    }
 }
+
 
 class BondDeviceData(
     var mac: String,
@@ -23,39 +38,46 @@ class BondDeviceData(
     var type: Int
 ) : BaseData() {
     var alias: String? = null
+    var id: Int = 0
+    var deviceCategory: String = ""
+
+    constructor(d: DeviceData) : this() {
+        this.id = d.id
+        this.mac = d.bluetoothAddress
+        this.alias = d.deviceName
+        this.deviceCategory = d.deviceCategory
+        this.type = DeviceType.findByAlias(d.deviceCategory).ordinal
+    }
+
+    constructor() : this("", "", DeviceType.WEIGHT)
+    constructor(mac: String, manufacturerDataHex: String, type: DeviceType) : this(mac, manufacturerDataHex, type.ordinal) {
+        this.deviceCategory = type.alias
+    }
 
     companion object {
-        val bondWeightObsrv: LiveData<BondDeviceData> by lazy {
-            MutableLiveData(
-                if (!WonderCoreCache.containsKey(CacheKey.BOND_WEIGHT_INFO)) null
-                else WonderCoreCache.getData(CacheKey.BOND_WEIGHT_INFO, BondDeviceData::class.java)
-            )
-        }
-        val bondWheelObsrv: LiveData<BondDeviceData> by lazy {
-            MutableLiveData(
-                if (!WonderCoreCache.containsKey(CacheKey.BOND_WHEEL_INFO)) null
-                else WonderCoreCache.getData(CacheKey.BOND_WHEEL_INFO, BondDeviceData::class.java)
-            )
-        }
+        val IMPORT_DEVICE = linkedMapOf(
+            DeviceType.WEIGHT to R.mipmap.icon_weight,
+            DeviceType.WHEEL to R.mipmap.icon_abroller,
+        )
+
         var bondWeight: BondDeviceData?
             private set(value) {
-                (bondWeightObsrv as MutableLiveData).value = value
                 if (value == null) {
                     WonderCoreCache.removeKey(CacheKey.BOND_WEIGHT_INFO)
                 } else {
                     WonderCoreCache.saveData(CacheKey.BOND_WEIGHT_INFO, value)
                 }
             }
-            get() = bondWeightObsrv.value
+            get() = WonderCoreCache.getData(CacheKey.BOND_WEIGHT_INFO,BondDeviceData::class.java)
         var bondWheel: BondDeviceData?
             set(value) {
-                (bondWheelObsrv as MutableLiveData).value = value
+                LogUtils.d("bondWheel --> $value",10)
                 if (value == null) {
                     WonderCoreCache.removeKey(CacheKey.BOND_WHEEL_INFO)
                 } else
                     WonderCoreCache.saveData(CacheKey.BOND_WHEEL_INFO, value)
             }
-            get() = bondWheelObsrv.value
+            get() = WonderCoreCache.getData(CacheKey.BOND_WHEEL_INFO,BondDeviceData::class.java)
 
         fun displayName(type: DeviceType): String {
             val data = when (type) {
@@ -72,18 +94,22 @@ class BondDeviceData(
             }
         }
 
-        fun getDevice(key: CacheKey): BondDeviceData? = when (key) {
-            CacheKey.BOND_WEIGHT_INFO -> bondWeight
-            CacheKey.BOND_WHEEL_INFO -> bondWheel
+        fun getDevice(key: DeviceType): BondDeviceData? = when (key) {
+            DeviceType.WEIGHT -> bondWeight
+            DeviceType.WHEEL -> bondWheel
             else -> throw IllegalStateException("")
         }
 
-        fun setDevice(key: CacheKey, data: BondDeviceData?) {
+        fun setDevice(key: DeviceType, data: BondDeviceData?) {
             when (key) {
-                CacheKey.BOND_WEIGHT_INFO -> bondWeight = data
-                CacheKey.BOND_WHEEL_INFO -> bondWheel = data
-                else -> throw IllegalStateException("")
+                DeviceType.WEIGHT -> bondWeight = data
+                DeviceType.WHEEL -> bondWheel = data
+                else -> throw IllegalStateException("Illegal key:${key}")
             }
+        }
+
+        fun setDevice(data: BondDeviceData) {
+            setDevice(data.cacheKey, data)
         }
     }
 
@@ -95,17 +121,7 @@ class BondDeviceData(
             }
         } else alias!!
 
-    constructor() : this("", "", DeviceType.WEIGHT)
-    constructor(mac: String, manufacturerDataHex: String, type: DeviceType) : this(mac, manufacturerDataHex, type.ordinal)
-
-    val cacheKey: CacheKey = when (type) {
-        DeviceType.WEIGHT.ordinal -> {
-            CacheKey.BOND_WEIGHT_INFO
-        }
-        else -> {
-            CacheKey.BOND_WHEEL_INFO
-        }
-    }
+    val cacheKey: DeviceType = DeviceType.values()[type]
 
     override fun toString(): String {
         return "BondDeviceData(mac='$mac', manufacturerDataHex='$manufacturerDataHex', type=$type, alias=$alias)"

@@ -37,7 +37,7 @@ abstract class BaseWeightActivity<VM : BaseWeightVM, VB : ViewBinding> : BaseDev
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         AILinkSDK.getInstance().init(this)
-        BleLog.init(true)
+        BleLog.init(false)
         //服务
         val bindIntent = Intent(this, ELinkBleServer::class.java)
         bindService(bindIntent, mFhrSCon, Context.BIND_AUTO_CREATE)

@@ -3,9 +3,7 @@ package com.css.wondercorefit.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.css.base.net.api.repository.UserRepository
 import com.css.base.uibase.viewmodel.BaseViewModel
-import com.css.service.data.LoginUserData
 import com.css.service.data.UserData
-import com.css.service.utils.CacheKey
 import com.css.service.utils.WonderCoreCache
 
 class PersonInformationViewModel : BaseViewModel() {
@@ -42,10 +40,7 @@ class PersonInformationViewModel : BaseViewModel() {
             {
                 showLoading()
                 UserRepository.updatePersonalInformation(
-                    WonderCoreCache.getData(
-                        CacheKey.LOGIN_DATA,
-                        LoginUserData::class.java
-                    ).userInfo.userId.toString(), sex, age, height, goalBodyWeight, goalStepCount
+                    WonderCoreCache.getLoginInfo()!!.userInfo.userId.toString(), sex, age, height, goalBodyWeight, goalStepCount
                 )
             }, { msg, _ ->
                 upPersonInfoData.value = msg

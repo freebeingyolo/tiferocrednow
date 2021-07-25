@@ -23,9 +23,10 @@ import com.css.ble.bean.BondDeviceData
 import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.ActivityMyDeviceBinding
 import com.css.wondercorefit.ui.viewmodel.DeviceInfoViewModel
+import com.css.wondercorefit.viewmodel.MyDeviceViewModel
 import razerdp.basepopup.BasePopupWindow
 
-class MyDeviceActivity : BaseActivity<DefaultViewModel, ActivityMyDeviceBinding>() {
+class MyDeviceActivity : BaseActivity<MyDeviceViewModel, ActivityMyDeviceBinding>() {
     companion object {
         fun starActivity(context: Context) {
             val intent = Intent(context, MyDeviceActivity::class.java)
@@ -96,8 +97,6 @@ class MyDeviceActivity : BaseActivity<DefaultViewModel, ActivityMyDeviceBinding>
                 listener = object : DialogClickListener.DefaultLisener() {
                     override fun onRightBtnClick(view: View) {
                         super.onRightBtnClick(view)
-//                        BondDeviceData.setDevice(DeviceInfoViewModel.name[bindingAdapterPosition].cacheKey, null)
-//                        DeviceInfoViewModel.name[bindingAdapterPosition].alias = null
                         CommonAlertDialog(context).apply {
                             type = CommonAlertDialog.DialogType.Image
                             imageResources = com.css.ble.R.mipmap.icon_tick
@@ -139,7 +138,7 @@ class MyDeviceActivity : BaseActivity<DefaultViewModel, ActivityMyDeviceBinding>
         return true
     }
 
-    override fun initViewModel(): DefaultViewModel = ViewModelProvider(this).get(DefaultViewModel::class.java)
+    override fun initViewModel(): MyDeviceViewModel = ViewModelProvider(this).get(MyDeviceViewModel::class.java)
 
     override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): ActivityMyDeviceBinding =
             ActivityMyDeviceBinding.inflate(inflater, parent, false)

@@ -17,13 +17,11 @@ import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseFragment
 import com.css.base.uibase.viewmodel.DefaultViewModel
-import com.css.ble.bean.BondDeviceData
 import com.css.service.data.UserData
 import com.css.service.router.ARouterUtil
 import com.css.service.utils.CacheKey
 import com.css.service.utils.SystemBarHelper
 import com.css.service.utils.WonderCoreCache
-import com.css.step.service.TodayStepService
 import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.FragmentSettingBinding
 import com.css.wondercorefit.ui.activity.setting.AboutUsActivity

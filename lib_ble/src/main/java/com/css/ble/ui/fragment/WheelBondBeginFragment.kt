@@ -1,8 +1,10 @@
 package com.css.ble.ui.fragment
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import cn.wandersnail.ble.EasyBLE
+import com.blankj.utilcode.util.ToastUtils
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.LayoutWheelBondBeginBinding
@@ -35,7 +37,9 @@ class WheelBondBeginFragment : BaseDeviceFragment<WheelMeasureVM, LayoutWheelBon
                 if (BleEnvVM.isBleEnvironmentOk) {
                     mViewModel.startScanBle()
                 } else {
-                    BleErrorFragment.Builder.errorType(BleEnvVM.bleErrType).leftTitle(BondDeviceData.displayName(deviceType)).create()
+                    BleErrorFragment.Builder.errorType(BleEnvVM.bleErrType)
+                        .leftTitle(BondDeviceData.displayName(deviceType))
+                        .create()
                 }
             }
         }
@@ -53,8 +57,12 @@ class WheelBondBeginFragment : BaseDeviceFragment<WheelMeasureVM, LayoutWheelBon
         mViewModel.stateObsrv.observe(viewLifecycleOwner) {
             when (it) {
                 State.found -> {
-                    mViewModel.bondDevice()
-                    FragmentUtils.changeFragment(WheelBondEndFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
+                    mViewModel.bindDevice({ _, _ ->
+                        FragmentUtils.changeFragment(WheelBondEndFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
+                    }, { _, msg, _ ->
+                        showToast(msg)
+                        FragmentUtils.changeFragment(WheelBondEndFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
+                    })
                 }
                 State.timeOut -> {
                     BleErrorFragment.Builder.errorType(ErrorType.SEARCH_TIMEOUT).leftTitle(BondDeviceData.displayName(deviceType)).create()

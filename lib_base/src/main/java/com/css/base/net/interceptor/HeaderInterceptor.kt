@@ -2,8 +2,7 @@ package com.css.base.net.interceptor
 
 import com.blankj.utilcode.util.EncryptUtils
 import com.blankj.utilcode.util.LogUtils
-import com.css.service.data.LoginUserData
-import com.css.service.utils.CacheKey
+
 import com.css.service.utils.WonderCoreCache
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -39,6 +38,7 @@ class HeaderInterceptor : Interceptor {
         newRequestBuilder.header("MD5", signatures(request, mNonce, mTimestamp, mMethod))
 
         val newRequest = newRequestBuilder.build()
+        //NetLongLogger().log("newRequest-->$newRequest")
         return chain.proceed(newRequest)
     }
 

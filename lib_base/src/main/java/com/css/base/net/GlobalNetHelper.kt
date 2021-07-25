@@ -1,13 +1,11 @@
 package com.css.base.net
 
+import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.LogUtils
 import com.css.base.utils.UICoreConfig
 import com.google.gson.JsonSyntaxException
 import com.css.base.uibase.inner.INetView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.io.EOFException
 import java.net.SocketTimeoutException
 import java.text.ParseException

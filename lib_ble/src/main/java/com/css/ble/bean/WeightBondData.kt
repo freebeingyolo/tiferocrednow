@@ -3,7 +3,6 @@ package com.css.ble.bean
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import cn.net.aicare.algorithmutil.AlgorithmUtil
-import cn.net.aicare.algorithmutil.BodyFatData
 import com.css.service.utils.CacheKey
 import com.css.service.utils.WonderCoreCache
 

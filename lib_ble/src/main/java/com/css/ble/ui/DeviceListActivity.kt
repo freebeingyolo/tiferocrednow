@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.arouter.facade.annotation.Route
@@ -21,9 +22,7 @@ import com.css.ble.databinding.LayoutDeviceItemBinding
 import com.css.ble.ui.view.SpaceItemDecoration
 import com.css.ble.viewmodel.DeviceListVM
 import com.css.service.router.ARouterConst
-import com.css.service.utils.CacheKey
-import com.css.service.utils.WonderCoreCache
-import kotlin.concurrent.thread
+import kotlinx.coroutines.launch
 
 /**
  * @author yuedong
@@ -48,7 +47,7 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         setToolBarLeftTitle(R.string.bond_device)
-        mViewBinding.lv!!.apply {
+        mViewBinding.lv.apply {
             mAdapter = RecycleViewAdapter()
             mAdapter.itemClickListener = object : RecycleViewAdapter.onItemClickListener {
                 override fun onItemClick(
@@ -58,8 +57,8 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
                 ) {
                     val d = deviceInfo.getBondDeviceData()
                     if (d == null) {
-                        when(deviceInfo.deviceType){
-                            DeviceType.WEIGHT ->  ARouter.getInstance().build(ARouterConst.PATH_APP_BLE_WEIGHTBOND).navigation()
+                        when (deviceInfo.deviceType) {
+                            DeviceType.WEIGHT -> ARouter.getInstance().build(ARouterConst.PATH_APP_BLE_WEIGHTBOND).navigation()
                             DeviceType.WHEEL -> ARouter.getInstance().build(ARouterConst.PATH_APP_BLE_WHEELBOND).navigation()
                         }
                     } else {
@@ -72,13 +71,17 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
                             listener = object : DialogClickListener.DefaultLisener() {
                                 override fun onRightBtnClick(view: View) {
                                     super.onRightBtnClick(view)
-                                    BondDeviceData.setDevice(d.cacheKey,null)
-                                    CommonAlertDialog(context).apply {
-                                        type = CommonAlertDialog.DialogType.Image
-                                        imageResources = R.mipmap.icon_tick
-                                        content = context.getString(R.string.unbond_ok)
-                                    }.show()
-                                    mViewModel._deviceInfos.value = mViewModel._deviceInfos.value
+                                    mViewModel.unBindDevice(d,
+                                        { _, _ ->
+                                            CommonAlertDialog(context).apply {
+                                                type = CommonAlertDialog.DialogType.Image
+                                                imageResources = R.mipmap.icon_tick
+                                                content = context.getString(R.string.unbond_ok)
+                                            }.show()
+                                        }, { _, msg, _ ->
+                                            showToast(msg)
+                                        })
+
                                 }
                             }
                         }.show()
@@ -95,7 +98,7 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
 
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
-        mViewModel._deviceInfos.observe(this, {
+        mViewModel.deviceInfos.observe(this, {
             Log.d(TAG, "mViewModel._deviceInfos：$it")
             mAdapter.mList = it
             mAdapter.notifyDataSetChanged()
@@ -104,32 +107,14 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
 
     override fun initData() {
         super.initData()
-        thread(true) {
-            var deviceInfos = mutableListOf<DeviceListVM.DeviceInfo>()
-            deviceInfos.add(
-                DeviceListVM.DeviceInfo(
-                    getString(R.string.device_weight),
-                    R.mipmap.icon_weight
-                )
-            )
-            deviceInfos.add(
-                DeviceListVM.DeviceInfo(
-                    getString(R.string.device_wheel),
-                    R.mipmap.icon_abroller
-                )
-            )
-            mViewModel._deviceInfos.postValue(deviceInfos)
-        }
+        mViewModel.loadDeviceInfo()
     }
 
     class RecycleViewAdapter : RecyclerView.Adapter<RecycleViewAdapter.MyViewHolder>() {
         var mList: List<DeviceListVM.DeviceInfo>? = null
         var itemClickListener: onItemClickListener? = null
 
-        class MyViewHolder(itemView: View, val binding: LayoutDeviceItemBinding) :
-            RecyclerView.ViewHolder(itemView) {
-
-        }
+        class MyViewHolder(itemView: View, val binding: LayoutDeviceItemBinding) : RecyclerView.ViewHolder(itemView)
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
             var binding = LayoutDeviceItemBinding.inflate(

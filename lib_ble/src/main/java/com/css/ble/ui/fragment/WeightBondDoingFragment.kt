@@ -12,7 +12,6 @@ import com.css.ble.databinding.LayoutWeightBondFoundBinding
 import com.css.ble.utils.FragmentUtils
 import com.css.ble.viewmodel.WeightBondVM
 import com.css.service.utils.CacheKey
-import com.css.service.utils.WonderCoreCache
 
 /**
  * @author yuedong
@@ -29,13 +28,12 @@ class WeightBondDoingFragment : BaseWeightFragment<WeightBondVM, LayoutWeightBon
                 mViewModel.state.value = WeightBondVM.State.begin
             }
             bond.setOnClickListener {
-                val d = BondDeviceData(
-                    mViewModel.filterDevice!!.mac,
-                    mViewModel.filterDevice!!.manifactureHex,
-                    DeviceType.WEIGHT
-                )
-                BondDeviceData.setDevice(CacheKey.BOND_WEIGHT_INFO,d)
-                mViewModel.state.value = WeightBondVM.State.done
+                mViewModel.bindDevice(
+                    { _, _ ->
+                    },
+                    { _, msg, _ ->
+                        showToast(msg)
+                    })
             }
         }
     }

@@ -8,11 +8,10 @@ import com.css.base.net.HttpNetCode
 import com.css.base.net.process
 import com.css.base.uibase.inner.IBaseViewModel
 import com.css.base.uibase.inner.INetView
+import com.css.base.uibase.inner.IResource
 import com.css.base.utils.UICoreConfig
 import com.google.gson.JsonSyntaxException
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import retrofit2.HttpException
 import java.io.EOFException
 import java.net.ConnectException
@@ -20,7 +19,7 @@ import java.net.SocketTimeoutException
 import java.text.ParseException
 import javax.net.ssl.SSLException
 
-abstract class BaseViewModel : ViewModel(), IBaseViewModel, INetView {
+abstract class BaseViewModel : ViewModel(), IBaseViewModel, INetView, IResource {
 
     val showToastStrEvent = MutableLiveData<String?>()
     val showLongToastStrEvent = MutableLiveData<String?>()

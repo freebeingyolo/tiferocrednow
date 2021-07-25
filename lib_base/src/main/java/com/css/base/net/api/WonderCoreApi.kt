@@ -1,6 +1,8 @@
+
 package com.css.base.net.api
 
 import com.css.base.net.CommonResponse
+import com.css.service.data.DeviceData
 import com.css.service.data.LoginUserData
 import com.css.service.data.MallData
 import com.css.service.data.UpGradeData
@@ -88,5 +90,23 @@ internal interface WonderCoreApi {
         //单杠/俯卧撑板查询
         @POST("appHistory/queryPushUps")
         suspend fun queryPushUps(@Body requestBody: RequestBody): CommonResponse<Any>
+    }
+
+    interface Device {
+
+        @GET("appDevice/queryBindDevice")
+        suspend fun queryBindDevice(@QueryMap map: Map<String,String>): CommonResponse<List<DeviceData>>
+
+        @POST("appDevice/bind")
+        suspend fun bindDevice(@Body requestBody: RequestBody): CommonResponse<Any>
+
+        @POST("appDevice/unbindDevice")
+        suspend fun unbindDevice(@Body requestBody: RequestBody): CommonResponse<Any>
+
+        //修改设备名字
+        @POST("appDevice/updateDeviceName")
+        suspend fun updateDeviceName(@Body requestBody: RequestBody): CommonResponse<Any>
+
+
     }
 }

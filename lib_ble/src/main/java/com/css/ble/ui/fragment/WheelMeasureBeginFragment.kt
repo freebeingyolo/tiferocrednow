@@ -109,7 +109,7 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
                 when (event) {
                     ToolBarView.ViewType.LEFT_IMAGE -> onBackPressed()
                     ToolBarView.ViewType.RIGHT_IMAGE -> {
-                        DeviceInfoActivity.start(CacheKey.BOND_WHEEL_INFO.k)
+                        DeviceInfoActivity.start(DeviceType.WHEEL.name)
                     }
                 }
             }
