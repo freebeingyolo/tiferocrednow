@@ -20,19 +20,19 @@ class CoursePlayActivity : AppCompatActivity() {
     private lateinit var playerView: LitePlayerView
     private var fullScreenPlay:Int = 0
     private val handler = Handler()
-    private val urls =
-        listOf(
-                Pair(VideoCacheHelper.url(CourseViewModel.urls[0]), CourseViewModel.name[0]),
-                Pair(VideoCacheHelper.url(CourseViewModel.urls[1]), CourseViewModel.name[1]),
-                Pair(VideoCacheHelper.url(CourseViewModel.urls[2]), CourseViewModel.name[2]),
-                Pair(VideoCacheHelper.url(CourseViewModel.urls[3]), CourseViewModel.name[3]),
-                Pair(VideoCacheHelper.url(CourseViewModel.urls[4]), CourseViewModel.name[4]),
-                Pair(VideoCacheHelper.url(CourseViewModel.urls[5]), CourseViewModel.name[5]),
-                Pair(VideoCacheHelper.url(CourseViewModel.urls[6]), CourseViewModel.name[6]),
-                Pair(VideoCacheHelper.url(CourseViewModel.urls[7]), CourseViewModel.name[7]),
-                Pair(VideoCacheHelper.url(CourseViewModel.urls[7]), CourseViewModel.name[8]),
-                Pair(VideoCacheHelper.url(CourseViewModel.urls[9]), CourseViewModel.name[9]),
-        )
+//    private val urls =
+//        listOf(
+//                Pair(VideoCacheHelper.url(CourseViewModel.urls[0]), CourseViewModel.name[0]),
+//                Pair(VideoCacheHelper.url(CourseViewModel.urls[1]), CourseViewModel.name[1]),
+//                Pair(VideoCacheHelper.url(CourseViewModel.urls[2]), CourseViewModel.name[2]),
+//                Pair(VideoCacheHelper.url(CourseViewModel.urls[3]), CourseViewModel.name[3]),
+//                Pair(VideoCacheHelper.url(CourseViewModel.urls[4]), CourseViewModel.name[4]),
+//                Pair(VideoCacheHelper.url(CourseViewModel.urls[5]), CourseViewModel.name[5]),
+//                Pair(VideoCacheHelper.url(CourseViewModel.urls[6]), CourseViewModel.name[6]),
+//                Pair(VideoCacheHelper.url(CourseViewModel.urls[7]), CourseViewModel.name[7]),
+//                Pair(VideoCacheHelper.url(CourseViewModel.urls[7]), CourseViewModel.name[8]),
+//                Pair(VideoCacheHelper.url(CourseViewModel.urls[9]), CourseViewModel.name[9]),
+//        )
     private var currentPlayIndex = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,7 +73,7 @@ class CoursePlayActivity : AppCompatActivity() {
         playerView.setAutoSensorEnable(false)
         playerView.setAutoHideOverlay(true)
         playerView.setRepeatMode(true)
-        playerView.setDataSource(DataSource(urls[currentPlayIndex].first, urls[currentPlayIndex].second))
+//        playerView.setDataSource(DataSource(urls[currentPlayIndex].first, urls[currentPlayIndex].second))
         playerView.start()
         handler.postDelayed({
             playerView.setFullScreenMode(true)

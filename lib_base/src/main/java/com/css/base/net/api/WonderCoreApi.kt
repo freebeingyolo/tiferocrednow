@@ -3,10 +3,7 @@ package com.css.base.net.api
 
 import com.css.base.net.CommonResponse
 import com.css.service.data.DeviceData
-import com.css.service.data.LoginUserData
-import com.css.service.data.MallData
-import com.css.service.data.UpGradeData
-import com.css.service.data.UserData
+import com.css.service.data.*
 import okhttp3.RequestBody
 import retrofit2.http.*
 
@@ -108,5 +105,10 @@ internal interface WonderCoreApi {
         suspend fun updateDeviceName(@Body requestBody: RequestBody): CommonResponse<Any>
 
 
+    }
+    interface Course {
+        //获取视频资源
+        @POST("appVideo/queryVideo")
+        suspend fun queryVideo(@Body requestBody: RequestBody): CommonResponse<ArrayList<CourseDate>>
     }
 }
