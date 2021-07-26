@@ -25,7 +25,7 @@ object DeviceRepository {
     }
 
     //绑定设备
-    suspend fun bindDevice(category: String, name: String, mac: String): CommonResponse<Any> {
+    suspend fun bindDevice(category: String, name: String, mac: String): CommonResponse<DeviceData> {
         return api.bindDevice(
             RequestBodyBuilder()
                 .addParams("deviceCategory", category)

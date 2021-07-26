@@ -20,6 +20,7 @@ import com.css.ble.viewmodel.WeightMeasureVM
 import com.css.service.router.ARouterConst
 import com.css.service.utils.CacheKey
 import com.css.service.utils.ImageUtils
+import com.css.service.utils.WonderCoreCache
 import razerdp.basepopup.BasePopupWindow
 
 /**
@@ -76,7 +77,7 @@ class WeightMeasureBeginFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
 
     override fun onVisible() {
         super.onVisible()
-        if (BondDeviceData.bondWeight == null) {//如果已经解绑了，回到此界面在回退
+        if (WonderCoreCache.getData(CacheKey.BOND_WEIGHT_INFO,BondDeviceData::class.java) == null) {//如果已经解绑了，回到此界面在回退
             CommonAlertDialog(requireContext()).apply {
                 type = CommonAlertDialog.DialogType.Image
                 imageResources = R.mipmap.icon_tick

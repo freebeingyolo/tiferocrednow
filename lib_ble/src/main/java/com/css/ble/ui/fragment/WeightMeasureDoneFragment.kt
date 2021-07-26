@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import androidx.lifecycle.*
 import com.alibaba.android.arouter.launcher.ARouter
 import com.css.base.dialog.CommonAlertDialog
-import com.css.base.net.api.repository.HistoryRepository
 import com.css.base.view.ToolBarView
 import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
+import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.*
 import com.css.ble.utils.FragmentUtils
 import com.css.ble.viewmodel.WeightMeasureVM
@@ -66,7 +66,7 @@ class WeightMeasureDoneFragment : BaseWeightFragment<WeightMeasureVM, ActivityWe
 
     override fun onVisible() {
         super.onVisible()
-        if (BondDeviceData.bondWeight == null) {//如果已经解绑了，回到此界面在回退
+        if (BondDeviceData.getDevice(DeviceType.WEIGHT) == null) {//如果已经解绑了，回到此界面在回退
             CommonAlertDialog(requireContext()).apply {
                 type = CommonAlertDialog.DialogType.Image
                 imageResources = R.mipmap.icon_tick

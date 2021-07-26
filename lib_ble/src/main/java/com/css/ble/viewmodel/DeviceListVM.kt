@@ -29,7 +29,9 @@ class DeviceListVM : BaseViewModel() {
                             }
                         } else {
                             for (d1 in ret.data!!) {
-                                BondDeviceData.setDevice(BondDeviceData(d1))
+                                BondDeviceData(d1).let {
+                                    BondDeviceData.setDevice(it.cacheKey, it)
+                                }
                             }
                         }
                     }
@@ -39,8 +41,8 @@ class DeviceListVM : BaseViewModel() {
             { _, devices ->
                 //更新BondDevice
                 val list = mutableListOf<DeviceInfo>()
-                for ((k, v) in BondDeviceData.IMPORT_DEVICE) {
-                    val one = DeviceInfo(k.alias, v)
+                for (d in DeviceType.values()) {
+                    val one = DeviceInfo(d.alias, d.icon, d)
                     list.add(one)
                 }
                 _deviceInfos.value = list
@@ -71,7 +73,8 @@ class DeviceListVM : BaseViewModel() {
 
     data class DeviceInfo(
         val name: String,
-        @DrawableRes val icon: Int
+        @DrawableRes val icon: Int,
+        val type: DeviceType
     ) {
         val deviceType: DeviceType
             get() = when (icon) {
@@ -80,11 +83,7 @@ class DeviceListVM : BaseViewModel() {
             }
 
         fun getBondDeviceData(): BondDeviceData? {
-            return when (icon) {
-                R.mipmap.icon_weight -> BondDeviceData.bondWeight
-                R.mipmap.icon_abroller -> BondDeviceData.bondWheel
-                else -> null
-            }
+            return BondDeviceData.getDevice(type)
         }
     }
 }

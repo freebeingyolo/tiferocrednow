@@ -42,7 +42,7 @@ class WeightMeasureVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPars
     }
 
     override fun onScanFilter(bleValueBean: BleValueBean): Boolean {
-        val d: BondDeviceData? = BondDeviceData.bondWeight
+        val d: BondDeviceData? = BondDeviceData.getDevice(DeviceType.WEIGHT)
         return if (d == null) true else d.mac == bleValueBean.mac
     }
 

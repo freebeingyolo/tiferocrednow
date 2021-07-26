@@ -29,7 +29,7 @@ class DeviceInfoActivity : BaseActivity<DeviceInfoVM, FragmentDeviceInfoBinding>
 
     companion object {
         fun start(deviceKey: String) {
-            var intent = Intent(
+            val intent = Intent(
                 ActivityUtils.getTopActivity(),
                 DeviceInfoActivity::class.java
             ).apply { putExtra("DeviceKey", deviceKey) }
@@ -57,16 +57,16 @@ class DeviceInfoActivity : BaseActivity<DeviceInfoVM, FragmentDeviceInfoBinding>
         super.initView(savedInstanceState)
         key = intent.getStringExtra("DeviceKey")!!
         data = BondDeviceData.getDevice(DeviceType.valueOf(key))!!
-        mViewBinding?.apply {
+        mViewBinding.apply {
             tvDeviceName.text = data.displayName
             tvMacAddress.text = data.mac
         }
         setToolBarLeftText(data.displayName)
-        mViewBinding!!.rlDeleteDevice.setOnClickListener {
+        mViewBinding.rlDeleteDevice.setOnClickListener {
             BondDeviceData.setDevice(data.cacheKey, null)
         }
 
-        mViewBinding?.apply {
+        mViewBinding.apply {
             tvDeviceName.text = data.displayName
             rlDeviceName.setOnClickListener {
                 CommonAlertDialog(baseContext).apply {
@@ -79,10 +79,10 @@ class DeviceInfoActivity : BaseActivity<DeviceInfoVM, FragmentDeviceInfoBinding>
                     listener = object : DialogClickListener.DefaultLisener() {
 
                         override fun onRightEditBtnClick(view: View, content: String?) {
-//                            val contentLength =
-//                                StringUtils.getCharacterNum(content) + StringUtils.getChineseNum(
-//                                    content!!
-//                                )
+    //                            val contentLength =
+    //                                StringUtils.getCharacterNum(content) + StringUtils.getChineseNum(
+    //                                    content!!
+    //                                )
                             if (StringUtils.getCheckSymbol(content.toString())) {
                                 showToast("设备名称只可为10个汉字或英文字母，包含其他字符将无法保存")
                             } else {

@@ -184,7 +184,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
             {
                 withContext(Dispatchers.IO) {
                     val ret = DeviceRepository.bindDevice(d.deviceCategory, d.displayName, d.mac)
-                    takeIf { ret.isSuccess }.let { BondDeviceData.setDevice(DeviceType.WHEEL, d) }
+                    takeIf { ret.isSuccess }.let { BondDeviceData.setDevice(DeviceType.WHEEL, BondDeviceData(ret.data!!)) }
                     ret
                 }
             },
@@ -209,7 +209,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         config.setRequestTimeoutMillis(connectTimeout.toInt())
         config.setDiscoverServicesDelayMillis(300)
         config.setAutoReconnect(false)
-        val mac = BondDeviceData.bondWheel!!.mac
+        val mac = BondDeviceData.getDevice(DeviceType.WHEEL)!!.mac
         connection = EasyBLE.getInstance().connect(mac, config)!!
         startTimeoutTimer(connectTimeout)
         workMode = WorkMode.MEASURE

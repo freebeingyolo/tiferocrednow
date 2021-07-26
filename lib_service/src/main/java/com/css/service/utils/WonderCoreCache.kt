@@ -1,11 +1,7 @@
 package com.css.service.utils
 
-import android.os.Looper
-import androidx.annotation.NonNull
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
+import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.SPUtils
 import com.css.service.bus.LiveDataBus
 import com.css.service.data.LoginUserData
@@ -36,11 +32,17 @@ class WonderCoreCache { //一切围绕CacheKey
             SPUtils.getInstance().remove(k.k, isCommit)
         }
 
-        fun <T> saveData(k1: CacheKey, d: T) {
-            val k = k1.k
-            val json = mGson.toJson(d)
-            SPUtils.getInstance().put(k, json)
-            LiveDataBus.get().with<T>(k).value = d
+        //如果d为null，将会移除这个key
+        fun <T> saveData(k1: CacheKey, d: T?) {
+            LogUtils.d("k1:$k1-->d:$d")
+            if (d == null) {
+                removeKey(k1, true)
+            } else {
+                val k = k1.k
+                val json = mGson.toJson(d)
+                SPUtils.getInstance().put(k, json)
+                LiveDataBus.get().with<T>(k).value = d
+            }
         }
 
         fun <T> getData(k1: CacheKey, cls: Class<T>): T? {
@@ -61,6 +63,7 @@ class WonderCoreCache { //一切围绕CacheKey
         fun <T> getLiveData(key: CacheKey): LiveData<T> {
             return LiveDataBus.get().with(key.k)
         }
+
         fun getLiveData2(key: CacheKey): LiveData<Any> {
             return LiveDataBus.get().with2(key.k)
         }

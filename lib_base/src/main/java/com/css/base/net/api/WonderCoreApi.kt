@@ -95,7 +95,7 @@ internal interface WonderCoreApi {
         suspend fun queryBindDevice(@QueryMap map: Map<String,String>): CommonResponse<List<DeviceData>>
 
         @POST("appDevice/bind")
-        suspend fun bindDevice(@Body requestBody: RequestBody): CommonResponse<Any>
+        suspend fun bindDevice(@Body requestBody: RequestBody): CommonResponse<DeviceData>
 
         @POST("appDevice/unbindDevice")
         suspend fun unbindDevice(@Body requestBody: RequestBody): CommonResponse<Any>

@@ -3,7 +3,6 @@ package com.css.ble.viewmodel
 import com.css.base.net.api.repository.DeviceRepository
 import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.ble.bean.BondDeviceData
-import com.css.ble.bean.DeviceType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -49,7 +48,7 @@ class DeviceInfoVM : BaseViewModel() {
                 withContext(Dispatchers.IO) {
                     val ret = DeviceRepository.updateDeviceName(d.id, d.displayName)
                     if (ret.isSuccess) {
-                        BondDeviceData.setDevice(d)
+                        BondDeviceData.setDevice(d.cacheKey,d)
                     }
                     ret
                 }
