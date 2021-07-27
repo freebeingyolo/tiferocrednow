@@ -124,6 +124,7 @@ abstract class BaseViewModel : ViewModel(), IBaseViewModel, INetView, IResource 
     ): Job {
         val job = viewModelScope.launch(Dispatchers.Main) {
             try {
+
                 val response = block()
                 response.process(success, failed)
             } catch (t: Throwable) {

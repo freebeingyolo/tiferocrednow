@@ -5,6 +5,8 @@ import com.css.base.net.api.repository.UserRepository
 import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.service.data.UserData
 import com.css.service.utils.WonderCoreCache
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class PersonInformationViewModel : BaseViewModel() {
     val personInfoData = MutableLiveData<ArrayList<UserData>>()
@@ -15,9 +17,11 @@ class PersonInformationViewModel : BaseViewModel() {
         netLaunch(
             {
                 showLoading()
-                UserRepository.queryPersonalInformation(
-                    WonderCoreCache.getLoginInfo()?.userInfo?.userId.toString()
-                )
+                withContext(Dispatchers.IO) {
+                    UserRepository.queryPersonalInformation(
+                        WonderCoreCache.getLoginInfo()?.userInfo?.userId.toString()
+                    )
+                }
             }, { _, d ->
                 hideLoading()
                 personInfoData.value = d

@@ -7,6 +7,8 @@ import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.service.data.CourseDate
 import com.css.service.data.MallData
 import com.css.wondercorefit.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class CourseViewModel : BaseViewModel() {
     val courseData = MutableLiveData<ArrayList<CourseDate>>()
@@ -14,7 +16,9 @@ class CourseViewModel : BaseViewModel() {
         netLaunch(
             {
                 showLoading()
-                CourseRepository.queryVideo()
+                withContext(Dispatchers.IO) {
+                    CourseRepository.queryVideo()
+                }
             }, { _, data ->
                 hideLoading()
                 courseData.value = data
