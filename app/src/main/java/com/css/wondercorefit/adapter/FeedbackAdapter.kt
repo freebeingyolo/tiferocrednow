@@ -1,5 +1,6 @@
 package com.css.wondercorefit.adapter
 
+import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Adapter
@@ -14,34 +15,47 @@ import com.css.wondercorefit.databinding.ItemProductLayoutBinding
  * Describe ${描述}
  * on 2021/7/16.
  */
-class FeedbackAdapter(mData: List<FeedbackData>) : BaseExpandableListAdapter() {
+class FeedbackAdapter(mContext: Context) : BaseExpandableListAdapter() {
+
+    private var mGroupData   = ArrayList<FeedbackData>()
+    private var mChildData   = ArrayList<FeedbackData>()
+
+    fun setGroupData(groupData : ArrayList<FeedbackData>) {
+        mChildData = groupData
+    }
+
+    fun setChildData(childData : ArrayList<FeedbackData>) {
+        mChildData = childData
+    }
 
     override fun getGroupCount(): Int {
-        TODO("Not yet implemented")
+       return mGroupData.size
     }
 
     override fun getChildrenCount(groupPosition: Int): Int {
-        TODO("Not yet implemented")
+       return mChildData.size
     }
 
     override fun getGroup(groupPosition: Int): Any {
-        TODO("Not yet implemented")
+
+        return mGroupData[groupPosition]
     }
 
     override fun getChild(groupPosition: Int, childPosition: Int): Any {
-        TODO("Not yet implemented")
+        // TODO: 2021/7/23
+        return mGroupData[groupPosition]
     }
 
     override fun getGroupId(groupPosition: Int): Long {
-        TODO("Not yet implemented")
+        return groupPosition.toLong()
     }
 
     override fun getChildId(groupPosition: Int, childPosition: Int): Long {
-        TODO("Not yet implemented")
+        return childPosition.toLong()
     }
 
     override fun hasStableIds(): Boolean {
-        TODO("Not yet implemented")
+      return true
     }
 
     override fun getGroupView(
@@ -64,7 +78,7 @@ class FeedbackAdapter(mData: List<FeedbackData>) : BaseExpandableListAdapter() {
     }
 
     override fun isChildSelectable(groupPosition: Int, childPosition: Int): Boolean {
-        TODO("Not yet implemented")
+       return true
     }
 
 }

@@ -51,6 +51,7 @@
                     android:paddingBottom="6.5dp"
                     android:textColor="@color/black"
                     android:textColorHint="@color/text_AAAAAA"
+                    android:drawableRight="@mipmap/icon_feedback_date"
                     android:textSize="10sp" />
 
                 <TextView
@@ -66,6 +67,7 @@
                     android:paddingRight="10dp"
                     android:paddingBottom="6.5dp"
                     android:textColor="@color/black"
+                    android:drawableRight="@mipmap/icon_feedback_time"
                     android:textColorHint="@color/text_AAAAAA"
                     android:textSize="10sp" />
             </LinearLayout>
