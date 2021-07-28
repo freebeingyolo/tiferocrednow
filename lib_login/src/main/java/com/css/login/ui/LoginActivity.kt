@@ -9,9 +9,12 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.css.base.uibase.BaseActivity
 import com.css.login.databinding.ActivityLoginBinding
 import com.css.login.model.LoginViewModel
+import com.css.service.data.LoginUserData
 import com.css.service.router.ARouterConst
 import com.css.service.router.ARouterUtil
+import com.css.service.utils.CacheKey
 import com.css.service.utils.SystemBarHelper
+import com.css.service.utils.WonderCoreCache
 
 @Route(path = ARouterConst.PATH_APP_LOGIN)
 class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>(), View.OnClickListener {
@@ -23,9 +26,6 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>(), View
         mViewBinding.tvRegister.setOnClickListener(this)
         mViewBinding.tvLogin.setOnClickListener(this)
         mViewBinding.forgetPassword.setOnClickListener(this)
-
-
-
     }
 
     override fun initViewModel(): LoginViewModel =
@@ -37,10 +37,10 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>(), View
     ): ActivityLoginBinding = ActivityLoginBinding.inflate(layoutInflater, parent, false)
 
     override fun registorUIChangeLiveDataCallBack() {
-        mViewModel.loginData.observe(this, {
+        WonderCoreCache.getLiveData<LoginUserData>(CacheKey.LOGIN_DATA).observe(this) {
             ARouterUtil.openMainActivity()
             finish()
-        })
+        }
     }
 
     override fun onClick(v: View?) {

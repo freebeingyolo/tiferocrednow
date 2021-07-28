@@ -67,7 +67,7 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
 
     private var isAttachViewModelOk = false
 
-    lateinit var mLoadingDialog: LoadingDialog
+    private var mLoadingDialog: LoadingDialog? = null
 
     /**
      * onAttach(Context) is not called on pre API 23 versions of Android and onAttach(Activity) is deprecated
@@ -526,14 +526,12 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
     }
 
     override fun showLoading() {
-        mLoadingDialog = activity?.let { LoadingDialog(it) }!!
-        mLoadingDialog.showPopupWindow()
+        mLoadingDialog = activity?.let { LoadingDialog(it) }
+        mLoadingDialog?.showPopupWindow()
     }
 
     override fun hideLoading() {
-        if (mLoadingDialog != null) {
-            mLoadingDialog.dismiss()
-        }
+        mLoadingDialog?.dismiss()
     }
 
     /**

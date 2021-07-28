@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.css.wondercorefit">
+
     <!-- 网络权限 -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -32,7 +33,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Wonder.Base">
-        <activity android:name=".ui.activity.setting.MyDeviceActivity"></activity>
+        <meta-data
+            android:name="com.google.android.actions"
+            android:resource="@xml/file_paths" />
+
+        <activity android:name=".ui.activity.setting.MyDeviceActivity" />
 
         <service
             android:name=".utils.BootstrapService"
@@ -86,6 +91,16 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:screenOrientation="portrait"
             android:theme="@style/FullScreenTheme" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.css.wondercorefit.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>

@@ -3,10 +3,10 @@ package com.css.wondercorefit.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.css.base.net.api.repository.UserRepository
 import com.css.base.uibase.viewmodel.BaseViewModel
-import com.css.service.data.LoginUserData
 import com.css.service.data.UserData
-import com.css.service.utils.CacheKey
 import com.css.service.utils.WonderCoreCache
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class PersonInformationViewModel : BaseViewModel() {
     val personInfoData = MutableLiveData<ArrayList<UserData>>()
@@ -17,9 +17,11 @@ class PersonInformationViewModel : BaseViewModel() {
         netLaunch(
             {
                 showLoading()
-                UserRepository.queryPersonalInformation(
-                    WonderCoreCache.getLoginInfo()?.userInfo?.userId.toString()
-                )
+                withContext(Dispatchers.IO) {
+                    UserRepository.queryPersonalInformation(
+                        WonderCoreCache.getLoginInfo()?.userInfo?.userId.toString()
+                    )
+                }
             }, { _, d ->
                 hideLoading()
                 personInfoData.value = d
@@ -42,10 +44,7 @@ class PersonInformationViewModel : BaseViewModel() {
             {
                 showLoading()
                 UserRepository.updatePersonalInformation(
-                    WonderCoreCache.getData(
-                        CacheKey.LOGIN_DATA,
-                        LoginUserData::class.java
-                    ).userInfo.userId.toString(), sex, age, height, goalBodyWeight, goalStepCount
+                    WonderCoreCache.getLoginInfo()!!.userInfo.userId.toString(), sex, age, height, goalBodyWeight, goalStepCount
                 )
             }, { msg, _ ->
                 upPersonInfoData.value = msg

@@ -4,6 +4,8 @@ import android.os.CountDownTimer
 import androidx.lifecycle.MutableLiveData
 import com.css.base.net.api.repository.UserRepository
 import com.css.base.uibase.viewmodel.BaseViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class ResetPasswordViewModel : BaseViewModel() {
     val resetPwdData = MutableLiveData<String>()
@@ -17,7 +19,9 @@ class ResetPasswordViewModel : BaseViewModel() {
     ) {
         netLaunch(
             {
-                UserRepository.resetPassword(phone, password, smsCode)
+                withContext(Dispatchers.IO) {
+                    UserRepository.resetPassword(phone, password, smsCode)
+                }
             }, { msg, _ ->
                 resetPwdData.value = msg
             }, { _, msg, _ ->
@@ -45,7 +49,9 @@ class ResetPasswordViewModel : BaseViewModel() {
                     }
                     mTimer!!.start()
                     showLoading()
-                    UserRepository.sendCode(phone)
+                    withContext(Dispatchers.IO) {
+                        UserRepository.sendCode(phone)
+                    }
                 }, { msg, _ ->
                     hideLoading()
                     showToast(msg)

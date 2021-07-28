@@ -90,7 +90,7 @@ class TodayStepService : Service(), Handler.Callback {
 
     override fun onCreate() {
         super.onCreate()
-        stepData = WonderCoreCache.getData(CacheKey.STEP_DATA, StepData::class.java)
+        stepData = WonderCoreCache.getData(CacheKey.STEP_DATA, StepData::class.java) ?: StepData()
         mTodayStepDBHelper = TodayStepDBHelper(applicationContext)
         sensorManager = this
             .getSystemService(Context.SENSOR_SERVICE) as SensorManager?

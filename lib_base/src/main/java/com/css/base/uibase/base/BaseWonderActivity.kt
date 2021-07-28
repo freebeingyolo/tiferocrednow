@@ -64,7 +64,8 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
      * 在使用自定义toolbar时候的根布局 =toolBarView+childView
      */
     private var mRootView: View? = null
-     lateinit var mLoadingDialog: LoadingDialog
+    private var mLoadingDialog: LoadingDialog? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         attachViewModelAndLifecycle()
@@ -306,13 +307,11 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
 
     override fun showLoading() {
         mLoadingDialog = LoadingDialog(this)
-        mLoadingDialog.showPopupWindow()
+        mLoadingDialog?.showPopupWindow()
     }
 
     override fun hideLoading() {
-        if (mLoadingDialog != null){
-            mLoadingDialog.dismiss()
-        }
+        mLoadingDialog?.dismiss()
     }
 
     override fun finishAc() {

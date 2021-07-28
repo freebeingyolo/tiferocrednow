@@ -19,22 +19,19 @@ import cn.wandersnail.commons.poster.ThreadMode
 import cn.wandersnail.commons.util.StringUtils
 import cn.wandersnail.commons.util.ToastUtils
 import com.blankj.utilcode.util.ActivityUtils
+import com.css.base.net.api.repository.DeviceRepository
 import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.utils.DataUtils
-import com.css.service.utils.CacheKey
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.text.DecimalFormat
 import java.util.*
 
 /**
- * 连接超时:无法连接搜索到设备
  * @author yuedong
- * @date 2021-05-12
+ * @date 2021-05-1
+ * @description 因为WheelMeasureVM需要
  */
 object WheelMeasureVM : BaseWheelVM(), EventObserver {
     //测量
@@ -174,20 +171,37 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         }
     }
 
-    //ui收到去调用bondDevice
-    fun bondDevice() {
-        avaliableDevice?.let {
-            //val bondRst = EasyBLE.getInstance().createBond(it.address)
-            //LogUtils.d("bondRst:$bondRst")
-            val d = BondDeviceData(
-                it.address,
-                "",
-                DeviceType.WHEEL
-            )
-            BondDeviceData.setDevice(CacheKey.BOND_WHEEL_INFO, d)
-            avaliableDevice = null
-        }
+    fun bindDevice(
+        success: (msg: String?, d: Any?) -> Unit,
+        failed: (Int, String?, d: Any?) -> Unit
+    ) {
+        val d = BondDeviceData(
+            avaliableDevice!!.address,
+            "",
+            DeviceType.WHEEL
+        )
+        netLaunch(
+            {
+                withContext(Dispatchers.IO) {
+                    val ret = DeviceRepository.bindDevice(d.deviceCategory, d.displayName, d.mac)
+                    takeIf { ret.isSuccess }.let { BondDeviceData.setDevice(DeviceType.WHEEL, BondDeviceData(ret.data!!)) }
+                    ret
+                }
+            },
+            { msg, _ ->
+                //val bondRst = EasyBLE.getInstance().createBond(it.address)
+                //LogUtils.d("bondRst:$bondRst")
+                success(msg, d)
+                avaliableDevice = null
+            },
+            { code, msg, d ->
+                avaliableDevice = null
+                state = State.disconnected
+                failed(code, msg, d)
+            }
+        )
     }
+
 
     fun connect() {
         //连接配置，举个例随意配置两项
@@ -195,7 +209,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         config.setRequestTimeoutMillis(connectTimeout.toInt())
         config.setDiscoverServicesDelayMillis(300)
         config.setAutoReconnect(false)
-        val mac = BondDeviceData.bondWheel!!.mac
+        val mac = BondDeviceData.getDevice(DeviceType.WHEEL)!!.mac
         connection = EasyBLE.getInstance().connect(mac, config)!!
         startTimeoutTimer(connectTimeout)
         workMode = WorkMode.MEASURE

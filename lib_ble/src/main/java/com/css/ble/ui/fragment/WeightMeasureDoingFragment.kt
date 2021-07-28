@@ -88,7 +88,7 @@ class WeightMeasureDoingFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
     override fun onVisible() {
         super.onVisible()
         startTime = System.currentTimeMillis()
-        if (BondDeviceData.bondWeight == null) {//如果已经解绑了，回到此界面在回退
+        if (BondDeviceData.getDevice(DeviceType.WEIGHT) == null) {//如果已经解绑了，回到此界面在回退
             CommonAlertDialog(requireContext()).apply {
                 type = CommonAlertDialog.DialogType.Image
                 imageResources = R.mipmap.icon_tick

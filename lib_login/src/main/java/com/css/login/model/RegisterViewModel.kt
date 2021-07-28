@@ -6,6 +6,8 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.css.base.net.api.repository.UserRepository
 import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.service.router.ARouterConst
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class RegisterViewModel : BaseViewModel() {
     val registerData = MutableLiveData<String>()
@@ -21,7 +23,9 @@ class RegisterViewModel : BaseViewModel() {
         netLaunch(
             {
                 showLoading()
-                UserRepository.register(phone, password, smsCode, userName)
+                withContext(Dispatchers.IO) {
+                    UserRepository.register(phone, password, smsCode, userName)
+                }
             }, { msg, _ ->
                 hideLoading()
                 registerData.value = msg
@@ -51,7 +55,9 @@ class RegisterViewModel : BaseViewModel() {
                     }
                     mTimer!!.start()
                     showLoading()
-                    UserRepository.sendCode(phone)
+                    withContext(Dispatchers.IO) {
+                        UserRepository.sendCode(phone)
+                    }
                 }, { msg, _ ->
                     hideLoading()
                     showToast(msg)

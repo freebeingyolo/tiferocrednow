@@ -1,29 +1,21 @@
 package com.css.ble.ui.fragment
 
 import android.app.ProgressDialog
-import android.os.Bundle
-import android.os.Looper
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.*
 import com.alibaba.android.arouter.launcher.ARouter
 import com.css.base.dialog.CommonAlertDialog
-import com.css.base.uibase.BaseFragment
-import com.css.base.uibase.inner.OnToolBarClickListener
 import com.css.base.view.ToolBarView
 import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
+import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.*
-import com.css.ble.ui.DeviceInfoActivity
 import com.css.ble.utils.FragmentUtils
 import com.css.ble.viewmodel.WeightMeasureVM
 import com.css.service.router.ARouterConst
-import com.css.service.utils.ImageUtils
 import com.css.service.utils.WonderCoreCache
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import razerdp.basepopup.BasePopupWindow
 
 /**
@@ -31,7 +23,6 @@ import razerdp.basepopup.BasePopupWindow
  * @date 2021-05-17
  */
 class WeightMeasureDoneFragment : BaseWeightFragment<WeightMeasureVM, ActivityWeightMeasureDoneBinding>() {
-    private var dialog: ProgressDialog? = null
 
     override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): ActivityWeightMeasureDoneBinding {
         return ActivityWeightMeasureDoneBinding.inflate(inflater, parent, false).also {
@@ -50,28 +41,32 @@ class WeightMeasureDoneFragment : BaseWeightFragment<WeightMeasureVM, ActivityWe
 
     override fun initData() {
         super.initData()
-        dialog = ProgressDialog.show(requireContext(), "", "正在处理数据")
-        lifecycleScope.launch {
-            delay(2000)
-            FragmentUtils.changeFragment(WeightMeasureEndDeailFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
-            dialog?.dismiss()
-        }
+        uploadData(mViewModel.bondData.value!!.weightKg)
     }
 
-    override fun initView(savedInstanceState: Bundle?) {
-        super.initView(savedInstanceState)
+    private fun uploadData(weight: Float) {//上传体重数据
+        val mLoadingDialog: ProgressDialog = ProgressDialog.show(requireContext(), "", "正在处理数据")
+        mViewModel.uploadWeightData(
+            weight,
+            { _, _ ->
+                mLoadingDialog.dismiss()
+                FragmentUtils.changeFragment(WeightMeasureEndDeailFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
+            },
+            { _, msg, _ ->
+                mLoadingDialog.dismiss()
+                showToast(msg)
+                FragmentUtils.changeFragment(WeightMeasureEndDeailFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
+            })
+
     }
+
     override fun initCommonToolBarBg(): ToolBarView.ToolBarBg {
         return ToolBarView.ToolBarBg.GRAY
-    }
-    override fun onDetach() {
-        super.onDetach()
-        dialog?.dismiss()
     }
 
     override fun onVisible() {
         super.onVisible()
-        if (BondDeviceData.bondWeight == null) {//如果已经解绑了，回到此界面在回退
+        if (BondDeviceData.getDevice(DeviceType.WEIGHT) == null) {//如果已经解绑了，回到此界面在回退
             CommonAlertDialog(requireContext()).apply {
                 type = CommonAlertDialog.DialogType.Image
                 imageResources = R.mipmap.icon_tick

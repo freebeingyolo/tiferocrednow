@@ -1,6 +1,9 @@
 package com.css.service.utils
 
+import androidx.lifecycle.LiveData
+import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.SPUtils
+import com.css.service.bus.LiveDataBus
 import com.css.service.data.LoginUserData
 import com.css.service.data.UserData
 import com.google.gson.Gson
@@ -15,66 +18,81 @@ enum class CacheKey(val k: String) {
     STEP_DATA("stepdata")
 }
 
-class WonderCoreCache {
+class WonderCoreCache { //一切围绕CacheKey
 
     companion object {
 
         val mGson = Gson()
 
-        fun saveUserInfo(userData: UserData) {
-            val json = mGson.toJson(userData)
-            SPUtils.getInstance().put(CacheKey.USER_INFO.k, json)
+        fun containsKey(k: CacheKey) = SPUtils.getInstance().contains(k.k)
+
+        //apply：异步  commit:同步
+        fun removeKey(k: CacheKey, isCommit: Boolean = true) {
+            LiveDataBus.get().with2(k.k).value = null
+            SPUtils.getInstance().remove(k.k, isCommit)
         }
 
-        fun getUserInfo(): UserData {
-            return if (!SPUtils.getInstance().getString(CacheKey.USER_INFO.k).isNullOrEmpty()) {
-                mGson.fromJson(
-                    SPUtils.getInstance().getString(CacheKey.USER_INFO.k),
-                    UserData::class.java
-                )
+        //如果d为null，将会移除这个key
+        fun <T> saveData(k1: CacheKey, d: T?) {
+            LogUtils.d("k1:$k1-->d:$d")
+            if (d == null) {
+                removeKey(k1, true)
             } else {
-                UserData()
+                val k = k1.k
+                val json = mGson.toJson(d)
+                SPUtils.getInstance().put(k, json)
+                LiveDataBus.get().with<T>(k).value = d
             }
         }
 
-        fun getLoginInfo(): LoginUserData? {
-            return if (!SPUtils.getInstance().getString(CacheKey.LOGIN_DATA.k).isNullOrEmpty()) {
-                mGson.fromJson(
-                    SPUtils.getInstance().getString(CacheKey.LOGIN_DATA.k),
-                    LoginUserData::class.java
-                )
-            } else {
-                 null
-            }
-        }
-
-        fun <T> saveData(k: String, d: T) {
-            val json = mGson.toJson(d)
-            SPUtils.getInstance().put(k, json)
-        }
-
-        fun <T> getData(k: String, cls: Class<T>): T {
+        fun <T> getData(k1: CacheKey, cls: Class<T>): T? {
+            val k = k1.k
+            val ret = LiveDataBus.get().with<T>(k).value
+            if (ret != null) return ret
             val info = SPUtils.getInstance().getString(k)
             val t = if (info.isNullOrEmpty()) {
-                val t2 = cls.newInstance()
-                t2
+                null
             } else {
-                mGson.fromJson(info, cls)
+                mGson.fromJson(info, cls).also {
+                    LiveDataBus.get().with<T>(k).value = it
+                }
             }
             return t
         }
 
-        fun containsKey(k: String) = SPUtils.getInstance().contains(k)
+        fun <T> getLiveData(key: CacheKey): LiveData<T> {
+            return LiveDataBus.get().with(key.k)
+        }
 
-        //apply：异步  commit:同步
-        fun removeKey(k: String, isCommit: Boolean = true) =
-            SPUtils.getInstance().remove(k, isCommit)
+        fun getLiveData2(key: CacheKey): LiveData<Any> {
+            return LiveDataBus.get().with2(key.k)
+        }
 
-        //extension
-        fun removeKey(k: CacheKey, isCommit: Boolean = true) = removeKey(k.k)
-        fun <T> saveData(k: CacheKey, d: T) = saveData(k.k, d)
-        fun <T> getData(k: CacheKey, cls: Class<T>) = getData(k.k, cls)
-        fun containsKey(k: CacheKey) = containsKey(k.k)
+        /**User**/
+        fun saveUserInfo(userData: UserData) {
+            saveData(CacheKey.USER_INFO, userData)
+        }
+
+        fun getUserInfo(): UserData {
+            var ret = getData(CacheKey.USER_INFO, UserData::class.java)
+            return ret ?: UserData()
+        }
+
+
+        fun getLoginInfo(): LoginUserData? {
+            return getData(CacheKey.LOGIN_DATA, LoginUserData::class.java)
+        }
+
+        fun saveLoginInfo(d: LoginUserData?) {
+            saveData(CacheKey.LOGIN_DATA, d)
+        }
+
+        /**User**/
+
+        /**Device**/
+
+
+        /**Device**/
     }
 
 }

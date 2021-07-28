@@ -7,6 +7,8 @@ import com.css.base.net.api.repository.SettingRepository
 import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.service.data.MallData
 import com.css.service.data.UpGradeData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class MainActivityViewModel : BaseViewModel() {
     val upGradeData = MutableLiveData<UpGradeData>()
@@ -15,7 +17,9 @@ class MainActivityViewModel : BaseViewModel() {
         netLaunch(
             {
                 showLoading()
-                SettingRepository.upGrade(AppUtils.getAppVersionCode().toString())
+                withContext(Dispatchers.IO) {
+                    SettingRepository.upGrade(AppUtils.getAppVersionCode().toString())
+                }
             }, { msg, data ->
                 hideLoading()
                 if (data != null) {

@@ -91,7 +91,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
 
     private fun showDevice() {
         //使用LiveData代替SharedPreference更新体脂秤、健腹轮绑定状态
-        BondDeviceData.bondWeightObsrv.observe(viewLifecycleOwner) {
+        WonderCoreCache.getLiveData2(CacheKey.BOND_WEIGHT_INFO).observe(viewLifecycleOwner) {
             if (it != null) {
                 mViewBinding?.llDevice?.visibility = View.VISIBLE
                 mViewBinding?.deviceSpace?.visibility = View.GONE
@@ -114,7 +114,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             }
         }
 
-        BondDeviceData.bondWheelObsrv.observe(viewLifecycleOwner) {
+        WonderCoreCache.getLiveData2(CacheKey.BOND_WHEEL_INFO).observe(viewLifecycleOwner) {
             if (it != null) {
                 mViewBinding?.llDevice?.visibility = View.VISIBLE
                 if (mViewBinding?.deviceWeight?.visibility == View.GONE) {
@@ -165,7 +165,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     private fun initProgressRate() {
         mUserData = WonderCoreCache.getUserInfo()
         targetStep = mUserData.goalStepCount
-        stepData = WonderCoreCache.getData(CacheKey.STEP_DATA, StepData::class.java)
+        stepData = WonderCoreCache.getData(CacheKey.STEP_DATA, StepData::class.java) ?: StepData()
         currentStep = stepData.todaySteps
         result = ((currentStep * 100) / targetStep.toInt()).toFloat()
         Log.d(TAG, "ProgressInformation   :  $currentStep    $targetStep    $result")

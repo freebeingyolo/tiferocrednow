@@ -10,4 +10,7 @@ class CommonResponse<T> : KeepClass {
     var code: Int = 0
     var msg: String? = null
     var data: T? = null
+
+    val isSuccess :Boolean get() = code == HttpNetCode.SUCCESS
+
 }
