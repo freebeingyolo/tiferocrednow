@@ -47,13 +47,24 @@
             android:hint="@string/register_username_tip"
             android:paddingStart="7dp"
             android:textSize="12sp" />
-
+        <TextView
+            android:id="@+id/tv_username_tip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="68dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="61dp"
+            android:text="用户名限10位汉字或大小写英文字母"
+            android:textColor="#FFFF0000"
+            android:textSize="9dp"
+            tools:visibility="visible"
+            android:visibility="invisible" />
         <EditText
             android:id="@+id/et_telephone"
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_marginStart="61dp"
-            android:layout_marginTop="27dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="61dp"
             android:background="@drawable/login_edittext_bg"
             android:hint="@string/register_phone_tip"
@@ -61,12 +72,23 @@
             android:maxLength="11"
             android:paddingStart="7dp"
             android:textSize="12sp" />
-
+        <TextView
+            android:id="@+id/tv_phone_tip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="68dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="61dp"
+            android:text="须符合11位大陆手机号格式"
+            android:textColor="#FFFF0000"
+            android:textSize="9dp"
+            tools:visibility="visible"
+            android:visibility="invisible" />
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="61dp"
-            android:layout_marginTop="27dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="61dp">
 
             <EditText
@@ -91,33 +113,66 @@
                 android:textColor="#FFF2682A"
                 android:textSize="10dp" />
         </RelativeLayout>
-
+        <TextView
+            android:id="@+id/tv_code_tip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="68dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="61dp"
+            android:text="验证码为6位数字"
+            android:textColor="#FFFF0000"
+            android:textSize="9dp"
+            tools:visibility="visible"
+            android:visibility="invisible" />
         <EditText
             android:id="@+id/et_password"
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_marginStart="61dp"
-            android:layout_marginTop="27dp"
+            android:layout_marginTop="13dp"
             android:layout_marginEnd="61dp"
             android:background="@drawable/login_edittext_bg"
             android:hint="@string/register_password_tip"
             android:maxLength="16"
             android:paddingStart="7dp"
             android:textSize="12sp" />
-
+        <TextView
+            android:id="@+id/tv_password_tip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="68dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="61dp"
+            android:text="密码限6至16位数字、大小写英文字母、下划线的任意组合"
+            android:textColor="#FFFF0000"
+            android:textSize="9dp"
+            tools:visibility="visible"
+            android:visibility="invisible" />
         <EditText
             android:id="@+id/et_password_again"
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_marginStart="61dp"
-            android:layout_marginTop="27dp"
+            android:layout_marginTop="13dp"
             android:layout_marginEnd="61dp"
             android:background="@drawable/login_edittext_bg"
             android:hint="@string/register_password_again_tip"
             android:maxLength="16"
             android:paddingStart="7dp"
             android:textSize="12sp" />
-
+        <TextView
+            android:id="@+id/tv_password_again_tip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="68dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="61dp"
+            android:text="两次输入密码需保持一致"
+            android:textColor="#FFFF0000"
+            android:textSize="9dp"
+            tools:visibility="visible"
+            android:visibility="invisible" />
         <CheckBox
             android:id="@+id/cb_agreement"
             android:layout_width="match_parent"

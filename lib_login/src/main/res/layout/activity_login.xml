@@ -55,7 +55,8 @@
         android:layout_marginEnd="61dp"
         android:text="请输入符合大陆手机号格式的11位数字"
         android:textColor="#FFFF0000"
-        android:textSize="9dp" />
+        android:textSize="9dp"
+        android:visibility="invisible" />
 
     <EditText
         android:id="@+id/et_password"
