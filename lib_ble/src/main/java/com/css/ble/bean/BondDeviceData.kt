@@ -23,8 +23,10 @@ enum class DeviceType(
 ) {
     WEIGHT("体脂秤", R.string.device_weight, R.mipmap.icon_weight, CacheKey.BOND_WEIGHT_INFO),
     WHEEL("健腹轮", R.string.device_wheel, R.mipmap.icon_abroller, CacheKey.BOND_WHEEL_INFO),
+    HORIZONTAL_BAR("单杠", R.string.device_horizontalbar, R.mipmap.icon_horizontalbar, CacheKey.BOND_HORIZONTALBAR_INFO),
+    PUSH_UP("俯卧撑", R.string.device_pushup, R.mipmap.icon_pushup, CacheKey.BOND_PUSHUP_INFO),
+    COUNTER("计数器", R.string.device_counter, R.mipmap.icon_counter, CacheKey.BOND_COUNTER_INFO),
     ;
-    //HORIZONTAL_BAR("单杠");
 
     companion object {
         fun findByAlias(alias: String): DeviceType {
@@ -44,7 +46,7 @@ class BondDeviceData(
     var alias: String? = null
     var id: Int = 0
     var deviceCategory: String = ""
-    val cacheKey:DeviceType get() = DeviceType.values()[type]
+    val cacheKey: DeviceType get() = DeviceType.values()[type]
 
     constructor(d: DeviceData) : this() {
         this.id = d.id
@@ -79,7 +81,6 @@ class BondDeviceData(
         get() = if (alias.isNullOrEmpty()) {
             ActivityUtils.getTopActivity().getString(DeviceType.values()[type].nameId)
         } else alias!!
-
 
 
     override fun toString(): String {

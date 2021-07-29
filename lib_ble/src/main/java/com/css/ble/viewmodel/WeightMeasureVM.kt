@@ -10,7 +10,7 @@ import com.css.base.net.api.repository.HistoryRepository
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.bean.WeightBondData
-import com.css.service.data.LoginUserData
+import com.css.service.utils.CacheKey
 import com.css.service.utils.WonderCoreCache
 import com.pingwang.bluetoothlib.BroadcastDataParsing
 import com.pingwang.bluetoothlib.bean.BleValueBean
@@ -26,7 +26,7 @@ class WeightMeasureVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPars
     override val timeOut = 10 * 1000L
     private val weigthDataTemp: WeightBondData by lazy { WeightBondData() }
     private val mBroadcastDataParsing by lazy { BroadcastDataParsing(this) }
-    var bondData: MutableLiveData<WeightBondData> = MutableLiveData<WeightBondData>()
+    val bondData: MutableLiveData<WeightBondData> by lazy { MutableLiveData<WeightBondData>() }
 
     enum class State {
         begin,
@@ -34,11 +34,6 @@ class WeightMeasureVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPars
         receiving,//收到数据
         timeout,
         done
-    }
-
-    fun initOrReset() {
-        _state.value = State.begin
-        bondData = MutableLiveData<WeightBondData>()
     }
 
     override fun onScanFilter(bleValueBean: BleValueBean): Boolean {
@@ -95,8 +90,10 @@ class WeightMeasureVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPars
                 } else {
                     bondData.value = this
                     _state.value = State.done
-                    WeightBondData.firstWeightInfo ?: let { WeightBondData.firstWeightInfo = bondData.value }
-                    WeightBondData.lastWeightInfo = bondData.value
+                    if (WonderCoreCache.getData(CacheKey.FIRST_WEIGHT_INFO, WeightBondData::class.java) == null) {
+                        WonderCoreCache.saveData(CacheKey.FIRST_WEIGHT_INFO, bondData.value)
+                    }
+                    WonderCoreCache.saveData(CacheKey.LAST_WEIGHT_INFO, bondData.value)
                     stopScanBle()
                 }
             }
@@ -105,7 +102,9 @@ class WeightMeasureVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPars
     }
 
     fun uploadWeightData(
-        weight: Float, success: (msg: String?, d: Any?) -> Unit,
+        weight: Float,
+        adc: Int,
+        success: (msg: String?, d: Any?) -> Unit,
         failed: (Int, String?, d: Any?) -> Unit
     ) {
         netLaunch(
@@ -113,7 +112,7 @@ class WeightMeasureVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPars
                 withContext(Dispatchers.IO) {
                     val t1 = System.currentTimeMillis()
                     val uid = WonderCoreCache.getLoginInfo()!!.userInfo.userId
-                    val ret = HistoryRepository.uploadMeasureWeight(uid, weight)
+                    val ret = HistoryRepository.uploadMeasureWeight(uid, weight, adc)
                     delay(System.currentTimeMillis() + 1000 - t1)
                     ret
                 }

@@ -23,6 +23,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import razerdp.basepopup.BasePopupWindow
 import com.css.ble.viewmodel.WeightMeasureVM.State
+import com.css.service.utils.CacheKey
+import com.css.service.utils.WonderCoreCache
 
 /**
  * @author yuedong
@@ -52,7 +54,8 @@ class WeightMeasureDoingFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
                     FragmentUtils.changeFragment(WeightMeasureBeginFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
                 }
                 State.done -> {
-                    if (WeightBondData.firstWeightInfo == null) {
+
+                    if (WonderCoreCache.getData(CacheKey.FIRST_WEIGHT_INFO, BondDeviceData::class.java) == null) {
                         //去掉WeightMeasureBeginFragment
                         FragmentUtils.changeFragment(WeightMeasureBeginFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
                     }

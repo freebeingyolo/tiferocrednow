@@ -13,15 +13,19 @@ object CourseRepository {
     }
 
     suspend fun queryVideo(): CommonResponse<ArrayList<CourseDate>> {
-//        val map: MutableMap<String, Any> = HashMap()
-//        map["applicationScenes"] = "教程"
-//        map["deviceCategoryName"] = "单杠"
-//        map["id"] = 0
         val param = RequestBodyBuilder()
                 .addParams("applicationScenes", "教程")
                 .addParams("deviceCategoryName", "单杠")
                 .addParams("id", 0)
                 .build()
+        return otherApi.queryVideo(param)
+    }
+
+    suspend fun queryVideo(scene:String,deviceCategoryName:String): CommonResponse<ArrayList<CourseDate>> {
+        val param = RequestBodyBuilder()
+            .addParams("applicationScenes", scene)
+            .addParams("deviceCategoryName", deviceCategoryName)
+            .build()
         return otherApi.queryVideo(param)
     }
 

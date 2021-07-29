@@ -49,6 +49,7 @@ class MainActivity : BaseActivity<MainActivityViewModel, ActivityMainBinding>() 
     override fun initData() {
         super.initData()
         mViewModel.getUpGrade()
+        mViewModel.fetchRemoteWeight()
     }
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
