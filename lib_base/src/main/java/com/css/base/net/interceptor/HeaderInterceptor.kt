@@ -2,8 +2,8 @@ package com.css.base.net.interceptor
 
 import com.blankj.utilcode.util.EncryptUtils
 import com.blankj.utilcode.util.LogUtils
-import com.css.service.data.LoginUserData
-import com.css.service.utils.CacheKey
+import com.css.base.net.NetLongLogger
+
 import com.css.service.utils.WonderCoreCache
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -12,6 +12,7 @@ import okhttp3.Response
 import okio.Buffer
 import org.json.JSONObject
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class HeaderInterceptor : Interceptor {
@@ -36,36 +37,44 @@ class HeaderInterceptor : Interceptor {
         newRequestBuilder.header("method", mMethod)
         newRequestBuilder.header("nonce", mNonce.toString())
         newRequestBuilder.header("timestamp", mTimestamp.toString())
-        newRequestBuilder.header("MD5", signatures(request, mNonce, mTimestamp, mMethod))
+        newRequestBuilder.header("MD5", signatures(mNonce, mTimestamp))
 
         val newRequest = newRequestBuilder.build()
+//        NetLongLogger().log("newRequest-->$newRequest")
         return chain.proceed(newRequest)
     }
 
+    //对【随机数、时间戳】进行签名加密
+    private fun signatures(
+        mNonce: Int,
+        mTimestamp: Long,
+    ): String {
+        val clientSecret = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCVRiDk"
+        val signatureStr = "nonce=${mNonce}&timestamp=${mTimestamp}\$${clientSecret}"
+        return EncryptUtils.encryptMD5ToString(signatureStr)
+    }
+    //对【请求体、随机数、时间戳、请求方法】进行签名加密
     private fun signatures(
         request: Request,
         mNonce: Int,
         mTimestamp: Long,
         mMethod: String
     ): String {
-        var clientSecret = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCVRiDk"
-        var signatureStr =
+        val clientSecret = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCVRiDk"
+        val signatureStr =
             "nonce=${mNonce}&timestamp=${mTimestamp}\$${clientSecret}"
         return when (mMethod) {
             "post" -> {
                 var str = request.body?.let { getParamContent(it) }
                 str = str?.substring(0, str.length - 1)
-
-                var merge = ""
-
-                merge = "method=${str}&${signatureStr}"
+                val merge = "method=${str}&${signatureStr}"
                 LogUtils.v("suisui", merge)
                 EncryptUtils.encryptMD5ToString(merge)
             }
             "get" -> {
                 var merge = ""
                 if (request.url.query != null) {
-                    val query: List<String> = request.url.query!!.split("&")
+                    val query: List<String> = ArrayList(request.url.query!!.split("&"))
                     Collections.sort(query) { str1, str2 -> // 按首字母升序排
                         str2.compareTo(str1);
                     }

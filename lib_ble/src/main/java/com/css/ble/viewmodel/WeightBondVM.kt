@@ -2,10 +2,15 @@ package com.css.ble.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.css.base.net.api.repository.DeviceRepository
+import com.css.ble.bean.BondDeviceData
+import com.css.ble.bean.DeviceType
 import com.css.ble.bean.WeightBondData
 import com.pingwang.bluetoothlib.BroadcastDataParsing
 import com.pingwang.bluetoothlib.bean.BleValueBean
 import com.tencent.bugly.crashreport.CrashReport
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 open class WeightBondVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataParsing {
     companion object {
@@ -107,6 +112,36 @@ open class WeightBondVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPa
     }
 
     override fun onScanTimerOutCancel() {}
+
+
+    fun bindDevice(
+        success: (msg: String?, d: Any?) -> Unit,
+        failed: (Int, String?, d: Any?) -> Unit
+    ) {
+        val d = BondDeviceData(
+            filterDevice!!.mac,
+            filterDevice!!.manifactureHex,
+            DeviceType.WEIGHT
+        )
+        netLaunch(
+            {
+                withContext(Dispatchers.IO) {
+                    val ret = DeviceRepository.bindDevice(d.deviceCategory, d.displayName, d.mac)
+                    if(ret.isSuccess) {
+                        BondDeviceData.setDevice(d.cacheKey,BondDeviceData(ret.data!!))
+                    }
+                    ret
+                }
+            },
+            { msg, _ ->
+                state.value = State.done
+                success(msg, d)
+            },
+            { code, msg, d ->
+                failed(code, msg, d)
+            }
+        )
+    }
 }
 
 

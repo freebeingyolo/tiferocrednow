@@ -5,15 +5,21 @@ import android.bluetooth.BluetoothGattService
 import androidx.annotation.NonNull
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import cn.wandersnail.ble.*
 import cn.wandersnail.ble.callback.ScanListener
 import cn.wandersnail.commons.observer.Observe
 import cn.wandersnail.commons.poster.RunOn
 import cn.wandersnail.commons.poster.Tag
 import cn.wandersnail.commons.poster.ThreadMode
+import com.css.base.net.api.repository.DeviceRepository
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.service.utils.CacheKey
+import com.css.service.utils.WonderCoreCache
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 /*
@@ -60,8 +66,8 @@ Handler
 
 case 9	 ELinkBleServer.this.finish() //结束服务
 */
-
-class WheelBondVM : BaseWheelVM(), EventObserver {
+@Deprecated("use WhellMeasureVM instead")
+object WheelBondVM : BaseWheelVM(), EventObserver {
     private val _state: MutableLiveData<State> by lazy { MutableLiveData<State>(State.disconnect) }
     val state: LiveData<State> get() = _state
     private var avaliableDevice: Device? = null
@@ -157,20 +163,6 @@ class WheelBondVM : BaseWheelVM(), EventObserver {
         avaliableDevice = d
         cancelTimeOutTimer()
         _state.value = State.found
-    }
-
-    //ui收到去调用bondDevice
-    fun bondDevice() {
-        avaliableDevice?.let {
-//            val bondRst = EasyBLE.getInstance().createBond(it.address)
-//            LogUtils.d("bondRst:$bondRst")
-            val d = BondDeviceData(
-                it.address,
-                "",
-                DeviceType.WHEEL
-            )
-            BondDeviceData.setDevice(CacheKey.BOND_WHEEL_INFO, d)
-        }
     }
 
     private val scanListener = object : ScanListener {

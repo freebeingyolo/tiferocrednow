@@ -2,6 +2,7 @@ package com.css.ble.bean
 
 import cn.net.aicare.algorithmutil.BodyFatData
 import com.css.service.data.UserData
+import com.css.service.utils.CacheKey
 import com.css.service.utils.WonderCoreCache
 
 /**
@@ -34,8 +35,7 @@ class BodyFatDataWrapper(var data: BodyFatData, var weight: Float, var ui: UserD
     )
     val weightProgress
         get() = run {
-            var ui = WonderCoreCache.getUserInfo()
-            var fi = WeightBondData.firstWeightInfo!!
+            val fi = WonderCoreCache.getData(CacheKey.FIRST_WEIGHT_INFO,WeightBondData::class.java)!!
             //橙色/整圆=（初始体重-当前体重）/（初始体重-目标体重）
             Math.max(Math.min((fi.weight - weight) / (fi.weight - WonderCoreCache.getUserInfo().targetWeightFloat), 1f), 0f) * 100
         }

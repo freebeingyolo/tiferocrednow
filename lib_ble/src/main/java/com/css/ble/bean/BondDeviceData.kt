@@ -1,20 +1,41 @@
 package com.css.ble.bean
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import com.blankj.utilcode.util.ActivityUtils
 import com.css.ble.R
+
 import com.css.service.data.BaseData
+import com.css.service.data.DeviceData
 import com.css.service.utils.CacheKey
 import com.css.service.utils.WonderCoreCache
-import java.lang.IllegalStateException
+import java.lang.IllegalArgumentException
 
 /**
  * @author yuedong
  * @date 2021-05-13
  */
-enum class DeviceType {
-    WEIGHT, WHEEL;
+enum class DeviceType(
+    val alias: String,
+    @StringRes val nameId: Int,
+    @DrawableRes val icon: Int,
+    val cacheKey: CacheKey
+) {
+    WEIGHT("体脂秤", R.string.device_weight, R.mipmap.icon_weight, CacheKey.BOND_WEIGHT_INFO),
+    WHEEL("健腹轮", R.string.device_wheel, R.mipmap.icon_abroller, CacheKey.BOND_WHEEL_INFO),
+    HORIZONTAL_BAR("单杠", R.string.device_horizontalbar, R.mipmap.icon_horizontalbar, CacheKey.BOND_HORIZONTALBAR_INFO),
+    PUSH_UP("俯卧撑", R.string.device_pushup, R.mipmap.icon_pushup, CacheKey.BOND_PUSHUP_INFO),
+    COUNTER("计数器", R.string.device_counter, R.mipmap.icon_counter, CacheKey.BOND_COUNTER_INFO),
+    ;
+
+    companion object {
+        fun findByAlias(alias: String): DeviceType {
+            for (d in values()) {
+                if (d.alias == alias) return d
+            }
+            throw IllegalArgumentException("$alias is not match DeviceType.values")
+        }
+    }
 }
 
 class BondDeviceData(
@@ -23,89 +44,44 @@ class BondDeviceData(
     var type: Int
 ) : BaseData() {
     var alias: String? = null
+    var id: Int = 0
+    var deviceCategory: String = ""
+    val cacheKey: DeviceType get() = DeviceType.values()[type]
+
+    constructor(d: DeviceData) : this() {
+        this.id = d.id
+        this.mac = d.bluetoothAddress
+        this.alias = d.deviceName
+        this.deviceCategory = d.deviceCategory
+        this.type = DeviceType.findByAlias(d.deviceCategory).ordinal
+    }
+
+    constructor() : this("", "", DeviceType.WEIGHT)
+    constructor(mac: String, manufacturerDataHex: String, type: DeviceType) : this(mac, manufacturerDataHex, type.ordinal) {
+        this.deviceCategory = type.alias
+    }
 
     companion object {
-        val bondWeightObsrv: LiveData<BondDeviceData> by lazy {
-            MutableLiveData(
-                if (!WonderCoreCache.containsKey(CacheKey.BOND_WEIGHT_INFO)) null
-                else WonderCoreCache.getData(CacheKey.BOND_WEIGHT_INFO, BondDeviceData::class.java)
-            )
-        }
-        val bondWheelObsrv: LiveData<BondDeviceData> by lazy {
-            MutableLiveData(
-                if (!WonderCoreCache.containsKey(CacheKey.BOND_WHEEL_INFO)) null
-                else WonderCoreCache.getData(CacheKey.BOND_WHEEL_INFO, BondDeviceData::class.java)
-            )
-        }
-        var bondWeight: BondDeviceData?
-            private set(value) {
-                (bondWeightObsrv as MutableLiveData).value = value
-                if (value == null) {
-                    WonderCoreCache.removeKey(CacheKey.BOND_WEIGHT_INFO)
-                } else {
-                    WonderCoreCache.saveData(CacheKey.BOND_WEIGHT_INFO, value)
-                }
-            }
-            get() = bondWeightObsrv.value
-        var bondWheel: BondDeviceData?
-            set(value) {
-                (bondWheelObsrv as MutableLiveData).value = value
-                if (value == null) {
-                    WonderCoreCache.removeKey(CacheKey.BOND_WHEEL_INFO)
-                } else
-                    WonderCoreCache.saveData(CacheKey.BOND_WHEEL_INFO, value)
-            }
-            get() = bondWheelObsrv.value
 
         fun displayName(type: DeviceType): String {
-            val data = when (type) {
-                DeviceType.WEIGHT -> bondWeight
-                else -> bondWheel
-            }
+            val data = getDevice(type)
             return if (data == null) {
-                when (type) {
-                    DeviceType.WEIGHT -> ActivityUtils.getTopActivity().getString(R.string.device_weight)
-                    else -> ActivityUtils.getTopActivity().getString(R.string.device_wheel)
-                }
+                ActivityUtils.getTopActivity().getString(type.nameId)
             } else {
                 return data.displayName
             }
         }
 
-        fun getDevice(key: CacheKey): BondDeviceData? = when (key) {
-            CacheKey.BOND_WEIGHT_INFO -> bondWeight
-            CacheKey.BOND_WHEEL_INFO -> bondWheel
-            else -> throw IllegalStateException("")
-        }
+        fun getDevice(key: DeviceType): BondDeviceData? = WonderCoreCache.getData(key.cacheKey, BondDeviceData::class.java)
 
-        fun setDevice(key: CacheKey, data: BondDeviceData?) {
-            when (key) {
-                CacheKey.BOND_WEIGHT_INFO -> bondWeight = data
-                CacheKey.BOND_WHEEL_INFO -> bondWheel = data
-                else -> throw IllegalStateException("")
-            }
-        }
+        fun setDevice(key: DeviceType, data: BondDeviceData?) = WonderCoreCache.saveData(key.cacheKey, data)
     }
 
     val displayName: String
         get() = if (alias.isNullOrEmpty()) {
-            when (type) {
-                DeviceType.WEIGHT.ordinal -> ActivityUtils.getTopActivity().getString(R.string.device_weight)
-                else -> ActivityUtils.getTopActivity().getString(R.string.device_wheel)
-            }
+            ActivityUtils.getTopActivity().getString(DeviceType.values()[type].nameId)
         } else alias!!
 
-    constructor() : this("", "", DeviceType.WEIGHT)
-    constructor(mac: String, manufacturerDataHex: String, type: DeviceType) : this(mac, manufacturerDataHex, type.ordinal)
-
-    val cacheKey: CacheKey = when (type) {
-        DeviceType.WEIGHT.ordinal -> {
-            CacheKey.BOND_WEIGHT_INFO
-        }
-        else -> {
-            CacheKey.BOND_WHEEL_INFO
-        }
-    }
 
     override fun toString(): String {
         return "BondDeviceData(mac='$mac', manufacturerDataHex='$manufacturerDataHex', type=$type, alias=$alias)"

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.css.base.view.RoundLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="62dp"
+    android:layout_marginEnd="62dp"
+    android:layout_marginBottom="11dp"
+    android:orientation="vertical"
+    app:rv_backgroundColor="@android:color/white"
+    app:rv_cornerRadius="5dp">
+
+
+    <TextView
+        android:id="@+id/tv_tip_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="34dp"
+        android:gravity="center"
+        android:paddingStart="17dp"
+        android:paddingEnd="17dp"
+        android:text="账号或密码错误，请重新输入"
+        android:textColor="@color/black"
+        android:textSize="13sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="13dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_left"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="忘记密码"
+            android:textColor="#FFF2682A"
+            android:textSize="13sp" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="11dp"
+            android:background="#e2e2e2" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_right"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="重新输入"
+            android:textColor="#FFF2682A"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+</com.css.base.view.RoundLinearLayout>

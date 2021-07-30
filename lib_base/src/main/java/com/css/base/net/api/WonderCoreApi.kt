@@ -1,11 +1,17 @@
+
 package com.css.base.net.api
 
 import com.css.base.net.CommonResponse
+<<<<<<< HEAD
 import com.css.service.data.FeedbackData
 import com.css.service.data.LoginUserData
 import com.css.service.data.MallData
 import com.css.service.data.UpGradeData
 import com.css.service.data.UserData
+=======
+import com.css.service.data.DeviceData
+import com.css.service.data.*
+>>>>>>> f93ad6c637678af60cf6ffbe41b893df27f98e59
 import okhttp3.RequestBody
 import retrofit2.http.*
 
@@ -89,10 +95,43 @@ internal interface WonderCoreApi {
 
         //查询体重数据
         @POST("appHistory/queryBodyWeight")
-        suspend fun queryBodyWeight(@Body requestBody: RequestBody): CommonResponse<Any>
+        suspend fun queryBodyWeight(@Body requestBody: RequestBody): CommonResponse<List<HistoryWeight>>
+
+        @POST("appHistory/queryInitialBodyWeight")
+        suspend fun queryInitialBodyWeight(@Body requestBody: RequestBody): CommonResponse<List<HistoryWeight>>
 
         //单杠/俯卧撑板查询
         @POST("appHistory/queryPushUps")
         suspend fun queryPushUps(@Body requestBody: RequestBody): CommonResponse<Any>
+    }
+
+    interface Device {
+
+        @GET("appDevice/queryBindDevice")
+        suspend fun queryBindDevice(@QueryMap map: Map<String,String>): CommonResponse<List<DeviceData>>
+
+        @POST("appDevice/bind")
+        suspend fun bindDevice(@Body requestBody: RequestBody): CommonResponse<DeviceData>
+
+        @POST("appDevice/unbindDevice")
+        suspend fun unbindDevice(@Body requestBody: RequestBody): CommonResponse<Any>
+
+        //修改设备名字
+        @POST("appDevice/updateDeviceName")
+        suspend fun updateDeviceName(@Body requestBody: RequestBody): CommonResponse<Any>
+
+        //上传单杠&健腹轮数据
+        @POST("appHistory/addPushUps")
+        suspend fun addPushUps(@Body requestBody: RequestBody): CommonResponse<PullUpData>
+
+        //查询单杠&健腹轮数据
+        @GET("appHistory/queryPushUps")
+        suspend fun queryPushUps(@QueryMap map: Map<String,Any>): CommonResponse<List<PullUpData>>
+
+    }
+    interface Course {
+        //获取视频资源
+        @POST("appVideo/queryVideo")
+        suspend fun queryVideo(@Body requestBody: RequestBody): CommonResponse<ArrayList<CourseDate>>
     }
 }

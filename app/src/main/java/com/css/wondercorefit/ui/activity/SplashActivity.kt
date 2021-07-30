@@ -3,23 +3,15 @@ package com.css.wondercorefit.ui.activity
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Build
-import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.blankj.utilcode.constant.PermissionConstants
 import com.blankj.utilcode.util.PermissionUtils
 import com.css.base.uibase.BaseActivity
-import com.css.service.data.LoginUserData
 import com.css.service.router.ARouterUtil
-import com.css.service.utils.CacheKey
 import com.css.service.utils.WonderCoreCache
 import com.css.wondercorefit.databinding.ActivitySplashBinding
 import com.css.wondercorefit.viewmodel.SplashViewModel
@@ -32,16 +24,15 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
         mViewModel.mDownSecondNormalEvent.observe(this, Observer {
-
-            if (WonderCoreCache.getLoginInfo() != null) {
-                var userinfo = WonderCoreCache.getUserInfo()
+            val loginUserData = WonderCoreCache.getLoginInfo()
+            if (loginUserData != null) {
+                val userinfo = WonderCoreCache.getUserInfo()
                 if (WonderCoreCache.getUserInfo().isFirstOpenApp) {
                     userinfo.isFirstOpenApp = false
                     WonderCoreCache.saveUserInfo(userinfo)
                     ARouterUtil.openRegister()
                 } else {
                     gotoActMain()
-
                 }
             } else {
                 ARouterUtil.openLogin()

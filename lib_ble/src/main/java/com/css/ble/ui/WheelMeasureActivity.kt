@@ -2,15 +2,15 @@ package com.css.ble.ui
 
 import android.content.Intent
 import android.os.Bundle
-import cn.wandersnail.ble.EasyBLE
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.ActivityBleEntryBinding
 import com.css.ble.ui.fragment.WheelMeasureBeginFragment
 import com.css.ble.utils.FragmentUtils
 import com.css.ble.viewmodel.WheelMeasureVM
 import com.css.service.router.ARouterConst
+import com.css.service.utils.CacheKey
+import com.css.service.utils.WonderCoreCache
 
 @Route(path = ARouterConst.PATH_APP_BLE_WHEELMEASURE)
 class WheelMeasureActivity : BaseDeviceActivity<WheelMeasureVM, ActivityBleEntryBinding>(DeviceType.WHEEL) {
@@ -27,7 +27,7 @@ class WheelMeasureActivity : BaseDeviceActivity<WheelMeasureVM, ActivityBleEntry
         super.initView(savedInstanceState)
         FragmentUtils.changeFragment(WheelMeasureBeginFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
             .apply { arguments = Bundle().apply { putBoolean("autoConnect", intent.getBooleanExtra("autoConnect", false)) } }
-        BondDeviceData.bondWheelObsrv.observe(this) { //解绑自动断开并结束
+        WonderCoreCache.getLiveData2(CacheKey.BOND_WHEEL_INFO).observe(this) { //解绑自动断开并结束
             if (it == null) {
                 mViewModel.disconnect()
                 finish()

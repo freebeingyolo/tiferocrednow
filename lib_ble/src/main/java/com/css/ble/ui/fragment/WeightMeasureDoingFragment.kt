@@ -23,6 +23,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import razerdp.basepopup.BasePopupWindow
 import com.css.ble.viewmodel.WeightMeasureVM.State
+import com.css.service.utils.CacheKey
+import com.css.service.utils.WonderCoreCache
 
 /**
  * @author yuedong
@@ -52,7 +54,8 @@ class WeightMeasureDoingFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
                     FragmentUtils.changeFragment(WeightMeasureBeginFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
                 }
                 State.done -> {
-                    if (WeightBondData.firstWeightInfo == null) {
+
+                    if (WonderCoreCache.getData(CacheKey.FIRST_WEIGHT_INFO, BondDeviceData::class.java) == null) {
                         //去掉WeightMeasureBeginFragment
                         FragmentUtils.changeFragment(WeightMeasureBeginFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
                     }
@@ -88,7 +91,7 @@ class WeightMeasureDoingFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
     override fun onVisible() {
         super.onVisible()
         startTime = System.currentTimeMillis()
-        if (BondDeviceData.bondWeight == null) {//如果已经解绑了，回到此界面在回退
+        if (BondDeviceData.getDevice(DeviceType.WEIGHT) == null) {//如果已经解绑了，回到此界面在回退
             CommonAlertDialog(requireContext()).apply {
                 type = CommonAlertDialog.DialogType.Image
                 imageResources = R.mipmap.icon_tick
