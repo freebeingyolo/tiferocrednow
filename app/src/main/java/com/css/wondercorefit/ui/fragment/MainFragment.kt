@@ -67,7 +67,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         super.initData()
         mViewBinding?.tvTargetWeightNum?.text = WonderCoreCache.getUserInfo().goalBodyWeight
 
-        WeightBondData.firstWeightInfoObsvr.let {
+        WonderCoreCache.getLiveData<WeightBondData>(CacheKey.FIRST_WEIGHT_INFO).let {
             it.observe(this) { it2 ->
                 if (it2 != null) {
                     mViewBinding?.tvInitialWeightNum?.text = it2.weightKgFmt
@@ -77,7 +77,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             }
         }
 
-        WeightBondData.lastWeightInfoObsvr.observe(this) { it2 ->
+        WonderCoreCache.getLiveData<WeightBondData>(CacheKey.LAST_WEIGHT_INFO).observe(this) { it2 ->
             if (it2 != null) {
                 mViewBinding?.tvCurrentWeight?.text = it2.weightKgFmt("%.1f")
                 mViewBinding?.llBmi?.visibility = View.VISIBLE

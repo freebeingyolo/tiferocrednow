@@ -87,14 +87,16 @@ class RegisterViewModel : BaseViewModel() {
             showCenterToast("密码格式错误")
         } else if (password != passwordAgain) {
             showCenterToast("两次密码输入不一致，请重新输入")
-        }else if (smsCode.isEmpty()) {
+        } else if (smsCode.isEmpty()) {
             showCenterToast("请输入验证码")
-        }else if (userName.isEmpty()) {
+        } else if (userName.isEmpty()) {
             showCenterToast("请输入用户名")
-        }else if (!isConfirm) {
+        } else if (userName.length > 10) {
+            showCenterToast("请输入正确的用户名")
+        } else if (!isConfirm) {
             showCenterToast("请同意用户服务协议")
-        }else {
-            register(phone, password,smsCode, userName)
+        } else {
+            register(phone, password, smsCode, userName)
         }
     }
 }

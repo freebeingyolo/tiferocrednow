@@ -103,7 +103,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         //训练
         exercise_start,
         exercise_pause,
-        exercise_finish,
+        //exercise_finish,
     }
 
     fun startScanBle() {
@@ -253,6 +253,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         when (device.connectionState) {
             ConnectionState.DISCONNECTED -> {
                 state = State.disconnected
+                cancelTimeOutTimer()
             }
             ConnectionState.CONNECTING -> {
                 state = State.connecting
@@ -332,6 +333,31 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         exercisePauseCount = exerciseLiveCount - exerciseCount.value!!
     }
 
+    fun finishExercise(
+        success: ((String?, Any?) -> Unit)? = null,
+        failed: ((Int, String?, Any?) -> Unit)? = null
+    ) {
+        netLaunch({
+            withContext(Dispatchers.IO) {
+                val time = (exerciseDuration.value!! / 1000).toInt()
+                val num = exerciseCountTxt.value!!.toInt()
+                val calory = (exerciseKcalTxt.value!!).toFloat()
+                val deviceType = DeviceType.WHEEL.alias
+                val ret = DeviceRepository.addAbroller(time, num, calory, deviceType)
+                ret
+            }
+        },
+            { msg, d ->
+                stopExercise()
+                success?.invoke(msg, d)
+            },
+            { code, msg, d ->
+                showToast(msg)
+                failed?.invoke(code, msg, d)
+            }
+        )
+    }
+
     fun stopExercise() {
         if (state > State.discovered) {
             (stateObsrv as MutableLiveData).value = State.discovered
@@ -341,6 +367,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         (exerciseCount as MutableLiveData).value = -1
         (exerciseDuration as MutableLiveData).value = -1
         exercisePauseCount = 0
+        cancelTimeOutTimer()
     }
 
 

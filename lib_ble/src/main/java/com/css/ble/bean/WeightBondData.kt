@@ -1,10 +1,10 @@
 package com.css.ble.bean
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import cn.net.aicare.algorithmutil.AlgorithmUtil
 import com.css.service.utils.CacheKey
+import com.css.service.data.HistoryWeight
 import com.css.service.utils.WonderCoreCache
+import java.util.*
 
 /**
  * @author yuedong
@@ -34,11 +34,11 @@ import com.css.service.utils.WonderCoreCache
  * @param tempNegative   0 ：正温度;1 ：负单位 ;-1代表不支持  positive temperature; 1: negative unit; -1 means not supported
  * @param temp           温度值,精度 0.1 ;-1代表不支持   Temperature value, accuracy 0.1; -1 means not supported
  */
-class WeightBondData {
+class WeightBondData() {
     var status: Int = 0
     var tempUnit: Int = 0
-    var weightUnit: Int = 0
-    var weightDecimal: Int = 0
+    var weightUnit: Int = 0 //0:kg 1:斤 6:lb 4:st:lb
+    var weightDecimal: Int = 0 //小数点
     var weightStatus: Int = 0
     var weightNegative: Int = 0
     var weight: Int = 0
@@ -48,39 +48,18 @@ class WeightBondData {
     var temp: Int = 0
     var timestamp: Long = 0
 
-    companion object {
-        //第一次测量体重信息
-        var firstWeightInfo: WeightBondData?
-            get() = firstWeightInfoObsvr.value
-            set(value) {
-                (firstWeightInfoObsvr as MutableLiveData).value = value
-                WonderCoreCache.saveData(CacheKey.FIRST_WEIGHT_INFO, value)
-            }
-
-        //上次测量体重信息，有backfield的需要才能有initializer
-        var lastWeightInfo: WeightBondData?
-            get() = lastWeightInfoObsvr.value
-            set(value) {
-                (lastWeightInfoObsvr as MutableLiveData).value = value
-                WonderCoreCache.saveData(CacheKey.LAST_WEIGHT_INFO, value)
-            }
-
-        //第一次测量体重信息监听
-        val firstWeightInfoObsvr: LiveData<WeightBondData> by lazy {
-            MutableLiveData<WeightBondData>().apply {
-                value = WonderCoreCache.takeIf { it.containsKey(CacheKey.FIRST_WEIGHT_INFO) }?.getData(
-                    CacheKey.FIRST_WEIGHT_INFO, WeightBondData::class.java
-                )
-            }
+    constructor(d: HistoryWeight) : this() {
+        this.adc = d.adc
+        var f = d.bodyWeight
+        var decimal = 0
+        while (f.compareTo(f.toInt()) != 0) {
+            decimal++
+            f *= 10
         }
-
-        //上次测量体重信息监听
-        val lastWeightInfoObsvr: LiveData<WeightBondData> by lazy {
-            MutableLiveData<WeightBondData>().apply {
-                value = WonderCoreCache.takeIf { it.containsKey(CacheKey.LAST_WEIGHT_INFO) }
-                    ?.getData(CacheKey.LAST_WEIGHT_INFO, WeightBondData::class.java)
-            }
-        }
+        this.weight = f.toInt()
+        this.weightDecimal = decimal
+        this.weightUnit = 0
+        this.timestamp = d.weighingDate
     }
 
     val bodyFatData: BodyFatDataWrapper
@@ -91,7 +70,14 @@ class WeightBondData {
             val weight_kg = weightKg * 1.0
             val height_cm = userInfo.height.toInt()
             val adc = adc
-            val ret = AlgorithmUtil.getBodyFatData(AlgorithmUtil.AlgorithmType.TYPE_AICARE, sex, age, weight_kg, height_cm, adc)
+            val ret = AlgorithmUtil.getBodyFatData(
+                AlgorithmUtil.AlgorithmType.TYPE_AICARE,
+                sex,
+                age,
+                weight_kg,
+                height_cm,
+                adc
+            )
             BodyFatDataWrapper(ret, weightKg, WonderCoreCache.getUserInfo())
         }
 
@@ -123,7 +109,6 @@ class WeightBondData {
         this.weightUnit = weightUnit
         this.weightDecimal = weightDecimal
         this.weightStatus = weightStatus
-        this.weightDecimal = weightDecimal
         this.weightNegative = weightNegative
         this.weight = weight
         this.adc = adc
@@ -141,7 +126,7 @@ class WeightBondData {
                 1 -> scale *= 0.5f
                 4, 6 -> scale *= 0.4536f
             }
-            for (i in 0 until  weightDecimal) {
+            for (i in 0 until weightDecimal) {
                 scale *= 0.1f
             }
             return weight * scale

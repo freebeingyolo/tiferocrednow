@@ -90,6 +90,6 @@ class WeightMeasureBeginFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
                 }
             }.show()
         }
-        mViewBinding!!.weightbonddata = WeightBondData.lastWeightInfoObsvr.value
+        mViewBinding!!.weightbonddata = WonderCoreCache.getData(CacheKey.LAST_WEIGHT_INFO,WeightBondData::class.java)
     }
 }

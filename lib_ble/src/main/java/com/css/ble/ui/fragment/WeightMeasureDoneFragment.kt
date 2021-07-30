@@ -41,13 +41,11 @@ class WeightMeasureDoneFragment : BaseWeightFragment<WeightMeasureVM, ActivityWe
 
     override fun initData() {
         super.initData()
-        uploadData(mViewModel.bondData.value!!.weightKg)
-    }
 
-    private fun uploadData(weight: Float) {//上传体重数据
         val mLoadingDialog: ProgressDialog = ProgressDialog.show(requireContext(), "", "正在处理数据")
         mViewModel.uploadWeightData(
-            weight,
+            mViewModel.bondData.value!!.weightKg,
+            mViewModel.bondData.value!!.adc,
             { _, _ ->
                 mLoadingDialog.dismiss()
                 FragmentUtils.changeFragment(WeightMeasureEndDeailFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
@@ -57,7 +55,6 @@ class WeightMeasureDoneFragment : BaseWeightFragment<WeightMeasureVM, ActivityWe
                 showToast(msg)
                 FragmentUtils.changeFragment(WeightMeasureEndDeailFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
             })
-
     }
 
     override fun initCommonToolBarBg(): ToolBarView.ToolBarBg {

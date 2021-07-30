@@ -71,6 +71,7 @@ class CommonAlertDialog {
         Edit,//从上往下显示: 标题、编辑框、两个操作按钮
         Image,//图片 文字
         Tip,//从上往下显示: 标题、编辑框、两个操作按钮
+        Center//从上往下显示: 内容、两个操作按钮
     }
 
     fun show() {
@@ -94,6 +95,9 @@ class CommonAlertDialog {
                 DialogType.Tip -> {
                     dialog = TipAlertDialog(context)
                 }
+                DialogType.Center -> {
+                    dialog = CenterCommonAlertDialog(context)
+                }
             }
         } else {
             when (type) {
@@ -111,6 +115,9 @@ class CommonAlertDialog {
                 }
                 DialogType.Tip -> {
                     dialog = TipAlertDialog(context)
+                }
+                DialogType.Center -> {
+                    dialog = CenterCommonAlertDialog(context)
                 }
             }
         }
@@ -290,6 +297,27 @@ class CommonAlertDialog {
                 }
 
                 tipAlertDialog.setListener(listener)
+            }
+            is CenterCommonAlertDialog -> {
+                val centerCommonAlertDialog = dialog as CenterCommonAlertDialog
+
+                if (contentResId != null) {
+                    centerCommonAlertDialog.setContent(contentResId)
+                } else if (!TextUtils.isEmpty(content)) {
+                    centerCommonAlertDialog.setContent(content)
+                }
+                if (leftBtnTextResId != null) {
+                    centerCommonAlertDialog.setLeftBtn(leftBtnTextResId)
+                } else if (!TextUtils.isEmpty(leftBtnText)) {
+                    centerCommonAlertDialog.setLeftBtn(leftBtnText)
+                }
+                if (rightBtnTextResId != null) {
+                    centerCommonAlertDialog.setRightBtn(rightBtnTextResId)
+                } else if (!TextUtils.isEmpty(rightBtnText)) {
+                    centerCommonAlertDialog.setRightBtn(rightBtnText)
+                }
+
+                centerCommonAlertDialog.setListener(listener)
             }
         }
         dialog!!.onDismissListener = onDismissListener

@@ -25,4 +25,13 @@ object CourseRepository {
         return otherApi.queryVideo(param)
     }
 
+
+    suspend fun queryVideo(scene:String,deviceCategoryName:String): CommonResponse<ArrayList<CourseDate>> {
+        val param = RequestBodyBuilder()
+            .addParams("applicationScenes", scene)
+            .addParams("deviceCategoryName", deviceCategoryName)
+            .build()
+        return otherApi.queryVideo(param)
+    }
+
 }

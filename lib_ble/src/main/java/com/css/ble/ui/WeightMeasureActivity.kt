@@ -9,6 +9,8 @@ import com.css.ble.ui.fragment.WeightMeasureEndDeailFragment
 import com.css.ble.utils.FragmentUtils
 import com.css.ble.viewmodel.WeightMeasureVM
 import com.css.service.router.ARouterConst
+import com.css.service.utils.CacheKey
+import com.css.service.utils.WonderCoreCache
 
 
 @Route(path = ARouterConst.PATH_APP_BLE_WEIGHTMEASURE)
@@ -20,10 +22,10 @@ class WeightMeasureActivity : BaseWeightActivity<WeightMeasureVM, ActivityBleEnt
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        if (WeightBondData.lastWeightInfo == null) {
+        if (WonderCoreCache.getData(CacheKey.LAST_WEIGHT_INFO,WeightBondData::class.java)== null) {
             FragmentUtils.changeFragment(WeightMeasureBeginFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
         } else {
-            mViewModel.bondData.value = WeightBondData.lastWeightInfo
+            mViewModel.bondData.value = WonderCoreCache.getData(CacheKey.LAST_WEIGHT_INFO,WeightBondData::class.java)
             FragmentUtils.changeFragment(WeightMeasureEndDeailFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
         }
     }

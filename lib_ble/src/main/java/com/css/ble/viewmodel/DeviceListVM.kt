@@ -74,16 +74,12 @@ class DeviceListVM : BaseViewModel() {
     data class DeviceInfo(
         val name: String,
         @DrawableRes val icon: Int,
-        val type: DeviceType
-    ) {
         val deviceType: DeviceType
-            get() = when (icon) {
-                R.mipmap.icon_weight -> DeviceType.WEIGHT
-                else -> DeviceType.WHEEL
-            }
+    ) {
 
         fun getBondDeviceData(): BondDeviceData? {
-            return BondDeviceData.getDevice(type)
+
+            return BondDeviceData.getDevice(deviceType)
         }
     }
 }

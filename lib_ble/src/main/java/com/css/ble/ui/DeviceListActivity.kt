@@ -133,10 +133,8 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
                 binding.container.setOnClickListener {
                     itemClickListener?.onItemClick(holder, position, mList!![position])
                 }
-                binding.masked.visibility =
-                    if (it[position].getBondDeviceData() == null) View.VISIBLE else View.GONE
-                binding.masked2.visibility =
-                    if (it[position].getBondDeviceData() != null) View.VISIBLE else View.GONE
+                binding.masked.visibility = if (it[position].getBondDeviceData() == null) View.VISIBLE else View.GONE
+                binding.masked2.visibility = if (it[position].getBondDeviceData() != null) View.VISIBLE else View.GONE
             }
         }
 

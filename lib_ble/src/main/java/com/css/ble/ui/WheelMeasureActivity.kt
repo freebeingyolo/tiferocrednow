@@ -2,9 +2,7 @@ package com.css.ble.ui
 
 import android.content.Intent
 import android.os.Bundle
-import cn.wandersnail.ble.EasyBLE
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.ActivityBleEntryBinding
 import com.css.ble.ui.fragment.WheelMeasureBeginFragment

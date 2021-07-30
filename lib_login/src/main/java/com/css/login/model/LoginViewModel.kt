@@ -9,7 +9,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class LoginViewModel : BaseViewModel() {
-    val loginData = MutableLiveData<LoginUserData>()
+//    val loginData = MutableLiveData<LoginUserData>()
+    val loginFailureData = MutableLiveData<String>()
 
     fun login(
         phone: String,
@@ -23,11 +24,12 @@ class LoginViewModel : BaseViewModel() {
                 }
             }, { msg, d ->
                 hideLoading()
-                loginData.value = d
+//                loginData.value = d
                 WonderCoreCache.saveLoginInfo(d)
             }, { _, msg, _ ->
                 hideLoading()
-                showToast(msg)
+                loginFailureData.value = msg
+//                showToast(msg)
             }
         )
     }

@@ -3,7 +3,6 @@ package com.css.ble.ui.fragment
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import androidx.lifecycle.lifecycleScope
 import com.css.base.dialog.CommonAlertDialog
@@ -66,8 +65,7 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
         mViewBinding?.apply {
             when (s) {
                 State.exercise_start,
-                State.exercise_pause,
-                State.exercise_finish -> {
+                State.exercise_pause, -> {
                     right.visibility = View.VISIBLE
                     when (s) {
                         State.exercise_start -> {
@@ -137,7 +135,7 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
             right.setOnClickListener {
                 when (mViewModel.stateObsrv.value) {
                     State.exercise_start, State.exercise_pause -> {
-                        mViewModel.stopExercise()
+                        mViewModel.finishExercise()
                     }
                 }
             }
