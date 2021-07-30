@@ -1,5 +1,8 @@
 package com.css.service.data
 
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.databinding.BindingAdapter
+
 data class DeviceData(
     val id: Int,
     val bluetoothAddress: String,
@@ -11,5 +14,16 @@ data class DeviceData(
     val moduleType: Any,
     val moduleVersion: Any,
     val productType: Any,
-    val status: Any
-)
+    val status: Any,
+    var isConnect: Boolean = false,
+    var deviceImg: Int
+) {
+    companion object {
+        @BindingAdapter("android:src")
+        @JvmStatic
+        fun setImageViewResource(imageView: AppCompatImageView, resource: Int) {
+//            Glide.with(imageView.context).load(resource).into(imageView)
+            imageView.setImageResource(resource);
+        }
+    }
+}

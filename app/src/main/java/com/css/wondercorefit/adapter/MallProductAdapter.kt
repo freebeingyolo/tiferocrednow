@@ -22,6 +22,6 @@ class MallProductAdapter(mData: List<MallData>) :
         binding.clItem.setOnClickListener {
             mItemClickListener?.invoke(item)
         }
-        binding.executePendingBindings();
+        binding.executePendingBindings()
     }
 }

@@ -76,6 +76,11 @@
                     android:layout_marginTop="6dp"
                     android:orientation="horizontal">
 
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/device_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
                     <RelativeLayout
                         android:id="@+id/device_weight"
                         android:layout_width="0dp"
@@ -85,7 +90,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/bg_main_device"
                         android:visibility="gone"
-                        tools:visibility="visible">
+                        tools:visibility="gone">
 
                         <TextView
                             android:id="@+id/weight_device_name"
@@ -128,7 +133,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/bg_main_device"
                         android:visibility="invisible"
-                        tools:visibility="visible">
+                        tools:visibility="gone">
 
                         <TextView
                             android:id="@+id/wheel_device_name"

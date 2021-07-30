@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.arouter.launcher.ARouter
 import com.css.base.dialog.ToastDialog
 import com.css.base.uibase.BaseFragment
@@ -15,6 +17,7 @@ import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.bean.WeightBondData
 import com.css.ble.viewmodel.WheelMeasureVM
+import com.css.service.data.DeviceData
 import com.css.service.data.StepData
 import com.css.service.data.UserData
 import com.css.service.router.ARouterConst
@@ -26,6 +29,7 @@ import com.css.step.TodayStepManager
 import com.css.step.service.SensorService
 import com.css.step.service.TodayStepService
 import com.css.wondercorefit.R
+import com.css.wondercorefit.adapter.MainDeviceAdapter
 import com.css.wondercorefit.databinding.FragmentMainBinding
 import com.css.wondercorefit.ui.activity.setting.PersonInformationActivity
 import com.css.wondercorefit.viewmodel.MainViewModel
@@ -46,12 +50,32 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     private lateinit var mUserData: UserData
     private var needNotify: Boolean = false
     private var pauseResume: Boolean = false
-
+    private lateinit var mMainDeviceAdapter: MainDeviceAdapter
+    var mData = ArrayList<DeviceData>()
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         SystemBarHelper.immersiveStatusBar(activity, 0f)
         SystemBarHelper.setHeightAndPadding(activity, mViewBinding?.topView)
-        showDevice()
+        mViewBinding?.deviceList?.layoutManager =
+            LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
+        mMainDeviceAdapter = MainDeviceAdapter(mData)
+        mViewBinding?.deviceList?.adapter = mMainDeviceAdapter
+        mMainDeviceAdapter.setOnItemClickListener {
+            when(it.deviceCategory){
+                "体脂秤"->{
+                    ARouter.getInstance()
+                        .build(ARouterConst.PATH_APP_BLE_WEIGHTMEASURE)
+                        .navigation()
+                }
+                "健腹轮"->{
+                    ARouter.getInstance()
+                        .build(ARouterConst.PATH_APP_BLE_WHEELMEASURE)
+                        .navigation()
+                }
+            }
+
+        }
+//        showDevice()
         startSensorService()
         startStep()
         initClickListenr()
@@ -66,6 +90,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     override fun initData() {
         super.initData()
         mViewBinding?.tvTargetWeightNum?.text = WonderCoreCache.getUserInfo().goalBodyWeight
+        mViewModel.loadDevice()
 
         WonderCoreCache.getLiveData<WeightBondData>(CacheKey.FIRST_WEIGHT_INFO).let {
             it.observe(this) { it2 ->
@@ -87,6 +112,29 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
                 mViewBinding?.llBmi?.visibility = View.GONE
             }
         }
+    }
+
+    override fun registorUIChangeLiveDataCallBack() {
+        super.registorUIChangeLiveDataCallBack()
+        mViewModel.deviceData.observe(viewLifecycleOwner, {
+            if (it.isNotEmpty()) {
+                mViewBinding?.llDevice?.visibility = View.VISIBLE
+                for (item in it) {
+                    if (item.deviceCategory == "体脂秤") {
+                        item.deviceImg = R.mipmap.card_weight
+                    }
+                    if (item.deviceCategory == "健腹轮") {
+                        item.deviceImg = R.mipmap.card_wheel
+                    }
+                    mData.add(item)
+                    Log.v("suisui","image = ${item.deviceImg}")
+                }
+
+                mMainDeviceAdapter.setItems(mData)
+            } else {
+                mViewBinding?.llDevice?.visibility = View.GONE
+            }
+        })
     }
 
     private fun showDevice() {
