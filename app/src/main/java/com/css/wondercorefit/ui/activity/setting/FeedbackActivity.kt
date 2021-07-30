@@ -7,11 +7,13 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.core.view.get
 import androidx.lifecycle.ViewModelProvider
 import com.blankj.utilcode.util.LogUtils
 import com.css.base.uibase.BaseActivity
@@ -20,6 +22,8 @@ import com.css.pickerview.builder.TimePickerBuilder
 import com.css.pickerview.view.TimePickerView
 import com.css.service.data.FeedbackData
 import com.css.wondercorefit.R
+import com.css.wondercorefit.adapter.FeedbackAdapter
+import com.css.wondercorefit.adapter.MallProductAdapter
 import com.css.wondercorefit.databinding.ActivityFeedbackBinding
 import com.css.wondercorefit.viewmodel.FeedbackViewModel
 import java.text.ParseException
@@ -39,8 +43,8 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
     private var selectPosition = 0;
 
     private var feedbackData = ArrayList<FeedbackData>()
-    private var feedbackDetails = ArrayList<FeedbackData>()
 
+    lateinit var mAdapter: FeedbackAdapter
 
     companion object {
         fun starActivity(context: Context) {
@@ -73,9 +77,25 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
 //        } catch (e: ParseException) {
 //            e.printStackTrace()
 //        }
+        mAdapter = FeedbackAdapter(this)
+        mViewBinding.eListviewFeedback.setAdapter(mAdapter)
+        mViewBinding.eListviewFeedback.setOnGroupClickListener { parent, v, groupPosition, id ->
+            selectPosition = groupPosition
+            if (parent.isGroupExpanded(groupPosition)) {
+                //收起删除缓存
+            } else {
+                //展开获取反馈详情数据
+//                var bean =  parent.adapter.getItem(groupPosition) as FeedbackData
+                var bean = feedbackData.get(groupPosition)
+                LogUtils.dTag("---", ":" + bean.id)
+                mViewModel.queryFeedBackHistoryDetail(bean.id)
+                setFeedbackDate(DateTimeHelper.parseStringToDate(bean.feedbackDate))
+            }
 
+            false
+        }
         //加载历史反馈数据
-        mViewModel.queryFeedBackHistory();
+        mViewModel.queryFeedBackHistory()
     }
 
     override fun initViewModel(): FeedbackViewModel =
@@ -117,16 +137,14 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
         mViewModel.historyData.observe(this, {
             //意见反馈历史数据
             feedbackData = it
-
-            //刷新UI
-
+            mAdapter.setGroupData(feedbackData)
+            mAdapter.notifyDataSetChanged()
         })
 
         mViewModel.historyDetails.observe(this, {
             //意见反馈历史数据详情
-            feedbackDetails = it
-            //刷新UI
-
+            mAdapter.setChildData(selectPosition, it)
+            mAdapter.notifyDataSetChanged()
         })
 
     }

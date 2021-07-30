@@ -71,7 +71,7 @@ internal interface WonderCoreApi {
         suspend fun queryFeedbackHistory(): CommonResponse<ArrayList<FeedbackData>>
         //查询反馈信息详情
         @GET("appFeedback/queryFeedbackDetails")
-        suspend fun queryFeedbackHistoryDetail(): CommonResponse<ArrayList<FeedbackData>>
+        suspend fun queryFeedbackHistoryDetail(@QueryMap map: Map<String, Int>): CommonResponse<ArrayList<FeedbackData>>
 
     }
 

@@ -38,8 +38,10 @@ object SettingRepository {
     }
 
     suspend fun queryFeedBackHistoryDetail(
-    ): CommonResponse<ArrayList<FeedbackData>> {
-        return settingApi.queryFeedbackHistoryDetail();
+        id: Int): CommonResponse<ArrayList<FeedbackData>> {
+        val map: MutableMap<String, Int> = HashMap()
+        map["id"] = id
+        return settingApi.queryFeedbackHistoryDetail(map);
     }
 
     suspend fun upGrade(

@@ -65,11 +65,11 @@ class FeedbackViewModel : BaseViewModel() {
         )
     }
 
-    fun queryFeedBackHistoryDetail() {
+    fun queryFeedBackHistoryDetail(id:Int) {
         netLaunch(
             {
                 showLoading()
-                SettingRepository.queryFeedBackHistoryDetail()
+                SettingRepository.queryFeedBackHistoryDetail(id)
             }, { _, d ->
                 hideLoading()
                 historyDetails.value = d

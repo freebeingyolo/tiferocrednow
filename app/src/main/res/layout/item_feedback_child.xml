@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:paddingTop="10dp"
     android:paddingBottom="5dp"
@@ -15,9 +16,9 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
-            android:text="2021/6/29  15:30"
             android:textColor="@color/black"
-            android:textSize="10sp" />
+            android:textSize="10sp"
+            tools:text="2021/6/29  15:30"/>
 
         <TextView
             android:id="@+id/tv_history_status"
@@ -26,9 +27,9 @@
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:layout_marginRight="16.5dp"
-            android:text="收到回复"
             android:textColor="@color/color_F8B698"
-            android:textSize="10sp" />
+            android:textSize="10sp"
+            tools:text="收到回复"/>
     </RelativeLayout>
     <TextView
         android:id="@+id/tv_history_content"
@@ -37,8 +38,8 @@
         android:layout_below="@id/rl_history_title"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:text="123股份大123股份大股东123股123股份大股东123股份大股东123股份大股东123股份大股东123股份大股东123股份大股东123股份大股东份大股东123股份大股东123股份大股东123股份大股东123股份大股东股东"
         android:textColor="@color/black"
-        android:textSize="10sp" />
+        android:textSize="10sp"
+        tools:text="123股份大123股份大股东123股123股份大股东123股份大股东123股份大股东123股份大股东123股份大股东123股份大股东123股份大股东份大股东123股份大股东123股份大股东123股份大股东123股份大股东股东"/>
 
 </RelativeLayout>

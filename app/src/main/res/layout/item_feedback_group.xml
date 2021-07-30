@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="30dp">
 
@@ -9,9 +10,9 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
-        android:text="2021/6/29  15:30"
         android:textColor="@color/black"
-        android:textSize="10sp" />
+        android:textSize="10sp"
+        tools:text="2021/6/29  15:30"/>
 
     <TextView
         android:id="@+id/tv_history_status"
@@ -20,11 +21,12 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@id/tv_history_date"
-        android:text="收到回复"
         android:textColor="@color/color_F8B698"
-        android:textSize="10sp" />
+        android:textSize="10sp"
+        tools:text="收到回复"/>
 
     <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/tv_history_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"

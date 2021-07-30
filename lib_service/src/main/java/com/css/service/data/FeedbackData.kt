@@ -29,7 +29,7 @@ data class FeedbackData(
     //问题出现的时间yyyy-MM-dd HH:mm:ss，（提交时候不需要）
     var feedbackDate: String = "",
 //    //后台id
-//    var id: Int=-1,
+    var id: Int=-1,
 //    //后台字段
 //    var isDel: String="",
     //回复状态：已反馈/收到回复（提交时候不需要）

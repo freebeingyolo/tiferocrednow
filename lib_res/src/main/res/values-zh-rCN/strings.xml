@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
@@ -16,7 +17,7 @@
     <string name="mall_product" >运动好产品</string>
     <string name="person_information" >个人信息</string>
     <string name="about_us" >关于我们</string>
-    <string name="feedback" >意见和反馈</string>
+
     <string name="sex" >性别</string>
     <string name="age" >年龄</string>
     <string name="stature" >身高</string>
@@ -67,4 +68,16 @@
     <string name="device_connected">已连接</string>
     <string name="device_disconnected">未连接</string>
     <string name="device_connecting">连接中</string>
+
+    <string name="feedback">意见和反馈</string>
+    <string name="feedback_errorTime">问题出现时间</string>
+    <string name="feedback_selectedData">请选择日期</string>
+    <string name="feedback_selectedTime">请选择时间</string>
+    <string name="feedback_phone">联系人手机号</string>
+    <string name="feedback_selectedPhone">请输入手机号</string>
+    <string name="feedback_content">反馈内容</string>
+    <string name="feedback_selectedContent">请输入反馈内容</string>
+    <string name="feedback_submit">提交</string>
+    <string name="feedback_history">反馈记录</string>
+
 </resources>
