@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.blankj.utilcode.util.CleanUtils
 import com.blankj.utilcode.util.FileUtils
+import com.blankj.utilcode.util.NetworkUtils
 import com.blankj.utilcode.util.Utils
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
@@ -65,7 +66,13 @@ class SettingFragment : BaseFragment<DefaultViewModel, FragmentSettingBinding>()
                 activity?.let { AboutUsActivity.starActivity(it) }
             }
             R.id.rl_feedback -> {
-                activity?.let { FeedbackActivity.starActivity(it) }
+                activity?.let {
+                    if (NetworkUtils.isConnected()) {
+                        FeedbackActivity.starActivity(it)
+                    }else{
+                        showCenterToast("网络异常")
+                    }
+                }
             }
             R.id.exit_login -> {
                 activity?.let {
@@ -108,12 +115,12 @@ class SettingFragment : BaseFragment<DefaultViewModel, FragmentSettingBinding>()
                     userInfo = WonderCoreCache.getUserInfo()
                     userInfo.pushSet = "开"
                     WonderCoreCache.saveData(CacheKey.USER_INFO, userInfo)
-                    Toast.makeText(activity," 通知栏状态是   ： 存为开 ",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity, " 通知栏状态是   ： 存为开 ", Toast.LENGTH_SHORT).show()
                 } else {
                     userInfo = WonderCoreCache.getUserInfo()
                     userInfo.pushSet = "关"
                     WonderCoreCache.saveData(CacheKey.USER_INFO, userInfo)
-                    Toast.makeText(activity," 通知栏状态   ：   存为关 ",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity, " 通知栏状态   ：   存为关 ", Toast.LENGTH_SHORT).show()
                 }
 
                 if (Build.VERSION.SDK_INT >= 26) {

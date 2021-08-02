@@ -13,7 +13,7 @@ import com.css.wondercorefit.databinding.ItemFeedbackGroupBinding
 
 /**
  * Created by YH
- * Describe ${描述}
+ * Describe 意见和反馈适配器
  * on 2021/7/16.
  */
 class FeedbackAdapter(mContext: Context) : BaseExpandableListAdapter() {
@@ -68,20 +68,25 @@ class FeedbackAdapter(mContext: Context) : BaseExpandableListAdapter() {
         convertView: View?,
         parent: ViewGroup?
     ): View? {
-        val binding = ItemFeedbackGroupBinding.inflate(LayoutInflater.from(parent!!.context),parent,false)
+        val binding =
+            ItemFeedbackGroupBinding.inflate(LayoutInflater.from(parent!!.context), parent, false)
         //数据
         val bean = mGroupData[groupPosition]
         binding.tvHistoryDate.text = bean.feedbackDate
         binding.tvHistoryStatus.text = bean.feedbackStatus
         //如果是展开状态，
         if (isExpanded) {
-            binding.tvHistoryIcon.setImageDrawable(ContextCompat.getDrawable(
+            binding.tvHistoryIcon.setImageDrawable(
+                ContextCompat.getDrawable(
                     parent!!.context, R.mipmap.icon_more
-                ))
+                )
+            )
         } else {
-            binding.tvHistoryIcon.setImageDrawable(ContextCompat.getDrawable(
-                parent!!.context, R.mipmap.icon_next
-            ))
+            binding.tvHistoryIcon.setImageDrawable(
+                ContextCompat.getDrawable(
+                    parent!!.context, R.mipmap.icon_next
+                )
+            )
         }
         return binding.root
     }
@@ -93,7 +98,8 @@ class FeedbackAdapter(mContext: Context) : BaseExpandableListAdapter() {
         convertView: View?,
         parent: ViewGroup?
     ): View? {
-        val binding = ItemFeedbackChildBinding.inflate(LayoutInflater.from(parent!!.context),parent,false)
+        val binding =
+            ItemFeedbackChildBinding.inflate(LayoutInflater.from(parent!!.context), parent, false)
 //        //数据
         if (mChildData.get(groupPosition)?.size!! > 0) {
             val bean = mChildData.get(groupPosition)?.get(childPosition) as FeedbackData

@@ -27,7 +27,7 @@ class FeedbackViewModel : BaseViewModel() {
             //可以提交
             //检查电话是否合规
             if (phone.length != 11) {
-                showCenterToast("请输入正确的手机号码")
+                showCenterToast("手机格式有误")
             } else {
                 netLaunch(
                     {
