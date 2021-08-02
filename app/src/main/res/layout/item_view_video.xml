@@ -1,42 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <data>
+
         <variable
             name="courseData"
             type="com.css.service.data.CourseDate" />
+
+        <import type="com.css.res.R" />
     </data>
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/cl_course"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="5dp"
-    android:layout_marginEnd="5dp"
-    android:orientation="vertical">
 
-    <com.css.wondercorefit.widget.GeneralRoundImageView
-        android:id="@+id/video_poster"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:scaleType="centerCrop"
-        app:corner_radius="4dp"
-        android:src="@{courseData.videoPreview}"
-        app:layout_constraintDimensionRatio="158:104"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/video_index"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_course"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:paddingTop="4dp"
-        android:paddingBottom="6dp"
-        android:text="@{courseData.materialName}"
-        android:textColor="@color/black"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="@+id/video_poster"
-        app:layout_constraintTop_toBottomOf="@+id/video_poster" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:orientation="vertical">
+
+        <com.css.wondercorefit.widget.GeneralRoundImageView
+            android:id="@+id/video_poster"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:error="@{R.mipmap.load_failed}"
+            android:scaleType="centerCrop"
+            android:src="@{courseData.videoPreview}"
+            app:corner_radius="4dp"
+            app:layout_constraintDimensionRatio="158:104"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/video_index"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="4dp"
+            android:paddingBottom="6dp"
+            android:text="@{courseData.materialName}"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@+id/video_poster"
+            app:layout_constraintTop_toBottomOf="@+id/video_poster" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

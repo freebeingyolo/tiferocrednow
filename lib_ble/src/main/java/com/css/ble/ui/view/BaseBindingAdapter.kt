@@ -1,13 +1,12 @@
 package com.css.ble.ui.view
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
-
 import androidx.databinding.ViewDataBinding
+
 import androidx.recyclerview.widget.RecyclerView
 
 
@@ -17,10 +16,10 @@ import androidx.recyclerview.widget.RecyclerView
  * @author yuedong
  * @date 2021-05-13
  */
-abstract class BaseBindingAdapter<M, B : ViewDataBinding> : RecyclerView.Adapter<BaseBindingAdapter.BaseViewHolder> {
+abstract class BaseBindingAdapter<M, B : ViewDataBinding>() : RecyclerView.Adapter<BaseBindingAdapter.BaseViewHolder>() {
     private var items: List<M>? = null
 
-    constructor(items: List<M>?) : super() {
+    constructor(items: List<M>?) : this() {
         this.items = items
     }
 
@@ -34,12 +33,12 @@ abstract class BaseBindingAdapter<M, B : ViewDataBinding> : RecyclerView.Adapter
         return items?.size ?: 0
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseBindingAdapter.BaseViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         val binding: B = DataBindingUtil.inflate(LayoutInflater.from(parent.context), getLayoutResId(viewType), parent, false)
         return BaseViewHolder(binding.root)
     }
 
-    override fun onBindViewHolder(holder: BaseBindingAdapter.BaseViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
         val binding: B = DataBindingUtil.getBinding(holder.itemView)!!
         onBindItem(binding, items!![position], position)
     }
@@ -48,7 +47,5 @@ abstract class BaseBindingAdapter<M, B : ViewDataBinding> : RecyclerView.Adapter
     protected abstract fun getLayoutResId(viewType: Int): Int
     protected abstract fun onBindItem(binding: B, item: M, position: Int)
 
-    class BaseViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-
-    }
+    class BaseViewHolder(root: View) : RecyclerView.ViewHolder(root)
 }

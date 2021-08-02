@@ -19,14 +19,17 @@ import cn.wandersnail.commons.poster.ThreadMode
 import cn.wandersnail.commons.util.StringUtils
 import cn.wandersnail.commons.util.ToastUtils
 import com.blankj.utilcode.util.ActivityUtils
+import com.css.base.net.api.repository.CourseRepository
 import com.css.base.net.api.repository.DeviceRepository
 import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.utils.DataUtils
+import com.css.service.data.CourseDate
 import kotlinx.coroutines.*
 import java.text.DecimalFormat
 import java.util.*
+
 
 /**
  * @author yuedong
@@ -62,7 +65,54 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
             String.format("%d%%", (it * 100).toInt())
     }
     val exerciseCountTxt = Transformations.map(exerciseCount) { if (it == -1) "--" else it.toString() }
-    val exerciseKcalTxt = Transformations.map(exerciseCount) { if (it == -1) "--" else DecimalFormat("##.#####").format(it * 0.00175f) }
+    val exerciseKcalTxt = Transformations.map(exerciseCount) {
+        if (it == -1) "--"
+        else DecimalFormat("##.#####").format(it * 0.00175f)
+    }
+    //玩法推荐
+    private val _recommentationData by lazy { MutableLiveData<List<CourseDate>>() }
+    val recommentationData : LiveData<List<CourseDate>> get() = _recommentationData
+    //绑定
+    private val bondTimeout = 6 * 1000L
+    private val fondMethod = FoundByUuid
+    private var avaliableDevice: Device? = null
+    private var workMode = WorkMode.BOND
+
+    enum class WorkMode { BOND, MEASURE }
+    enum class State {
+        disconnected,
+        scanStart,
+        timeOut,
+        connecting,
+        reconnecting,
+        connected,
+        discovering,
+        found,
+        discovered,
+
+        //训练
+        exercise_start,
+        exercise_pause,
+        //exercise_finish,
+    }
+
+    fun fetchRecommentation(){
+        netLaunch(
+            {
+                withContext(Dispatchers.IO) {
+                    val ret = CourseRepository.queryVideo("玩法推荐","健腹轮")
+                    ret
+                }
+            },
+            { msg, d ->
+                _recommentationData.value = d
+            },
+            { code, msg, d ->
+
+            }
+        )
+    }
+
 
     private fun formatTime(ms: Long): String {
         val ss = 1000
@@ -80,32 +130,6 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         sb.append(String.format(":%02d", second))
         return sb.toString()
     }
-
-    //绑定
-    private val bondTimeout = 6 * 1000L
-    private val fondMethod = FoundByUuid
-    private var avaliableDevice: Device? = null
-    private var workMode = WorkMode.BOND
-
-    enum class WorkMode { BOND, MEASURE }
-    enum class State {
-
-        disconnected,
-        scanStart,
-        timeOut,
-        connecting,
-        reconnecting,
-        connected,
-        discovering,
-        found,
-        discovered,
-
-        //训练
-        exercise_start,
-        exercise_pause,
-        //exercise_finish,
-    }
-
     fun startScanBle() {
         if (EasyBLE.getInstance().isScanning) return
         EasyBLE.getInstance().scanConfiguration.isOnlyAcceptBleDevice = true
@@ -516,6 +540,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
     }
 
     private lateinit var connection: Connection
+
 
     object EasterEggs {
         //volatile适用于改的所有操作或者写的所有操作在同一线程

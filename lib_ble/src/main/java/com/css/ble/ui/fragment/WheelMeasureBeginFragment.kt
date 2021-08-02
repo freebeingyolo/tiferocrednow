@@ -1,11 +1,17 @@
 package com.css.ble.ui.fragment
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.blankj.utilcode.util.ToastUtils
 import com.css.base.dialog.CommonAlertDialog
+import com.css.base.dialog.ToastDialog
 import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.inner.OnToolBarClickListener
 import com.css.base.view.ToolBarView
@@ -13,10 +19,13 @@ import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.ActivityAbrollerBinding
+import com.css.ble.databinding.LayoutPlayRecommendItemBinding
 import com.css.ble.ui.DeviceInfoActivity
+import com.css.ble.ui.view.BaseBindingAdapter
 import com.css.ble.viewmodel.BleEnvVM
 import com.css.ble.viewmodel.WheelMeasureVM
 import com.css.ble.viewmodel.WheelMeasureVM.State
+import com.css.service.data.CourseDate
 import com.css.service.utils.CacheKey
 import com.css.service.utils.ImageUtils
 import kotlinx.coroutines.delay
@@ -34,7 +43,8 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
 
     override fun initData() {
         super.initData()
-//        arguments?.takeIf { it.getBoolean("autoConnect") }?.let { mViewBinding!!.left.performClick() }
+        mViewModel.fetchRecommentation()
+        //arguments?.takeIf { it.getBoolean("autoConnect") }?.let { mViewBinding!!.left.performClick() }
         mViewModel.state = mViewModel.state
         mViewBinding!!.model = mViewModel
         mViewBinding!!.lifecycleOwner = viewLifecycleOwner
@@ -59,13 +69,18 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
                 }
             }
         }
+        mViewModel.recommentationData.observe(viewLifecycleOwner) {
+            recommendationAdapter.setItems(it)
+            recommendationAdapter.notifyDataSetChanged()
+        }
     }
 
     private fun refreshBottom(s: State) {
         mViewBinding?.apply {
             when (s) {
                 State.exercise_start,
-                State.exercise_pause, -> {
+                State.exercise_pause,
+                -> {
                     right.visibility = View.VISIBLE
                     when (s) {
                         State.exercise_start -> {
@@ -99,8 +114,7 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        val view =
-            LayoutInflater.from(context).inflate(R.layout.layout_weight_measure_header, null, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.layout_weight_measure_header, null, false)
         setRightImage(ImageUtils.getBitmap(view))
         getCommonToolBarView()?.setToolBarClickListener(object : OnToolBarClickListener {
             override fun onClickToolBarView(view: View, event: ToolBarView.ViewType) {
@@ -139,6 +153,32 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
                     }
                 }
             }
+        }
+        mViewBinding?.rvPlayRecommend!!.let {
+            it.adapter = recommendationAdapter
+            it.layoutManager = LinearLayoutManager(requireContext())
+        }
+    }
+
+    val recommendationAdapter = object : BaseBindingAdapter<CourseDate, LayoutPlayRecommendItemBinding>() {
+
+        override fun getLayoutResId(viewType: Int): Int {
+            return R.layout.layout_play_recommend_item
+        }
+
+        override fun onBindItem(binding: LayoutPlayRecommendItemBinding, item: CourseDate, position: Int) {
+            binding.courseData = item
+            binding.rtvPlay.setOnClickListener {
+                //val url = "https://www.baidu.com"
+                val url = item.videoLink
+                try {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    startActivity(intent)
+                } catch (e: ActivityNotFoundException) {
+                    ToastUtils.showShort("链接无效:${url}")
+                }
+            }
+            binding.executePendingBindings()
         }
     }
 

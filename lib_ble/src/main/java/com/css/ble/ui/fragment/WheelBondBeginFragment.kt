@@ -1,20 +1,21 @@
 package com.css.ble.ui.fragment
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
-import cn.wandersnail.ble.EasyBLE
-import com.blankj.utilcode.util.ToastUtils
+import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
+import com.css.ble.databinding.LayoutPlayRecommendItemBinding
 import com.css.ble.databinding.LayoutWheelBondBeginBinding
+import com.css.ble.ui.view.BaseBindingAdapter
 import com.css.ble.utils.FragmentUtils
 import com.css.ble.viewmodel.BleEnvVM
 import com.css.ble.viewmodel.ErrorType
 import com.css.ble.viewmodel.WheelMeasureVM
+import com.css.ble.viewmodel.WheelMeasureVM.State
+import com.css.service.data.CourseDate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import com.css.ble.viewmodel.WheelMeasureVM.State;
 
 /**
  * @author yuedong
@@ -70,5 +71,4 @@ class WheelBondBeginFragment : BaseDeviceFragment<WheelMeasureVM, LayoutWheelBon
             }
         }
     }
-
 }

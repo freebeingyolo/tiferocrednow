@@ -2,16 +2,14 @@ package com.css.wondercorefit.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.css.base.net.api.repository.CourseRepository
-import com.css.base.net.api.repository.MallRepository
 import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.service.data.CourseDate
-import com.css.service.data.MallData
 import com.css.wondercorefit.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class CourseViewModel : BaseViewModel() {
-    val courseData = MutableLiveData<ArrayList<CourseDate>>()
+    val courseData = MutableLiveData<List<CourseDate>>()
     fun getCourseInfo() {
         netLaunch(
             {

@@ -12,7 +12,7 @@ object CourseRepository {
         NetManager.create(WonderCoreApi.Course::class.java)
     }
 
-    suspend fun queryVideo(): CommonResponse<ArrayList<CourseDate>> {
+    suspend fun queryVideo(): CommonResponse<List<CourseDate>> {
 //        val map: MutableMap<String, Any> = HashMap()
 //        map["applicationScenes"] = "教程"
 //        map["deviceCategoryName"] = "单杠"
@@ -25,8 +25,8 @@ object CourseRepository {
         return otherApi.queryVideo(param)
     }
 
-
-    suspend fun queryVideo(scene:String,deviceCategoryName:String): CommonResponse<ArrayList<CourseDate>> {
+    //健腹轮中的玩法推荐：scene:玩法推荐,deviceCategoryName:健腹轮
+    suspend fun queryVideo(scene:String,deviceCategoryName:String): CommonResponse<List<CourseDate>> {
         val param = RequestBodyBuilder()
             .addParams("applicationScenes", scene)
             .addParams("deviceCategoryName", deviceCategoryName)
