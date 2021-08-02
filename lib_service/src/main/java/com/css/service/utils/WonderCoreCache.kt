@@ -37,7 +37,7 @@ class WonderCoreCache { //一切围绕CacheKey
 
         //如果d为null，将会移除这个key
         fun <T> saveData(k1: CacheKey, d: T?) {
-            LogUtils.d("k1:$k1-->d:$d")
+            //LogUtils.d("k1:$k1-->d:$d")
             if (d == null) {
                 removeKey(k1, true)
             } else {
