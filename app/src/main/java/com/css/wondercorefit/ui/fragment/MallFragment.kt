@@ -9,11 +9,12 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.css.base.uibase.BaseFragment
+import com.css.base.utils.NetworkChangeUtil
+import com.css.base.utils.NetworkUtil
 import com.css.service.data.MallData
 import com.css.service.utils.SystemBarHelper
 import com.css.wondercorefit.R
 import com.css.wondercorefit.adapter.MallProductAdapter
-import com.css.wondercorefit.bean.ProductBean
 import com.css.wondercorefit.databinding.FragmentMallBinding
 import com.css.wondercorefit.viewmodel.MallViewModel
 
@@ -32,6 +33,16 @@ class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(), View.On
         mAdapter.setOnItemClickListener {
             openUrl(it.mallLink)
         }
+
+        NetworkChangeUtil.getInstance(activity)
+            .setNetchangeListener {
+                if (!it) {
+                    mViewBinding?.tvNetError?.visibility = View.VISIBLE
+                } else {
+                    mViewBinding?.tvNetError?.visibility = View.GONE
+                }
+            }
+        NetworkChangeUtil.getInstance(activity).registerNetChangeReceiver()
     }
 
     override fun initData() {
