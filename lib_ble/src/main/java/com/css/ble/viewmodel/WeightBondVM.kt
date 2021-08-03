@@ -6,6 +6,7 @@ import com.css.base.net.api.repository.DeviceRepository
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.bean.WeightBondData
+import com.css.ble.viewmodel.base.BaseWeightVM
 import com.pingwang.bluetoothlib.BroadcastDataParsing
 import com.pingwang.bluetoothlib.bean.BleValueBean
 import com.tencent.bugly.crashreport.CrashReport
@@ -98,9 +99,13 @@ open class WeightBondVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPa
         }
     }
 
-    override fun onScanTimeOut() {
+    override fun onTimerTimeout() {
         Log.d(TAG, "onScanTimeOut")
         state.value = State.timeOut
+    }
+
+    override fun onTimerCancel() {
+
     }
 
     override fun onScanStart() {
@@ -110,8 +115,6 @@ open class WeightBondVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPa
     override fun onScanStop() {
         filterDevice = null
     }
-
-    override fun onScanTimerOutCancel() {}
 
 
     fun bindDevice(

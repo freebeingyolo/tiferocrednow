@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.css.base.uibase.BaseFragment
 
-import com.css.service.data.CourseDate
+import com.css.service.data.CourseData
 import com.css.service.utils.SystemBarHelper
 import com.css.wondercorefit.adapter.CourseRecycleAdapter
 import com.css.wondercorefit.databinding.FragmentCourseBinding
@@ -18,7 +18,7 @@ import com.css.wondercorefit.viewmodel.CourseViewModel
 class CourseFragment : BaseFragment<CourseViewModel, FragmentCourseBinding>() {
     private val TAG = "CourseFragment"
     private var toast: Toast? = null
-    var mData = ArrayList<CourseDate>()
+    var mData = ArrayList<CourseData>()
     lateinit var mAdapter: CourseRecycleAdapter
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)

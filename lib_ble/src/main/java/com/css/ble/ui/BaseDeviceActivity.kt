@@ -15,7 +15,7 @@ import androidx.viewbinding.ViewBinding
 import com.css.base.uibase.BaseActivity
 import com.css.ble.bean.DeviceType
 import com.css.ble.utils.BleUtils
-import com.css.ble.viewmodel.BaseDeviceVM
+import com.css.ble.viewmodel.base.BaseDeviceVM
 import com.css.ble.viewmodel.BleEnvVM
 
 /**

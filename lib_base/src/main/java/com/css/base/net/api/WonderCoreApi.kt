@@ -122,6 +122,6 @@ internal interface WonderCoreApi {
     interface Course {
         //获取视频资源
         @POST("appVideo/queryVideo")
-        suspend fun queryVideo(@Body requestBody: RequestBody): CommonResponse<List<CourseDate>>
+        suspend fun queryVideo(@Body requestBody: RequestBody): CommonResponse<List<CourseData>>
     }
 }

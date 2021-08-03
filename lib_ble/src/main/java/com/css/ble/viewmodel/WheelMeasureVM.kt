@@ -25,7 +25,8 @@ import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.utils.DataUtils
-import com.css.service.data.CourseDate
+import com.css.ble.viewmodel.base.BaseWheelVM
+import com.css.service.data.CourseData
 import kotlinx.coroutines.*
 import java.text.DecimalFormat
 import java.util.*
@@ -34,7 +35,7 @@ import java.util.*
 /**
  * @author yuedong
  * @date 2021-05-1
- * @description 因为WheelMeasureVM需要
+ * @description 因为WheelMeasureVM需要绑定之后就能测量，绑定测量共用同一个单例
  */
 object WheelMeasureVM : BaseWheelVM(), EventObserver {
     //测量
@@ -70,8 +71,8 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         else DecimalFormat("##.#####").format(it * 0.00175f)
     }
     //玩法推荐
-    private val _recommentationData by lazy { MutableLiveData<List<CourseDate>>() }
-    val recommentationData : LiveData<List<CourseDate>> get() = _recommentationData
+    private val _recommentationData by lazy { MutableLiveData<List<CourseData>>() }
+    val recommentationData : LiveData<List<CourseData>> get() = _recommentationData
     //绑定
     private val bondTimeout = 6 * 1000L
     private val fondMethod = FoundByUuid
@@ -247,7 +248,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         }
     }
 
-    override fun onScanTimeOut() {
+    override fun onTimerTimeout() {
         LogUtils.d("onScanTimeOut")
         state = State.timeOut
         EasyBLE.getInstance().disconnectAllConnections()
@@ -255,7 +256,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
 
     val stateStr get() = if (state.ordinal < State.discovered.ordinal) "未连接" else "已连接"
 
-    override fun onScanTimerOutCancel() {
+    override fun onTimerCancel() {
     }
 
     var state: State
@@ -292,6 +293,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
                 state = State.discovering
             }
             ConnectionState.SERVICE_DISCOVERED -> {
+                state = State.discovered
                 val services: List<BluetoothGattService> = EasyBLE.getInstance().getConnection(device)!!.gatt!!.services
                 for (service in services) {
                     if (service.uuid == UUID.fromString(UUID_SRVC)) {

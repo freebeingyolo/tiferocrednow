@@ -11,7 +11,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ToastUtils
 import com.css.base.dialog.CommonAlertDialog
-import com.css.base.dialog.ToastDialog
 import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.inner.OnToolBarClickListener
 import com.css.base.view.ToolBarView
@@ -25,8 +24,7 @@ import com.css.ble.ui.view.BaseBindingAdapter
 import com.css.ble.viewmodel.BleEnvVM
 import com.css.ble.viewmodel.WheelMeasureVM
 import com.css.ble.viewmodel.WheelMeasureVM.State
-import com.css.service.data.CourseDate
-import com.css.service.utils.CacheKey
+import com.css.service.data.CourseData
 import com.css.service.utils.ImageUtils
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -160,13 +158,13 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
         }
     }
 
-    val recommendationAdapter = object : BaseBindingAdapter<CourseDate, LayoutPlayRecommendItemBinding>() {
+    val recommendationAdapter = object : BaseBindingAdapter<CourseData, LayoutPlayRecommendItemBinding>() {
 
         override fun getLayoutResId(viewType: Int): Int {
             return R.layout.layout_play_recommend_item
         }
 
-        override fun onBindItem(binding: LayoutPlayRecommendItemBinding, item: CourseDate, position: Int) {
+        override fun onBindItem(binding: LayoutPlayRecommendItemBinding, item: CourseData, position: Int) {
             binding.courseData = item
             binding.rtvPlay.setOnClickListener {
                 //val url = "https://www.baidu.com"

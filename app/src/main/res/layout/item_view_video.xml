@@ -6,7 +6,7 @@
 
         <variable
             name="courseData"
-            type="com.css.service.data.CourseDate" />
+            type="com.css.service.data.CourseData" />
 
         <import type="com.css.res.R" />
     </data>

@@ -4,7 +4,7 @@ import com.css.base.net.CommonResponse
 import com.css.base.net.NetManager
 import com.css.base.net.RequestBodyBuilder
 import com.css.base.net.api.WonderCoreApi
-import com.css.service.data.CourseDate
+import com.css.service.data.CourseData
 
 object CourseRepository {
 
@@ -12,7 +12,7 @@ object CourseRepository {
         NetManager.create(WonderCoreApi.Course::class.java)
     }
 
-    suspend fun queryVideo(): CommonResponse<List<CourseDate>> {
+    suspend fun queryVideo(): CommonResponse<List<CourseData>> {
 //        val map: MutableMap<String, Any> = HashMap()
 //        map["applicationScenes"] = "教程"
 //        map["deviceCategoryName"] = "单杠"
@@ -26,7 +26,7 @@ object CourseRepository {
     }
 
     //健腹轮中的玩法推荐：scene:玩法推荐,deviceCategoryName:健腹轮
-    suspend fun queryVideo(scene:String,deviceCategoryName:String): CommonResponse<List<CourseDate>> {
+    suspend fun queryVideo(scene:String,deviceCategoryName:String): CommonResponse<List<CourseData>> {
         val param = RequestBodyBuilder()
             .addParams("applicationScenes", scene)
             .addParams("deviceCategoryName", deviceCategoryName)
