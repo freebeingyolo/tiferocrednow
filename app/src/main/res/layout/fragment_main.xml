@@ -79,99 +79,101 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/device_list"
                         android:layout_width="match_parent"
+                        android:paddingStart="5dp"
+                        android:paddingEnd="5dp"
                         android:layout_height="match_parent" />
 
-                    <RelativeLayout
-                        android:id="@+id/device_weight"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/bg_main_device"
-                        android:visibility="gone"
-                        tools:visibility="gone">
+<!--                    <RelativeLayout-->
+<!--                        android:id="@+id/device_weight"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:layout_marginStart="10dp"-->
+<!--                        android:layout_marginEnd="5dp"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:background="@drawable/bg_main_device"-->
+<!--                        android:visibility="gone"-->
+<!--                        tools:visibility="gone">-->
 
-                        <TextView
-                            android:id="@+id/weight_device_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginTop="12dp"
-                            android:ellipsize="end"
-                            android:maxEms="6"
-                            android:maxLines="1"
-                            android:text="@string/device_weight"
-                            android:textColor="@color/text_color"
-                            android:textSize="13sp" />
+<!--                        <TextView-->
+<!--                            android:id="@+id/weight_device_name"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginLeft="10dp"-->
+<!--                            android:layout_marginTop="12dp"-->
+<!--                            android:ellipsize="end"-->
+<!--                            android:maxEms="6"-->
+<!--                            android:maxLines="1"-->
+<!--                            android:text="@string/device_weight"-->
+<!--                            android:textColor="@color/text_color"-->
+<!--                            android:textSize="13sp" />-->
 
-                        <TextView
-                            android:id="@+id/weight_device_state"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginTop="30dp"
-                            android:text="未连接"
-                            android:textColor="@color/text_color"
-                            android:textSize="12sp" />
+<!--                        <TextView-->
+<!--                            android:id="@+id/weight_device_state"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginLeft="10dp"-->
+<!--                            android:layout_marginTop="30dp"-->
+<!--                            android:text="未连接"-->
+<!--                            android:textColor="@color/text_color"-->
+<!--                            android:textSize="12sp" />-->
 
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginEnd="15dp"
-                            android:src="@mipmap/card_weight" />
-                    </RelativeLayout>
+<!--                        <ImageView-->
+<!--                            android:layout_width="50dp"-->
+<!--                            android:layout_height="50dp"-->
+<!--                            android:layout_alignParentEnd="true"-->
+<!--                            android:layout_centerVertical="true"-->
+<!--                            android:layout_marginEnd="15dp"-->
+<!--                            android:src="@mipmap/card_weight" />-->
+<!--                    </RelativeLayout>-->
 
-                    <RelativeLayout
-                        android:id="@+id/device_wheel"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/bg_main_device"
-                        android:visibility="invisible"
-                        tools:visibility="gone">
+<!--                    <RelativeLayout-->
+<!--                        android:id="@+id/device_wheel"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:layout_marginStart="5dp"-->
+<!--                        android:layout_marginEnd="10dp"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:background="@drawable/bg_main_device"-->
+<!--                        android:visibility="invisible"-->
+<!--                        tools:visibility="gone">-->
 
-                        <TextView
-                            android:id="@+id/wheel_device_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
-                            android:layout_marginTop="12dp"
-                            android:text="蓝牙健腹轮"
-                            android:textColor="@color/text_color"
-                            android:textSize="13sp" />
+<!--                        <TextView-->
+<!--                            android:id="@+id/wheel_device_name"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginStart="10dp"-->
+<!--                            android:layout_marginTop="12dp"-->
+<!--                            android:text="蓝牙健腹轮"-->
+<!--                            android:textColor="@color/text_color"-->
+<!--                            android:textSize="13sp" />-->
 
-                        <TextView
-                            android:id="@+id/wheel_device_state"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
-                            android:layout_marginTop="30dp"
-                            android:text="未连接"
-                            android:textColor="@color/text_color"
-                            android:textSize="12sp" />
+<!--                        <TextView-->
+<!--                            android:id="@+id/wheel_device_state"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginStart="10dp"-->
+<!--                            android:layout_marginTop="30dp"-->
+<!--                            android:text="未连接"-->
+<!--                            android:textColor="@color/text_color"-->
+<!--                            android:textSize="12sp" />-->
 
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginEnd="10dp"
-                            android:src="@mipmap/card_wheel" />
-                    </RelativeLayout>
+<!--                        <ImageView-->
+<!--                            android:layout_width="50dp"-->
+<!--                            android:layout_height="50dp"-->
+<!--                            android:layout_alignParentEnd="true"-->
+<!--                            android:layout_centerVertical="true"-->
+<!--                            android:layout_marginEnd="10dp"-->
+<!--                            android:src="@mipmap/card_wheel" />-->
+<!--                    </RelativeLayout>-->
 
-                    <Space
-                        android:id="@+id/device_space"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="5dp"
-                        android:layout_weight="1"
-                        android:visibility="gone" />
+<!--                    <Space-->
+<!--                        android:id="@+id/device_space"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:layout_marginStart="10dp"-->
+<!--                        android:layout_marginEnd="5dp"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:visibility="gone" />-->
                 </LinearLayout>
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -245,6 +247,7 @@
                     android:textColor="#F2682A"
                     android:textSize="10dp"
                     android:visibility="gone"
+                    tools:visibility="visible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 

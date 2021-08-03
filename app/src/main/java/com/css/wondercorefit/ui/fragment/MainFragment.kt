@@ -17,7 +17,6 @@ import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.bean.WeightBondData
 import com.css.ble.viewmodel.WheelMeasureVM
-import com.css.service.data.DeviceData
 import com.css.service.data.StepData
 import com.css.service.data.UserData
 import com.css.service.router.ARouterConst
@@ -51,7 +50,9 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     private var needNotify: Boolean = false
     private var pauseResume: Boolean = false
     private lateinit var mMainDeviceAdapter: MainDeviceAdapter
-    var mData = ArrayList<DeviceData>()
+    var mData = ArrayList<BondDeviceData>()
+    var mBindWeight = false
+    var mBindWheel = false
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         SystemBarHelper.immersiveStatusBar(activity, 0f)
@@ -61,13 +62,13 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         mMainDeviceAdapter = MainDeviceAdapter(mData)
         mViewBinding?.deviceList?.adapter = mMainDeviceAdapter
         mMainDeviceAdapter.setOnItemClickListener {
-            when(it.deviceCategory){
-                "体脂秤"->{
+            when (it.deviceCategory) {
+                "体脂秤" -> {
                     ARouter.getInstance()
                         .build(ARouterConst.PATH_APP_BLE_WEIGHTMEASURE)
                         .navigation()
                 }
-                "健腹轮"->{
+                "健腹轮" -> {
                     ARouter.getInstance()
                         .build(ARouterConst.PATH_APP_BLE_WHEELMEASURE)
                         .navigation()
@@ -75,7 +76,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             }
 
         }
-//        showDevice()
+        showDevice()
         startSensorService()
         startStep()
         initClickListenr()
@@ -86,6 +87,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             WonderCoreCache.saveUserInfo(mUserData)
         }
     }
+
 
     override fun initData() {
         super.initData()
@@ -102,91 +104,161 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             }
         }
 
-        WonderCoreCache.getLiveData<WeightBondData>(CacheKey.LAST_WEIGHT_INFO).observe(this) { it2 ->
-            if (it2 != null) {
-                mViewBinding?.tvCurrentWeight?.text = it2.weightKgFmt("%.1f")
-                mViewBinding?.llBmi?.visibility = View.VISIBLE
-                mViewBinding?.tvBmi?.text = "BMI${it2?.bodyFatData.bmi}"
-                mViewBinding?.tvBodyType?.text = it2.bodyFatData.bmiJudge
-            } else {
-                mViewBinding?.llBmi?.visibility = View.GONE
+        WonderCoreCache.getLiveData<WeightBondData>(CacheKey.LAST_WEIGHT_INFO)
+            .observe(this) { it2 ->
+                if (it2 != null) {
+                    mViewBinding?.tvCurrentWeight?.text = it2.weightKgFmt("%.1f")
+                    mViewBinding?.llBmi?.visibility = View.VISIBLE
+                    mViewBinding?.tvBmi?.text = "BMI${it2?.bodyFatData.bmi}"
+                    mViewBinding?.tvBodyType?.text = it2.bodyFatData.bmiJudge
+                } else {
+                    mViewBinding?.llBmi?.visibility = View.GONE
+                }
             }
-        }
     }
 
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
-        mViewModel.deviceData.observe(viewLifecycleOwner, {
-            if (it.isNotEmpty()) {
-                mViewBinding?.llDevice?.visibility = View.VISIBLE
-                for (item in it) {
-                    if (item.deviceCategory == "体脂秤") {
-                        item.deviceImg = R.mipmap.card_weight
-                    }
-                    if (item.deviceCategory == "健腹轮") {
-                        item.deviceImg = R.mipmap.card_wheel
-                    }
-                    mData.add(item)
-                    Log.v("suisui","image = ${item.deviceImg}")
-                }
-
-                mMainDeviceAdapter.setItems(mData)
-            } else {
-                mViewBinding?.llDevice?.visibility = View.GONE
-            }
-        })
+//        mViewModel.deviceData.observe(viewLifecycleOwner, {
+//            mData.clear()
+//            if (it.isNotEmpty()) {
+//                mViewBinding?.llDevice?.visibility = View.VISIBLE
+//                for (item in it) {
+//                    if (item.deviceCategory == "体脂秤") {
+//                        item.deviceImg = R.mipmap.card_weight
+//                        mBindWeight = true
+//
+//                    }
+//                    if (item.deviceCategory == "健腹轮") {
+//                        item.deviceImg = R.mipmap.card_wheel
+//                        mBindWheel = true
+//                    }
+//                    mData.add(item)
+//                }
+//                mMainDeviceAdapter.setItems(mData)
+//            } else {
+//                mViewBinding?.llDevice?.visibility = View.GONE
+//            }
+//            if (mBindWeight) {
+//                mViewBinding?.llCurrentWeight?.visibility = View.VISIBLE
+//                mViewBinding?.gotoMeasure?.visibility = View.GONE
+//                mViewBinding?.tvNoneWeight?.visibility = View.GONE
+//            } else {
+//                mViewBinding?.gotoMeasure?.visibility = View.VISIBLE
+//                mViewBinding?.tvNoneWeight?.visibility = View.VISIBLE
+//                mViewBinding?.llCurrentWeight?.visibility = View.GONE
+//            }
+//        })
     }
 
     private fun showDevice() {
         //使用LiveData代替SharedPreference更新体脂秤、健腹轮绑定状态
-        WonderCoreCache.getLiveData2(CacheKey.BOND_WEIGHT_INFO).observe(viewLifecycleOwner) {
-            if (it != null) {
-                mViewBinding?.llDevice?.visibility = View.VISIBLE
-                mViewBinding?.deviceSpace?.visibility = View.GONE
-                mViewBinding?.deviceWeight?.visibility = View.VISIBLE
-                mViewBinding?.llCurrentWeight?.visibility = View.VISIBLE
-                mViewBinding?.gotoMeasure?.visibility = View.GONE
-                mViewBinding?.tvNoneWeight?.visibility = View.GONE
-            } else {
-                if (mViewBinding?.deviceWheel?.visibility == View.VISIBLE) {
-                    mViewBinding?.deviceWeight?.visibility = View.GONE
-                    mViewBinding?.deviceSpace?.visibility = View.VISIBLE
+        WonderCoreCache.getLiveData<BondDeviceData>(CacheKey.BOND_WEIGHT_INFO)
+            .observe(viewLifecycleOwner) {
+//            if (it != null) {
+//                mViewBinding?.llDevice?.visibility = View.VISIBLE
+//                mViewBinding?.deviceSpace?.visibility = View.GONE
+//                mViewBinding?.deviceWeight?.visibility = View.VISIBLE
+//                mViewBinding?.llCurrentWeight?.visibility = View.VISIBLE
+//                mViewBinding?.gotoMeasure?.visibility = View.GONE
+//                mViewBinding?.tvNoneWeight?.visibility = View.GONE
+//            } else {
+//                if (mViewBinding?.deviceWheel?.visibility == View.VISIBLE) {
+//                    mViewBinding?.deviceWeight?.visibility = View.GONE
+//                    mViewBinding?.deviceSpace?.visibility = View.VISIBLE
+//                } else {
+//                    mViewBinding?.llDevice?.visibility = View.GONE
+//                    mViewBinding?.deviceWeight?.visibility = View.GONE
+//                }
+//                mViewBinding?.gotoMeasure?.visibility = View.VISIBLE
+//                mViewBinding?.tvNoneWeight?.visibility = View.VISIBLE
+//                mViewBinding?.llCurrentWeight?.visibility = View.GONE
+//            }
+                if (it != null) {
+                    for (item in mData) {
+                        if (item.deviceCategory == "体脂秤") {
+                            mData.remove(item)
+                            break
+                        }
+                    }
+                    mViewBinding?.llDevice?.visibility = View.VISIBLE
+                    it.deviceImg = R.mipmap.card_weight
+                    mData.add(it)
+                    mViewBinding?.llCurrentWeight?.visibility = View.VISIBLE
+                    mViewBinding?.gotoMeasure?.visibility = View.GONE
+                    mViewBinding?.tvNoneWeight?.visibility = View.GONE
                 } else {
-                    mViewBinding?.llDevice?.visibility = View.GONE
-                    mViewBinding?.deviceWeight?.visibility = View.GONE
+                    for (item in mData) {
+                        if (item.deviceCategory == "体脂秤") {
+                            mData.remove(item)
+                            break
+                        }
+                    }
+                    mViewBinding?.gotoMeasure?.visibility = View.VISIBLE
+                    mViewBinding?.tvNoneWeight?.visibility = View.VISIBLE
+                    mViewBinding?.llCurrentWeight?.visibility = View.GONE
+                    if (mData.size == 0) {
+                        mViewBinding?.llDevice?.visibility = View.GONE
+                    }
                 }
-
-                mViewBinding?.gotoMeasure?.visibility = View.VISIBLE
-                mViewBinding?.tvNoneWeight?.visibility = View.VISIBLE
-                mViewBinding?.llCurrentWeight?.visibility = View.GONE
+                mMainDeviceAdapter.setItems(mData)
             }
-        }
 
-        WonderCoreCache.getLiveData2(CacheKey.BOND_WHEEL_INFO).observe(viewLifecycleOwner) {
-            if (it != null) {
-                mViewBinding?.llDevice?.visibility = View.VISIBLE
-                if (mViewBinding?.deviceWeight?.visibility == View.GONE) {
-                    mViewBinding?.deviceSpace?.visibility = View.VISIBLE
-                } else {
-                    mViewBinding?.deviceSpace?.visibility = View.GONE
-                }
-                mViewBinding?.deviceWheel?.visibility = View.VISIBLE
+        WonderCoreCache.getLiveData<BondDeviceData>(CacheKey.BOND_WHEEL_INFO)
+            .observe(viewLifecycleOwner) {
 
-            } else {
-                if (mViewBinding?.deviceWeight?.visibility == View.VISIBLE) {
-                    mViewBinding?.deviceWheel?.visibility = View.INVISIBLE
-                    mViewBinding?.deviceSpace?.visibility = View.GONE
+//            if (it != null) {
+//                mViewBinding?.llDevice?.visibility = View.VISIBLE
+//                if (mViewBinding?.deviceWeight?.visibility == View.GONE) {
+//                    mViewBinding?.deviceSpace?.visibility = View.VISIBLE
+//                } else {
+//                    mViewBinding?.deviceSpace?.visibility = View.GONE
+//                }
+//                mViewBinding?.deviceWheel?.visibility = View.VISIBLE
+//
+//            } else {
+//                if (mViewBinding?.deviceWeight?.visibility == View.VISIBLE) {
+//                    mViewBinding?.deviceWheel?.visibility = View.INVISIBLE
+//                    mViewBinding?.deviceSpace?.visibility = View.GONE
+//                } else {
+//                    mViewBinding?.deviceWheel?.visibility = View.INVISIBLE
+//                    mViewBinding?.deviceSpace?.visibility = View.GONE
+//                    mViewBinding?.llDevice?.visibility = View.GONE
+//                }
+//            }
+
+                if (it != null) {
+                    for (item in mData) {
+                        if (item.deviceCategory == "健腹轮") {
+                            mData.remove(item)
+                            break
+                        }
+                    }
+                    mViewBinding?.llDevice?.visibility = View.VISIBLE
+                    it.deviceImg = R.mipmap.card_wheel
+                    mData.add(it)
                 } else {
-                    mViewBinding?.deviceWheel?.visibility = View.INVISIBLE
-                    mViewBinding?.deviceSpace?.visibility = View.GONE
-                    mViewBinding?.llDevice?.visibility = View.GONE
+                    for (item in mData) {
+                        if (item.deviceCategory == "健腹轮") {
+                            mData.remove(item)
+                            break
+                        }
+                    }
+                    if (mData.size == 0) {
+                        mViewBinding?.llDevice?.visibility = View.GONE
+                    }
                 }
+                mMainDeviceAdapter.setItems(mData)
             }
-        }
         WheelMeasureVM.stateObsrv.observe(viewLifecycleOwner) {
-            mViewBinding!!.wheelDeviceState.text = WheelMeasureVM.stateStr
+//            mViewBinding!!.wheelDeviceState.text = WheelMeasureVM.stateStr
+            for (item in mData) {
+                if (item.deviceCategory == "健腹轮") {
+                    item.deviceConnect = WheelMeasureVM.stateStr
+                }
+            }
+            mMainDeviceAdapter.setItems(mData)
         }
-
         //绑定监听
         sp?.registerOnSharedPreferenceChangeListener(spLis)
     }
@@ -222,8 +294,8 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
 
     private fun initClickListenr() {
         mViewBinding!!.gotoMeasure.setOnClickListener(this)
-        mViewBinding!!.deviceWeight.setOnClickListener(this)
-        mViewBinding!!.deviceWheel.setOnClickListener(this)
+//        mViewBinding!!.deviceWeight.setOnClickListener(this)
+//        mViewBinding!!.deviceWheel.setOnClickListener(this)
         mViewBinding!!.addBleDevice.setOnClickListener(this)
     }
 
@@ -324,16 +396,16 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.device_wheel -> {
-                ARouter.getInstance()
-                    .build(ARouterConst.PATH_APP_BLE_WHEELMEASURE)
-                    .navigation()
-            }
-            R.id.device_weight -> {
-                ARouter.getInstance()
-                    .build(ARouterConst.PATH_APP_BLE_WEIGHTMEASURE)
-                    .navigation()
-            }
+//            R.id.device_wheel -> {
+//                ARouter.getInstance()
+//                    .build(ARouterConst.PATH_APP_BLE_WHEELMEASURE)
+//                    .navigation()
+//            }
+//            R.id.device_weight -> {
+//                ARouter.getInstance()
+//                    .build(ARouterConst.PATH_APP_BLE_WEIGHTMEASURE)
+//                    .navigation()
+//            }
             R.id.goto_measure -> {
                 activity?.let { ToastDialog(it).showPopupWindow(mViewBinding?.pbStep) }
             }
@@ -348,8 +420,8 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
 
     override fun onVisible() {
         super.onVisible()
-        mViewBinding!!.weightDeviceName.text = BondDeviceData.displayName(DeviceType.WEIGHT)
-        mViewBinding!!.wheelDeviceName.text = BondDeviceData.displayName(DeviceType.WHEEL)
+//        mViewBinding!!.weightDeviceName.text = BondDeviceData.displayName(DeviceType.WEIGHT)
+//        mViewBinding!!.wheelDeviceName.text = BondDeviceData.displayName(DeviceType.WHEEL)
     }
 
     override fun onHiddenChanged(hidden: Boolean) {

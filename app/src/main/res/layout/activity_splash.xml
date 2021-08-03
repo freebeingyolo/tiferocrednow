@@ -13,7 +13,7 @@
         android:layout_height="28dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="146dp"
-        android:src="@mipmap/icon" />
+        android:src="@mipmap/wonder_logo" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="wrap_content"

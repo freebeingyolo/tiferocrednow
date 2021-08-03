@@ -26,16 +26,16 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
         mViewModel.mDownSecondNormalEvent.observe(this, Observer {
             val loginUserData = WonderCoreCache.getLoginInfo()
             if (loginUserData != null) {
+                gotoActMain()
+            } else {
                 val userinfo = WonderCoreCache.getUserInfo()
                 if (WonderCoreCache.getUserInfo().isFirstOpenApp) {
                     userinfo.isFirstOpenApp = false
                     WonderCoreCache.saveUserInfo(userinfo)
                     ARouterUtil.openRegister()
                 } else {
-                    gotoActMain()
+                    ARouterUtil.openLogin()
                 }
-            } else {
-                ARouterUtil.openLogin()
             }
             finish()
         })

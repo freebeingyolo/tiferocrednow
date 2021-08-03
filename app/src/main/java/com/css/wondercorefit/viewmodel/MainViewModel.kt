@@ -37,7 +37,7 @@ class MainViewModel : BaseViewModel() {
                 }
             },
             { msg, data ->
-                deviceData.value = data
+//                deviceData.value = data
             },
             { code, msg, d ->
                 showToast(msg)

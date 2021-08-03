@@ -54,6 +54,8 @@ class BondDeviceData(
     var id: Int = 0
     var deviceCategory: String = ""
     val cacheKey: DeviceType get() = DeviceType.values()[type]
+    var deviceImg: Int = 0
+    var deviceConnect: String = "未连接"
 
     constructor(d: DeviceData) : this() {
         this.id = d.id
