@@ -19,7 +19,6 @@ object CourseRepository {
 //        map["id"] = 0
         val param = RequestBodyBuilder()
                 .addParams("applicationScenes", "教程")
-                .addParams("deviceCategoryName", "单杠")
                 .addParams("id", 0)
                 .build()
         return otherApi.queryVideo(param)
