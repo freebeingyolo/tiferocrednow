@@ -65,7 +65,7 @@
     <string name="device_connected">已连接</string>
     <string name="device_disconnected">未连接</string>
     <string name="device_connecting">连接中</string>
-
+    <string name="network_error">网络异常</string>
     <string name="device_my_device">我的设备</string>
     <string name="device_device_name">设备名称</string>
     <string name="device_device_model">设备型号</string>
