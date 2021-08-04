@@ -19,4 +19,5 @@ abstract class BaseWheelVM : BaseDeviceVM() {
         val UUID_WRITE2 = UUID.fromString(UUID_WRITE)
         val UUID_NOTIFY2 = UUID.fromString(UUID_NOTIFY)
     }
+
 }

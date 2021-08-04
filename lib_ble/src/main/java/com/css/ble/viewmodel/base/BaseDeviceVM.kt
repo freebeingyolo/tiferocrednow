@@ -1,5 +1,6 @@
 package com.css.ble.viewmodel.base
 
+import LogUtils
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.css.base.uibase.viewmodel.BaseViewModel
@@ -56,4 +57,6 @@ abstract class BaseDeviceVM : BaseViewModel() {
 
     abstract fun onTimerTimeout()
     abstract fun onTimerCancel()
+    abstract fun disconnect()
+    abstract fun connect()
 }

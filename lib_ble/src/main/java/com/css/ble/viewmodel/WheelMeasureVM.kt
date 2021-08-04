@@ -70,9 +70,11 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         if (it == -1) "--"
         else DecimalFormat("##.#####").format(it * 0.00175f)
     }
+
     //玩法推荐
     private val _recommentationData by lazy { MutableLiveData<List<CourseData>>() }
-    val recommentationData : LiveData<List<CourseData>> get() = _recommentationData
+    val recommentationData: LiveData<List<CourseData>> get() = _recommentationData
+
     //绑定
     private val bondTimeout = 6 * 1000L
     private val fondMethod = FoundByUuid
@@ -97,11 +99,11 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         //exercise_finish,
     }
 
-    fun fetchRecommentation(){
+    fun fetchRecommentation() {
         netLaunch(
             {
                 withContext(Dispatchers.IO) {
-                    val ret = CourseRepository.queryVideo("玩法推荐","健腹轮")
+                    val ret = CourseRepository.queryVideo("玩法推荐", "健腹轮")
                     ret
                 }
             },
@@ -131,6 +133,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         sb.append(String.format(":%02d", second))
         return sb.toString()
     }
+
     fun startScanBle() {
         if (EasyBLE.getInstance().isScanning) return
         EasyBLE.getInstance().scanConfiguration.isOnlyAcceptBleDevice = true
@@ -161,7 +164,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
 
         override fun onScanResult(device: Device, isConnectedBySys: Boolean) {
             if (device.name.startsWith("AbRoller")) {
-                LogUtils.d("device:$device")
+                LogUtils.d("device:$device}")
                 EasyBLE.getInstance().stopScanQuietly()
                 if (fondMethod == FoundByName) {
                     foundDevice(device)
@@ -228,7 +231,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
     }
 
 
-    fun connect() {
+    override fun connect() {
         //连接配置，举个例随意配置两项
         val config = ConnectionConfiguration()
         config.setRequestTimeoutMillis(connectTimeout.toInt())
@@ -240,7 +243,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         workMode = WorkMode.MEASURE
     }
 
-    fun disconnect() {
+    override fun disconnect() {
         cancelTimeOutTimer()
         if (state > State.disconnected) {
             connection.disconnect()

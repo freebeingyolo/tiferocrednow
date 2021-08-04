@@ -56,8 +56,8 @@
     <string name="current_weight">当前体重</string>
     <string name="measure_weight">测量体重</string>
     <string name="bond_device">绑定设备</string>
-    <string name="device_weight">蓝牙体脂秤</string>
-    <string name="device_wheel">蓝牙健腹轮</string>
+    <string name="device_weight">体脂秤</string>
+    <string name="device_wheel">健腹轮</string>
     <string name="weight_measuring">详细数据测量中请稍后</string>
     <string name="unbond_ok">解绑成功</string>
     <string name="please_bond_first">请先绑定设备</string>
@@ -72,7 +72,7 @@
     <string name="device_device_address">Mac地址</string>
     <string name="device_device_hardware">固件版本</string>
     <string name="device_device_delete">解除绑定</string>
-    <string name="device_horizontalbar">蓝牙单杠</string>
+    <string name="device_horizontalbar">单杠</string>
     <string name="device_pushup">俯卧撑</string>
     <string name="device_counter">计数器</string>
 

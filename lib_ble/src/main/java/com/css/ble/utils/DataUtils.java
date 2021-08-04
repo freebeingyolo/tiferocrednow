@@ -114,7 +114,7 @@ public class DataUtils {
      */
     public static short byteToShortBig(byte[] bytes) {
         short ret = 0;
-        int count =  Math.min(2, bytes.length);
+        int count = Math.min(2, bytes.length);
         for (int i = 0; i < count; i++) {
             ret |= ((short) bytes[i] & 0xff) << (8 * (count - 1 - i));
         }
@@ -177,5 +177,30 @@ public class DataUtils {
             ret |= ((long) array[i] & 0xff) << (8 * (8 - 1 - i));
         }
         return ret;
+    }
+
+    public static String byte2HexStr(byte[] b) {
+        if (b == null) {
+            return "";
+        } else {
+            StringBuilder hs = new StringBuilder();
+            byte[] var3 = b;
+            int var4 = b.length;
+
+            for (int var5 = 0; var5 < var4; ++var5) {
+                byte aB = var3[var5];
+                int a = aB & 255;
+                String stmp = Integer.toHexString(a);
+                if (stmp.length() == 1) {
+                    hs.append("0").append(stmp);
+                } else {
+                    hs.append(stmp);
+                }
+
+                hs.append(" ");
+            }
+
+            return hs.toString();
+        }
     }
 }

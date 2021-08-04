@@ -116,7 +116,6 @@ open class WeightBondVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPa
         filterDevice = null
     }
 
-
     fun bindDevice(
         success: (msg: String?, d: Any?) -> Unit,
         failed: (Int, String?, d: Any?) -> Unit

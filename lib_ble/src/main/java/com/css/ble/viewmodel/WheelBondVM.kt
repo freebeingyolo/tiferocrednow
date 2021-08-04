@@ -95,10 +95,13 @@ object WheelBondVM : BaseWheelVM(), EventObserver {
         EasyBLE.getInstance().stopScan()
     }
 
-    fun disconnect() {
+    override fun disconnect() {
         EasyBLE.getInstance().disconnectAllConnections()
     }
 
+    override fun connect() {
+
+    }
 
     override fun onTimerTimeout() {
         _state.value = State.timeOut

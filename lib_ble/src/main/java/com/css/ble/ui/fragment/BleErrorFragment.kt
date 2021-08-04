@@ -29,18 +29,25 @@ class BleErrorFragment : BaseFragment<DefaultViewModel, LayoutBleErrorBinding>()
     object Builder {
         var leftTitle: String = ""
         var errorType: ErrorType = ErrorType.SEARCH_TIMEOUT
+        var onDestroy: (() -> Unit)? = null
 
         fun leftTitle(v: String): Builder {
             leftTitle = v
             return this
         }
+
         fun errorType(v: ErrorType): Builder {
             errorType = v
             return this
         }
 
+        fun onDestroy(cb: () -> Unit): Builder {
+            onDestroy = cb
+            return this
+        }
+
         fun create(): BleErrorFragment {
-            var fragment = FragmentUtils.changeFragment(BleErrorFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
+            val fragment = FragmentUtils.changeFragment(BleErrorFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
             fragment.builder = this
             return fragment
         }
@@ -72,4 +79,8 @@ class BleErrorFragment : BaseFragment<DefaultViewModel, LayoutBleErrorBinding>()
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        builder.onDestroy?.invoke()
+    }
 }

@@ -48,7 +48,7 @@ abstract class BaseWeightActivity<VM : BaseWeightVM, VB : ViewBinding> : BaseDev
         if (isFinishing) {
             unbindService(mFhrSCon)
             mViewModel.stopScanBle()
-            mViewModel.disconnectAll()
+            mViewModel.disconnect()
         }
     }
 }

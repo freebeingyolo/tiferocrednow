@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.arouter.facade.annotation.Route
@@ -15,14 +14,13 @@ import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseActivity
 import com.css.ble.R
-import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.FragmentDeviceListBinding
 import com.css.ble.databinding.LayoutDeviceItemBinding
 import com.css.ble.ui.view.SpaceItemDecoration
 import com.css.ble.viewmodel.DeviceListVM
+import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
 import com.css.service.router.ARouterConst
-import kotlinx.coroutines.launch
 
 /**
  * @author yuedong
@@ -60,6 +58,15 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
                         when (deviceInfo.deviceType) {
                             DeviceType.WEIGHT -> ARouter.getInstance().build(ARouterConst.PATH_APP_BLE_WEIGHTBOND).navigation()
                             DeviceType.WHEEL -> ARouter.getInstance().build(ARouterConst.PATH_APP_BLE_WHEELBOND).navigation()
+                            DeviceType.HORIZONTAL_BAR,
+                            DeviceType.PUSH_UP,
+                            DeviceType.COUNTER,
+                            -> {
+                                ARouter.getInstance().build(ARouterConst.PATH_APP_BLE_COMMON)
+                                    .withInt("mode", BaseDeviceScan2ConnVM.WorkMode.BOND.ordinal)
+                                    .withInt("deviceType", deviceInfo.deviceType.ordinal)
+                                    .navigation()
+                            }
                         }
                     } else {
                         CommonAlertDialog(context).apply {

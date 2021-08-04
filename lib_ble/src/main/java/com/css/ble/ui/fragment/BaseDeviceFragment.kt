@@ -3,31 +3,23 @@ package com.css.ble.ui.fragment
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
-import android.icu.text.CaseMap
-import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
-import com.blankj.utilcode.constant.PermissionConstants
 import com.blankj.utilcode.util.PermissionUtils
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseFragment
-import com.css.base.uibase.base.BaseWonderFragment
 import com.css.base.uibase.viewmodel.BaseViewModel
-import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.utils.BleUtils
 import com.css.ble.utils.QuickTransUtils
 import com.css.ble.viewmodel.BleEnvVM
-import com.css.service.utils.CacheKey
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -35,7 +27,7 @@ import kotlinx.coroutines.launch
  * @author yuedong
  * @date 2021-05-27
  */
-abstract class BaseDeviceFragment<VM : BaseViewModel, VB : ViewBinding>(protected val deviceType: DeviceType) : BaseFragment<VM, VB>() {
+abstract class BaseDeviceFragment<VM : BaseViewModel, VB : ViewBinding>(val deviceType: DeviceType) : BaseFragment<VM, VB>() {
     abstract val vmCls: Class<VM>
     abstract val vbCls: Class<VB>
 

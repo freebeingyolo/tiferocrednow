@@ -1,16 +1,10 @@
 package com.css.ble.utils
 
-import android.os.Looper
-import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.blankj.utilcode.util.ActivityUtils
 import com.css.ble.R
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 /**
@@ -23,14 +17,31 @@ object FragmentUtils {
         OPT_REPLACE
     }
 
+
     fun <T : Fragment> changeFragment(cls: Class<T>, opt: Option = Option.OPT_ADD, id: Int = R.id.container): T {
-        var fmgr = (ActivityUtils.getTopActivity() as FragmentActivity).supportFragmentManager
-        return changeFragment(cls, opt, id, fmgr)
+        val fmgr = (ActivityUtils.getTopActivity() as FragmentActivity).supportFragmentManager
+        return changeFragment(cls, cls.simpleName, opt, id, fmgr)
     }
 
-    fun <T : Fragment> changeFragment(cls: Class<T>, opt: Option, id: Int = R.id.container, supportFragmentManager: FragmentManager):
-            T {
-        var tag = cls.simpleName
+    fun <T : Fragment> changeFragment(
+        cls: Class<T>,
+        tag: String,
+        opt: Option,
+        initializer: ((Class<T>) -> T) = { cls.newInstance() },
+        id: Int = R.id.container,
+    ): T {
+        val fmgr = (ActivityUtils.getTopActivity() as FragmentActivity).supportFragmentManager
+        return changeFragment(cls, tag, opt, id, fmgr, initializer)
+    }
+
+    fun <T : Fragment> changeFragment(
+        cls: Class<T>,
+        tag: String,
+        opt: Option,
+        id: Int = R.id.container,
+        supportFragmentManager: FragmentManager,
+        initializer: ((Class<T>) -> T) = { cls.newInstance() },
+    ): T {
         var fragment: T? = supportFragmentManager.findFragmentByTag(tag) as T?
         val addOprt: (Fragment, Int) -> Unit = { f, o ->
             val ft2 = supportFragmentManager.beginTransaction()
@@ -49,8 +60,8 @@ object FragmentUtils {
             ft2.commitAllowingStateLoss() //如果commit,被系统回收会异常
         }
         if (fragment == null) { //新增的
-            fragment = cls.newInstance()
-            if (!fragment!!.isAdded) {
+            fragment = initializer(cls)
+            if (!fragment.isAdded) {
                 when (opt) {
                     Option.OPT_ADD -> {
                         addOprt(fragment, 0)
@@ -60,7 +71,7 @@ object FragmentUtils {
                             supportFragmentManager.popBackStack()
                         }
                         if (supportFragmentManager.fragments.size > 0) {
-                            var ft = supportFragmentManager.beginTransaction()
+                            val ft = supportFragmentManager.beginTransaction()
                             ft.remove(supportFragmentManager.fragments[supportFragmentManager.fragments.size - 1])
                             ft.commitAllowingStateLoss()
                             addOprt(fragment, 1)
@@ -72,7 +83,7 @@ object FragmentUtils {
             }
         } else {
             //在回退栈里找
-            var findInBackEntry = supportFragmentManager.run {
+            val findInBackEntry = supportFragmentManager.run {
                 for (i in backStackEntryCount - 1 downTo 0) {
                     if (getBackStackEntryAt(i).name == tag) {
                         return@run true

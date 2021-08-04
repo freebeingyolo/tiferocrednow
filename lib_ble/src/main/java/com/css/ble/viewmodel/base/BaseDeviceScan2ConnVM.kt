@@ -12,10 +12,14 @@ import cn.wandersnail.commons.poster.RunOn
 import cn.wandersnail.commons.poster.Tag
 import cn.wandersnail.commons.poster.ThreadMode
 import cn.wandersnail.commons.util.StringUtils
+import com.css.base.net.api.repository.DeviceRepository
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.viewmodel.IBleConnect
 import com.css.ble.viewmodel.IBleScan
+import com.css.res.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.*
 
 /**
@@ -23,8 +27,8 @@ import java.util.*
  *@time 2021-08-03 10:46
  *@description  设备扫描ViewModel基类
  */
-abstract class BaseDeviceScan2ConnVM(private val deviceType: DeviceType) :
-    BaseDeviceVM(), IBleScan, IBleConnect, EventObserver {
+abstract class BaseDeviceScan2ConnVM(val deviceType: DeviceType) :
+    BaseDeviceVM(), IBleScan, IBleConnect,EventObserver {
 
     enum class FoundWay {
         NAME,
@@ -44,15 +48,20 @@ abstract class BaseDeviceScan2ConnVM(private val deviceType: DeviceType) :
     }
 
     /*** abstractable start ****/
-    abstract fun filterUUID(uuid: UUID): Boolean
     abstract fun filterName(name: String): Boolean
+    abstract fun filterUUID(uuid: UUID): Boolean
     /*** abstractable start ****/
 
     /*** overridable start ****/
+    open val bonded_tip: Int = R.string.weight_bonded_tip
     open val foundMethod: FoundWay = FoundWay.UUID
     open val bondTimeout = 6 * 1000L
     open val connectTimeout = 5 * 1000L
+
     /*** overridable end ****/
+    enum class WorkMode { BOND, MEASURE }
+
+    var workMode = WorkMode.BOND
 
     private var avaliableDevice: Device? = null
     private var connection: Connection? = null
@@ -118,6 +127,7 @@ abstract class BaseDeviceScan2ConnVM(private val deviceType: DeviceType) :
     override fun startScanBle() {
         if (EasyBLE.getInstance().isScanning) return
         EasyBLE.getInstance().scanConfiguration.isOnlyAcceptBleDevice = true
+        EasyBLE.getInstance().scanConfiguration.rssiLowLimit = -100
         EasyBLE.getInstance().scanConfiguration.scanPeriodMillis = bondTimeout.toInt()
         EasyBLE.getInstance().startScan()
         EasyBLE.getInstance().addScanListener(scanListener)
@@ -213,4 +223,34 @@ abstract class BaseDeviceScan2ConnVM(private val deviceType: DeviceType) :
         }
     }
 
+    fun bindDevice(
+        success: (msg: String?, d: Any?) -> Unit,
+        failed: (Int, String?, d: Any?) -> Unit
+    ) {
+        val d = BondDeviceData(
+            avaliableDevice!!.address,
+            "",
+            deviceType
+        )
+        netLaunch(
+            {
+                withContext(Dispatchers.IO) {
+                    val ret = DeviceRepository.bindDevice(d.deviceCategory, d.displayName, d.mac)
+                    takeIf { ret.isSuccess }.let { BondDeviceData.setDevice(DeviceType.WHEEL, BondDeviceData(ret.data!!)) }
+                    ret
+                }
+            },
+            { msg, _ ->
+                //val bondRst = EasyBLE.getInstance().createBond(it.address)
+                //LogUtils.d("bondRst:$bondRst")
+                success(msg, d)
+                avaliableDevice = null
+            },
+            { code, msg, d ->
+                avaliableDevice = null
+                state = State.disconnected
+                failed(code, msg, d)
+            }
+        )
+    }
 }

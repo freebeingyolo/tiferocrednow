@@ -175,12 +175,11 @@ abstract class BaseWeightVM : BaseDeviceVM() {
         }
     }
 
-    fun disconnectAll() {
+    override fun disconnect() {
         this.mBluetoothService?.disconnectAll()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-
+    override fun connect() {
     }
+
 }
