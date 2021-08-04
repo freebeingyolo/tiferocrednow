@@ -7,10 +7,8 @@ import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
-import com.alibaba.android.arouter.launcher.ARouter
 import com.bumptech.glide.Glide
 import com.css.base.R
-import com.css.service.router.ARouterConst
 import razerdp.basepopup.BasePopupWindow
 
 class ImageDialog : BasePopupWindow {

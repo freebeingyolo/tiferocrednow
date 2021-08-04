@@ -1,14 +1,14 @@
 package com.css.wondercorefit.adapter
 
 import com.css.ble.ui.view.BaseBindingAdapter
-import com.css.service.data.CourseDate
+import com.css.service.data.CourseData
 import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.ItemViewVideoBinding
 
-class CourseRecycleAdapter(mData: List<CourseDate>): BaseBindingAdapter<CourseDate, ItemViewVideoBinding>(mData) {
+class CourseRecycleAdapter(mData: List<CourseData>): BaseBindingAdapter<CourseData, ItemViewVideoBinding>(mData) {
 
-    private var mItemClickListener: ((CourseDate) -> Unit)? = null
-    fun setOnItemClickListener(listener: ((CourseDate) -> Unit)?) {
+    private var mItemClickListener: ((CourseData) -> Unit)? = null
+    fun setOnItemClickListener(listener: ((CourseData) -> Unit)?) {
         mItemClickListener = listener
     }
 
@@ -73,7 +73,7 @@ class CourseRecycleAdapter(mData: List<CourseDate>): BaseBindingAdapter<CourseDa
 
     override fun getLayoutResId(viewType: Int): Int = R.layout.item_view_video
 
-    override fun onBindItem(binding: ItemViewVideoBinding, item: CourseDate, position: Int) {
+    override fun onBindItem(binding: ItemViewVideoBinding, item: CourseData, position: Int) {
         binding.courseData = item
         binding.clCourse.setOnClickListener {
             mItemClickListener?.invoke(item)

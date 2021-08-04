@@ -9,7 +9,7 @@ import android.os.IBinder
 import android.util.Log
 import androidx.viewbinding.ViewBinding
 import com.css.ble.bean.DeviceType
-import com.css.ble.viewmodel.BaseWeightVM
+import com.css.ble.viewmodel.base.BaseWeightVM
 import com.pingwang.bluetoothlib.AILinkSDK
 import com.pingwang.bluetoothlib.server.ELinkBleServer
 import com.pingwang.bluetoothlib.utils.BleLog
