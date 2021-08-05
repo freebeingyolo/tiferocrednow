@@ -95,15 +95,15 @@ class BondDeviceData(
             WonderCoreCache.saveData(key.cacheKey, data)
         }
 
-        fun getDeviceLiveDataMerge(vararg keys: DeviceType = DeviceType.values()): LiveData<Map<DeviceType, BondDeviceData?>> {
-            return WonderCoreCache.getLiveDataMerge<BondDeviceData, Map<DeviceType, BondDeviceData?>>(
-                { k, v -> mapOf(DeviceType.findByCacheKey(k) to v) },
-                *keys.map { k -> k.cacheKey }.toTypedArray()
+        fun getDeviceLiveDataMerge(vararg keys: CacheKey = WonderCoreCache.deviceCacheKeys): LiveData<Pair<CacheKey, BondDeviceData?>> {
+            return WonderCoreCache.getLiveDataMerge<BondDeviceData, Pair<CacheKey, BondDeviceData?>>(
+                { k, v -> Pair(k, v) },
+                *keys
             )
         }
 
-        fun getDevices(vararg keys: DeviceType = DeviceType.values()): List<BondDeviceData> {
-            return WonderCoreCache.getDatas(BondDeviceData::class.java, *keys.map { k -> k.cacheKey }.toTypedArray())
+        fun getDevices(vararg keys: CacheKey = WonderCoreCache.deviceCacheKeys): List<BondDeviceData> {
+            return WonderCoreCache.getDatas(BondDeviceData::class.java, *keys)
         }
     }
 

@@ -15,6 +15,7 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.css.base.dialog.ToastDialog
 import com.css.base.uibase.BaseFragment
 import com.css.ble.bean.BondDeviceData
+import com.css.ble.bean.DeviceType
 import com.css.ble.bean.WeightBondData
 import com.css.ble.viewmodel.WheelMeasureVM
 import com.css.service.data.StepData
@@ -154,8 +155,8 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             val devices = BondDeviceData.getDevices()
             //it为map，值为null表示删除，key为设备类型
             LogUtils.d("it-->"+it)
-
-
+            val deviceType = DeviceType.findByCacheKey(it.first)
+            val data = it.second
         }
 
         WonderCoreCache.getLiveDataMerge<BondDeviceData>(*WonderCoreCache.deviceCacheKeys).observe(viewLifecycleOwner) {
