@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.CleanUtils
 import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.NetworkUtils
@@ -19,6 +20,7 @@ import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseFragment
 import com.css.base.uibase.viewmodel.DefaultViewModel
 import com.css.service.data.UserData
+import com.css.service.router.ARouterConst
 import com.css.service.router.ARouterUtil
 import com.css.service.utils.CacheKey
 import com.css.service.utils.SystemBarHelper
@@ -30,6 +32,7 @@ import com.css.wondercorefit.ui.activity.setting.FeedbackActivity
 import com.css.wondercorefit.ui.activity.setting.MyDeviceActivity
 import com.css.wondercorefit.ui.activity.setting.PersonInformationActivity
 import com.css.wondercorefit.utils.BootstrapService
+import razerdp.basepopup.BasePopupWindow
 
 
 class SettingFragment : BaseFragment<DefaultViewModel, FragmentSettingBinding>(),
@@ -98,6 +101,16 @@ class SettingFragment : BaseFragment<DefaultViewModel, FragmentSettingBinding>()
             R.id.rl_clean_cache -> {
                 CleanUtils.cleanInternalCache()
                 mViewBinding?.tvCache?.text = FileUtils.getSize(Utils.getApp().cacheDir)
+                CommonAlertDialog(requireContext()).apply {
+                    type = CommonAlertDialog.DialogType.Image
+                    imageResources = com.css.ble.R.mipmap.icon_tick
+                    content = "缓存已清除"
+                    onDismissListener = object : BasePopupWindow.OnDismissListener() {
+                        override fun onDismiss() {
+
+                        }
+                    }
+                }.show()
             }
         }
     }
