@@ -116,140 +116,38 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             }
     }
 
-    override fun registorUIChangeLiveDataCallBack() {
-        super.registorUIChangeLiveDataCallBack()
-//        mViewModel.deviceData.observe(viewLifecycleOwner, {
-//            mData.clear()
-//            if (it.isNotEmpty()) {
-//                mViewBinding?.llDevice?.visibility = View.VISIBLE
-//                for (item in it) {
-//                    if (item.deviceCategory == "体脂秤") {
-//                        item.deviceImg = R.mipmap.card_weight
-//                        mBindWeight = true
-//
-//                    }
-//                    if (item.deviceCategory == "健腹轮") {
-//                        item.deviceImg = R.mipmap.card_wheel
-//                        mBindWheel = true
-//                    }
-//                    mData.add(item)
-//                }
-//                mMainDeviceAdapter.setItems(mData)
-//            } else {
-//                mViewBinding?.llDevice?.visibility = View.GONE
-//            }
-//            if (mBindWeight) {
-//                mViewBinding?.llCurrentWeight?.visibility = View.VISIBLE
-//                mViewBinding?.gotoMeasure?.visibility = View.GONE
-//                mViewBinding?.tvNoneWeight?.visibility = View.GONE
-//            } else {
-//                mViewBinding?.gotoMeasure?.visibility = View.VISIBLE
-//                mViewBinding?.tvNoneWeight?.visibility = View.VISIBLE
-//                mViewBinding?.llCurrentWeight?.visibility = View.GONE
-//            }
-//        })
-    }
-
     private fun showDevice() {
+//        val devices = BondDeviceData.getDevices()
+//
         BondDeviceData.getDeviceLiveDataMerge().observe(viewLifecycleOwner) {
-            val devices = BondDeviceData.getDevices()
             //it为map，值为null表示删除，key为设备类型
-            LogUtils.d("it-->"+it)
-            val deviceType = DeviceType.findByCacheKey(it.first)
-            val data = it.second
-        }
-
-        WonderCoreCache.getLiveDataMerge<BondDeviceData>(*WonderCoreCache.deviceCacheKeys).observe(viewLifecycleOwner) {
-            //这里更新数据，it是这次变动的数据
-            LogUtils.d("it-->"+it)
-            val datas = WonderCoreCache.getDatas(BondDeviceData::class.java, *WonderCoreCache.deviceCacheKeys)
+            LogUtils.d("it-->" + it)
+            val devices = BondDeviceData.getDevices()
             mData.clear()
+            mViewBinding?.llCurrentWeight?.visibility = View.GONE
             mViewBinding?.gotoMeasure?.visibility = View.VISIBLE
             mViewBinding?.tvNoneWeight?.visibility = View.VISIBLE
-            mViewBinding?.llCurrentWeight?.visibility = View.GONE
-            for (item in datas) {
-                when (item.deviceCategory) {
-                    "体脂秤" -> {
-                        mData.add(item)
-                        mViewBinding?.llCurrentWeight?.visibility = View.VISIBLE
-                        mViewBinding?.gotoMeasure?.visibility = View.GONE
-                        mViewBinding?.tvNoneWeight?.visibility = View.GONE
-                    }
-                    "健腹轮" -> {
-                        mData.add(item)
-                    }
-                    else -> {
-                        mData.add(item)
-                    }
+            for (item in devices) {
+                if (item.deviceCategory == "体脂秤") {
+                    mViewBinding?.llCurrentWeight?.visibility = View.VISIBLE
+                    mViewBinding?.gotoMeasure?.visibility = View.GONE
+                    mViewBinding?.tvNoneWeight?.visibility = View.GONE
+                    break
                 }
-
             }
+            mData.addAll(devices)
             if (mData.size == 0) {
                 mViewBinding?.llDevice?.visibility = View.GONE
             } else {
                 mViewBinding?.llDevice?.visibility = View.VISIBLE
             }
             mMainDeviceAdapter.setItems(mData)
-
         }
-        //使用LiveData代替SharedPreference更新体脂秤、健腹轮绑定状态
-//        WonderCoreCache.getLiveData<BondDeviceData>(CacheKey.BOND_WEIGHT_INFO)
+
+//        WonderCoreCache.getLiveDataMerge<BondDeviceData>(*WonderCoreCache.deviceCacheKeys)
 //            .observe(viewLifecycleOwner) {
-//                if (it != null) {
-//                    for (item in mData) {
-//                        if (item.deviceCategory == "体脂秤") {
-//                            mData.remove(item)
-//                            break
-//                        }
-//                    }
-//                    mViewBinding?.llDevice?.visibility = View.VISIBLE
-//                    it.deviceImg = R.mipmap.card_weight
-//                    mData.add(it)
-//                    mViewBinding?.llCurrentWeight?.visibility = View.VISIBLE
-//                    mViewBinding?.gotoMeasure?.visibility = View.GONE
-//                    mViewBinding?.tvNoneWeight?.visibility = View.GONE
-//                } else {
-//                    for (item in mData) {
-//                        if (item.deviceCategory == "体脂秤") {
-//                            mData.remove(item)
-//                            break
-//                        }
-//                    }
-//                    mViewBinding?.gotoMeasure?.visibility = View.VISIBLE
-//                    mViewBinding?.tvNoneWeight?.visibility = View.VISIBLE
-//                    mViewBinding?.llCurrentWeight?.visibility = View.GONE
-//                    if (mData.size == 0) {
-//                        mViewBinding?.llDevice?.visibility = View.GONE
-//                    }
-//                }
-//                mMainDeviceAdapter.setItems(mData)
-//            }
-//
-//        WonderCoreCache.getLiveData<BondDeviceData>(CacheKey.BOND_WHEEL_INFO)
-//            .observe(viewLifecycleOwner) {
-//
-//                if (it != null) {
-//                    for (item in mData) {
-//                        if (item.deviceCategory == "健腹轮") {
-//                            mData.remove(item)
-//                            break
-//                        }
-//                    }
-//                    mViewBinding?.llDevice?.visibility = View.VISIBLE
-//                    it.deviceImg = R.mipmap.card_wheel
-//                    mData.add(it)
-//                } else {
-//                    for (item in mData) {
-//                        if (item.deviceCategory == "健腹轮") {
-//                            mData.remove(item)
-//                            break
-//                        }
-//                    }
-//                    if (mData.size == 0) {
-//                        mViewBinding?.llDevice?.visibility = View.GONE
-//                    }
-//                }
-//                mMainDeviceAdapter.setItems(mData)
+//                //这里更新数据，it是这次变动的数据
+//                LogUtils.d("it-->" + it)
 //            }
         WheelMeasureVM.stateObsrv.observe(viewLifecycleOwner) {
             for (item in mData) {
