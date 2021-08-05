@@ -48,6 +48,10 @@
         <activity
             android:name=".ui.DeviceInfoActivity"
             android:theme="@style/WonderTheme.NoExitEnterAnimation" />
+        <activity
+            android:name=".ui.DataStatisticsActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

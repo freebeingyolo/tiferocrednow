@@ -1,10 +1,14 @@
 package com.css.base.utils;
 
+import com.blankj.utilcode.util.LogUtils;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -12,9 +16,9 @@ import java.util.TimeZone;
  * Create By HaiyuKing
  * Used 实现日期和字符串之间的转换以及日期的相关操作
  * 注意 new SimpleDateFormat的构造函数中必须含有Locale.CHINA或者Locale.getDefault()
- *  SimpleDateFormat format = new SimpleDateFormat(parse,Locale.CHINA);//区域设置为中文
- *  SimpleDateFormat format = new SimpleDateFormat(parse,Locale.getDefault());//区域设置为本地
- *  解决黄色感叹号：http://www.blogchen.com/archives/392.html
+ * SimpleDateFormat format = new SimpleDateFormat(parse,Locale.CHINA);//区域设置为中文
+ * SimpleDateFormat format = new SimpleDateFormat(parse,Locale.getDefault());//区域设置为本地
+ * 解决黄色感叹号：http://www.blogchen.com/archives/392.html
  */
 public class DateTimeHelper {
 
@@ -26,6 +30,7 @@ public class DateTimeHelper {
 
     /**
      * 将未指定格式的字符串转换成日期类型
+     *
      * @param date - 20151123 或者 2015/11/23 或者2015-11-23
      * @return Mon Nov 23 00:00:00 GMT+08:00 2015
      */
@@ -39,43 +44,49 @@ public class DateTimeHelper {
         parse = parse.replaceFirst("( )[0-9]{1,2}([^0-9]?)", "$1HH$2");
         parse = parse.replaceFirst("([^0-9]?)[0-9]{1,2}([^0-9]?)", "$1mm$2");
         parse = parse.replaceFirst("([^0-9]?)[0-9]{1,2}([^0-9]?)", "$1ss$2");
-        SimpleDateFormat format = new SimpleDateFormat(parse,Locale.CHINA);
+        SimpleDateFormat format = new SimpleDateFormat(parse, Locale.CHINA);
         result = format.parse(date);
         return result;
     }
+
     /**
      * 将日期以指定格式输出
-     * @param date - new Date()
+     *
+     * @param date   - new Date()
      * @param format - "yyyy-MM-dd"
      * @return 2015-11-23
      */
     public static String formatToString(Date date, String format) {
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat(format,Locale.CHINA);
+            SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.CHINA);
             return sdf.format(date);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return "";
     }
+
     /**
      * 将日期格式的字符串以指定格式输出
-     * @param date - "2015/11/23"
+     *
+     * @param date   - "2015/11/23"
      * @param format - "yyyy-MM-dd"
      * @return 2015-11-23
      */
     public static String formatToString(String date, String format) {
         try {
             Date dt = DateTimeHelper.parseStringToDate(date);
-            SimpleDateFormat sdf = new SimpleDateFormat(format,Locale.CHINA);
+            SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.CHINA);
             return sdf.format(dt);
         } catch (ParseException e) {
             e.printStackTrace();
         }
         return date;
     }
+
     /**
      * 将时间戳转化为固定格式的日期字符串 （yyyy-MM-dd HH:mm:ss）
+     *
      * @param time - new Date().getTime()+""
      * @return 2015-11-23 14:05:20
      */
@@ -84,14 +95,16 @@ public class DateTimeHelper {
             return "";
         String strTime = null;
         time = time.substring(0, 10);
-        SimpleDateFormat mFormat = new SimpleDateFormat(FORMAT_24,Locale.CHINA);
+        SimpleDateFormat mFormat = new SimpleDateFormat(FORMAT_24, Locale.CHINA);
         long ltime = Long.valueOf(time);
         strTime = mFormat.format(new Date(ltime * 1000L));
         return strTime;
     }
+
     /**
      * 将时间戳转化为指定格式日期的字符串
-     * @param time - new Date().getTime()+""
+     *
+     * @param time   - new Date().getTime()+""
      * @param format - "yyyy年MM月dd日 hh时mm分ss秒"
      * @return 2015年11月23日 02时05分36秒
      */
@@ -108,11 +121,12 @@ public class DateTimeHelper {
 
     /**
      * 当前时间提前一个月
+     *
      * @return 2015-10-23
      */
-    public static String getPerMonthDate(){
+    public static String getPerMonthDate() {
         Date date = new Date();//当前日期
-        SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DAY,Locale.CHINA);//格式化对象
+        SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DAY, Locale.CHINA);//格式化对象
         Calendar calendar = Calendar.getInstance();//日历对象
         calendar.setTime(date);                        //设置当前日期
         calendar.add(Calendar.MONTH, -1);           //月份减一
@@ -121,11 +135,12 @@ public class DateTimeHelper {
 
     /**
      * 当前时间延后一个月
+     *
      * @return 2015-12-23
      */
-    public static String getLastMonthDate(){
+    public static String getLastMonthDate() {
         Date date = new Date();//当前日期
-        SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DAY,Locale.CHINA);//格式化对象
+        SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DAY, Locale.CHINA);//格式化对象
         Calendar calendar = Calendar.getInstance();//日历对象
         calendar.setTime(date);                        //设置当前日期
         calendar.add(Calendar.MONTH, 1);           //月份加一
@@ -134,8 +149,9 @@ public class DateTimeHelper {
 
     /**
      * 计算时间差（单位：天）
+     *
      * @param startDate - "2015-11-23"
-     * @param endDate - "2015-12-20"
+     * @param endDate   - "2015-12-20"
      * @return 27（天）
      */
     public static String getTimeDifferenceDate(String startDate, String endDate) {
@@ -149,10 +165,12 @@ public class DateTimeHelper {
         }
         return "";
     }
+
     /**
      * 计算两个日期型的时间相差多少时间
+     *
      * @param startDate - DateTimeHelper.parseStringToDate("2015-11-23")
-     * @param endDate - DateTimeHelper.parseStringToDate("2015-12-20")
+     * @param endDate   - DateTimeHelper.parseStringToDate("2015-12-20")
      * @return 3周前
      */
     public static String twoDateDistance(Date startDate, Date endDate) {
@@ -175,11 +193,12 @@ public class DateTimeHelper {
             timeLong = timeLong / 1000 / 60 / 60 / 24 / 7;
             return timeLong + "周前";
         } else {
-            SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DAY,Locale.CHINA);
+            SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DAY, Locale.CHINA);
             sdf.setTimeZone(TimeZone.getTimeZone("GMT+08:00"));
             return sdf.format(startDate);
         }
     }
+
     /**
      * 判断两个日期的大小
      *
@@ -211,16 +230,16 @@ public class DateTimeHelper {
 
     /**
      * 将时间time字符串转化为Date对象
+     *
      * @param strTime - 1448208000000
      * @return Mon Nov 23 00:00:00 GMT+08:00 2015
      */
     public static Date parseFormatTimeToDate(String strTime) {
 
         Date date = new Date();
-        try{
+        try {
             date.setTime(Long.parseLong(strTime));
-        }
-        catch(NumberFormatException nfe){
+        } catch (NumberFormatException nfe) {
             nfe.printStackTrace();
         }
 
@@ -229,10 +248,11 @@ public class DateTimeHelper {
 
     /**
      * 获取格式化后Date字符串的Time值
+     *
      * @param dateStr 20151123 或者 2015/11/23 或者2015-11-23
      * @return 1448208000000
-     * */
-    public static long getParseDateTime(String dateStr){
+     */
+    public static long getParseDateTime(String dateStr) {
         long daterTime = 0;
         try {
             Date dt1 = parseStringToDate(dateStr);
@@ -245,16 +265,17 @@ public class DateTimeHelper {
 
     /**
      * 当前时间延后一个星期
+     *
      * @param startDate 2016-03-16
      * @return 2015-03-23
      */
-    public static String getLastWeekDate(String startDate){
+    public static String getLastWeekDate(String startDate) {
         String endDate = "";
         try {
             Date date = parseStringToDate(startDate);
             long startTime = date.getTime();
             long endTime = startTime + 7 * 24 * 60 * 60 * 1000;
-            endDate = getStrTime(endTime+"",FORMAT_DAY);
+            endDate = getStrTime(endTime + "", FORMAT_DAY);
         } catch (Exception e) {
         }
         return endDate;
@@ -262,8 +283,9 @@ public class DateTimeHelper {
 
     /**
      * 判断是否同一天【一般用来判断是否是今天】
-     * @param date  new Date()
-     * @param sameDate  DateTimeHelper.parseStringToDate("2015-12-20")
+     *
+     * @param date     new Date()
+     * @param sameDate DateTimeHelper.parseStringToDate("2015-12-20")
      * @return boolean false
      */
     public static boolean isSameDay(Date date, Date sameDate) {
@@ -280,5 +302,194 @@ public class DateTimeHelper {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 获取今天的时间范围
+     *
+     * @return 返回长度为2的字符串集合，如：[2017-11-03 00:00:00, 2017-11-03 24:00:00]
+     */
+    public static List<String> getToday() {
+        List<String> dataList = new ArrayList<>(2);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.add(Calendar.DATE, 0);
+        String today = dateFormat.format(calendar.getTime());
+        dataList.add(today + " 00:00:00");
+        dataList.add(today + " 24:00:00");
+        return dataList;
+    }
+
+    /**
+     * 获取昨天的时间范围
+     *
+     * @return 返回长度为2的字符串集合，如：[2017-11-02 00:00:00, 2017-11-02 24:00:00]
+     */
+    public static List<String> getYesterday() {
+        List<String> dataList = new ArrayList<>(2);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.add(Calendar.DATE, -1);
+        String yesterday = dateFormat.format(calendar.getTime());
+        dataList.add(yesterday + " 00:00:00");
+        dataList.add(yesterday + " 24:00:00");
+        return dataList;
+    }
+
+    /**
+     * 获取本周的时间范围
+     *
+     * @return 返回长度为2的字符串集合，如：[2017-10-30 00:00:00, 2017-11-05 24:00:00]
+     */
+    public static List<String> getCurrentWeek() {
+        List<String> dataList = new ArrayList<>(2);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setFirstDayOfWeek(Calendar.MONDAY);//设置周一为一周之内的第一天
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        String monday = dateFormat.format(calendar.getTime()) + " 00:00:00";
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        String sunday = dateFormat.format(calendar.getTime()) + " 24:00:00";
+        dataList.add(monday);
+        dataList.add(sunday);
+        return dataList;
+    }
+
+    /**
+     * 获取本周的时间范围
+     * @param dateType 默认1为本周，0为上周，2为下周
+     * @param date 当前日期
+     *
+     * @return 返回长度为2的字符串集合，如：[2017-10-30 , 2017-11-05 ]
+     */
+    public static List<String> getCurrentWeek(int dateType, Date date) {
+        List<String> dataList = new ArrayList<>(2);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setFirstDayOfWeek(Calendar.MONDAY);//设置周一为一周之内的第一天
+
+        //默认dateType = 1 是当前时间
+        calendar.setTime(date);
+        if (dateType == 0) {
+            calendar.add(Calendar.DATE, -7);
+        } else if (dateType == 2) {
+            calendar.add(Calendar.DATE, +7);
+        }
+
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        String monday = dateFormat.format(calendar.getTime());
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        String sunday = dateFormat.format(calendar.getTime());
+        dataList.add(monday);
+        dataList.add(sunday);
+        LogUtils.dTag("周日期---->", monday + "--" + sunday);
+        return dataList;
+    }
+
+
+    /**
+     * 获取本月的时间范围
+     *
+     * @return 返回长度为2的字符串集合，如：[2017-11-01, 2017-11-30 ]
+     */
+    public static List<String> getCurrentMonth(int dateType, Date date) {
+        List<String> dataList = new ArrayList<>(2);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance();
+
+        //默认dateType = 1 是当前时间
+        calendar.setTime(date);
+        if (dateType == 0) {
+            calendar.add(Calendar.MONTH, -1);
+        } else if (dateType == 2) {
+            calendar.add(Calendar.MONTH, +1);
+        }
+
+        calendar.add(Calendar.MONTH, 0);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        String firstDayOfMonth = dateFormat.format(calendar.getTime()) ;
+        calendar.add(Calendar.MONTH, 1);
+        calendar.set(Calendar.DAY_OF_MONTH, 0);
+        String lastDayOfMonth = dateFormat.format(calendar.getTime()) ;
+        dataList.add(firstDayOfMonth);
+        dataList.add(lastDayOfMonth);
+        LogUtils.dTag("月日期---->", firstDayOfMonth + "--" + lastDayOfMonth);
+        return dataList;
+    }
+
+    /**
+     * 获取本月的时间范围
+     *
+     * @return 返回长度为2的字符串集合，如：[2017-11-01 00:00:00, 2017-11-30 24:00:00]
+     */
+    public static List<String> getCurrentMonth() {
+        List<String> dataList = new ArrayList<>(2);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.add(Calendar.MONTH, 0);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        String firstDayOfMonth = dateFormat.format(calendar.getTime()) + " 00:00:00";
+        calendar.add(Calendar.MONTH, 1);
+        calendar.set(Calendar.DAY_OF_MONTH, 0);
+        String lastDayOfMonth = dateFormat.format(calendar.getTime()) + " 24:00:00";
+        dataList.add(firstDayOfMonth);
+        dataList.add(lastDayOfMonth);
+        return dataList;
+    }
+
+    public static int getCurrentMonthByDay(Date date){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        LogUtils.dTag("月天数---->", calendar.get(Calendar.DATE));
+        return calendar.get(Calendar.DATE);
+    }
+
+    /**
+     * 获取两个时间值之内的日期
+     * @param dBegin 起始日期
+     * @param dEnd 结束日期
+     * @return 日期之间的数据
+     */
+    public static List<Date> getDates(Date dBegin, Date dEnd) {
+        List<Date> lDate = new ArrayList<>();
+        lDate.add(dBegin);
+        Calendar calBegin = Calendar.getInstance();
+        // 使用给定的 Date 设置此 Calendar 的时间
+        calBegin.setTime(dBegin);
+        Calendar calEnd = Calendar.getInstance();
+        // 使用给定的 Date 设置此 Calendar 的时间
+        calEnd.setTime(dEnd);
+        // 测试此日期是否在指定日期之后
+        while (dEnd.after(calBegin.getTime())) {
+            // 根据日历的规则，为给定的日历字段添加或减去指定的时间量
+            calBegin.add(Calendar.DAY_OF_MONTH, 1);
+            lDate.add(calBegin.getTime());
+        }
+        return lDate;
+    }
+    /**
+     * 获取本年的时间范围
+     *
+     * @return 返回长度为2的字符串集合，如：[2017-01-01 00:00:00, 2017-12-31 24:00:00]
+     */
+    public static List<String> getCurrentYear() {
+        List<String> dataList = new ArrayList<>(2);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.add(Calendar.YEAR, 0);
+        calendar.set(Calendar.DAY_OF_YEAR, 1);
+        String firstDayOfYear = dateFormat.format(calendar.getTime()) + " 00:00:00";
+        calendar.add(Calendar.YEAR, 1);
+        calendar.set(Calendar.DAY_OF_YEAR, 0);
+        String lastDayOfYear = dateFormat.format(calendar.getTime()) + " 24:00:00";
+        dataList.add(firstDayOfYear);
+        dataList.add(lastDayOfYear);
+        return dataList;
     }
 }

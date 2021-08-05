@@ -65,7 +65,7 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
         mViewBinding.etContent.setOnClickListener(this)
         mViewBinding.rtSubmit.setOnClickListener(this)
 
-        initListener();
+        initListener()
     }
 
     override fun initData() {
@@ -130,6 +130,7 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
     }
 
     override fun registorUIChangeLiveDataCallBack() {
+        super.registorUIChangeLiveDataCallBack()
         mViewModel.submitData.observe(this, {
             showToast(it)
         })

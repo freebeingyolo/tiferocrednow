@@ -87,7 +87,7 @@ object DeviceRepository {
             mapOf(
                 "deviceType" to deviceType,
                 "startDate" to startDate,
-                "startDate" to endDate,
+                "endDate" to endDate,
             )
         )
     }

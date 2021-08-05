@@ -18,6 +18,7 @@ import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseFragment
 import com.css.base.uibase.viewmodel.DefaultViewModel
+import com.css.ble.ui.DataStatisticsActivity
 import com.css.service.data.UserData
 import com.css.service.router.ARouterUtil
 import com.css.service.utils.CacheKey
@@ -67,11 +68,12 @@ class SettingFragment : BaseFragment<DefaultViewModel, FragmentSettingBinding>()
             }
             R.id.rl_feedback -> {
                 activity?.let {
-                    if (NetworkUtils.isConnected()) {
-                        FeedbackActivity.starActivity(it)
-                    }else{
-                        showCenterToast("网络异常")
-                    }
+                    DataStatisticsActivity.starActivity(it)
+//                    if (NetworkUtils.isConnected()) {
+//                        FeedbackActivity.starActivity(it)
+//                    }else{
+//                        showCenterToast("网络异常")
+//                    }
                 }
             }
             R.id.exit_login -> {

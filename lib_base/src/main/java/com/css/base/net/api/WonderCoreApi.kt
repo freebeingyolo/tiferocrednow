@@ -117,7 +117,7 @@ internal interface WonderCoreApi {
 
         //查询单杠&健腹轮数据
         @GET("appHistory/queryPushUps")
-        suspend fun queryPushUps(@QueryMap map: Map<String,Any>): CommonResponse<List<PullUpData>>
+        suspend fun queryPushUps(@QueryMap map: Map<String,String>): CommonResponse<List<PullUpData>>
     }
     interface Course {
         //获取视频资源
