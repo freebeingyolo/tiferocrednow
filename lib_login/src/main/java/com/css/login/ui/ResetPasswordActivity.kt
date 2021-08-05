@@ -58,7 +58,7 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel, ActivityReset
     override fun onClick(v: View) {
         when (v) {
             mViewBinding.tvSubmit -> {
-                if (NetworkUtils.isAvailable()) {
+                if (NetworkUtils.isConnected()) {
                     mViewModel.checkData(
                         mViewBinding.etPhone.text.toString(),
                         mViewBinding.etPassword.text.toString(),
@@ -70,7 +70,7 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel, ActivityReset
                 }
             }
             mViewBinding.tvSendCode -> {
-                if (NetworkUtils.isAvailable()) {
+                if (NetworkUtils.isConnected()) {
                     mViewModel.sendCode(mViewBinding.etPhone.text.toString())
                 } else {
                     showNetworkErrorDialog()

@@ -105,7 +105,7 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>(), View
                 ARouterUtil.openRegister()
             }
             mViewBinding.tvLogin -> {
-                if (NetworkUtils.isAvailable()) {
+                if (NetworkUtils.isConnected()) {
                     mViewModel.checkPhoneAnddPassword(
                         mViewBinding.etTelephone.text.toString(),
                         mViewBinding.etPassword.text.toString()

@@ -154,108 +154,98 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             .observe(viewLifecycleOwner) {
                 //这里更新数据，it是这次变动的数据
                 val datas = WonderCoreCache.getDatas(BondDeviceData::class.java, *WonderCoreCache.deviceCacheKeys)
-                LogUtils.d("WonderCoreCache.getLiveDataListMerge:$it,datas:$datas")
+                mData.clear()
+                mViewBinding?.gotoMeasure?.visibility = View.VISIBLE
+                mViewBinding?.tvNoneWeight?.visibility = View.VISIBLE
+                mViewBinding?.llCurrentWeight?.visibility = View.GONE
+                for (item in datas) {
+                    when(item.deviceCategory){
+                        "体脂秤"->{
+                            item.deviceImg = R.mipmap.card_weight
+                            mData.add(item)
+                            mViewBinding?.llCurrentWeight?.visibility = View.VISIBLE
+                            mViewBinding?.gotoMeasure?.visibility = View.GONE
+                            mViewBinding?.tvNoneWeight?.visibility = View.GONE
+                        }
+                        "健腹轮"->{
+                            item.deviceImg = R.mipmap.card_wheel
+                            mData.add(item)
+                        }
+                        else->{
+                            item.deviceImg = R.mipmap.card_wheel
+                            mData.add(item)
+                        }
+                    }
+
+                }
+                if (mData.size == 0) {
+                    mViewBinding?.llDevice?.visibility = View.GONE
+                }else{
+                    mViewBinding?.llDevice?.visibility = View.VISIBLE
+                }
+                mMainDeviceAdapter.setItems(mData)
+
             }
         //使用LiveData代替SharedPreference更新体脂秤、健腹轮绑定状态
-        WonderCoreCache.getLiveData<BondDeviceData>(CacheKey.BOND_WEIGHT_INFO)
-            .observe(viewLifecycleOwner) {
-//            if (it != null) {
-//                mViewBinding?.llDevice?.visibility = View.VISIBLE
-//                mViewBinding?.deviceSpace?.visibility = View.GONE
-//                mViewBinding?.deviceWeight?.visibility = View.VISIBLE
-//                mViewBinding?.llCurrentWeight?.visibility = View.VISIBLE
-//                mViewBinding?.gotoMeasure?.visibility = View.GONE
-//                mViewBinding?.tvNoneWeight?.visibility = View.GONE
-//            } else {
-//                if (mViewBinding?.deviceWheel?.visibility == View.VISIBLE) {
-//                    mViewBinding?.deviceWeight?.visibility = View.GONE
-//                    mViewBinding?.deviceSpace?.visibility = View.VISIBLE
+//        WonderCoreCache.getLiveData<BondDeviceData>(CacheKey.BOND_WEIGHT_INFO)
+//            .observe(viewLifecycleOwner) {
+//                if (it != null) {
+//                    for (item in mData) {
+//                        if (item.deviceCategory == "体脂秤") {
+//                            mData.remove(item)
+//                            break
+//                        }
+//                    }
+//                    mViewBinding?.llDevice?.visibility = View.VISIBLE
+//                    it.deviceImg = R.mipmap.card_weight
+//                    mData.add(it)
+//                    mViewBinding?.llCurrentWeight?.visibility = View.VISIBLE
+//                    mViewBinding?.gotoMeasure?.visibility = View.GONE
+//                    mViewBinding?.tvNoneWeight?.visibility = View.GONE
 //                } else {
-//                    mViewBinding?.llDevice?.visibility = View.GONE
-//                    mViewBinding?.deviceWeight?.visibility = View.GONE
+//                    for (item in mData) {
+//                        if (item.deviceCategory == "体脂秤") {
+//                            mData.remove(item)
+//                            break
+//                        }
+//                    }
+//                    mViewBinding?.gotoMeasure?.visibility = View.VISIBLE
+//                    mViewBinding?.tvNoneWeight?.visibility = View.VISIBLE
+//                    mViewBinding?.llCurrentWeight?.visibility = View.GONE
+//                    if (mData.size == 0) {
+//                        mViewBinding?.llDevice?.visibility = View.GONE
+//                    }
 //                }
-//                mViewBinding?.gotoMeasure?.visibility = View.VISIBLE
-//                mViewBinding?.tvNoneWeight?.visibility = View.VISIBLE
-//                mViewBinding?.llCurrentWeight?.visibility = View.GONE
+//                mMainDeviceAdapter.setItems(mData)
 //            }
-                if (it != null) {
-                    for (item in mData) {
-                        if (item.deviceCategory == "体脂秤") {
-                            mData.remove(item)
-                            break
-                        }
-                    }
-                    mViewBinding?.llDevice?.visibility = View.VISIBLE
-                    it.deviceImg = R.mipmap.card_weight
-                    mData.add(it)
-                    mViewBinding?.llCurrentWeight?.visibility = View.VISIBLE
-                    mViewBinding?.gotoMeasure?.visibility = View.GONE
-                    mViewBinding?.tvNoneWeight?.visibility = View.GONE
-                } else {
-                    for (item in mData) {
-                        if (item.deviceCategory == "体脂秤") {
-                            mData.remove(item)
-                            break
-                        }
-                    }
-                    mViewBinding?.gotoMeasure?.visibility = View.VISIBLE
-                    mViewBinding?.tvNoneWeight?.visibility = View.VISIBLE
-                    mViewBinding?.llCurrentWeight?.visibility = View.GONE
-                    if (mData.size == 0) {
-                        mViewBinding?.llDevice?.visibility = View.GONE
-                    }
-                }
-                mMainDeviceAdapter.setItems(mData)
-            }
-
-        WonderCoreCache.getLiveData<BondDeviceData>(CacheKey.BOND_WHEEL_INFO)
-            .observe(viewLifecycleOwner) {
-
-//            if (it != null) {
-//                mViewBinding?.llDevice?.visibility = View.VISIBLE
-//                if (mViewBinding?.deviceWeight?.visibility == View.GONE) {
-//                    mViewBinding?.deviceSpace?.visibility = View.VISIBLE
-//                } else {
-//                    mViewBinding?.deviceSpace?.visibility = View.GONE
-//                }
-//                mViewBinding?.deviceWheel?.visibility = View.VISIBLE
 //
-//            } else {
-//                if (mViewBinding?.deviceWeight?.visibility == View.VISIBLE) {
-//                    mViewBinding?.deviceWheel?.visibility = View.INVISIBLE
-//                    mViewBinding?.deviceSpace?.visibility = View.GONE
+//        WonderCoreCache.getLiveData<BondDeviceData>(CacheKey.BOND_WHEEL_INFO)
+//            .observe(viewLifecycleOwner) {
+//
+//                if (it != null) {
+//                    for (item in mData) {
+//                        if (item.deviceCategory == "健腹轮") {
+//                            mData.remove(item)
+//                            break
+//                        }
+//                    }
+//                    mViewBinding?.llDevice?.visibility = View.VISIBLE
+//                    it.deviceImg = R.mipmap.card_wheel
+//                    mData.add(it)
 //                } else {
-//                    mViewBinding?.deviceWheel?.visibility = View.INVISIBLE
-//                    mViewBinding?.deviceSpace?.visibility = View.GONE
-//                    mViewBinding?.llDevice?.visibility = View.GONE
+//                    for (item in mData) {
+//                        if (item.deviceCategory == "健腹轮") {
+//                            mData.remove(item)
+//                            break
+//                        }
+//                    }
+//                    if (mData.size == 0) {
+//                        mViewBinding?.llDevice?.visibility = View.GONE
+//                    }
 //                }
+//                mMainDeviceAdapter.setItems(mData)
 //            }
-
-                if (it != null) {
-                    for (item in mData) {
-                        if (item.deviceCategory == "健腹轮") {
-                            mData.remove(item)
-                            break
-                        }
-                    }
-                    mViewBinding?.llDevice?.visibility = View.VISIBLE
-                    it.deviceImg = R.mipmap.card_wheel
-                    mData.add(it)
-                } else {
-                    for (item in mData) {
-                        if (item.deviceCategory == "健腹轮") {
-                            mData.remove(item)
-                            break
-                        }
-                    }
-                    if (mData.size == 0) {
-                        mViewBinding?.llDevice?.visibility = View.GONE
-                    }
-                }
-                mMainDeviceAdapter.setItems(mData)
-            }
         WheelMeasureVM.stateObsrv.observe(viewLifecycleOwner) {
-//            mViewBinding!!.wheelDeviceState.text = WheelMeasureVM.stateStr
             for (item in mData) {
                 if (item.deviceCategory == "健腹轮") {
                     item.deviceConnect = WheelMeasureVM.stateStr

@@ -206,7 +206,7 @@ open class AboutUsActivity : BaseActivity<AboutUsViewModel, ActivityAboutUsBindi
                 TermsActivity.starActivity(this, TermsActivity.TERMS_PRIVACY)
             }
             mViewBinding.rlCheckUpdate -> {
-                if (NetworkUtils.isAvailable()) {
+                if (NetworkUtils.isConnected()) {
                     mViewModel.getUpGrade()
                 } else {
                     CommonAlertDialog(this).apply {

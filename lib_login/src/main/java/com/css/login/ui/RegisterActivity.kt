@@ -68,7 +68,7 @@ class RegisterActivity : BaseActivity<RegisterViewModel, ActivityRegisterBinding
     override fun onClick(v: View) {
         when (v) {
             mViewBinding.tvRegisterBtn -> {
-                if (NetworkUtils.isAvailable()) {
+                if (NetworkUtils.isConnected()) {
                     mViewModel.checkData(
                         mViewBinding.etTelephone.text.toString(),
                         mViewBinding.etPassword.text.toString(),
@@ -87,7 +87,7 @@ class RegisterActivity : BaseActivity<RegisterViewModel, ActivityRegisterBinding
                 finish()
             }
             mViewBinding.tvSendCode -> {
-                if (NetworkUtils.isAvailable()) {
+                if (NetworkUtils.isConnected()) {
                     mViewModel.sendCode(mViewBinding.etTelephone.text.toString())
                 } else {
                     showNetworkErrorDialog()
