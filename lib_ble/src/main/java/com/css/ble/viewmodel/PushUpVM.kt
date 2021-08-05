@@ -7,7 +7,7 @@ import java.util.*
 /**
  *@author baoyuedong
  *@time 2021-08-03 17:23
- *@description 单杠
+ *@description 俯卧撑板
  */
 object PushUpVM : BaseDeviceScan2ConnVM(DeviceType.PUSH_UP) {
     val UUID_SRVC = "0000ffb0-0000-1000-8000-00805f9b34fb"

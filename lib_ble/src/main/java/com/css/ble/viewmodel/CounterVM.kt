@@ -7,7 +7,7 @@ import java.util.*
 /**
  *@author baoyuedong
  *@time 2021-08-03 17:23
- *@description 单杠
+ *@description 计数器
  */
 object CounterVM : BaseDeviceScan2ConnVM(DeviceType.COUNTER) {
     val UUID_SRVC = "0000ffb0-0000-1000-8000-00805f9b34fb"

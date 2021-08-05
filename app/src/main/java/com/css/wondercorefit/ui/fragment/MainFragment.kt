@@ -1,5 +1,6 @@
 package com.css.wondercorefit.ui.fragment
 
+import LogUtils
 import android.content.*
 import android.os.*
 import android.util.Log
@@ -14,7 +15,6 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.css.base.dialog.ToastDialog
 import com.css.base.uibase.BaseFragment
 import com.css.ble.bean.BondDeviceData
-import com.css.ble.bean.DeviceType
 import com.css.ble.bean.WeightBondData
 import com.css.ble.viewmodel.WheelMeasureVM
 import com.css.service.data.StepData
@@ -150,6 +150,12 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     }
 
     private fun showDevice() {
+        WonderCoreCache.getLiveDataMerge<BondDeviceData>(*WonderCoreCache.deviceCacheKeys)
+            .observe(viewLifecycleOwner) {
+                //这里更新数据，it是这次变动的数据
+                val datas = WonderCoreCache.getDatas(BondDeviceData::class.java, *WonderCoreCache.deviceCacheKeys)
+                LogUtils.d("WonderCoreCache.getLiveDataListMerge:$it,datas:$datas")
+            }
         //使用LiveData代替SharedPreference更新体脂秤、健腹轮绑定状态
         WonderCoreCache.getLiveData<BondDeviceData>(CacheKey.BOND_WEIGHT_INFO)
             .observe(viewLifecycleOwner) {

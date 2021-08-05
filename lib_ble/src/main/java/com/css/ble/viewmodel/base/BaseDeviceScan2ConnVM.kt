@@ -236,7 +236,7 @@ abstract class BaseDeviceScan2ConnVM(val deviceType: DeviceType) :
             {
                 withContext(Dispatchers.IO) {
                     val ret = DeviceRepository.bindDevice(d.deviceCategory, d.displayName, d.mac)
-                    takeIf { ret.isSuccess }.let { BondDeviceData.setDevice(DeviceType.WHEEL, BondDeviceData(ret.data!!)) }
+                    takeIf { ret.isSuccess }.let { BondDeviceData.setDevice(deviceType, BondDeviceData(ret.data!!)) }
                     ret
                 }
             },

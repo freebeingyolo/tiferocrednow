@@ -71,6 +71,7 @@ class BondDeviceData(
 
     companion object {
 
+
         fun displayName(type: DeviceType): String {
             val data = getDevice(type)
             return if (data == null) {

@@ -106,7 +106,7 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
         mViewModel.deviceInfos.observe(this, {
-            Log.d(TAG, "mViewModel._deviceInfos：$it")
+            //Log.d(TAG, "mViewModel._deviceInfos：$it")
             mAdapter.mList = it
             mAdapter.notifyDataSetChanged()
         })
@@ -124,7 +124,7 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
         class MyViewHolder(itemView: View, val binding: LayoutDeviceItemBinding) : RecyclerView.ViewHolder(itemView)
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-            var binding = LayoutDeviceItemBinding.inflate(
+            val binding = LayoutDeviceItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -134,7 +134,7 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
 
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
             mList?.let {
-                var binding = holder.binding;
+                val binding = holder.binding
                 binding.name.text = it[position].name
                 binding.icon.setImageResource(it[position].icon)
                 binding.container.setOnClickListener {
