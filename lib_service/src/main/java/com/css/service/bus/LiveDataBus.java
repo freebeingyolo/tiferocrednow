@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.Transformations;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -22,7 +23,7 @@ import java.util.Map;
  */
 public final class LiveDataBus {
 
-    private final Map<String, BusMutableLiveData<Object>> bus;
+    private final Map<String, LiveData<Object>> bus;
 
     private LiveDataBus() {
         bus = new HashMap<>();
@@ -36,11 +37,26 @@ public final class LiveDataBus {
         return SingletonHolder.DEFAULT_BUS;
     }
 
+    public boolean contains(String key) {
+        return bus.containsKey(key);
+    }
+
+    public LiveData<Object> remove(String key) {
+        return bus.remove(key);
+    }
+
     public <T> MutableLiveData<T> with(String key) {
         if (!bus.containsKey(key)) {
             bus.put(key, new BusMutableLiveData<>());
         }
         return (MutableLiveData<T>) bus.get(key);
+    }
+
+    public <T> MediatorLiveData<T> withMediaLiveData(String key) {
+        if (!bus.containsKey(key)) {
+            bus.put(key, new BusMediatorLiveData<>());
+        }
+        return (MediatorLiveData<T>) bus.get(key);
     }
 
     public <T> MutableLiveData<T> with(Class<T> cls) {
@@ -51,7 +67,7 @@ public final class LiveDataBus {
         if (!bus.containsKey(key)) {
             bus.put(key, new BusMutableLiveData<>());
         }
-        return bus.get(key);
+        return (MutableLiveData) bus.get(key);
     }
 
     private static class ObserverWrapper<T> implements Observer<T> {
@@ -89,6 +105,14 @@ public final class LiveDataBus {
     public static class BusMediatorLiveData<T> extends MediatorLiveData<T> {
 
         private Map<Observer, Observer> observerMap = new HashMap<>();
+
+        public BusMediatorLiveData(T value) {
+            super();
+        }
+
+        public BusMediatorLiveData() {
+            super();
+        }
 
         public void setValue(T value) {
             if (Looper.myLooper() == Looper.getMainLooper()) {
@@ -159,6 +183,14 @@ public final class LiveDataBus {
     public static class BusMutableLiveData<T> extends MutableLiveData<T> {
 
         private Map<Observer, Observer> observerMap = new HashMap<>();
+
+        public BusMutableLiveData(T value) {
+            super(value);
+        }
+
+        public BusMutableLiveData() {
+            super();
+        }
 
         public void setValue(T value) {
             if (Looper.myLooper() == Looper.getMainLooper()) {

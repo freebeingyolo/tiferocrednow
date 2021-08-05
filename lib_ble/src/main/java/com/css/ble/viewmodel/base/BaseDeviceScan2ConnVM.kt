@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothGattService
 import androidx.annotation.NonNull
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import cn.wandersnail.ble.*
 import cn.wandersnail.ble.callback.ScanListener
 import cn.wandersnail.commons.observer.Observe
@@ -18,6 +19,7 @@ import com.css.ble.bean.DeviceType
 import com.css.ble.viewmodel.IBleConnect
 import com.css.ble.viewmodel.IBleScan
 import com.css.res.R
+import com.css.service.bus.LiveDataBus.BusMutableLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -28,7 +30,7 @@ import java.util.*
  *@description  设备扫描ViewModel基类
  */
 abstract class BaseDeviceScan2ConnVM(val deviceType: DeviceType) :
-    BaseDeviceVM(), IBleScan, IBleConnect,EventObserver {
+    BaseDeviceVM(), IBleScan, IBleConnect, EventObserver {
 
     enum class FoundWay {
         NAME,
@@ -65,14 +67,28 @@ abstract class BaseDeviceScan2ConnVM(val deviceType: DeviceType) :
 
     private var avaliableDevice: Device? = null
     private var connection: Connection? = null
-    val stateObsrv: LiveData<State> by lazy { MutableLiveData(State.disconnected) }
-    protected var state: State
+    val stateObsrv: LiveData<State> by lazy { BusMutableLiveData(State.disconnected) }
+    var state: State
         set(value) {
             (stateObsrv as MutableLiveData).value = value
         }
         get() = stateObsrv.value!!
 
+    //Transform
 
+    //Transformations
+    val isConnecting = Transformations.map(stateObsrv) {
+        it >= State.connecting && it < State.discovered
+    }
+    val connectStateTxt = Transformations.map(stateObsrv) {
+        if (it >= State.discovered) {
+            R.string.device_connected
+        } else {
+            if (it == State.disconnected) R.string.device_disconnected
+            else R.string.device_connecting
+        }
+    }
+    
     override fun onTimerTimeout() {
         state = State.timeOut
         connection?.disconnect()
@@ -252,5 +268,27 @@ abstract class BaseDeviceScan2ConnVM(val deviceType: DeviceType) :
                 failed(code, msg, d)
             }
         )
+    }
+
+    fun fetchRecommentation() {
+    }
+
+    val easterEggs:EasterEggs by lazy { EasterEggs() }
+    inner class EasterEggs {
+        //volatile适用于改的所有操作或者写的所有操作在同一线程
+        private var count = 0
+        private var clickTime = 0L
+
+        fun click() {
+            if (count == 0) clickTime = System.currentTimeMillis()
+            count++
+            if (count > 5) {//1s之内点击次数大于5，触发disconnect
+                if (System.currentTimeMillis() - clickTime < 1000) {
+                    disconnect()
+                }
+                count = 0
+            }
+
+        }
     }
 }

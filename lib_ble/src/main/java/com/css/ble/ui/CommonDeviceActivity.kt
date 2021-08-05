@@ -28,24 +28,39 @@ class CommonDeviceActivity : BaseDeviceActivity<BaseDeviceScan2ConnVM, ActivityB
 
     override fun onCreate(savedInstanceState: Bundle?) {
         deviceType = DeviceType.values()[intent.getIntExtra("deviceType", 0)]
+        LogUtils.d("deviceType:$deviceType")
         super.onCreate(savedInstanceState)
     }
 
     override fun initData() {
         super.initData()
         mViewModel.workMode = WorkMode.values()[(intent.getIntExtra("mode", 0))]
-        FragmentUtils.changeFragment(
-            CommonBondBeginFragment::class.java,
-            "${javaClass.simpleName}#$deviceType",
-            FragmentUtils.Option.OPT_REPLACE,
-            { CommonBondBeginFragment(deviceType, mViewModel) }
-        )
+        when (mViewModel.workMode) {
+            WorkMode.BOND -> {
+                FragmentUtils.changeFragment(
+                    CommonBondBeginFragment::class.java,
+                    "${javaClass.simpleName}#$deviceType",
+                    FragmentUtils.Option.OPT_REPLACE,
+                    { CommonBondBeginFragment(deviceType, mViewModel) }
+                )
+            }
+            WorkMode.MEASURE ->{
+                FragmentUtils.changeFragment(
+                    CommonBondBeginFragment::class.java,
+                    "${javaClass.simpleName}#$deviceType",
+                    FragmentUtils.Option.OPT_REPLACE,
+                    { CommonBondBeginFragment(deviceType, mViewModel) }
+                )
+            }
+        }
+
         startService(Intent(this, BleEnvService::class.java))
         bindService(Intent(this, BleEnvService::class.java), object : ServiceConnection {
             override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
                 val binder: BleEnvService.MyBinder = service as BleEnvService.MyBinder
-                binder.setViewModel(mViewModel,mViewModel)
+                binder.setViewModel(mViewModel, mViewModel)
             }
+
             override fun onServiceDisconnected(name: ComponentName?) {
             }
         }, BIND_AUTO_CREATE)

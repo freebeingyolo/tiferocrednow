@@ -2,14 +2,13 @@ package com.css.ble.bean
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.lifecycle.LiveData
 import com.blankj.utilcode.util.ActivityUtils
 import com.css.ble.R
-
 import com.css.service.data.BaseData
 import com.css.service.data.DeviceData
 import com.css.service.utils.CacheKey
 import com.css.service.utils.WonderCoreCache
-import java.lang.IllegalArgumentException
 
 /**
  * @author yuedong
@@ -19,23 +18,32 @@ enum class DeviceType(
     val alias: String,
     @StringRes val nameId: Int,
     @DrawableRes val icon: Int,
+    @DrawableRes val icon2: Int,
     val cacheKey: CacheKey
 ) {
-    WEIGHT("体脂秤", R.string.device_weight, R.mipmap.icon_weight, CacheKey.BOND_WEIGHT_INFO),
-    WHEEL("健腹轮", R.string.device_wheel, R.mipmap.icon_abroller, CacheKey.BOND_WHEEL_INFO),
+    WEIGHT("体脂秤", R.string.device_weight, R.mipmap.icon_weight, R.mipmap.card_weight, CacheKey.BOND_WEIGHT_INFO),
+    WHEEL("健腹轮", R.string.device_wheel, R.mipmap.icon_abroller, R.mipmap.card_wheel, CacheKey.BOND_WHEEL_INFO),
 
     //HORIZONTAL_BAR("单杠");
-    HORIZONTAL_BAR("单杠", R.string.device_horizontalbar, R.mipmap.icon_horizontalbar, CacheKey.BOND_HORIZONTALBAR_INFO),
-    PUSH_UP("俯卧撑", R.string.device_pushup, R.mipmap.icon_pushup, CacheKey.BOND_PUSHUP_INFO),
-    COUNTER("计数器", R.string.device_counter, R.mipmap.icon_counter, CacheKey.BOND_COUNTER_INFO),
+    HORIZONTAL_BAR("单杠", R.string.device_horizontalbar, R.mipmap.icon_horizontalbar, R.mipmap.card_wheel, CacheKey.BOND_HORIZONTALBAR_INFO),
+    PUSH_UP("俯卧撑", R.string.device_pushup, R.mipmap.icon_pushup, R.mipmap.card_wheel, CacheKey.BOND_PUSHUP_INFO),
+    COUNTER("计数器", R.string.device_counter, R.mipmap.icon_counter, R.mipmap.card_wheel, CacheKey.BOND_COUNTER_INFO),
     ;
 
     companion object {
+        //通过alias寻找DevcieType
         fun findByAlias(alias: String): DeviceType {
             for (d in values()) {
                 if (d.alias == alias) return d
             }
             throw IllegalArgumentException("$alias is not match DeviceType.values")
+        }
+
+        fun findByCacheKey(k: CacheKey): DeviceType {
+            for (d in values()) {
+                if (d.cacheKey == k) return d
+            }
+            throw IllegalArgumentException("$k is not match DeviceType.values")
         }
     }
 }
@@ -48,8 +56,8 @@ class BondDeviceData(
     var alias: String? = null
     var id: Int = 0
     var deviceCategory: String = ""
-    val cacheKey: DeviceType get() = DeviceType.values()[type]
-    var deviceImg: Int = 0
+    val deviceType: DeviceType get() = DeviceType.values()[type]
+    val deviceImg: Int get() = deviceType.icon2
     var deviceConnect: String = "未连接"
 
     constructor(d: DeviceData) : this() {
@@ -71,7 +79,6 @@ class BondDeviceData(
 
     companion object {
 
-
         fun displayName(type: DeviceType): String {
             val data = getDevice(type)
             return if (data == null) {
@@ -84,8 +91,20 @@ class BondDeviceData(
         fun getDevice(key: DeviceType): BondDeviceData? =
             WonderCoreCache.getData(key.cacheKey, BondDeviceData::class.java)
 
-        fun setDevice(key: DeviceType, data: BondDeviceData?) =
+        fun setDevice(key: DeviceType, data: BondDeviceData?) {
             WonderCoreCache.saveData(key.cacheKey, data)
+        }
+
+        fun getDeviceLiveDataMerge(vararg keys: DeviceType = DeviceType.values()): LiveData<Map<DeviceType, BondDeviceData?>> {
+            return WonderCoreCache.getLiveDataMerge<BondDeviceData, Map<DeviceType, BondDeviceData?>>(
+                { k, v -> mapOf(DeviceType.findByCacheKey(k) to v) },
+                *keys.map { k -> k.cacheKey }.toTypedArray()
+            )
+        }
+
+        fun getDevices(vararg keys: DeviceType = DeviceType.values()): List<BondDeviceData> {
+            return WonderCoreCache.getDatas(BondDeviceData::class.java, *keys.map { k -> k.cacheKey }.toTypedArray())
+        }
     }
 
     val displayName: String

@@ -150,42 +150,47 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     }
 
     private fun showDevice() {
-        WonderCoreCache.getLiveDataMerge<BondDeviceData>(*WonderCoreCache.deviceCacheKeys)
-            .observe(viewLifecycleOwner) {
-                //这里更新数据，it是这次变动的数据
-                val datas = WonderCoreCache.getDatas(BondDeviceData::class.java, *WonderCoreCache.deviceCacheKeys)
-                mData.clear()
-                mViewBinding?.gotoMeasure?.visibility = View.VISIBLE
-                mViewBinding?.tvNoneWeight?.visibility = View.VISIBLE
-                mViewBinding?.llCurrentWeight?.visibility = View.GONE
-                for (item in datas) {
-                    when(item.deviceCategory){
-                        "体脂秤"->{
-                            item.deviceImg = R.mipmap.card_weight
-                            mData.add(item)
-                            mViewBinding?.llCurrentWeight?.visibility = View.VISIBLE
-                            mViewBinding?.gotoMeasure?.visibility = View.GONE
-                            mViewBinding?.tvNoneWeight?.visibility = View.GONE
-                        }
-                        "健腹轮"->{
-                            item.deviceImg = R.mipmap.card_wheel
-                            mData.add(item)
-                        }
-                        else->{
-                            item.deviceImg = R.mipmap.card_wheel
-                            mData.add(item)
-                        }
-                    }
+        BondDeviceData.getDeviceLiveDataMerge().observe(viewLifecycleOwner) {
+            val devices = BondDeviceData.getDevices()
+            //it为map，值为null表示删除，key为设备类型
+            LogUtils.d("it-->"+it)
 
+
+        }
+
+        WonderCoreCache.getLiveDataMerge<BondDeviceData>(*WonderCoreCache.deviceCacheKeys).observe(viewLifecycleOwner) {
+            //这里更新数据，it是这次变动的数据
+            LogUtils.d("it-->"+it)
+            val datas = WonderCoreCache.getDatas(BondDeviceData::class.java, *WonderCoreCache.deviceCacheKeys)
+            mData.clear()
+            mViewBinding?.gotoMeasure?.visibility = View.VISIBLE
+            mViewBinding?.tvNoneWeight?.visibility = View.VISIBLE
+            mViewBinding?.llCurrentWeight?.visibility = View.GONE
+            for (item in datas) {
+                when (item.deviceCategory) {
+                    "体脂秤" -> {
+                        mData.add(item)
+                        mViewBinding?.llCurrentWeight?.visibility = View.VISIBLE
+                        mViewBinding?.gotoMeasure?.visibility = View.GONE
+                        mViewBinding?.tvNoneWeight?.visibility = View.GONE
+                    }
+                    "健腹轮" -> {
+                        mData.add(item)
+                    }
+                    else -> {
+                        mData.add(item)
+                    }
                 }
-                if (mData.size == 0) {
-                    mViewBinding?.llDevice?.visibility = View.GONE
-                }else{
-                    mViewBinding?.llDevice?.visibility = View.VISIBLE
-                }
-                mMainDeviceAdapter.setItems(mData)
 
             }
+            if (mData.size == 0) {
+                mViewBinding?.llDevice?.visibility = View.GONE
+            } else {
+                mViewBinding?.llDevice?.visibility = View.VISIBLE
+            }
+            mMainDeviceAdapter.setItems(mData)
+
+        }
         //使用LiveData代替SharedPreference更新体脂秤、健腹轮绑定状态
 //        WonderCoreCache.getLiveData<BondDeviceData>(CacheKey.BOND_WEIGHT_INFO)
 //            .observe(viewLifecycleOwner) {

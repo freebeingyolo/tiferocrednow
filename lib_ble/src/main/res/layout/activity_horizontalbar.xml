@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <import type="com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM.State" />
+
+        <import type="android.view.View" />
+
+        <import type="com.css.base.utils.BindingUtils" />
+
+        <variable
+            name="model"
+            type="com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/ll_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_gray"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        tools:context=".ui.WeightMeasureActivity">
+<!--
+
+        <com.css.base.view.ToolBarView
+            android:id="@+id/toolBarView"
+            style="@style/base_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/common_toolbar_height"
+            android:background="@color/bg_gray"
+            android:minHeight="44dp"
+            android:navigationIcon="@null"
+            android:visibility="gone"
+            app:centerText=""
+            app:centerTextColor="@color/common_black_color"
+            app:leftImageView="@drawable/ic_common_back_black"
+            app:popupTheme="@style/popup_theme"
+            app:rightTextColor="@color/common_black_color"
+            app:showBottomLine="false" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="173dp"
+            android:layout_height="173dp"
+            android:layout_marginTop="3dp"
+            android:onClick="@{v->model.easterEggs.click()}"
+            android:src="@mipmap/icon_abroller" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/bg_while_radius4">
+
+            <TextView
+                android:id="@+id/connectState"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="22dp"
+                android:text="@{model.connectStateTxt}"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="@{model.stateObsrv.ordinal() > State.discovered.ordinal() ? View.VISIBLE:View.GONE,default=gone}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/exerciseDuration"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@{model.exerciseDurationTxt}"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    tools:text="00:30:00" />
+
+                <TextView
+                    android:id="@+id/exerciseDurationTips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="累计使用时长"
+                    android:textColor="#666666"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+            <pl.droidsonroids.gif.GifImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="28dp"
+                android:src="@drawable/loading_git"
+                android:visibility="@{model.isConnecting ? View.VISIBLE :View.GONE,default=gone}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.css.base.view.ElectricityView
+                android:id="@+id/electricity_view"
+                android:layout_width="18dp"
+                android:layout_height="10dp"
+                android:layout_marginEnd="4dp"
+                android:visibility="@{model.stateObsrv.ordinal() >= State.discovered.ordinal() ? View.VISIBLE : View.GONE,default=gone}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/batteryLevel"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/batteryLevel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="28dp"
+                android:text="@{model.batteryLevelTxt}"
+                android:textColor="@color/black"
+                android:textSize="13sp"
+                android:visibility="@{model.stateObsrv.ordinal() >= State.discovered.ordinal()? View.VISIBLE : View.GONE,default=gone}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/bg_while_radius4"
+            android:orientation="horizontal">
+            &lt;!&ndash;  android:visibility="@{model.stateObsrv.ordinal() >= State.discovered.ordinal() ? View.VISIBLE : View.GONE,default=gone}" &ndash;&gt;
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/exerciseCount"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1.5"
+                    android:gravity="center"
+                    android:text="@{model.exerciseCountTxt,default=`&#45;&#45;`}"
+                    android:textColor="@color/black"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="本次训练个数"
+                    android:textColor="#666666"
+                    android:textSize="12sp" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1.5"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/exerciseKcal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{model.exerciseKcalTxt,default=`&#45;&#45;`}"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/exerciseKcalUnit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="25dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_toStartOf="@+id/exerciseKcalUnit"
+                        android:gravity="bottom"
+                        android:text="kcal"
+                        android:textColor="@color/text_color"
+                        android:textSize="12sp"
+                        android:visibility="@{model.exerciseKcalTxt.equals(`&#45;&#45;`) ? View.GONE:View.VISIBLE,default=gone}"
+
+                        />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="本次消耗热量"
+                    android:textColor="#666666"
+                    android:textSize="12sp" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_while_radius4"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="11dp"
+                android:gravity="center_vertical"
+                android:text="玩法推荐"
+                android:textColor="@color/black"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_play_recommend"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:itemCount="3"
+                tools:listitem="@layout/layout_play_recommend_item" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_marginTop="45dp"
+            android:background="@color/white"
+            android:divider="#848484"
+            android:dividerPadding="20dp"
+            android:orientation="horizontal"
+            android:showDividers="middle">
+
+            <TextView
+                android:id="@+id/left"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="暂停运动"
+                android:textColor="#F2682A"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/right"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="开始运动"
+                android:textColor="#F2682A"
+                android:textSize="14sp" />
+        </LinearLayout>
+-->
+    </LinearLayout>
+
+</layout>

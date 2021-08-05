@@ -1,13 +1,14 @@
 package com.css.service.utils
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import com.blankj.utilcode.util.SPUtils
 import com.css.service.bus.LiveDataBus
+import com.css.service.bus.LiveDataBus.BusMediatorLiveData
 import com.css.service.data.LoginUserData
 import com.css.service.data.UserData
 import com.google.gson.Gson
-import  com.css.service.bus.LiveDataBus.BusMediatorLiveData
+import java.lang.StringBuilder
+import kotlin.reflect.typeOf
 
 enum class CacheKey(val k: String) {
     USER_INFO("user_info"),
@@ -24,8 +25,8 @@ enum class CacheKey(val k: String) {
 
 class WonderCoreCache { //一切围绕CacheKey
     companion object {
-
         val deviceCacheKeys = CacheKey.values().filter { it.k.startsWith("BOND") }.toTypedArray()
+
         val mGson = Gson()
 
         fun containsKey(k: CacheKey) = SPUtils.getInstance().contains(k.k)
@@ -50,7 +51,7 @@ class WonderCoreCache { //一切围绕CacheKey
         }
 
         //获取同类型的CacheKey
-        fun <T> getDatas(cls: Class<T>,vararg k1: CacheKey): List<T> {
+        fun <T> getDatas(cls: Class<T>, vararg k1: CacheKey): List<T> {
             val ret = mutableListOf<T>()
             for (k in k1) {
                 getData(k, cls)?.let { ret.add(it) }
@@ -78,14 +79,29 @@ class WonderCoreCache { //一切围绕CacheKey
         }
 
         //多个LiveData的合并,适用于监听多个LiveData
-        fun <T> getLiveDataMerge(vararg keys: CacheKey): LiveData<T> {
-            val liveDataMerge = BusMediatorLiveData<T>()
-            for (k in keys) {
-                liveDataMerge.addSource(getLiveData<T>(k)) { v ->
-                    liveDataMerge.value = v
+        fun <From, To> getLiveDataMerge(transformer: (k: CacheKey, t: From?) -> To?, vararg keys: CacheKey): LiveData<To> {
+            /*
+            val kk = StringBuilder().run {
+                keys.forEach { this.append(it.k).append("|") }
+                toString()
+            }
+            val contains = LiveDataBus.get().contains(kk)
+            val liveDataMerge = LiveDataBus.get().withMediaLiveData<To>(kk)
+            */
+            val contains = false
+            val liveDataMerge = BusMediatorLiveData<To>()
+            if (!contains) {
+                for (k in keys) {
+                    liveDataMerge.addSource(getLiveData<From>(k)) { v ->
+                        liveDataMerge.value = transformer(k, v)
+                    }
                 }
             }
             return liveDataMerge
+        }
+
+        fun <T> getLiveDataMerge(vararg keys: CacheKey): LiveData<T> {
+            return getLiveDataMerge<T, T>({ _, t -> t }, *keys)
         }
 
         fun getLiveData2(key: CacheKey): LiveData<Any> {

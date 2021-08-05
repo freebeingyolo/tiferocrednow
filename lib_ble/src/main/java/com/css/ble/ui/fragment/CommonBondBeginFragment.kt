@@ -56,14 +56,15 @@ class CommonBondBeginFragment(d: DeviceType, val model: BaseDeviceScan2ConnVM) :
         mViewModel.stateObsrv.observe(viewLifecycleOwner) {
             when (it) {
                 State.found -> {
-                    mViewModel.bindDevice({ _, _ ->
-                        FragmentUtils.changeFragment(
-                            CommonBondEndFragment::class.java,
-                            "${javaClass.simpleName}#$deviceType",
-                            FragmentUtils.Option.OPT_REPLACE,
-                            { CommonBondEndFragment(deviceType, mViewModel) }
-                        )
-                    },
+                    mViewModel.bindDevice(
+                        { _, _ ->
+                            FragmentUtils.changeFragment(
+                                CommonBondEndFragment::class.java,
+                                "${javaClass.simpleName}#$deviceType",
+                                FragmentUtils.Option.OPT_REPLACE,
+                                { CommonBondEndFragment(deviceType, mViewModel) }
+                            )
+                        },
                         { _, msg, _ ->
                             showToast(msg)
                             onBackPressed()
@@ -73,7 +74,7 @@ class CommonBondBeginFragment(d: DeviceType, val model: BaseDeviceScan2ConnVM) :
                     BleErrorFragment.Builder
                         .errorType(ErrorType.SEARCH_TIMEOUT)
                         .leftTitle(BondDeviceData.displayName(deviceType))
-                        .onDestroy {mViewModel.disconnect()  }
+                        .onDestroy { mViewModel.disconnect() }
                         .create()
                 }
             }

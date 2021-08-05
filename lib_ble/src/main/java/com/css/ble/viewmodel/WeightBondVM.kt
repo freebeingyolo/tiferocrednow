@@ -130,7 +130,7 @@ open class WeightBondVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPa
                 withContext(Dispatchers.IO) {
                     val ret = DeviceRepository.bindDevice(d.deviceCategory, d.displayName, d.mac)
                     if(ret.isSuccess) {
-                        BondDeviceData.setDevice(d.cacheKey,BondDeviceData(ret.data!!))
+                        BondDeviceData.setDevice(d.deviceType,BondDeviceData(ret.data!!))
                     }
                     ret
                 }

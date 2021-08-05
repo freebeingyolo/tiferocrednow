@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.css.base.net.api.repository.DeviceRepository
 import com.css.base.uibase.viewmodel.BaseViewModel
-import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.service.utils.WonderCoreCache
@@ -30,7 +29,7 @@ class DeviceListVM : BaseViewModel() {
                         } else {
                             for (d1 in ret.data!!) {
                                 BondDeviceData(d1).let {
-                                    BondDeviceData.setDevice(it.cacheKey, it)
+                                    BondDeviceData.setDevice(it.deviceType, it)
                                 }
                             }
                         }

@@ -28,7 +28,7 @@ class MainViewModel : BaseViewModel() {
                         } else {
                             for (d1 in ret.data!!) {
                                 BondDeviceData(d1).let {
-                                    BondDeviceData.setDevice(it.cacheKey, it)
+                                    BondDeviceData.setDevice(it.deviceType, it)
                                 }
                             }
                         }
