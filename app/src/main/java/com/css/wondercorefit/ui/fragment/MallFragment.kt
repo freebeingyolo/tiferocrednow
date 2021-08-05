@@ -38,7 +38,7 @@ class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(), View.On
     override fun initData() {
         super.initData()
         mViewModel.getMallInfo()
-//        mData.add(ProductBean(R.mipmap.icon_product_1, "计数单杠"))
+//        mData.add(ProductBean(R.mipmap.icon_product_1, "计数单杠"))   q
 //        mData.add(ProductBean(R.mipmap.icon_product_2, "计数俯卧撑板"))
 //        mData.add(ProductBean(R.mipmap.icon_product_3, "计数健腹轮"))
 ////        mData.add(ProductBean(R.mipmap.icon_product_4, "计数跳绳"))

@@ -8,12 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.blankj.utilcode.util.NetworkUtils
+import com.css.base.dialog.CommonAlertDialog
 import com.css.base.uibase.BaseActivity
-import com.css.base.utils.StringUtils
+import com.css.login.R
 import com.css.login.databinding.ActivityResetPasswordBinding
 import com.css.login.model.ResetPasswordViewModel
 import com.css.service.router.ARouterConst
 import com.css.service.utils.SystemBarHelper
+import razerdp.basepopup.BasePopupWindow
 
 @Route(path = ARouterConst.PATH_APP_RESET_PWD)
 class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel, ActivityResetPasswordBinding>(),
@@ -55,17 +58,39 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel, ActivityReset
     override fun onClick(v: View) {
         when (v) {
             mViewBinding.tvSubmit -> {
-                mViewModel.checkData(
-                    mViewBinding.etPhone.text.toString(),
-                    mViewBinding.etPassword.text.toString(),
-                    mViewBinding.etPasswordAgain.text.toString(),
-                    mViewBinding.etSmsCode.text.toString()
-                )
+                if (NetworkUtils.isAvailable()) {
+                    mViewModel.checkData(
+                        mViewBinding.etPhone.text.toString(),
+                        mViewBinding.etPassword.text.toString(),
+                        mViewBinding.etPasswordAgain.text.toString(),
+                        mViewBinding.etSmsCode.text.toString()
+                    )
+                } else {
+                    showNetworkErrorDialog()
+                }
             }
             mViewBinding.tvSendCode -> {
-                mViewModel.sendCode(mViewBinding.etPhone.text.toString())
+                if (NetworkUtils.isAvailable()) {
+                    mViewModel.sendCode(mViewBinding.etPhone.text.toString())
+                } else {
+                    showNetworkErrorDialog()
+                }
+
             }
         }
+    }
+
+    private fun showNetworkErrorDialog() {
+        CommonAlertDialog(this).apply {
+            type = CommonAlertDialog.DialogType.Image
+            imageResources = R.mipmap.icon_error
+            content = getString(R.string.network_error)
+            onDismissListener = object : BasePopupWindow.OnDismissListener() {
+                override fun onDismiss() {
+
+                }
+            }
+        }.show()
     }
 
     private fun checkEdittext() {

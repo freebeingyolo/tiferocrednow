@@ -24,7 +24,6 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:error="@{R.mipmap.load_failed}"
-            android:scaleType="centerCrop"
             android:src="@{courseData.videoPreview}"
             app:corner_radius="4dp"
             app:layout_constraintDimensionRatio="158:104"

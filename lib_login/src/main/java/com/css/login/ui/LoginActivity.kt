@@ -11,10 +11,12 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.blankj.utilcode.util.NetworkUtils
 import com.css.base.dialog.CenterCommonAlertDialog
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseActivity
+import com.css.login.R
 import com.css.login.databinding.ActivityLoginBinding
 import com.css.login.model.LoginViewModel
 import com.css.service.data.LoginUserData
@@ -47,7 +49,9 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>(), View
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (mViewBinding.etTelephone.text.toString().length != 11&&mViewBinding.etTelephone.text.toString().isNotEmpty()) {
+                if (mViewBinding.etTelephone.text.toString().length != 11 && mViewBinding.etTelephone.text.toString()
+                        .isNotEmpty()
+                ) {
                     mViewBinding.tvPhoneTip.visibility = View.VISIBLE
                 } else if (mViewBinding.etTelephone.text.toString().isEmpty()) {
                     mViewBinding.tvPhoneTip.visibility = View.INVISIBLE
@@ -101,14 +105,32 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>(), View
                 ARouterUtil.openRegister()
             }
             mViewBinding.tvLogin -> {
-                mViewModel.checkPhoneAnddPassword(
-                    mViewBinding.etTelephone.text.toString(),
-                    mViewBinding.etPassword.text.toString()
-                )
+                if (NetworkUtils.isAvailable()) {
+                    mViewModel.checkPhoneAnddPassword(
+                        mViewBinding.etTelephone.text.toString(),
+                        mViewBinding.etPassword.text.toString()
+                    )
+                } else {
+                    showNetworkErrorDialog()
+                }
+
             }
             mViewBinding.forgetPassword -> {
                 ARouterUtil.openForgetPassword()
             }
         }
+    }
+
+    private fun showNetworkErrorDialog() {
+        CommonAlertDialog(this).apply {
+            type = CommonAlertDialog.DialogType.Image
+            imageResources = R.mipmap.icon_error
+            content = getString(R.string.network_error)
+            onDismissListener = object : BasePopupWindow.OnDismissListener() {
+                override fun onDismiss() {
+
+                }
+            }
+        }.show()
     }
 }

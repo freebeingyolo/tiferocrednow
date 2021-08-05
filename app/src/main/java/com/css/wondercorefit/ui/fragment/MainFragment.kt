@@ -51,8 +51,6 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     private var pauseResume: Boolean = false
     private lateinit var mMainDeviceAdapter: MainDeviceAdapter
     var mData = ArrayList<BondDeviceData>()
-    var mBindWeight = false
-    var mBindWheel = false
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         SystemBarHelper.immersiveStatusBar(activity, 0f)

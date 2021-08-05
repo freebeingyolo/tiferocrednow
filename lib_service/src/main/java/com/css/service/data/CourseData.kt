@@ -5,6 +5,7 @@ import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.css.service.R
 
 data class CourseData(
     var id: Int,
@@ -21,6 +22,7 @@ data class CourseData(
         fun setImageViewResource(imageView: AppCompatImageView, url: String, errorDrawable: Int) {
             Glide.with(imageView.context)
                 .load(url)
+                .placeholder(R.drawable.wonder_logo)
                 .error(errorDrawable)
                 .apply(RequestOptions.bitmapTransform(RoundedCorners(6)))
                 .into(imageView)
