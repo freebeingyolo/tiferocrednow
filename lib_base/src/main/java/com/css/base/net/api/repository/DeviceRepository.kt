@@ -21,9 +21,7 @@ object DeviceRepository {
 
     //查询绑定的设备
     suspend fun queryBindDevice(userId: String): CommonResponse<List<DeviceData>> {
-        val map = HashMap<String, String>()
-        map["userId"] = userId
-        return api.queryBindDevice(map)
+        return api.queryBindDevice(mapOf("userId" to userId))
     }
 
     //绑定设备

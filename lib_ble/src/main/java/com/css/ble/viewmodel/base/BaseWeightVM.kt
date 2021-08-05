@@ -1,4 +1,4 @@
-package com.css.ble.viewmodel
+package com.css.ble.viewmodel.base
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -91,9 +91,9 @@ abstract class BaseWeightVM : BaseDeviceVM() {
     open fun onScanFilter(bleValueBean: BleValueBean): Boolean = true
     open fun onBroadCastData(mac: String, dataHexStr: String, data: ByteArray, isAilink: Boolean) {}
     open fun onScanStart() {}
-    open fun onScanTimeOut() {}
+    override fun onTimerTimeout() {}
+    override fun onTimerCancel() {}
     open fun onScanStop() {}
-    open fun onScanTimerOutCancel() {}
     open fun onConnecting(mac: String?) {}
     protected open val timeOut = 5 * 1000L
     private fun cmdSum(data: ByteArray): Byte {
@@ -121,22 +121,22 @@ abstract class BaseWeightVM : BaseDeviceVM() {
     protected open val mOnCallbackBle: OnCallbackBle = object : OnCallbackBle {
         override fun onScanTimeOut() {
             super.onScanTimeOut()
-            this@BaseWeightVM.onScanTimeOut()
+            this@BaseWeightVM.onTimerTimeout()
         }
 
         override fun onConnecting(mac: String?) = this@BaseWeightVM.onConnecting(mac)
     }
 
-    protected fun cancelTimeOutTimer() {
+    override fun cancelTimeOutTimer() {
         if (timeOutJob != null) {
             LogUtils.d(TAG, "cancelTimeOutTimer")
             timeOutJob!!.cancel()
             timeOutJob = null
-            this@BaseWeightVM.onScanTimerOutCancel()
+            this@BaseWeightVM.onTimerCancel()
         }
     }
 
-    private fun startTimeoutTimer(timeOut: Long) {
+    override fun startTimeoutTimer(timeOut: Long) {
         if (timeOut == TIMEOUT_NEVER) return
         if (timeOutJob != null) {
             cancelTimeOutTimer()
@@ -175,12 +175,11 @@ abstract class BaseWeightVM : BaseDeviceVM() {
         }
     }
 
-    fun disconnectAll() {
+    override fun disconnect() {
         this.mBluetoothService?.disconnectAll()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-
+    override fun connect() {
     }
+
 }

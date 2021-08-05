@@ -24,7 +24,7 @@ class DeviceInfoVM : BaseViewModel() {
                 withContext(Dispatchers.IO) {
                     val ret = DeviceRepository.unbindDevice(d.id, d.deviceCategory)
                     if (ret.isSuccess) {
-                        BondDeviceData.setDevice(d.cacheKey, null)
+                        BondDeviceData.setDevice(d.deviceType, null)
                     }
                     ret
                 }
@@ -48,7 +48,7 @@ class DeviceInfoVM : BaseViewModel() {
                 withContext(Dispatchers.IO) {
                     val ret = DeviceRepository.updateDeviceName(d.id, d.displayName)
                     if (ret.isSuccess) {
-                        BondDeviceData.setDevice(d.cacheKey,d)
+                        BondDeviceData.setDevice(d.deviceType,d)
                     }
                     ret
                 }

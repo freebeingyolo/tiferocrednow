@@ -17,8 +17,17 @@
         android:process="com.css.ble"
         android:theme="@style/Wonder.Base">
 
+
         <service android:name="com.pingwang.bluetoothlib.server.ELinkBleServer" />
-        <service android:name=".ui.WheelMeasureService" />
+        <service
+            android:name=".ui.BleEnvService"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.CommonDeviceActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/WonderTheme.NoExitEnterAnimation" />
 
         <activity
             android:name=".ui.WeightMeasureActivity"

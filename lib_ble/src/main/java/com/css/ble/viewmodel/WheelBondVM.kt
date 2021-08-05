@@ -5,21 +5,13 @@ import android.bluetooth.BluetoothGattService
 import androidx.annotation.NonNull
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import cn.wandersnail.ble.*
 import cn.wandersnail.ble.callback.ScanListener
 import cn.wandersnail.commons.observer.Observe
 import cn.wandersnail.commons.poster.RunOn
 import cn.wandersnail.commons.poster.Tag
 import cn.wandersnail.commons.poster.ThreadMode
-import com.css.base.net.api.repository.DeviceRepository
-import com.css.ble.bean.BondDeviceData
-import com.css.ble.bean.DeviceType
-import com.css.service.utils.CacheKey
-import com.css.service.utils.WonderCoreCache
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.css.ble.viewmodel.base.BaseWheelVM
 import java.util.*
 
 /*
@@ -103,19 +95,22 @@ object WheelBondVM : BaseWheelVM(), EventObserver {
         EasyBLE.getInstance().stopScan()
     }
 
-    fun disconnect() {
+    override fun disconnect() {
         EasyBLE.getInstance().disconnectAllConnections()
     }
 
+    override fun connect() {
 
-    override fun onScanTimeOut() {
+    }
+
+    override fun onTimerTimeout() {
         _state.value = State.timeOut
         stopScanBle()
         disconnect()
     }
 
 
-    override fun onScanTimerOutCancel() {
+    override fun onTimerCancel() {
 
     }
 

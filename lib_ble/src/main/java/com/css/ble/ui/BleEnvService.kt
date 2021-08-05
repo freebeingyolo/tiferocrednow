@@ -7,21 +7,41 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.location.LocationManager
+import android.os.Binder
+import android.os.IBinder
 import androidx.lifecycle.LifecycleService
-import androidx.lifecycle.ViewModel
 import cn.wandersnail.ble.EasyBLE
+import cn.wandersnail.ble.EventObserver
 import cn.wandersnail.commons.util.ToastUtils
 import com.css.ble.utils.BleUtils
 import com.css.ble.utils.UiUtils
 import com.css.ble.viewmodel.BleEnvVM
-import com.css.ble.viewmodel.WheelMeasureVM
+import com.css.ble.viewmodel.base.BaseDeviceVM
 
 /**
  * @author yuedong
  * @date 2021-06-17
  */
-class WheelMeasureService : LifecycleService() {
-    val mViewModel: WheelMeasureVM = WheelMeasureVM
+class BleEnvService : LifecycleService() {
+    private var mViewModel: BaseDeviceVM? = null
+    private var observer: EventObserver? = null
+
+    override fun onBind(intent: Intent): IBinder {
+        super.onBind(intent)
+        return MyBinder()
+    }
+
+    inner class MyBinder : Binder() {
+
+        fun setViewModel(vm: BaseDeviceVM, obsvr:EventObserver) {
+            this@BleEnvService.mViewModel = vm
+            this@BleEnvService.observer = obsvr
+            if (!EasyBLE.getInstance().isInitialized) {
+                EasyBLE.getInstance().initialize(UiUtils.getApplication())
+            }
+            EasyBLE.getInstance().registerObserver(obsvr)
+        }
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -33,13 +53,9 @@ class WheelMeasureService : LifecycleService() {
         BleEnvVM.bleObsrv.observe(this) { //蓝牙关闭，断开连接
             if (it == false) {
                 ToastUtils.showShort("蓝牙关闭,健腹轮断开")
-                mViewModel.disconnect()
+                mViewModel?.disconnect()
             }
         }
-        if (!EasyBLE.getInstance().isInitialized) {
-            EasyBLE.getInstance().initialize(UiUtils.getApplication())
-        }
-        EasyBLE.getInstance().registerObserver(mViewModel)
         LogUtils.d("BleDeviceService#onCreate")
     }
 
@@ -47,13 +63,13 @@ class WheelMeasureService : LifecycleService() {
         super.onDestroy()
         unregisterReceiver(receiver)
         LogUtils.d("BleDeviceService#onDestroy")
-        EasyBLE.getInstance().unregisterObserver(mViewModel)
+        observer?.let { EasyBLE.getInstance().unregisterObserver(it) }
     }
 
     private var receiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             LogUtils.d("action：" + intent!!.action)
-            when (intent!!.action) {
+            when (intent.action) {
                 BluetoothAdapter.ACTION_STATE_CHANGED -> {
                     when (intent.getIntExtra(
                         BluetoothAdapter.EXTRA_STATE,

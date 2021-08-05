@@ -15,7 +15,7 @@ data class DeviceData(
     val moduleVersion: Any,
     val productType: Any,
     val status: Any,
-    var isConnect: Boolean = false,
+    var connect: String = "未连接",
     var deviceImg: Int
 ) {
     companion object {

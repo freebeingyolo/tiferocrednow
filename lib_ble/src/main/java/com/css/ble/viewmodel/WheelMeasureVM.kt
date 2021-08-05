@@ -19,19 +19,23 @@ import cn.wandersnail.commons.poster.ThreadMode
 import cn.wandersnail.commons.util.StringUtils
 import cn.wandersnail.commons.util.ToastUtils
 import com.blankj.utilcode.util.ActivityUtils
+import com.css.base.net.api.repository.CourseRepository
 import com.css.base.net.api.repository.DeviceRepository
 import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.utils.DataUtils
+import com.css.ble.viewmodel.base.BaseWheelVM
+import com.css.service.data.CourseData
 import kotlinx.coroutines.*
 import java.text.DecimalFormat
 import java.util.*
 
+
 /**
  * @author yuedong
  * @date 2021-05-1
- * @description 因为WheelMeasureVM需要
+ * @description 因为WheelMeasureVM需要绑定之后就能测量，绑定测量共用同一个单例
  */
 object WheelMeasureVM : BaseWheelVM(), EventObserver {
     //测量
@@ -62,7 +66,56 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
             String.format("%d%%", (it * 100).toInt())
     }
     val exerciseCountTxt = Transformations.map(exerciseCount) { if (it == -1) "--" else it.toString() }
-    val exerciseKcalTxt = Transformations.map(exerciseCount) { if (it == -1) "--" else DecimalFormat("##.#####").format(it * 0.00175f) }
+    val exerciseKcalTxt = Transformations.map(exerciseCount) {
+        if (it == -1) "--"
+        else DecimalFormat("##.#####").format(it * 0.00175f)
+    }
+
+    //玩法推荐
+    private val _recommentationData by lazy { MutableLiveData<List<CourseData>>() }
+    val recommentationData: LiveData<List<CourseData>> get() = _recommentationData
+
+    //绑定
+    private val bondTimeout = 6 * 1000L
+    private val fondMethod = FoundByUuid
+    private var avaliableDevice: Device? = null
+    private var workMode = WorkMode.BOND
+
+    enum class WorkMode { BOND, MEASURE }
+    enum class State {
+        disconnected,
+        scanStart,
+        timeOut,
+        connecting,
+        reconnecting,
+        connected,
+        discovering,
+        found,
+        discovered,
+
+        //训练
+        exercise_start,
+        exercise_pause,
+        //exercise_finish,
+    }
+
+    fun fetchRecommentation() {
+        netLaunch(
+            {
+                withContext(Dispatchers.IO) {
+                    val ret = CourseRepository.queryVideo("玩法推荐", "健腹轮")
+                    ret
+                }
+            },
+            { msg, d ->
+                _recommentationData.value = d
+            },
+            { code, msg, d ->
+
+            }
+        )
+    }
+
 
     private fun formatTime(ms: Long): String {
         val ss = 1000
@@ -79,31 +132,6 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         sb.append(String.format(":%02d", minute))
         sb.append(String.format(":%02d", second))
         return sb.toString()
-    }
-
-    //绑定
-    private val bondTimeout = 6 * 1000L
-    private val fondMethod = FoundByUuid
-    private var avaliableDevice: Device? = null
-    private var workMode = WorkMode.BOND
-
-    enum class WorkMode { BOND, MEASURE }
-    enum class State {
-
-        disconnected,
-        scanStart,
-        timeOut,
-        connecting,
-        reconnecting,
-        connected,
-        discovering,
-        found,
-        discovered,
-
-        //训练
-        exercise_start,
-        exercise_pause,
-        //exercise_finish,
     }
 
     fun startScanBle() {
@@ -136,7 +164,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
 
         override fun onScanResult(device: Device, isConnectedBySys: Boolean) {
             if (device.name.startsWith("AbRoller")) {
-                LogUtils.d("device:$device")
+                LogUtils.d("device:$device}")
                 EasyBLE.getInstance().stopScanQuietly()
                 if (fondMethod == FoundByName) {
                     foundDevice(device)
@@ -203,7 +231,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
     }
 
 
-    fun connect() {
+    override fun connect() {
         //连接配置，举个例随意配置两项
         val config = ConnectionConfiguration()
         config.setRequestTimeoutMillis(connectTimeout.toInt())
@@ -215,7 +243,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         workMode = WorkMode.MEASURE
     }
 
-    fun disconnect() {
+    override fun disconnect() {
         cancelTimeOutTimer()
         if (state > State.disconnected) {
             connection.disconnect()
@@ -223,7 +251,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         }
     }
 
-    override fun onScanTimeOut() {
+    override fun onTimerTimeout() {
         LogUtils.d("onScanTimeOut")
         state = State.timeOut
         EasyBLE.getInstance().disconnectAllConnections()
@@ -231,7 +259,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
 
     val stateStr get() = if (state.ordinal < State.discovered.ordinal) "未连接" else "已连接"
 
-    override fun onScanTimerOutCancel() {
+    override fun onTimerCancel() {
     }
 
     var state: State
@@ -268,6 +296,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
                 state = State.discovering
             }
             ConnectionState.SERVICE_DISCOVERED -> {
+                state = State.discovered
                 val services: List<BluetoothGattService> = EasyBLE.getInstance().getConnection(device)!!.gatt!!.services
                 for (service in services) {
                     if (service.uuid == UUID.fromString(UUID_SRVC)) {
@@ -516,6 +545,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
     }
 
     private lateinit var connection: Connection
+
 
     object EasterEggs {
         //volatile适用于改的所有操作或者写的所有操作在同一线程

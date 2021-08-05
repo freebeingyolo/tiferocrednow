@@ -4,9 +4,12 @@
     <data>
 
         <import type="com.css.ble.viewmodel.WheelMeasureVM.State" />
+
         <import type="com.css.ble.viewmodel.WheelMeasureVM.EasterEggs" />
 
         <import type="android.view.View" />
+
+        <import type="com.css.base.utils.BindingUtils" />
 
         <variable
             name="model"
@@ -140,9 +143,8 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
             android:background="@drawable/bg_while_radius4"
-            android:orientation="horizontal"
-            android:visibility="@{model.stateObsrv.ordinal() >= State.discovered.ordinal() ? View.VISIBLE : View.GONE,default=gone}">
-
+            android:orientation="horizontal">
+            <!--  android:visibility="@{model.stateObsrv.ordinal() >= State.discovered.ordinal() ? View.VISIBLE : View.GONE,default=gone}" -->
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -176,16 +178,37 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/exerciseKcal"
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1.5"
                     android:gravity="center"
-                    android:text="@{model.exerciseKcalTxt,default=`--`}"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/exerciseKcal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{model.exerciseKcalTxt,default=`--`}"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/exerciseKcalUnit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="25dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_toStartOf="@+id/exerciseKcalUnit"
+                        android:gravity="bottom"
+                        android:text="kcal"
+                        android:textColor="@color/text_color"
+                        android:textSize="12sp"
+                        android:visibility="@{model.exerciseKcalTxt.equals(`--`) ? View.GONE:View.VISIBLE,default=gone}"
+
+                        />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
 
                 <TextView
                     android:layout_width="match_parent"

@@ -11,14 +11,12 @@ import com.blankj.utilcode.util.ToastUtils
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseActivity
-import com.css.base.uibase.viewmodel.DefaultViewModel
 import com.css.base.utils.StringUtils
 import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.FragmentDeviceInfoBinding
 import com.css.ble.viewmodel.DeviceInfoVM
-import com.css.service.utils.WonderCoreCache
 import razerdp.basepopup.BasePopupWindow
 
 /**
@@ -63,7 +61,7 @@ class DeviceInfoActivity : BaseActivity<DeviceInfoVM, FragmentDeviceInfoBinding>
         }
         setToolBarLeftText(data.displayName)
         mViewBinding.rlDeleteDevice.setOnClickListener {
-            BondDeviceData.setDevice(data.cacheKey, null)
+            BondDeviceData.setDevice(data.deviceType, null)
         }
 
         mViewBinding.apply {
@@ -108,7 +106,7 @@ class DeviceInfoActivity : BaseActivity<DeviceInfoVM, FragmentDeviceInfoBinding>
                 }.show()
             }
             rlDeleteDevice.setOnClickListener {
-                if (BondDeviceData.getDevice(data.cacheKey) == null) {
+                if (BondDeviceData.getDevice(data.deviceType) == null) {
                     ToastUtils.showLong("设备已经解绑")
                     return@setOnClickListener
                 }
@@ -121,7 +119,7 @@ class DeviceInfoActivity : BaseActivity<DeviceInfoVM, FragmentDeviceInfoBinding>
                     listener = object : DialogClickListener.DefaultLisener() {
                         override fun onRightBtnClick(view: View) {
                             super.onRightBtnClick(view)
-                            mViewModel.unBindDevice(BondDeviceData.getDevice(data.cacheKey)!!,
+                            mViewModel.unBindDevice(BondDeviceData.getDevice(data.deviceType)!!,
                                 { _, _ ->
                                     data.alias = null
                                     CommonAlertDialog(context).apply {

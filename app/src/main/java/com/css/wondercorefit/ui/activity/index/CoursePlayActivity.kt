@@ -3,6 +3,7 @@ package com.css.wondercorefit.ui.activity.index
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.css.wondercorefit.R
 import com.css.wondercorefit.utils.ConfigHolder
@@ -20,25 +21,13 @@ class CoursePlayActivity : AppCompatActivity() {
     private lateinit var playerView: LitePlayerView
     private var fullScreenPlay:Int = 0
     private val handler = Handler()
-//    private val urls =
-//        listOf(
-//                Pair(VideoCacheHelper.url(CourseViewModel.urls[0]), CourseViewModel.name[0]),
-//                Pair(VideoCacheHelper.url(CourseViewModel.urls[1]), CourseViewModel.name[1]),
-//                Pair(VideoCacheHelper.url(CourseViewModel.urls[2]), CourseViewModel.name[2]),
-//                Pair(VideoCacheHelper.url(CourseViewModel.urls[3]), CourseViewModel.name[3]),
-//                Pair(VideoCacheHelper.url(CourseViewModel.urls[4]), CourseViewModel.name[4]),
-//                Pair(VideoCacheHelper.url(CourseViewModel.urls[5]), CourseViewModel.name[5]),
-//                Pair(VideoCacheHelper.url(CourseViewModel.urls[6]), CourseViewModel.name[6]),
-//                Pair(VideoCacheHelper.url(CourseViewModel.urls[7]), CourseViewModel.name[7]),
-//                Pair(VideoCacheHelper.url(CourseViewModel.urls[7]), CourseViewModel.name[8]),
-//                Pair(VideoCacheHelper.url(CourseViewModel.urls[9]), CourseViewModel.name[9]),
-//        )
-    private var currentPlayIndex = 0
+    private var currentPlayIndex = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_course_play)
         var bundle = this.intent.extras
-        currentPlayIndex = bundle!!.getInt("position")
+        currentPlayIndex = bundle!!.getString("videoLink")!!
+        Log.d("999" , "get video Link    $currentPlayIndex")
         playerView = findViewById(R.id.player_view)
         playerView.setProgressColor(resources.getColor(R.color.colorAccent), Color.YELLOW)
         // config
@@ -73,7 +62,7 @@ class CoursePlayActivity : AppCompatActivity() {
         playerView.setAutoSensorEnable(false)
         playerView.setAutoHideOverlay(true)
         playerView.setRepeatMode(true)
-//        playerView.setDataSource(DataSource(urls[currentPlayIndex].first, urls[currentPlayIndex].second))
+        playerView.setDataSource(DataSource(currentPlayIndex))
         playerView.start()
         handler.postDelayed({
             playerView.setFullScreenMode(true)

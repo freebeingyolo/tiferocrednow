@@ -15,7 +15,7 @@ class BodyDetailAdapter(private val mContext: Context, private val mData: List<W
         position: Int
     ) {
         binding.data = item
-        binding.executePendingBindings();
+        binding.executePendingBindings()
     }
 
 }

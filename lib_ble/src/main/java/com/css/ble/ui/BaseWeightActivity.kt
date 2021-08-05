@@ -9,7 +9,7 @@ import android.os.IBinder
 import android.util.Log
 import androidx.viewbinding.ViewBinding
 import com.css.ble.bean.DeviceType
-import com.css.ble.viewmodel.BaseWeightVM
+import com.css.ble.viewmodel.base.BaseWeightVM
 import com.pingwang.bluetoothlib.AILinkSDK
 import com.pingwang.bluetoothlib.server.ELinkBleServer
 import com.pingwang.bluetoothlib.utils.BleLog
@@ -48,7 +48,7 @@ abstract class BaseWeightActivity<VM : BaseWeightVM, VB : ViewBinding> : BaseDev
         if (isFinishing) {
             unbindService(mFhrSCon)
             mViewModel.stopScanBle()
-            mViewModel.disconnectAll()
+            mViewModel.disconnect()
         }
     }
 }

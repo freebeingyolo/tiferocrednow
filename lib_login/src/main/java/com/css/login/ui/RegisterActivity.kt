@@ -10,9 +10,12 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.blankj.utilcode.util.NetworkUtils
+import com.css.base.dialog.CommonAlertDialog
 import com.css.base.uibase.BaseActivity
 import com.css.base.utils.StringUtils
 import com.css.base.view.ToolBarView
+import com.css.login.R
 import com.css.login.databinding.ActivityLoginBinding
 import com.css.login.databinding.ActivityRegisterBinding
 import com.css.login.model.LoginViewModel
@@ -20,6 +23,7 @@ import com.css.login.model.RegisterViewModel
 import com.css.service.router.ARouterConst.PATH_APP_REGISTER
 import com.css.service.router.ARouterUtil
 import com.css.service.utils.SystemBarHelper
+import razerdp.basepopup.BasePopupWindow
 
 @Route(path = PATH_APP_REGISTER)
 class RegisterActivity : BaseActivity<RegisterViewModel, ActivityRegisterBinding>(),
@@ -64,25 +68,45 @@ class RegisterActivity : BaseActivity<RegisterViewModel, ActivityRegisterBinding
     override fun onClick(v: View) {
         when (v) {
             mViewBinding.tvRegisterBtn -> {
-                mViewModel.checkData(
-                    mViewBinding.etTelephone.text.toString(),
-                    mViewBinding.etPassword.text.toString(),
-                    mViewBinding.etPasswordAgain.text.toString(),
-                    mViewBinding.etSmsCode.text.toString(),
-                    mViewBinding.etUsername.text.toString(),
-                    mViewBinding.cbAgreement.isChecked
-                )
+                if (NetworkUtils.isConnected()) {
+                    mViewModel.checkData(
+                        mViewBinding.etTelephone.text.toString(),
+                        mViewBinding.etPassword.text.toString(),
+                        mViewBinding.etPasswordAgain.text.toString(),
+                        mViewBinding.etSmsCode.text.toString(),
+                        mViewBinding.etUsername.text.toString(),
+                        mViewBinding.cbAgreement.isChecked
+                    )
+                } else {
+                    showNetworkErrorDialog()
+                }
+
             }
             mViewBinding.tvToLogin -> {
                 ARouterUtil.openLogin()
                 finish()
             }
             mViewBinding.tvSendCode -> {
-                mViewModel.sendCode(mViewBinding.etTelephone.text.toString())
+                if (NetworkUtils.isConnected()) {
+                    mViewModel.sendCode(mViewBinding.etTelephone.text.toString())
+                } else {
+                    showNetworkErrorDialog()
+                }
             }
         }
     }
+    private fun showNetworkErrorDialog() {
+        CommonAlertDialog(this).apply {
+            type = CommonAlertDialog.DialogType.Image
+            imageResources = R.mipmap.icon_error
+            content = getString(R.string.network_error)
+            onDismissListener = object : BasePopupWindow.OnDismissListener() {
+                override fun onDismiss() {
 
+                }
+            }
+        }.show()
+    }
     private fun checkEdittext() {
         mViewBinding.etUsername.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {

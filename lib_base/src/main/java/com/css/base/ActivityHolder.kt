@@ -4,7 +4,7 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import java.util.*
-
+@Deprecated("")
 object ActivityHolder {
 
     private val activityStack: Stack<Activity> by lazy { Stack<Activity>() }

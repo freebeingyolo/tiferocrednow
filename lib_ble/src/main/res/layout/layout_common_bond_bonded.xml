@@ -1,0 +1,92 @@
+<layout>
+    <data>
+        <variable
+            name="model"
+            type="com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM" />
+    </data>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        tools:context=".ui.DeviceListActivity">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="@color/white"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/img1"
+                android:layout_width="225dp"
+                android:layout_height="225dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="20dp"
+                android:src="@mipmap/icon_weight_bonded" />
+
+            <TextView
+                android:id="@+id/tv1"
+                android:layout_width="234dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/img1"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="30dp"
+                android:gravity="center"
+                android:text="@{model.bonded_tip}"
+                android:textColor="#333333"
+                android:textSize="13sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv1"
+                android:layout_centerHorizontal="true">
+
+                <TextView
+                    android:id="@+id/countdownTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="#F1672B"
+                    android:textSize="13sp"
+                    tools:text="3" />
+
+                <Space
+                    android:layout_width="5dp"
+                    android:layout_height="1dp" />
+
+                <TextView
+                    android:id="@+id/countdownTv2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/count_down_tips"
+                    android:textColor="#333333"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/back"
+                android:layout_width="127dp"
+                android:layout_height="35dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="94dp"
+                android:background="@drawable/ble_bonded_backnow_frame"
+                android:stateListAnimator="@null"
+                android:text="@string/backnow"
+                android:textColor="#fff2682a"
+                android:textSize="13sp" />
+        </RelativeLayout>
+    </RelativeLayout>
+</layout>

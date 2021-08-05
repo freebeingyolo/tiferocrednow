@@ -3,21 +3,17 @@ package com.css.ble.viewmodel
 import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.css.base.net.api.repository.DeviceRepository
-import com.css.service.bus.LiveDataBus
 import com.css.base.net.api.repository.HistoryRepository
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.bean.WeightBondData
-import com.css.service.data.LoginUserData
+import com.css.ble.viewmodel.base.BaseWeightVM
 import com.css.service.utils.CacheKey
 import com.css.service.utils.WonderCoreCache
 import com.pingwang.bluetoothlib.BroadcastDataParsing
 import com.pingwang.bluetoothlib.bean.BleValueBean
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
@@ -47,8 +43,10 @@ class WeightMeasureVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPars
         mBroadcastDataParsing.dataParsing(data, isAilink)
     }
 
-    override fun onScanTimeOut() {
+    override fun onTimerTimeout() {
         _state.value = State.timeout
+    }
+    override fun onTimerCancel() {
     }
 
     override fun onScanStart() {
@@ -56,9 +54,6 @@ class WeightMeasureVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPars
     }
 
     override fun onScanStop() {
-    }
-
-    override fun onScanTimerOutCancel() {
     }
 
     override fun getWeightData(

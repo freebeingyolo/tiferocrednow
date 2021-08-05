@@ -15,16 +15,22 @@ import androidx.viewbinding.ViewBinding
 import com.css.base.uibase.BaseActivity
 import com.css.ble.bean.DeviceType
 import com.css.ble.utils.BleUtils
-import com.css.ble.viewmodel.BaseDeviceVM
+import com.css.ble.viewmodel.base.BaseDeviceVM
 import com.css.ble.viewmodel.BleEnvVM
 
 /**
  * @author yuedong
  * @date 2021-05-27
  */
-abstract class BaseDeviceActivity<VM : BaseDeviceVM, VB : ViewBinding>(protected val deviceType: DeviceType) : BaseActivity<VM, VB>() {
+abstract class BaseDeviceActivity<VM : BaseDeviceVM, VB : ViewBinding>() : BaseActivity<VM, VB>() {
     abstract val vmCls: Class<VM>
     abstract val vbCls: Class<VB>
+    var deviceType: DeviceType = DeviceType.WEIGHT
+
+    constructor(d: DeviceType) : this() {
+        this.deviceType = d
+    }
+
 
     override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): VB {
         val method = vbCls.getDeclaredMethod("inflate", LayoutInflater::class.java, ViewGroup::class.java, Boolean::class.java)

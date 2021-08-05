@@ -7,26 +7,26 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseActivity
-import com.css.base.uibase.viewmodel.DefaultViewModel
 import com.css.base.view.ToolBarView
-import com.css.ble.bean.BondDeviceData
+import com.css.service.data.DeviceData
 import com.css.wondercorefit.R
+import com.css.wondercorefit.adapter.MyDeviceRecycleAdapter
 import com.css.wondercorefit.databinding.ActivityMyDeviceBinding
-import com.css.wondercorefit.ui.viewmodel.DeviceInfoViewModel
 import com.css.wondercorefit.viewmodel.MyDeviceViewModel
 import razerdp.basepopup.BasePopupWindow
 
 class MyDeviceActivity : BaseActivity<MyDeviceViewModel, ActivityMyDeviceBinding>() {
+
+    var mData = ArrayList<DeviceData>()
+    lateinit var mAdapter: MyDeviceRecycleAdapter
+    private var opened  = false
+
     companion object {
         fun starActivity(context: Context) {
             val intent = Intent(context, MyDeviceActivity::class.java)
@@ -41,97 +41,71 @@ class MyDeviceActivity : BaseActivity<MyDeviceViewModel, ActivityMyDeviceBinding
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         setToolBarLeftTitle("我的设备")
+        mAdapter = MyDeviceRecycleAdapter(mData)
+        mViewBinding?.deviceRecycle?.layoutManager = LinearLayoutManager(this)
+        mViewBinding?.deviceRecycle?.adapter = mAdapter
+        mAdapter.setOnItemClickListener {
+            deviceInfoManager()
+        }
+        mAdapter.setOnDeleteDeviceClickListener {
+            deleteDevice(it)
+        }
         initRecycle()
     }
 
-    private fun initRecycle() {
-        mViewBinding?.deviceRecycle?.layoutManager = LinearLayoutManager(this)
-        val recyclerAdapter = RecycleAdapter()
-        mViewBinding?.deviceRecycle?.adapter = recyclerAdapter
+    private fun deviceInfoManager() {
+        mAdapter.getDeviceInfo()?.deviceImage?.setImageResource(R.mipmap.icon_more)
+        if (opened) {
+            mAdapter.getDeviceInfo()?.deviceImage?.setImageResource(R.mipmap.icon_next)
+            mAdapter.getDeviceInfo()?.lnDeviceInfo?.visibility = View.GONE
+            opened = false
+        } else {
+            mAdapter.getDeviceInfo()?.deviceImage?.setImageResource(R.mipmap.icon_more)
+            mAdapter.getDeviceInfo()?.lnDeviceInfo?.visibility = View.VISIBLE
+            opened = true
+        }
     }
 
-    inner class RecycleAdapter : RecyclerView.Adapter<RecycleAdapter.DeviceHolder>() {
-        private var opened = -1
-        inner class DeviceHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-            View.OnClickListener {
-            val deviceTitle: TextView = itemView.findViewById(R.id.my_device_name)
-            private val deviceImage: ImageView = itemView.findViewById(R.id.device_image)
-            private val deviceLinearLayout :LinearLayout = itemView.findViewById(R.id.ln_device_info)
-            private val deviceRecyclerView: RelativeLayout = itemView.findViewById(R.id.my_device_recycle)
-            private val deleteDevice: RelativeLayout = itemView.findViewById(R.id.rel_device_delete)
-            init {
-                deviceRecyclerView.setOnClickListener(this)
-                deleteDevice.setOnClickListener(this)
-            }
+    override fun initData() {
+        super.initData()
+    }
 
-            override fun onClick(v: View?) {
-                when (v?.id) {
-                    R.id.my_device_recycle -> {
-                        if (opened == bindingAdapterPosition) {
-                            opened = -1
-                            deviceImage.setImageResource(R.mipmap.icon_next)
-                            deviceLinearLayout.visibility = View.GONE
-                        } else {
-                            var oldOpened = opened
-                            opened = bindingAdapterPosition
-                            deviceImage.setImageResource(R.mipmap.icon_more)
-                            deviceLinearLayout.visibility = View.VISIBLE
-                        }
-                    }
-                    R.id.rel_device_delete -> {
-                        deleteDevice(bindingAdapterPosition)
-                    }
-                }
+    override fun registorUIChangeLiveDataCallBack() {
+        super.registorUIChangeLiveDataCallBack()
+        mViewModel.deviceInfo.observe(this, Observer {
+            mData.addAll(it)
+            mAdapter.setItems(mData)
+        })
+    }
+    private fun initRecycle() {
+        mViewModel.loadDevice()
+    }
 
-            }
-        }
-
-        private fun deleteDevice(bindingAdapterPosition: Int) {
-            CommonAlertDialog(baseContext).apply {
-                type = CommonAlertDialog.DialogType.Confirm
-                gravity = Gravity.BOTTOM
-                title = "解除绑定"
-                content = "此操作会清除手机中有关该设备的所有数据。设备解绑后，若再次使用，需重新添加。"
-                leftBtnText = "取消"
-                rightBtnText = "确认解绑"
-                listener = object : DialogClickListener.DefaultLisener() {
-                    override fun onRightBtnClick(view: View) {
-                        super.onRightBtnClick(view)
-                        CommonAlertDialog(context).apply {
-                            type = CommonAlertDialog.DialogType.Image
-                            imageResources = com.css.ble.R.mipmap.icon_tick
-                            content = context.getString(com.css.ble.R.string.unbond_ok)
-                            onDismissListener = object : BasePopupWindow.OnDismissListener() {
-                                override fun onDismiss() {
-                                }
+    private fun deleteDevice(it: DeviceData) {
+        CommonAlertDialog(baseContext).apply {
+            type = CommonAlertDialog.DialogType.Confirm
+            gravity = Gravity.BOTTOM
+            title = "解除绑定"
+            content = "此操作会清除手机中有关该设备的所有数据。设备解绑后，若再次使用，需重新添加。"
+            leftBtnText = "取消"
+            rightBtnText = "确认解绑"
+            listener = object : DialogClickListener.DefaultLisener() {
+                override fun onRightBtnClick(view: View) {
+                    super.onRightBtnClick(view)
+                    CommonAlertDialog(context).apply {
+                        type = CommonAlertDialog.DialogType.Image
+                        imageResources = com.css.ble.R.mipmap.icon_tick
+                        content = context.getString(com.css.ble.R.string.unbond_ok)
+                        onDismissListener = object : BasePopupWindow.OnDismissListener() {
+                            override fun onDismiss() {
+                                finish()
                             }
-                        }.show()
-                        DeviceInfoViewModel.name.remove(DeviceInfoViewModel.name[bindingAdapterPosition])
-                        notifyItemRemoved(bindingAdapterPosition)
-
-                    }
+                        }
+                    }.show()
+                    mViewModel.unBindDevice(it.id , it.deviceCategory)
                 }
-            }.show()
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceHolder {
-            return DeviceHolder(
-                LayoutInflater.from(parent.context).inflate(
-                    R.layout.item_view_device,
-                    parent,
-                    false
-                )
-            )
-        }
-        // item 数量暂时写 3
-        override fun getItemCount() = DeviceInfoViewModel.name.size
-
-        override fun onBindViewHolder(holder: DeviceHolder, position: Int) {
-            holder.run {
-                deviceTitle.text = DeviceInfoViewModel.name[position]
             }
-
-        }
+        }.show()
     }
 
     override fun enabledVisibleToolBar(): Boolean {

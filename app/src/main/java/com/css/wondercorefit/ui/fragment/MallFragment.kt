@@ -8,16 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import com.blankj.utilcode.util.NetworkUtils
 import com.css.base.uibase.BaseFragment
 import com.css.service.data.MallData
 import com.css.service.utils.SystemBarHelper
 import com.css.wondercorefit.R
 import com.css.wondercorefit.adapter.MallProductAdapter
-import com.css.wondercorefit.bean.ProductBean
 import com.css.wondercorefit.databinding.FragmentMallBinding
 import com.css.wondercorefit.viewmodel.MallViewModel
 
-class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(), View.OnClickListener {
+class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(), View.OnClickListener, NetworkUtils.OnNetworkStatusChangedListener {
     var mData = ArrayList<MallData>()
     lateinit var mAdapter: MallProductAdapter
     override fun initView(savedInstanceState: Bundle?) {
@@ -32,12 +32,13 @@ class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(), View.On
         mAdapter.setOnItemClickListener {
             openUrl(it.mallLink)
         }
+        NetworkUtils.registerNetworkStatusChangedListener(this)
     }
 
     override fun initData() {
         super.initData()
         mViewModel.getMallInfo()
-//        mData.add(ProductBean(R.mipmap.icon_product_1, "计数单杠"))
+//        mData.add(ProductBean(R.mipmap.icon_product_1, "计数单杠"))   q
 //        mData.add(ProductBean(R.mipmap.icon_product_2, "计数俯卧撑板"))
 //        mData.add(ProductBean(R.mipmap.icon_product_3, "计数健腹轮"))
 ////        mData.add(ProductBean(R.mipmap.icon_product_4, "计数跳绳"))
@@ -82,5 +83,17 @@ class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(), View.On
         intent.action = "android.intent.action.VIEW"
         intent.data = uri
         startActivity(intent)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        NetworkUtils.unregisterNetworkStatusChangedListener(this)
+    }
+    override fun onDisconnected() {
+        mViewBinding?.llNetError?.visibility = View.VISIBLE
+    }
+
+    override fun onConnected(networkType: NetworkUtils.NetworkType?) {
+        mViewBinding?.llNetError?.visibility = View.GONE
     }
 }

@@ -1,10 +1,8 @@
 package com.css.wondercorefit.adapter
 
-import android.content.Context
 import com.css.ble.ui.view.BaseBindingAdapter
 import com.css.service.data.MallData
 import com.css.wondercorefit.R
-import com.css.wondercorefit.bean.ProductBean
 import com.css.wondercorefit.databinding.ItemProductLayoutBinding
 
 class MallProductAdapter(mData: List<MallData>) :

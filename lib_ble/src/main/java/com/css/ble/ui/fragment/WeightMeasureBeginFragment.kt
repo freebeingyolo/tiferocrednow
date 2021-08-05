@@ -77,7 +77,7 @@ class WeightMeasureBeginFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
 
     override fun onVisible() {
         super.onVisible()
-        if (WonderCoreCache.getData(CacheKey.BOND_WEIGHT_INFO,BondDeviceData::class.java) == null) {//如果已经解绑了，回到此界面在回退
+        if (BondDeviceData.getDevice(DeviceType.WEIGHT) == null) {//如果已经解绑了，回到此界面在回退
             CommonAlertDialog(requireContext()).apply {
                 type = CommonAlertDialog.DialogType.Image
                 imageResources = R.mipmap.icon_tick
