@@ -2,8 +2,6 @@ package com.css.base.net.interceptor
 
 import com.blankj.utilcode.util.EncryptUtils
 import com.blankj.utilcode.util.LogUtils
-import com.css.base.net.NetLongLogger
-
 import com.css.service.utils.WonderCoreCache
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -37,7 +35,7 @@ class HeaderInterceptor : Interceptor {
         newRequestBuilder.header("method", mMethod)
         newRequestBuilder.header("nonce", mNonce.toString())
         newRequestBuilder.header("timestamp", mTimestamp.toString())
-        newRequestBuilder.header("MD5", signatures(mNonce, mTimestamp))
+        newRequestBuilder.header("MD5", signatures(request,mNonce, mTimestamp,mMethod))
 
         val newRequest = newRequestBuilder.build()
         //NetLongLogger().log("newRequest-->$newRequest")
@@ -65,18 +63,20 @@ class HeaderInterceptor : Interceptor {
             "nonce=${mNonce}&timestamp=${mTimestamp}\$${clientSecret}"
         return when (mMethod) {
             "post" -> {
-                var str = request.body?.let { getParamContent(it) }
+              /*  var str = request.body?.let { getParamContent(it) }
                 str = str?.substring(0, str.length - 1)
-                val merge = "method=${str}&${signatureStr}"
+                val merge = "method=${str}&${signatureStr}"*/
+                val merge = signatureStr
                 LogUtils.v("suisui", merge)
                 EncryptUtils.encryptMD5ToString(merge)
             }
             "get" -> {
                 var merge = ""
                 if (request.url.query != null) {
+
                     val query: List<String> = ArrayList(request.url.query!!.split("&"))
-                    Collections.sort(query) { str1, str2 -> // 按首字母升序排
-                        str2.compareTo(str1);
+                    Collections.sort(query) { str1, str2 -> // 按首字母倒序排
+                        str2.compareTo(str1)
                     }
                     //重新拼接请求体参数query
                     var sortStr = ""
