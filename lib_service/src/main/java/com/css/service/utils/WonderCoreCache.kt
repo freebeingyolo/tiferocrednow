@@ -1,6 +1,8 @@
 package com.css.service.utils
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.blankj.utilcode.util.SPUtils
 import com.css.service.bus.LiveDataBus
 import com.css.service.bus.LiveDataBus.BusMediatorLiveData
@@ -38,15 +40,15 @@ class WonderCoreCache { //一切围绕CacheKey
         }
 
         //如果d为null，将会移除这个key
-        fun <T> saveData(k1: CacheKey, d: T?) {
+        fun <T> saveData(k1: CacheKey, d: T?, serialized: Boolean = true) {
             //LogUtils.d("k1:$k1-->d:$d")
             if (d == null) {
                 removeKey(k1, true)
             } else {
                 val k = k1.k
                 val json = mGson.toJson(d)
-                SPUtils.getInstance().put(k, json)
                 LiveDataBus.get().with<T>(k).value = d
+                if (serialized) SPUtils.getInstance().put(k, json)
             }
         }
 
@@ -76,6 +78,11 @@ class WonderCoreCache { //一切围绕CacheKey
 
         fun <T> getLiveData(key: CacheKey): LiveData<T> {
             return LiveDataBus.get().with(key.k)
+        }
+
+        fun <From, To> getLiveData(transformer: (k: CacheKey, t: From?) -> To?, key: CacheKey): LiveData<To> {
+            val fromLv = LiveDataBus.get().with<From>(key.k)
+            return Transformations.map(fromLv) { transformer(key, it) }
         }
 
         //多个LiveData的合并,适用于监听多个LiveData

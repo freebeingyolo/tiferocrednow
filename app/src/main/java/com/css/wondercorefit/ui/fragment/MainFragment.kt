@@ -7,7 +7,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupWindow
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +20,8 @@ import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.bean.WeightBondData
 import com.css.ble.viewmodel.WheelMeasureVM
+import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
+import com.css.pickerview.listener.OnDismissListener
 import com.css.service.data.StepData
 import com.css.service.data.UserData
 import com.css.service.router.ARouterConst
@@ -33,6 +37,7 @@ import com.css.wondercorefit.adapter.MainDeviceAdapter
 import com.css.wondercorefit.databinding.FragmentMainBinding
 import com.css.wondercorefit.ui.activity.setting.PersonInformationActivity
 import com.css.wondercorefit.viewmodel.MainViewModel
+import razerdp.basepopup.BasePopupWindow
 
 
 class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.OnClickListener {
@@ -61,17 +66,22 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         mMainDeviceAdapter = MainDeviceAdapter(mData)
         mViewBinding?.deviceList?.adapter = mMainDeviceAdapter
         mMainDeviceAdapter.setOnItemClickListener {
-            when (it.deviceCategory) {
-                "体脂秤" -> {
+            when (it.deviceType) {
+                DeviceType.WEIGHT -> {
                     ARouter.getInstance()
                         .build(ARouterConst.PATH_APP_BLE_WEIGHTMEASURE)
                         .navigation()
                 }
-                "健腹轮" -> {
+                DeviceType.WHEEL -> {
                     ARouter.getInstance()
                         .build(ARouterConst.PATH_APP_BLE_WHEELMEASURE)
                         .navigation()
                 }
+                else ->
+                    ARouter.getInstance().build(ARouterConst.PATH_APP_BLE_COMMON)
+                        .withInt("mode", BaseDeviceScan2ConnVM.WorkMode.MEASURE.ordinal)
+                        .withInt("deviceType", it.deviceType.ordinal)
+                        .navigation()
             }
 
         }
@@ -117,8 +127,6 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     }
 
     private fun showDevice() {
-//        val devices = BondDeviceData.getDevices()
-//
         BondDeviceData.getDeviceLiveDataMerge().observe(viewLifecycleOwner) {
             //it为map，值为null表示删除，key为设备类型
             LogUtils.d("it-->" + it)
@@ -143,16 +151,11 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             }
             mMainDeviceAdapter.setItems(mData)
         }
-
-//        WonderCoreCache.getLiveDataMerge<BondDeviceData>(*WonderCoreCache.deviceCacheKeys)
-//            .observe(viewLifecycleOwner) {
-//                //这里更新数据，it是这次变动的数据
-//                LogUtils.d("it-->" + it)
-//            }
-        WheelMeasureVM.stateObsrv.observe(viewLifecycleOwner) {
+        BondDeviceData.getDeviceStateLiveData().observe(this) {
+            LogUtils.d("it--->$it")
             for (item in mData) {
-                if (item.deviceCategory == "健腹轮") {
-                    item.deviceConnect = WheelMeasureVM.stateStr
+                if (item.deviceCategory == it.first) {
+                    item.deviceConnect = it.second
                 }
             }
             mMainDeviceAdapter.setItems(mData)
@@ -192,8 +195,6 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
 
     private fun initClickListenr() {
         mViewBinding!!.gotoMeasure.setOnClickListener(this)
-//        mViewBinding!!.deviceWeight.setOnClickListener(this)
-//        mViewBinding!!.deviceWheel.setOnClickListener(this)
         mViewBinding!!.addBleDevice.setOnClickListener(this)
     }
 
@@ -294,20 +295,18 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
 
     override fun onClick(v: View) {
         when (v.id) {
-//            R.id.device_wheel -> {
-//                ARouter.getInstance()
-//                    .build(ARouterConst.PATH_APP_BLE_WHEELMEASURE)
-//                    .navigation()
-//            }
-//            R.id.device_weight -> {
-//                ARouter.getInstance()
-//                    .build(ARouterConst.PATH_APP_BLE_WEIGHTMEASURE)
-//                    .navigation()
-//            }
             R.id.goto_measure -> {
-                activity?.let { ToastDialog(it).showPopupWindow(mViewBinding?.pbStep) }
+                activity?.let {
+                    ToastDialog(it).apply {
+                        onFinishListener = {
+                            ARouter.getInstance()
+                                .build(ARouterConst.PATH_APP_BLE_DEVICELIST)
+                                .navigation()
+                        }
+                        showPopupWindow(mViewBinding?.pbStep)
+                    }
+                }
             }
-
             R.id.add_ble_device -> {
                 ARouter.getInstance()
                     .build(ARouterConst.PATH_APP_BLE_DEVICELIST)
@@ -316,11 +315,6 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         }
     }
 
-    override fun onVisible() {
-        super.onVisible()
-//        mViewBinding!!.weightDeviceName.text = BondDeviceData.displayName(DeviceType.WEIGHT)
-//        mViewBinding!!.wheelDeviceName.text = BondDeviceData.displayName(DeviceType.WHEEL)
-    }
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)

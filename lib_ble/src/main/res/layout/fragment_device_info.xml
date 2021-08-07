@@ -1,187 +1,195 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/ll_parent"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-   >
+<layout>
 
-    <RelativeLayout
-        android:id="@+id/rl_device_name"
+    <data>
+        <variable
+            name="model"
+            type="com.css.ble.bean.BondDeviceData" />
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/ll_parent"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:paddingStart="20dp"
-        android:paddingEnd="15dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="@string/device_name"
-            android:textColor="@color/black"
-            android:textSize="14sp" />
+        <RelativeLayout
+            android:id="@+id/rl_device_name"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="15dp">
 
-        <TextView
-            android:id="@+id/tv_device_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="23dp"
-            android:text="@string/device_weight"
-            android:textColor="@color/black"
-            android:textSize="14sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/device_name"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/icon_next" />
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/tv_device_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="23dp"
+                android:text="@string/device_weight"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="15dp"
-        android:background="@color/color_e5e5e5" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/icon_next" />
+        </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/rl_device_model"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:paddingStart="20dp"
-        android:paddingEnd="15dp">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="15dp"
+            android:background="@color/color_e5e5e5" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="@string/device_model"
-            android:textColor="@color/black"
-            android:textSize="14sp" />
+        <RelativeLayout
+            android:id="@+id/rl_device_model"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="15dp">
 
-        <TextView
-            android:id="@+id/tv_device_model"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:text="XXX-XXXX"
-            android:textColor="@color/text_666666"
-            android:textSize="14sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/device_model"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
 
-
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="15dp"
-        android:background="@color/color_e5e5e5" />
-
-    <RelativeLayout
-        android:id="@+id/rl_mac_address"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:paddingStart="20dp"
-        android:paddingEnd="15dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="Mac地址"
-            android:textColor="@color/black"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/tv_mac_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:text="xxx-xxx"
-            android:textColor="@color/text_666666"
-            android:textSize="14sp" />
+            <TextView
+                android:id="@+id/tv_device_model"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:text="@{model.moduleType,default=`XXX-XXXX`}"
+                android:textColor="@color/text_666666"
+                android:textSize="14sp" />
 
 
-    </RelativeLayout>
+        </RelativeLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="15dp"
-        android:background="@color/color_e5e5e5" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="15dp"
+            android:background="@color/color_e5e5e5" />
 
-    <RelativeLayout
-        android:id="@+id/rl_firmware_version"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:paddingStart="20dp"
-        android:paddingEnd="15dp">
+        <RelativeLayout
+            android:id="@+id/rl_mac_address"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="15dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="@string/firmware_version"
-            android:textColor="@color/black"
-            android:textSize="14sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="Mac地址"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
 
-        <TextView
-            android:id="@+id/tv_firmware_version"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:text="1.0.0"
-            android:textColor="@color/text_666666"
-            android:textSize="14sp" />
-
-
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="15dp"
-        android:background="@color/color_e5e5e5" />
-
-    <RelativeLayout
-        android:id="@+id/rl_delete_device"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:paddingStart="20dp"
-        android:paddingEnd="15dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="@string/delete_device"
-            android:textColor="@color/black"
-            android:textSize="14sp" />
+            <TextView
+                android:id="@+id/tv_mac_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:text="xxx-xxx"
+                android:textColor="@color/text_666666"
+                android:textSize="14sp" />
 
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_delete_device"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/icon_next" />
-    </RelativeLayout>
+        </RelativeLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="15dp"
-        android:background="@color/color_e5e5e5" />
-</androidx.appcompat.widget.LinearLayoutCompat>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="15dp"
+            android:background="@color/color_e5e5e5" />
+
+        <RelativeLayout
+            android:id="@+id/rl_firmware_version"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/firmware_version"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_firmware_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:text="@{model.moduleVersion,default=`1.0.0`}"
+                android:textColor="@color/text_666666"
+                android:textSize="14sp" />
+
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="15dp"
+            android:background="@color/color_e5e5e5" />
+
+        <RelativeLayout
+            android:id="@+id/rl_delete_device"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/delete_device"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_delete_device"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/icon_next" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="15dp"
+            android:background="@color/color_e5e5e5" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

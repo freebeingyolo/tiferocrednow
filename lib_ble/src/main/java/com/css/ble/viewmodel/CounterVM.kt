@@ -23,5 +23,8 @@ object CounterVM : BaseDeviceScan2ConnVM(DeviceType.COUNTER) {
         return uuid.toString() == UUID_SRVC
     }
 
+    override val bonded_tip: String
+        get() = "计数器已连接成功，开启你的健康之旅吧！"
+
 
 }

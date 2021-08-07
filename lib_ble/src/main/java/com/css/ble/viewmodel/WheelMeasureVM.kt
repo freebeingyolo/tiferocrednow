@@ -211,7 +211,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         netLaunch(
             {
                 withContext(Dispatchers.IO) {
-                    val ret = DeviceRepository.bindDevice(d.deviceCategory, d.displayName, d.mac)
+                    val ret = DeviceRepository.bindDevice(d.buidUploadParams())
                     takeIf { ret.isSuccess }.let { BondDeviceData.setDevice(DeviceType.WHEEL, BondDeviceData(ret.data!!)) }
                     ret
                 }

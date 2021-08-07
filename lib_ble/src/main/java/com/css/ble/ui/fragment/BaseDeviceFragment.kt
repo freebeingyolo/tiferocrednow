@@ -14,12 +14,17 @@ import com.blankj.utilcode.util.PermissionUtils
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseFragment
+import com.css.base.uibase.inner.OnToolBarClickListener
 import com.css.base.uibase.viewmodel.BaseViewModel
+import com.css.base.view.ToolBarView
+import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
+import com.css.ble.ui.DeviceInfoActivity
 import com.css.ble.utils.BleUtils
 import com.css.ble.utils.QuickTransUtils
 import com.css.ble.viewmodel.BleEnvVM
+import com.css.service.utils.ImageUtils
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -111,5 +116,20 @@ abstract class BaseDeviceFragment<VM : BaseViewModel, VB : ViewBinding>(val devi
     override fun onDestroyView() {
         super.onDestroyView()
         checkEnvDone = false
+    }
+
+    fun setUpJumpToDeviceInfo() {
+        val view = LayoutInflater.from(context).inflate(R.layout.layout_weight_measure_header, null, false)
+        setRightImage(ImageUtils.getBitmap(view))
+        getCommonToolBarView()?.setToolBarClickListener(object : OnToolBarClickListener {
+            override fun onClickToolBarView(view: View, event: ToolBarView.ViewType) {
+                when (event) {
+                    ToolBarView.ViewType.LEFT_IMAGE -> onBackPressed()
+                    ToolBarView.ViewType.RIGHT_IMAGE -> {
+                        DeviceInfoActivity.start(deviceType.name)
+                    }
+                }
+            }
+        })
     }
 }

@@ -3,8 +3,10 @@ package com.css.ble.bean
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.ActivityUtils
 import com.css.ble.R
+import com.css.service.bus.LiveDataBus
 import com.css.service.data.BaseData
 import com.css.service.data.DeviceData
 import com.css.service.utils.CacheKey
@@ -58,7 +60,19 @@ class BondDeviceData(
     var deviceCategory: String = ""
     val deviceType: DeviceType get() = DeviceType.values()[type]
     val deviceImg: Int get() = deviceType.icon2
-    var deviceConnect: String = "未连接"
+    var deviceConnect: String? = "未连接"
+    var moduleType: String = "" //设备型号
+    var moduleVersion: String = "" //固件版本
+
+    fun buidUploadParams(): HashMap<String, Any?> {
+        return hashMapOf(
+            "deviceCategory" to deviceCategory,
+            "deviceName" to displayName,
+            "bluetoothAddress" to mac,
+            "moduleType" to moduleType,
+            "moduleVersion" to moduleVersion
+        )
+    }
 
     constructor(d: DeviceData) : this() {
         this.id = d.id
@@ -66,6 +80,8 @@ class BondDeviceData(
         this.alias = d.deviceName
         this.deviceCategory = d.deviceCategory
         this.type = DeviceType.findByAlias(d.deviceCategory).ordinal
+        this.moduleType = d.moduleType
+        this.moduleVersion = d.moduleVersion
     }
 
     constructor() : this("", "", DeviceType.WEIGHT)
@@ -95,11 +111,19 @@ class BondDeviceData(
             WonderCoreCache.saveData(key.cacheKey, data)
         }
 
+        fun getDeviceStateLiveData(): MutableLiveData<Pair<String, String?>> {
+            return LiveDataBus.get().with("DeviceState")
+        }
+
         fun getDeviceLiveDataMerge(vararg keys: CacheKey = WonderCoreCache.deviceCacheKeys): LiveData<Pair<CacheKey, BondDeviceData?>> {
             return WonderCoreCache.getLiveDataMerge<BondDeviceData, Pair<CacheKey, BondDeviceData?>>(
                 { k, v -> Pair(k, v) },
                 *keys
             )
+        }
+
+        fun getDeviceLiveData(key: CacheKey): LiveData<BondDeviceData> {
+            return WonderCoreCache.getLiveData(key)
         }
 
         fun getDevices(vararg keys: CacheKey = WonderCoreCache.deviceCacheKeys): List<BondDeviceData> {
@@ -112,8 +136,8 @@ class BondDeviceData(
             ActivityUtils.getTopActivity().getString(DeviceType.values()[type].nameId)
         } else alias!!
 
-
     override fun toString(): String {
-        return "BondDeviceData(mac='$mac', manufacturerDataHex='$manufacturerDataHex', type=$type, alias=$alias)"
+        return "BondDeviceData(mac='$mac', manufacturerDataHex='$manufacturerDataHex', type=$type, alias=$alias, id=$id, deviceCategory='$deviceCategory', deviceConnect=$deviceConnect, moduleType='$moduleType', moduleVersion='$moduleVersion')"
     }
+
 }

@@ -13,6 +13,7 @@ import androidx.lifecycle.LifecycleService
 import cn.wandersnail.ble.EasyBLE
 import cn.wandersnail.ble.EventObserver
 import cn.wandersnail.commons.util.ToastUtils
+import com.css.ble.bean.BondDeviceData
 import com.css.ble.utils.BleUtils
 import com.css.ble.utils.UiUtils
 import com.css.ble.viewmodel.BleEnvVM
@@ -23,8 +24,8 @@ import com.css.ble.viewmodel.base.BaseDeviceVM
  * @date 2021-06-17
  */
 class BleEnvService : LifecycleService() {
-    private var mViewModel: BaseDeviceVM? = null
-    private var observer: EventObserver? = null
+    private var mViewModels = mutableListOf<BaseDeviceVM>()
+    private var observers = mutableListOf<EventObserver>()
 
     override fun onBind(intent: Intent): IBinder {
         super.onBind(intent)
@@ -33,14 +34,19 @@ class BleEnvService : LifecycleService() {
 
     inner class MyBinder : Binder() {
 
-        fun setViewModel(vm: BaseDeviceVM, obsvr:EventObserver) {
-            this@BleEnvService.mViewModel = vm
-            this@BleEnvService.observer = obsvr
+        fun setViewModel(vm: BaseDeviceVM, obsvr: EventObserver) {
+            mViewModels.takeIf { it.contains(vm) }?.add(vm)
+            observers.takeIf { it.contains(obsvr) }?.add(obsvr)
             if (!EasyBLE.getInstance().isInitialized) {
                 EasyBLE.getInstance().initialize(UiUtils.getApplication())
             }
-            EasyBLE.getInstance().registerObserver(obsvr)
+
+            if (!EasyBLE.getInstance().isObserverRegistered(obsvr)) {
+                EasyBLE.getInstance().registerObserver(obsvr)
+            }
         }
+
+
     }
 
     override fun onCreate() {
@@ -53,7 +59,9 @@ class BleEnvService : LifecycleService() {
         BleEnvVM.bleObsrv.observe(this) { //蓝牙关闭，断开连接
             if (it == false) {
                 ToastUtils.showShort("蓝牙关闭,健腹轮断开")
-                mViewModel?.disconnect()
+                for (vm in mViewModels) {
+                    vm.disconnect()
+                }
             }
         }
         LogUtils.d("BleDeviceService#onCreate")
@@ -63,7 +71,9 @@ class BleEnvService : LifecycleService() {
         super.onDestroy()
         unregisterReceiver(receiver)
         LogUtils.d("BleDeviceService#onDestroy")
-        observer?.let { EasyBLE.getInstance().unregisterObserver(it) }
+        observers.forEach { EasyBLE.getInstance().unregisterObserver(it) }
+        observers.clear()
+        mViewModels.clear()
     }
 
     private var receiver: BroadcastReceiver = object : BroadcastReceiver() {

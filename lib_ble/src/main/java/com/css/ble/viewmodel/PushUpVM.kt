@@ -23,5 +23,9 @@ object PushUpVM : BaseDeviceScan2ConnVM(DeviceType.PUSH_UP) {
         return uuid.toString() == UUID_SRVC
     }
 
+    override val bonded_tip: String
+        get() = "俯卧撑已连接成功，开启你的健康之旅吧！"
+
+
 
 }

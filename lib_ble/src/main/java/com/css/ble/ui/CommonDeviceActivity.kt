@@ -1,15 +1,23 @@
 package com.css.ble.ui
 
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
+import androidx.fragment.app.Fragment
+import com.alibaba.android.arouter.facade.Postcard
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.facade.callback.NavCallback
+import com.alibaba.android.arouter.launcher.ARouter
+import com.css.base.dialog.CommonAlertDialog
+import com.css.ble.R
+import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.ActivityBleEntryBinding
 import com.css.ble.ui.fragment.CommonBondBeginFragment
+import com.css.ble.ui.fragment.CommonMeasureBeginFragment
+import com.css.ble.ui.fragment.HorizontalBarMeasureBeginFragment
 import com.css.ble.utils.FragmentUtils
 import com.css.ble.viewmodel.CounterVM
 import com.css.ble.viewmodel.HorizontalBarVM
@@ -17,6 +25,7 @@ import com.css.ble.viewmodel.PushUpVM
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM.WorkMode
 import com.css.service.router.ARouterConst
+import razerdp.basepopup.BasePopupWindow
 
 @Route(path = ARouterConst.PATH_APP_BLE_COMMON)
 class CommonDeviceActivity : BaseDeviceActivity<BaseDeviceScan2ConnVM, ActivityBleEntryBinding>() {
@@ -34,25 +43,28 @@ class CommonDeviceActivity : BaseDeviceActivity<BaseDeviceScan2ConnVM, ActivityB
 
     override fun initData() {
         super.initData()
-        mViewModel.workMode = WorkMode.values()[(intent.getIntExtra("mode", 0))]
-        when (mViewModel.workMode) {
-            WorkMode.BOND -> {
-                FragmentUtils.changeFragment(
-                    CommonBondBeginFragment::class.java,
-                    "${javaClass.simpleName}#$deviceType",
-                    FragmentUtils.Option.OPT_REPLACE,
-                    { CommonBondBeginFragment(deviceType, mViewModel) }
-                )
-            }
-            WorkMode.MEASURE ->{
-                FragmentUtils.changeFragment(
-                    CommonBondBeginFragment::class.java,
-                    "${javaClass.simpleName}#$deviceType",
-                    FragmentUtils.Option.OPT_REPLACE,
-                    { CommonBondBeginFragment(deviceType, mViewModel) }
-                )
+        mViewModel.workModeObsrv.observe(this) {
+            when (it) {
+                WorkMode.BOND -> {
+                    FragmentUtils.changeFragment(
+                        CommonBondBeginFragment::class.java,
+                        "${javaClass.simpleName}#$deviceType",
+                        FragmentUtils.Option.OPT_REPLACE,
+                        { CommonBondBeginFragment(deviceType, mViewModel) }
+                    )
+                }
+                WorkMode.MEASURE -> {
+                    val f = CommonMeasureBeginFragment.getExplicitFragment(mViewModel, deviceType)
+                    FragmentUtils.changeFragment(
+                        f::class.java,
+                        "${javaClass.simpleName}#$deviceType",
+                        FragmentUtils.Option.OPT_REPLACE,
+                        { f }
+                    )
+                }
             }
         }
+        mViewModel.workMode = WorkMode.values()[(intent.getIntExtra("mode", 0))]
 
         startService(Intent(this, BleEnvService::class.java))
         bindService(Intent(this, BleEnvService::class.java), object : ServiceConnection {
@@ -71,5 +83,29 @@ class CommonDeviceActivity : BaseDeviceActivity<BaseDeviceScan2ConnVM, ActivityB
 
     override fun initViewModel(): BaseDeviceScan2ConnVM {
         return vmMap[deviceType]!!
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //测量界面发生解绑
+        if (mViewModel.workMode == WorkMode.MEASURE && BondDeviceData.getDevice(deviceType) == null) {
+            mViewModel.disconnect()
+            CommonAlertDialog(this).apply {
+                type = CommonAlertDialog.DialogType.Image
+                imageResources = R.mipmap.icon_tick
+                content = getString(R.string.please_bond_first)
+                onDismissListener = object : BasePopupWindow.OnDismissListener() {
+                    override fun onDismiss() {
+                        mViewModel.disconnect()
+                        ARouter.getInstance().build(ARouterConst.PATH_APP_BLE_DEVICELIST).navigation(context,
+                            object : NavCallback() {
+                                override fun onArrival(postcard: Postcard?) {
+                                    finish()
+                                }
+                            })
+                    }
+                }
+            }.show()
+        }
     }
 }

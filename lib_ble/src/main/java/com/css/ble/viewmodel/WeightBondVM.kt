@@ -18,6 +18,7 @@ open class WeightBondVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPa
         const val WEIGHT_UPPER = 180;
         const val WEIGHT_LOWER = 0;
     }
+
     private val mBroadcastDataParsing by lazy { BroadcastDataParsing(this) }
     val state: MutableLiveData<State> by lazy { MutableLiveData<State>(State.begin) }
     var filterDevice: BondDeviceInfo? = null
@@ -117,8 +118,8 @@ open class WeightBondVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPa
     }
 
     fun bindDevice(
-        success: (msg: String?, d: Any?) -> Unit,
-        failed: (Int, String?, d: Any?) -> Unit
+        success: ((msg: String?, d: Any?) -> Unit)?,
+        failed: ((Int, String?, d: Any?) -> Unit)?
     ) {
         val d = BondDeviceData(
             filterDevice!!.mac,
@@ -128,22 +129,23 @@ open class WeightBondVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPa
         netLaunch(
             {
                 withContext(Dispatchers.IO) {
-                    val ret = DeviceRepository.bindDevice(d.deviceCategory, d.displayName, d.mac)
-                    if(ret.isSuccess) {
-                        BondDeviceData.setDevice(d.deviceType,BondDeviceData(ret.data!!))
+                    val ret = DeviceRepository.bindDevice(d.buidUploadParams())
+                    if (ret.isSuccess) {
+                        BondDeviceData.setDevice(d.deviceType, BondDeviceData(ret.data!!))
                     }
                     ret
                 }
             },
             { msg, _ ->
                 state.value = State.done
-                success(msg, d)
+                success?.invoke(msg, d)
             },
             { code, msg, d ->
-                failed(code, msg, d)
+                failed?.invoke(code, msg, d)
             }
         )
     }
+
 }
 
 

@@ -25,12 +25,11 @@ object DeviceRepository {
     }
 
     //绑定设备
-    suspend fun bindDevice(category: String, name: String, mac: String): CommonResponse<DeviceData> {
+    //eg: {"deviceCategory":"单杠","bluetoothAddress":"12:32:00:00:06:D5","moduleType":"","deviceName":"单杠","moduleVersion":""}
+    suspend fun bindDevice(map: HashMap<String, Any?>): CommonResponse<DeviceData> {
         return api.bindDevice(
             RequestBodyBuilder()
-                .addParams("deviceCategory", category)
-                .addParams("deviceName", name)
-                .addParams("bluetoothAddress", mac)
+                .addParams(map)
                 .build()
         )
     }

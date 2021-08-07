@@ -55,6 +55,7 @@ class DeviceInfoActivity : BaseActivity<DeviceInfoVM, FragmentDeviceInfoBinding>
         super.initView(savedInstanceState)
         key = intent.getStringExtra("DeviceKey")!!
         data = BondDeviceData.getDevice(DeviceType.valueOf(key))!!
+        mViewBinding.model = data
         mViewBinding.apply {
             tvDeviceName.text = data.displayName
             tvMacAddress.text = data.mac
@@ -77,10 +78,10 @@ class DeviceInfoActivity : BaseActivity<DeviceInfoVM, FragmentDeviceInfoBinding>
                     listener = object : DialogClickListener.DefaultLisener() {
 
                         override fun onRightEditBtnClick(view: View, content: String?) {
-    //                            val contentLength =
-    //                                StringUtils.getCharacterNum(content) + StringUtils.getChineseNum(
-    //                                    content!!
-    //                                )
+                            //                            val contentLength =
+                            //                                StringUtils.getCharacterNum(content) + StringUtils.getChineseNum(
+                            //                                    content!!
+                            //                                )
                             if (StringUtils.getCheckSymbol(content.toString())) {
                                 showToast("设备名称只可为10个汉字或英文字母，包含其他字符将无法保存")
                             } else {
