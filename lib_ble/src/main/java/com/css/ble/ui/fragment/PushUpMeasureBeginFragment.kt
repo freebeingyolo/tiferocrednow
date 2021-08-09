@@ -1,7 +1,7 @@
 package com.css.ble.ui.fragment
 
 import com.css.ble.bean.DeviceType
-import com.css.ble.databinding.ActivityHorizontalbarBinding
+import com.css.ble.databinding.LayoutHorizontalbarBinding
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
 
 /**
@@ -10,9 +10,9 @@ import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
  *@description
  */
 class PushUpMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
-    CommonMeasureBeginFragment<ActivityHorizontalbarBinding>(d, vm) {
+    CommonMeasureBeginFragment<LayoutHorizontalbarBinding>(d, vm) {
 
-    override val vbCls: Class<ActivityHorizontalbarBinding> get() = ActivityHorizontalbarBinding::class.java
+    override val vbCls: Class<LayoutHorizontalbarBinding> get() = LayoutHorizontalbarBinding::class.java
 
 
 }

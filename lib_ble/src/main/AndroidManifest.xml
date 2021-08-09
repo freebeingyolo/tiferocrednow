@@ -21,7 +21,14 @@
         <service android:name="com.pingwang.bluetoothlib.server.ELinkBleServer" />
         <service
             android:name=".ui.BleEnvService"
+            android:enabled="true"
             android:exported="false" />
+        <activity
+            android:name=".ui.TestActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/WonderTheme.NoExitEnterAnimation" />
+
 
         <activity
             android:name=".ui.CommonDeviceActivity"

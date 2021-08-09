@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.css.ble.bean.DeviceType
 import com.pingwang.bluetoothlib.bean.BleValueBean
 import com.pingwang.bluetoothlib.listener.OnCallbackBle
 import com.pingwang.bluetoothlib.listener.OnScanFilterListener
@@ -23,7 +24,7 @@ abstract class BaseWeightVM : BaseDeviceVM() {
     companion object {
         private val TianShengKey = intArrayOf(0x54493049, 0x4132794E, 0x53783148, 0x476c6531)
     }
-
+    override val deviceType: DeviceType = DeviceType.WEIGHT
     val TAG: String = javaClass.simpleName
     protected var decryptKey: IntArray = TianShengKey
     protected var timeOutJob: Job? = null;

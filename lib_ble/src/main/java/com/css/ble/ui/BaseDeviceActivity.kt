@@ -12,9 +12,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
+import cn.wandersnail.ble.EasyBLE
 import com.css.base.uibase.BaseActivity
 import com.css.ble.bean.DeviceType
 import com.css.ble.utils.BleUtils
+import com.css.ble.utils.UiUtils
 import com.css.ble.viewmodel.base.BaseDeviceVM
 import com.css.ble.viewmodel.BleEnvVM
 
@@ -31,6 +33,11 @@ abstract class BaseDeviceActivity<VM : BaseDeviceVM, VB : ViewBinding>() : BaseA
         this.deviceType = d
     }
 
+    init {
+        if (!EasyBLE.getInstance().isInitialized) {
+            EasyBLE.getInstance().initialize(UiUtils.getApplication())
+        }
+    }
 
     override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): VB {
         val method = vbCls.getDeclaredMethod("inflate", LayoutInflater::class.java, ViewGroup::class.java, Boolean::class.java)

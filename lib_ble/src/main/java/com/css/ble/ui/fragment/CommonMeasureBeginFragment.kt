@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import androidx.databinding.DataBindingUtil
@@ -14,6 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.util.ToastUtils
+import com.css.base.dialog.CommonAlertDialog
+import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.inner.OnToolBarClickListener
 import com.css.base.view.ToolBarView
 import com.css.ble.R
@@ -63,6 +66,23 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
             recommendationAdapter.setItems(it)
             recommendationAdapter.notifyDataSetChanged()
         }
+        mViewModel.stateObsrv.observe(viewLifecycleOwner) {
+            when (it) {
+                State.timeOut -> {
+                    CommonAlertDialog(requireContext()).apply {
+                        type = CommonAlertDialog.DialogType.Tip
+                        gravity = Gravity.BOTTOM
+                        listener = object : DialogClickListener.DefaultLisener() {
+                            override fun onRightBtnClick(view: View) {
+                                //TODO 重新连接
+                                mViewModel.connect()
+                            }
+                        }
+                    }.show()
+                }
+            }
+        }
+
     }
 
     val recommendationAdapter = object : BaseBindingAdapter<CourseData, LayoutPlayRecommendItemBinding>() {

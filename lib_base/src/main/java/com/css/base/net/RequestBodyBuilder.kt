@@ -7,7 +7,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 
 
 class RequestBodyBuilder {
-    private val paramsMap = hashMapOf<String, Any>()
+    private val paramsMap = hashMapOf<String, Any?>()
 
     init {
 //        paramsMap["system"] = URLConstant.SYSTEM
@@ -20,7 +20,7 @@ class RequestBodyBuilder {
         return this
     }
 
-    fun addParams(params: HashMap<String, Any>): RequestBodyBuilder {
+    fun addParams(params: HashMap<String, Any?>): RequestBodyBuilder {
         for (item in params) {
             paramsMap[item.key] = item.value
         }

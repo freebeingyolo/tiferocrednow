@@ -6,6 +6,7 @@ import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
 import androidx.fragment.app.Fragment
+import cn.wandersnail.ble.EasyBLE
 import com.alibaba.android.arouter.facade.Postcard
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.facade.callback.NavCallback
@@ -17,7 +18,6 @@ import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.ActivityBleEntryBinding
 import com.css.ble.ui.fragment.CommonBondBeginFragment
 import com.css.ble.ui.fragment.CommonMeasureBeginFragment
-import com.css.ble.ui.fragment.HorizontalBarMeasureBeginFragment
 import com.css.ble.utils.FragmentUtils
 import com.css.ble.viewmodel.CounterVM
 import com.css.ble.viewmodel.HorizontalBarVM
@@ -70,12 +70,13 @@ class CommonDeviceActivity : BaseDeviceActivity<BaseDeviceScan2ConnVM, ActivityB
         bindService(Intent(this, BleEnvService::class.java), object : ServiceConnection {
             override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
                 val binder: BleEnvService.MyBinder = service as BleEnvService.MyBinder
-                binder.setViewModel(mViewModel, mViewModel)
+                binder.setViewModel(mViewModel)
+                LogUtils.d("onServiceConnected:${javaClass::class.java}")
             }
 
-            override fun onServiceDisconnected(name: ComponentName?) {
-            }
+            override fun onServiceDisconnected(name: ComponentName?) {}
         }, BIND_AUTO_CREATE)
+        EasyBLE.getInstance().registerObserver(mViewModel)
     }
 
     override val vmCls get() = BaseDeviceScan2ConnVM::class.java
@@ -106,6 +107,13 @@ class CommonDeviceActivity : BaseDeviceActivity<BaseDeviceScan2ConnVM, ActivityB
                     }
                 }
             }.show()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (isFinishing) {
+            EasyBLE.getInstance().unregisterObserver(mViewModel)
         }
     }
 }

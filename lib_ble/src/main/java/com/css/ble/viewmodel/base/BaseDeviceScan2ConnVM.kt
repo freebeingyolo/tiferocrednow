@@ -33,8 +33,7 @@ import java.util.*
  *@time 2021-08-03 10:46
  *@description  设备扫描ViewModel基类
  */
-abstract class BaseDeviceScan2ConnVM(val deviceType: DeviceType) :
-    BaseDeviceVM(), IBleScan, IBleConnect, EventObserver {
+abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, EventObserver {
 
     enum class FoundWay {
         NAME,
@@ -70,7 +69,7 @@ abstract class BaseDeviceScan2ConnVM(val deviceType: DeviceType) :
     var workMode: WorkMode
         get() = workModeObsrv.value!!
         set(v) {
-            (workModeObsrv as BusMutableLiveData).value = v
+            (workModeObsrv as MutableLiveData).value = v
         }
     val workModeObsrv: LiveData<WorkMode> by lazy { BusMutableLiveData(WorkMode.BOND) }
 
@@ -84,7 +83,7 @@ abstract class BaseDeviceScan2ConnVM(val deviceType: DeviceType) :
         }
         get() = stateObsrv.value!!
 
-    private val _recommentationData by lazy { MutableLiveData<List<CourseData>>() }
+    private val _recommentationData by lazy { BusMutableLiveData<List<CourseData>>() }
     val recommentationData: LiveData<List<CourseData>> get() = _recommentationData
 
 
@@ -203,6 +202,7 @@ abstract class BaseDeviceScan2ConnVM(val deviceType: DeviceType) :
     }
 
     private fun foundDevice(d: Device) {
+        LogUtils.d("foundDevice:$avaliableDevice --> device:$d)")
         if (avaliableDevice == null) {
             avaliableDevice = d
             cancelTimeOutTimer()
@@ -214,12 +214,13 @@ abstract class BaseDeviceScan2ConnVM(val deviceType: DeviceType) :
     @Tag("onConnectionStateChanged")
     @Observe
     @RunOn(ThreadMode.MAIN)
-    override fun onConnectionStateChanged(@NonNull device: Device) {
-        LogUtils.d("onConnectionStateChanged:${device.connectionState},${device.name}")
+    final override fun onConnectionStateChanged(@NonNull device: Device) {
+        LogUtils.d("onConnectionStateChanged:${device.connectionState},${device.name},${deviceType}")
         when (device.connectionState) {
             ConnectionState.DISCONNECTED -> {
                 state = State.disconnected
                 cancelTimeOutTimer()
+                avaliableDevice = null
             }
             ConnectionState.CONNECTING -> {
                 state = State.connecting
@@ -236,7 +237,6 @@ abstract class BaseDeviceScan2ConnVM(val deviceType: DeviceType) :
             ConnectionState.SERVICE_DISCOVERED -> {
                 state = State.discovered
                 val services: List<BluetoothGattService> = connection!!.gatt!!.services
-
                 loop@ for (service in services) {
                     if (filterUUID(service.uuid)) {
                         foundDevice(device)
@@ -258,6 +258,7 @@ abstract class BaseDeviceScan2ConnVM(val deviceType: DeviceType) :
 
     override fun onCharacteristicChanged(device: Device, service: UUID, characteristic: UUID, value: ByteArray) {
         super.onCharacteristicChanged(device, service, characteristic, value)
+        if (device != connection!!.device) return
         LogUtils.d("onCharacteristicChanged：" + StringUtils.toHex(value, " "))
     }
 

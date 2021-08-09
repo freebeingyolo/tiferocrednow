@@ -121,7 +121,7 @@ object WheelBondVM : BaseWheelVM(), EventObserver {
     @Observe
     @RunOn(ThreadMode.MAIN)
     override fun onConnectionStateChanged(@NonNull device: Device) {
-        LogUtils.d("onConnectionStateChanged:${device.connectionState},${device.name}")
+        LogUtils.d("onConnectionStateChanged:${device.connectionState},${device.name},${deviceType}")
         when (device.connectionState) {
             ConnectionState.DISCONNECTED -> {
                 _state.value = State.disconnect

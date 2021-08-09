@@ -4,6 +4,7 @@ import LogUtils
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.css.base.uibase.viewmodel.BaseViewModel
+import com.css.ble.bean.DeviceType
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -14,6 +15,7 @@ import kotlinx.coroutines.launch
  */
 abstract class BaseDeviceVM : BaseViewModel() {
     private val TAG = javaClass.simpleName
+    abstract val deviceType:DeviceType
 
     companion object {
         const val TIMEOUT_NEVER = -1L

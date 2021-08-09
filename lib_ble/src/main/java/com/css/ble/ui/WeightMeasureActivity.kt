@@ -36,8 +36,6 @@ class WeightMeasureActivity : BaseWeightActivity<WeightMeasureVM, ActivityBleEnt
             mViewModel.bondData.value = WonderCoreCache.getData(CacheKey.LAST_WEIGHT_INFO, WeightBondData::class.java)
             FragmentUtils.changeFragment(WeightMeasureEndDeailFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
         }
-
-
     }
 
     override fun onResume() {

@@ -246,7 +246,8 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
     override fun disconnect() {
         cancelTimeOutTimer()
         if (state > State.disconnected) {
-            connection.disconnect()
+            connection?.disconnect()
+            connection = null
             state = State.disconnected
         }
     }
@@ -254,7 +255,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
     override fun onTimerTimeout() {
         LogUtils.d("onScanTimeOut")
         state = State.timeOut
-        EasyBLE.getInstance().disconnectAllConnections()
+        connection?.disconnect()
     }
 
     val stateStr get() = if (state.ordinal < State.discovered.ordinal) "未连接" else "已连接"
@@ -266,6 +267,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         set(value) {
             (stateObsrv as MutableLiveData).value = value
             if (value == State.disconnected) stopExercise()
+            BondDeviceData.getDeviceStateLiveData().value = Pair(deviceType.alias, connectStateTxt.value)
         }
         get() = stateObsrv.value!!
 
@@ -277,7 +279,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
     @Observe
     @RunOn(ThreadMode.MAIN)
     override fun onConnectionStateChanged(@NonNull device: Device) {
-        LogUtils.d("onConnectionStateChanged:${device.connectionState},${device.name}")
+        LogUtils.d("onConnectionStateChanged:${device.connectionState},${device.name},${deviceType}")
         when (device.connectionState) {
             ConnectionState.DISCONNECTED -> {
                 state = State.disconnected
@@ -513,10 +515,10 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
 
     private fun sendNotification(serviceUUID: UUID, characterUUID: UUID, isEnabled: Boolean, cb: NotificationChangeCallback) {
         //开启通知
-        if (connection.connectionState != ConnectionState.SERVICE_DISCOVERED) return
+        if (connection?.connectionState != ConnectionState.SERVICE_DISCOVERED) return
         val builder = RequestBuilderFactory().getSetNotificationBuilder(serviceUUID, characterUUID, isEnabled)
         builder.setCallback(cb)
-        connection.execute(builder.build())
+        connection?.execute(builder.build())
     }
 
     private fun writeCharacter(
@@ -527,7 +529,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         tag: String? = null
     ) {
         //开启通知
-        if (connection.connectionState != ConnectionState.SERVICE_DISCOVERED) return
+        if (connection?.connectionState != ConnectionState.SERVICE_DISCOVERED) return
         val builder = RequestBuilderFactory().getWriteCharacteristicBuilder(serviceUUID, characterUUID, data)
         builder.setCallback(cb)
         builder.setTag(tag)
@@ -541,10 +543,10 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
                 .setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT)
                 .build()
         )*/
-        connection.execute(builder.build())
+        connection?.execute(builder.build())
     }
 
-    private lateinit var connection: Connection
+    private var connection: Connection? = null
 
 
     object EasterEggs {

@@ -7,9 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.PopupWindow
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,9 +17,7 @@ import com.css.base.uibase.BaseFragment
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.bean.WeightBondData
-import com.css.ble.viewmodel.WheelMeasureVM
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
-import com.css.pickerview.listener.OnDismissListener
 import com.css.service.data.StepData
 import com.css.service.data.UserData
 import com.css.service.router.ARouterConst
@@ -37,7 +33,6 @@ import com.css.wondercorefit.adapter.MainDeviceAdapter
 import com.css.wondercorefit.databinding.FragmentMainBinding
 import com.css.wondercorefit.ui.activity.setting.PersonInformationActivity
 import com.css.wondercorefit.viewmodel.MainViewModel
-import razerdp.basepopup.BasePopupWindow
 
 
 class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.OnClickListener {

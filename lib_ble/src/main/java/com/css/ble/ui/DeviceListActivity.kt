@@ -97,7 +97,6 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
             }
             addItemDecoration(SpaceItemDecoration(30))
             layoutManager = LinearLayoutManager(context)
-            //(layoutManager as LinearLayoutManager).orientation = LinearLayoutManager.VERTICAL
             adapter = mAdapter
             //addItemDecoration(DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL))
         }

@@ -1,5 +1,6 @@
 package com.css.ble.viewmodel.base
 
+import com.css.ble.bean.DeviceType
 import java.util.*
 
 
@@ -20,4 +21,5 @@ abstract class BaseWheelVM : BaseDeviceVM() {
         val UUID_NOTIFY2 = UUID.fromString(UUID_NOTIFY)
     }
 
+    override val deviceType: DeviceType = DeviceType.WHEEL
 }

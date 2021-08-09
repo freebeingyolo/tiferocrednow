@@ -82,4 +82,6 @@
     <string name="feedback_selectedContent">请输入反馈内容</string>
     <string name="feedback_submit">提交</string>
     <string name="feedback_history">反馈记录</string>
+    <string name="byCount">计数模式</string>
+    <string name="byTime">计时模式%d</string>
 </resources>
