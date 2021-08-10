@@ -24,6 +24,7 @@ import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.ActivityAbrollerBinding
 import com.css.ble.databinding.LayoutPlayRecommendItemBinding
+import com.css.ble.ui.DataStatisticsActivity
 import com.css.ble.ui.DeviceInfoActivity
 import com.css.ble.ui.view.BaseBindingAdapter
 import com.css.ble.viewmodel.BleEnvVM
@@ -139,7 +140,6 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
     }
 
     fun jumpToStatistic() {
-        val type = deviceType
-
+        DataStatisticsActivity.starActivity(requireContext(),Bundle().apply { putString("deviceType",deviceType.alias) })
     }
 }
