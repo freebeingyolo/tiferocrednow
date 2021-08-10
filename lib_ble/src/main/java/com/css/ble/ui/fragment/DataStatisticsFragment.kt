@@ -62,7 +62,8 @@ class DataStatisticsFragment : BaseFragment<DataStatisticsVM, FragmentStatistics
         mViewBinding!!.rlHistoryData.layoutManager = LinearLayoutManager(requireContext())
         mViewBinding!!.rlHistoryData.adapter = mAdapter
 
-
+        mViewBinding!!.imgLastDate.setOnClickListener(this)
+        mViewBinding!!.imgNextDate.setOnClickListener(this)
     }
 
     override fun initData() {
@@ -105,6 +106,9 @@ class DataStatisticsFragment : BaseFragment<DataStatisticsVM, FragmentStatistics
         super.registorUIChangeLiveDataCallBack()
         mViewModel.pullUpDataList.observe(this, {
             LogUtils.dTag("---->", it);
+//            没有数据场景
+//            单击事件
+//            默认选中时间
             //历史数据
             mData.addAll(it)
             mAdapter.setItems(mData)

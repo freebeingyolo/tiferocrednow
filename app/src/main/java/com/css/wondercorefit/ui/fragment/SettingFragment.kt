@@ -71,12 +71,12 @@ class SettingFragment : BaseFragment<DefaultViewModel, FragmentSettingBinding>()
             }
             R.id.rl_feedback -> {
                 activity?.let {
-                    DataStatisticsActivity.starActivity(it)
-//                    if (NetworkUtils.isConnected()) {
-//                        FeedbackActivity.starActivity(it)
-//                    }else{
-//                        showCenterToast("网络异常")
-//                    }
+//                    DataStatisticsActivity.starActivity(it)
+                    if (NetworkUtils.isConnected()) {
+                        FeedbackActivity.starActivity(it)
+                    }else{
+                        showCenterToast("网络异常")
+                    }
                 }
             }
             R.id.exit_login -> {
