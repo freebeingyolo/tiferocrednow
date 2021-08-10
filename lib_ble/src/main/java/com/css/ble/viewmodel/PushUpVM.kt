@@ -1,5 +1,6 @@
 package com.css.ble.viewmodel
 
+import cn.wandersnail.ble.Device
 import com.css.ble.bean.DeviceType
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
 import java.util.*
@@ -26,6 +27,10 @@ object PushUpVM : BaseDeviceScan2ConnVM() {
 
     override val bonded_tip: String
         get() = "俯卧撑已连接成功，开启你的健康之旅吧！"
+
+    override fun discovered(d: Device) {
+        TODO("Not yet implemented")
+    }
 
 
 }

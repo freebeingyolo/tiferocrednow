@@ -7,7 +7,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import cn.wandersnail.ble.*
+import cn.wandersnail.ble.callback.NotificationChangeCallback
 import cn.wandersnail.ble.callback.ScanListener
+import cn.wandersnail.ble.callback.WriteCharacteristicCallback
 import cn.wandersnail.commons.observer.Observe
 import cn.wandersnail.commons.poster.RunOn
 import cn.wandersnail.commons.poster.Tag
@@ -16,7 +18,6 @@ import cn.wandersnail.commons.util.StringUtils
 import com.css.base.net.api.repository.CourseRepository
 import com.css.base.net.api.repository.DeviceRepository
 import com.css.ble.bean.BondDeviceData
-import com.css.ble.bean.DeviceType
 import com.css.ble.viewmodel.IBleConnect
 import com.css.ble.viewmodel.IBleScan
 import com.css.ble.viewmodel.WheelMeasureVM
@@ -25,6 +26,7 @@ import com.css.service.bus.LiveDataBus.BusMutableLiveData
 import com.css.service.data.CourseData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.lang.IllegalStateException
 import java.text.DecimalFormat
 import java.util.*
 
@@ -50,6 +52,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         discovering,
         discovered,
         found,
+        exercise
     }
 
     /*** abstractable start ****/
@@ -202,7 +205,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     }
 
     private fun foundDevice(d: Device) {
-        LogUtils.d("foundDevice:$avaliableDevice --> device:$d)")
+        if (avaliableDevice != null) throw IllegalStateException("avaliableDevice is not null")
         if (avaliableDevice == null) {
             avaliableDevice = d
             cancelTimeOutTimer()
@@ -236,18 +239,24 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
             }
             ConnectionState.SERVICE_DISCOVERED -> {
                 state = State.discovered
-                val services: List<BluetoothGattService> = connection!!.gatt!!.services
-                loop@ for (service in services) {
-                    if (filterUUID(service.uuid)) {
-                        foundDevice(device)
-                        break@loop
-                    }
-                    for (ch in service.characteristics) {
-                        if (filterUUID(ch.uuid)) {
+                if (workMode == WorkMode.BOND) {
+                    val services: List<BluetoothGattService> = connection!!.gatt!!.services
+                    loop@ for (service in services) {
+                        if (filterUUID(service.uuid)) {
                             foundDevice(device)
                             break@loop
                         }
+                        for (ch in service.characteristics) {
+                            if (filterUUID(ch.uuid)) {
+                                foundDevice(device)
+                                break@loop
+                            }
+                        }
                     }
+                    discovered(device)
+                } else {
+                    cancelTimeOutTimer()
+                    discovered(device)
                 }
             }
             ConnectionState.RELEASED -> {
@@ -256,22 +265,30 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         }
     }
 
+    abstract fun discovered(d: Device)
+
     override fun onCharacteristicChanged(device: Device, service: UUID, characteristic: UUID, value: ByteArray) {
-        super.onCharacteristicChanged(device, service, characteristic, value)
-        if (device != connection!!.device) return
-        LogUtils.d("onCharacteristicChanged：" + StringUtils.toHex(value, " "))
+        LogUtils.d("onCharacteristicChanged：" + StringUtils.toHex(value, ""))
     }
 
+    @Observe
+    override fun onNotificationChanged(@NonNull request: Request, isEnabled: Boolean) {
+        LogUtils.d("onNotificationChanged#${request.type}#$isEnabled")
+    }
 
     //连接
     override fun connect() {
         //连接配置，举个例随意配置两项
-        val config = ConnectionConfiguration()
-        config.setRequestTimeoutMillis(connectTimeout.toInt())
-        config.setDiscoverServicesDelayMillis(300)
-        config.setAutoReconnect(false)
-        val mac = BondDeviceData.getDevice(deviceType)!!.mac
-        connection = EasyBLE.getInstance().connect(mac, config)!!
+        if (connection == null) {
+            val config = ConnectionConfiguration()
+            config.setRequestTimeoutMillis(connectTimeout.toInt())
+            config.setDiscoverServicesDelayMillis(300)
+            config.setAutoReconnect(false)
+            val mac = BondDeviceData.getDevice(deviceType)!!.mac
+            connection = EasyBLE.getInstance().connect(mac, config)
+        } else {
+            connection?.reconnect()
+        }
         startTimeoutTimer(connectTimeout)
     }
 
@@ -332,6 +349,40 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
             }
         )
     }
+
+    fun sendNotification(serviceUUID: UUID, characterUUID: UUID, isEnabled: Boolean, cb: NotificationChangeCallback?) {
+        //开启通知
+        if (connection?.connectionState != ConnectionState.SERVICE_DISCOVERED) return
+        val builder = RequestBuilderFactory().getSetNotificationBuilder(serviceUUID, characterUUID, isEnabled)
+        builder.setCallback(cb)
+        connection?.execute(builder.build())
+    }
+
+    fun writeCharacter(
+        serviceUUID: UUID,
+        characterUUID: UUID,
+        data: ByteArray,
+        cb: WriteCharacteristicCallback?,
+        tag: String? = null
+    ) {
+        //开启通知
+        if (connection?.connectionState != ConnectionState.SERVICE_DISCOVERED) return
+        val builder = RequestBuilderFactory().getWriteCharacteristicBuilder(serviceUUID, characterUUID, data)
+        builder.setCallback(cb)
+        builder.setTag(tag)
+        //根据需要设置写入配置
+        /*builder.setWriteOptions(
+            WriteOptions.Builder()
+                .setPackageSize(20)
+                .setPackageWriteDelayMillis(5)
+                .setRequestWriteDelayMillis(100)
+                .setWaitWriteResult(true)
+                .setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT)
+                .build()
+        )*/
+        connection?.execute(builder.build())
+    }
+
 
     val easterEggs: EasterEggs by lazy { EasterEggs() }
 

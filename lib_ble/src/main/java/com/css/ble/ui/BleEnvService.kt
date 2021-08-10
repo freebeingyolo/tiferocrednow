@@ -67,6 +67,10 @@ class BleEnvService : LifecycleService() {
                 mViewModels.forEach { it2 -> it2.disconnect() }
             }
         }
+        BondDeviceData.getDeviceLiveDataMerge().observe(this) { it ->
+            val k1 = it.first
+            mViewModels.forEach { if (it.deviceType.cacheKey == k1) it.disconnect() }
+        }
         //app退出是断开连接
         LiveDataBus.get().with<Boolean>("AppExit").observe(this) {
             LogUtils.d("AppExit:do disconnecting job")

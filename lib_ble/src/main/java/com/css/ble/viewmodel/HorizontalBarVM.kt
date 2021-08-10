@@ -5,10 +5,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import cn.wandersnail.ble.Device
+import cn.wandersnail.ble.Request
+import cn.wandersnail.ble.callback.NotificationChangeCallback
+import cn.wandersnail.ble.callback.WriteCharacteristicCallback
 import cn.wandersnail.commons.util.StringUtils
 import com.css.ble.R
 import com.css.ble.bean.DeviceType
+import com.css.ble.utils.DataUtils
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
+import com.css.ble.viewmodel.base.BaseWheelVM
 import java.util.*
 
 /**
@@ -18,10 +23,11 @@ import java.util.*
  */
 object HorizontalBarVM : BaseDeviceScan2ConnVM() {
     override val deviceType: DeviceType = DeviceType.HORIZONTAL_BAR
-
     val UUID_SRVC = "0000ffb0-0000-1000-8000-00805f9b34fb"
     val UUID_WRITE = "0000ffb1-0000-1000-8000-00805f9b34fb"
     val UUID_NOTIFY = "0000ffb2-0000-1000-8000-00805f9b34fb"
+
+
     val modeObsvr: LiveData<Mode> by lazy { MutableLiveData(Mode.byTime60) }
     val modeObsvrStr: LiveData<String> = Transformations.map(modeObsvr) {
         when (it) {
@@ -66,8 +72,83 @@ object HorizontalBarVM : BaseDeviceScan2ConnVM() {
 
     override val bonded_tip: String get() = "单杠已连接成功，开启你的健康之旅吧！"
 
+    override fun discovered(d: Device) {
+        //开启通知
+        sendNotification(UUID.fromString(UUID_SRVC), UUID.fromString(UUID_NOTIFY), true, null)
+    }
+
+    fun switchMode(m: Mode, cb: WriteCharacteristicCallback? = null) {
+        val data: ByteArray = StringUtils.toByteArray("F55F060402", "")
+        val data2 = DataUtils.shortToByteBig(m.ordinal.toShort())
+        val data3 =((data + data2).sum() and 0xff).toByte()
+        val data4 = data + data2 + data3
+        writeCharacter(UUID.fromString(UUID_SRVC), UUID.fromString(UUID_WRITE), data4, object : WriteCharacteristicCallback{
+            override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
+                cb?.onRequestFailed(request,failType,value)
+            }
+
+            override fun onCharacteristicWrite(request: Request, value: ByteArray) {
+                cb?.onCharacteristicWrite(request,value)
+                mode = m
+            }
+        })
+    }
+
+    fun reset(cb: WriteCharacteristicCallback? = null) {
+        val data: ByteArray = StringUtils.toByteArray("F55F060502", "")
+        val data2 = DataUtils.shortToByteBig(0x0001)
+        val data3 =((data + data2).sum() and 0xff).toByte()
+        val data4 = data + data2 + data3
+        writeCharacter(UUID.fromString(UUID_SRVC), UUID.fromString(UUID_WRITE), data4, object : WriteCharacteristicCallback{
+            override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
+                cb?.onRequestFailed(request,failType,value)
+            }
+
+            override fun onCharacteristicWrite(request: Request, value: ByteArray) {
+                cb?.onCharacteristicWrite(request,value)
+            }
+        })
+    }
+
+    //F5 5F 07 07 01 00 64 C8   电量
+    //F55F0701  计数模式时间
     override fun onCharacteristicChanged(device: Device, service: UUID, characteristic: UUID, value: ByteArray) {
         super.onCharacteristicChanged(device, service, characteristic, value)
+        val hexData = StringUtils.toHex(value, "")
+        when {
+            hexData.startsWith("F55F0701") -> {//计数模式时间
+                val v = DataUtils.bytes2IntBig(value[5], value[6])
+                (exerciseDuration as MutableLiveData).value = v * 1000L
+            }
+            hexData.startsWith("F55F0702") -> {//倒计模式时间
+                val v = DataUtils.bytes2IntBig(value[5], value[6])
+                (exerciseDuration as MutableLiveData).value = v * 1000L
+            }
+            hexData.startsWith("F55F0703") -> {//运动次数
+                val v = DataUtils.bytes2IntBig(value[5], value[6])
+                (exerciseCount as MutableLiveData).value = v
+            }
+            hexData.startsWith("F55F0704") -> {//模式切换
+                val v = DataUtils.bytes2IntBig(value[5], value[6])
+                val m = Mode.values()[v]
+                (modeObsvr as MutableLiveData).value = m
+            }
+            hexData.startsWith("F55F0705") -> {//重置切换
+
+            }
+            hexData.startsWith("F55F0706") -> {//设备休眠/关机
+
+            }
+            hexData.startsWith("F55F0707") -> {//电池电量
+                val v = DataUtils.bytes2IntBig(value[5], value[6])
+                val map = mapOf(0 to 0.1f, 1 to 0.25f, 3 to 0.5f, 4 to 0.75f, 5 to 1f)
+                (batteryLevel as MutableLiveData).value = map[v]
+            }
+            hexData.startsWith("F55F0707") -> {//提醒上传数据
+
+            }
+        }
     }
+
 
 }
