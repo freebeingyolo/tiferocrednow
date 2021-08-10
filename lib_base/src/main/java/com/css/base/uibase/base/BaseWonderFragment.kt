@@ -26,7 +26,7 @@ import java.lang.ref.WeakReference
 
 abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), IBaseView,
     OnToolBarClickListener {
-    lateinit var mViewModel: VM
+    open lateinit var mViewModel: VM
 
     var mViewBinding: VB? = null
 

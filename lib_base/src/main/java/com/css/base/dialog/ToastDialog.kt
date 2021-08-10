@@ -21,6 +21,8 @@ class ToastDialog : BasePopupWindow {
 
     constructor(context: Context) : super(context)
 
+    var onFinishListener: (() -> Unit)? = null
+
     /**
      * 通过dialog构造的弹窗，可以显示在dialog之上
      */
@@ -32,15 +34,13 @@ class ToastDialog : BasePopupWindow {
         mTvTime = findViewById(R.id.time)
         mTimer = object : CountDownTimer(3 * 1000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                var seconds = millisUntilFinished / 1000 + 1
+                val seconds = millisUntilFinished / 1000 + 1
                 mTvTime.text = "${seconds}s"
             }
 
             override fun onFinish() {
-                ARouter.getInstance()
-                    .build(ARouterConst.PATH_APP_BLE_DEVICELIST)
-                    .navigation()
                 dismiss()
+                onFinishListener?.invoke()
             }
         }
         mTimer!!.start()
@@ -49,6 +49,7 @@ class ToastDialog : BasePopupWindow {
     override fun onCreateContentView(): View {
         return createPopupById(R.layout.popup_to_binding_toast_layout)
     }
+
     override fun onCreateShowAnimation(): Animation {
         return AnimationHelper.asAnimation().withTranslation(TranslationConfig.FROM_TOP).toShow()
     }

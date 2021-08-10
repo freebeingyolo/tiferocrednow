@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.contains
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.util.BarUtils
@@ -25,6 +26,7 @@ import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.base.utils.FragmentStarter
 import com.css.base.utils.OSUtils
 import com.css.base.view.ToolBarView
+import com.css.service.bus.LiveDataBus
 
 abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompatActivity(),
     IBaseView, OnToolBarClickListener {
@@ -76,7 +78,6 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
         initUIChangeLiveDataCallBack()
         initData()
         postInitLazyData()
-
     }
 
     override fun enabledVisibleToolBar() = false
@@ -237,6 +238,7 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
                     closeToast!!.cancel()
                 }
                 doReturnBack()
+                LiveDataBus.get().with<Boolean>("AppExit").value = true
             }
         } else {
             mCloseWarned = false

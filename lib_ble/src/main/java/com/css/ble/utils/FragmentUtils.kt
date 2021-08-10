@@ -24,10 +24,10 @@ object FragmentUtils {
     }
 
     fun <T : Fragment> changeFragment(
-        cls: Class<T>,
+        cls: Class<out T>,
         tag: String,
         opt: Option,
-        initializer: ((Class<T>) -> T) = { cls.newInstance() },
+        initializer: ((Class<out T>) -> T) = { cls.newInstance() },
         id: Int = R.id.container,
     ): T {
         val fmgr = (ActivityUtils.getTopActivity() as FragmentActivity).supportFragmentManager
@@ -35,12 +35,12 @@ object FragmentUtils {
     }
 
     fun <T : Fragment> changeFragment(
-        cls: Class<T>,
+        cls: Class<out T>,
         tag: String,
         opt: Option,
         id: Int = R.id.container,
         supportFragmentManager: FragmentManager,
-        initializer: ((Class<T>) -> T) = { cls.newInstance() },
+        initializer: ((Class<out T>) -> T) = { cls.newInstance() },
     ): T {
         var fragment: T? = supportFragmentManager.findFragmentByTag(tag) as T?
         val addOprt: (Fragment, Int) -> Unit = { f, o ->

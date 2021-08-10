@@ -13,15 +13,19 @@ import cn.wandersnail.commons.poster.RunOn
 import cn.wandersnail.commons.poster.Tag
 import cn.wandersnail.commons.poster.ThreadMode
 import cn.wandersnail.commons.util.StringUtils
+import com.css.base.net.api.repository.CourseRepository
 import com.css.base.net.api.repository.DeviceRepository
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.viewmodel.IBleConnect
 import com.css.ble.viewmodel.IBleScan
+import com.css.ble.viewmodel.WheelMeasureVM
 import com.css.res.R
 import com.css.service.bus.LiveDataBus.BusMutableLiveData
+import com.css.service.data.CourseData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.text.DecimalFormat
 import java.util.*
 
 /**
@@ -29,8 +33,7 @@ import java.util.*
  *@time 2021-08-03 10:46
  *@description  设备扫描ViewModel基类
  */
-abstract class BaseDeviceScan2ConnVM(val deviceType: DeviceType) :
-    BaseDeviceVM(), IBleScan, IBleConnect, EventObserver {
+abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, EventObserver {
 
     enum class FoundWay {
         NAME,
@@ -55,7 +58,7 @@ abstract class BaseDeviceScan2ConnVM(val deviceType: DeviceType) :
     /*** abstractable start ****/
 
     /*** overridable start ****/
-    open val bonded_tip: Int = R.string.weight_bonded_tip
+    abstract val bonded_tip: String
     open val foundMethod: FoundWay = FoundWay.UUID
     open val bondTimeout = 6 * 1000L
     open val connectTimeout = 5 * 1000L
@@ -63,7 +66,12 @@ abstract class BaseDeviceScan2ConnVM(val deviceType: DeviceType) :
     /*** overridable end ****/
     enum class WorkMode { BOND, MEASURE }
 
-    var workMode = WorkMode.BOND
+    var workMode: WorkMode
+        get() = workModeObsrv.value!!
+        set(v) {
+            (workModeObsrv as MutableLiveData).value = v
+        }
+    val workModeObsrv: LiveData<WorkMode> by lazy { BusMutableLiveData(WorkMode.BOND) }
 
     private var avaliableDevice: Device? = null
     private var connection: Connection? = null
@@ -71,10 +79,13 @@ abstract class BaseDeviceScan2ConnVM(val deviceType: DeviceType) :
     var state: State
         set(value) {
             (stateObsrv as MutableLiveData).value = value
+            BondDeviceData.getDeviceStateLiveData().value = Pair(deviceType.alias, connectStateTxt.value)
         }
         get() = stateObsrv.value!!
 
-    //Transform
+    private val _recommentationData by lazy { BusMutableLiveData<List<CourseData>>() }
+    val recommentationData: LiveData<List<CourseData>> get() = _recommentationData
+
 
     //Transformations
     val isConnecting = Transformations.map(stateObsrv) {
@@ -82,16 +93,48 @@ abstract class BaseDeviceScan2ConnVM(val deviceType: DeviceType) :
     }
     val connectStateTxt = Transformations.map(stateObsrv) {
         if (it >= State.discovered) {
-            R.string.device_connected
+            getString(R.string.device_connected)
         } else {
-            if (it == State.disconnected) R.string.device_disconnected
-            else R.string.device_connecting
+            if (it == State.disconnected) getString(R.string.device_disconnected)
+            else getString(R.string.device_connecting)
         }
     }
-    
+
+    val exerciseCount: LiveData<Int> by lazy { MutableLiveData(-1) } //锻炼个数
+    val exerciseCountTxt = Transformations.map(exerciseCount) { if (it == -1) "--" else it.toString() }
+    val exerciseKcalTxt = Transformations.map(exerciseCount) {
+        if (it == -1) "--"
+        else DecimalFormat("##.#####").format(it * 0.00175f)
+    }
+    val exerciseDuration: LiveData<Long> by lazy { MutableLiveData(-1) }
+    val exerciseDurationTxt = Transformations.map(exerciseDuration) { if (it == -1L) "--" else formatTime(it) }
+    val batteryLevel: LiveData<Float> by lazy { MutableLiveData(-1f) }
+
+    val batteryLevelTxt = Transformations.map(batteryLevel) {
+        if (it == -1f) "--" else
+            String.format("%d%%", (it * 100).toInt())
+    }
+
+    private fun formatTime(ms: Long): String {
+        val ss = 1000
+        val mi = ss * 60
+        val hh = mi * 60
+        val dd = hh * 24
+        val day = ms / dd
+        val hour = (ms - day * dd) / hh
+        val minute = (ms - day * dd - hour * hh) / mi
+        val second = (ms - day * dd - hour * hh - minute * mi) / ss
+        val milliSecond = ms - day * dd - hour * hh - minute * mi - second * ss
+        val sb = StringBuffer()
+        sb.append(String.format("%02d", hour))
+        sb.append(String.format(":%02d", minute))
+        sb.append(String.format(":%02d", second))
+        return sb.toString()
+    }
+
     override fun onTimerTimeout() {
         state = State.timeOut
-        connection?.disconnect()
+        disconnect()
     }
 
     override fun onTimerCancel() {
@@ -159,6 +202,7 @@ abstract class BaseDeviceScan2ConnVM(val deviceType: DeviceType) :
     }
 
     private fun foundDevice(d: Device) {
+        LogUtils.d("foundDevice:$avaliableDevice --> device:$d)")
         if (avaliableDevice == null) {
             avaliableDevice = d
             cancelTimeOutTimer()
@@ -170,12 +214,13 @@ abstract class BaseDeviceScan2ConnVM(val deviceType: DeviceType) :
     @Tag("onConnectionStateChanged")
     @Observe
     @RunOn(ThreadMode.MAIN)
-    override fun onConnectionStateChanged(@NonNull device: Device) {
-        LogUtils.d("onConnectionStateChanged:${device.connectionState},${device.name}")
+    final override fun onConnectionStateChanged(@NonNull device: Device) {
+        LogUtils.d("onConnectionStateChanged:${device.connectionState},${device.name},${deviceType}")
         when (device.connectionState) {
             ConnectionState.DISCONNECTED -> {
                 state = State.disconnected
                 cancelTimeOutTimer()
+                avaliableDevice = null
             }
             ConnectionState.CONNECTING -> {
                 state = State.connecting
@@ -192,7 +237,6 @@ abstract class BaseDeviceScan2ConnVM(val deviceType: DeviceType) :
             ConnectionState.SERVICE_DISCOVERED -> {
                 state = State.discovered
                 val services: List<BluetoothGattService> = connection!!.gatt!!.services
-
                 loop@ for (service in services) {
                     if (filterUUID(service.uuid)) {
                         foundDevice(device)
@@ -214,6 +258,7 @@ abstract class BaseDeviceScan2ConnVM(val deviceType: DeviceType) :
 
     override fun onCharacteristicChanged(device: Device, service: UUID, characteristic: UUID, value: ByteArray) {
         super.onCharacteristicChanged(device, service, characteristic, value)
+        if (device != connection!!.device) return
         LogUtils.d("onCharacteristicChanged：" + StringUtils.toHex(value, " "))
     }
 
@@ -236,12 +281,13 @@ abstract class BaseDeviceScan2ConnVM(val deviceType: DeviceType) :
         if (state > State.disconnected) {
             connection?.disconnect()
             state = State.disconnected
+            connection = null
         }
     }
 
     fun bindDevice(
-        success: (msg: String?, d: Any?) -> Unit,
-        failed: (Int, String?, d: Any?) -> Unit
+        success: ((String?, Any?) -> Unit)?,
+        failed: ((Int, String?, d: Any?) -> Unit)?
     ) {
         val d = BondDeviceData(
             avaliableDevice!!.address,
@@ -251,7 +297,7 @@ abstract class BaseDeviceScan2ConnVM(val deviceType: DeviceType) :
         netLaunch(
             {
                 withContext(Dispatchers.IO) {
-                    val ret = DeviceRepository.bindDevice(d.deviceCategory, d.displayName, d.mac)
+                    val ret = DeviceRepository.bindDevice(d.buidUploadParams())
                     takeIf { ret.isSuccess }.let { BondDeviceData.setDevice(deviceType, BondDeviceData(ret.data!!)) }
                     ret
                 }
@@ -259,21 +305,36 @@ abstract class BaseDeviceScan2ConnVM(val deviceType: DeviceType) :
             { msg, _ ->
                 //val bondRst = EasyBLE.getInstance().createBond(it.address)
                 //LogUtils.d("bondRst:$bondRst")
-                success(msg, d)
+                success?.invoke(msg, d)
                 avaliableDevice = null
             },
             { code, msg, d ->
                 avaliableDevice = null
                 state = State.disconnected
-                failed(code, msg, d)
+                failed?.invoke(code, msg, d)
             }
         )
     }
 
     fun fetchRecommentation() {
+        netLaunch(
+            {
+                withContext(Dispatchers.IO) {
+                    val ret = CourseRepository.queryVideo("玩法推荐", deviceType.alias)
+                    ret
+                }
+            },
+            { msg, d ->
+                _recommentationData.value = d
+            },
+            { code, msg, d ->
+
+            }
+        )
     }
 
-    val easterEggs:EasterEggs by lazy { EasterEggs() }
+    val easterEggs: EasterEggs by lazy { EasterEggs() }
+
     inner class EasterEggs {
         //volatile适用于改的所有操作或者写的所有操作在同一线程
         private var count = 0
@@ -291,4 +352,5 @@ abstract class BaseDeviceScan2ConnVM(val deviceType: DeviceType) :
 
         }
     }
+
 }

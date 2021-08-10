@@ -37,7 +37,7 @@
     <string name="weight_found_tips">发现一台秤！当界面数值与秤上显示一致时请点击“确认绑定”，不一致时请点击“重新搜索”哟~</string>
     <string name="research">重新搜索</string>
     <string name="confirm_bond">确认绑定</string>
-    <string name="weight_bonded_tip">蓝牙体脂秤已连接成功，开启你的健康之旅吧！</string>
+    <string name="weight_bonded_tip">体脂秤已连接成功，开启你的健康之旅吧！</string>
     <string name="backnow">立即返回</string>
     <string name="count_down_tips">秒后返回设备首页</string>
     <string name="tv_current_weight_init_msg">您尚未测量过身体数据，点此测量，了解下自己的身体情况吧！</string>
@@ -82,4 +82,6 @@
     <string name="feedback_selectedContent">请输入反馈内容</string>
     <string name="feedback_submit">提交</string>
     <string name="feedback_history">反馈记录</string>
+    <string name="byCount">计数模式</string>
+    <string name="byTime">计时模式%d</string>
 </resources>

@@ -6,26 +6,35 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
+import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.constant.PermissionConstants
 import com.blankj.utilcode.util.PermissionUtils
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseFragment
 import com.css.base.uibase.base.BaseWonderFragment
+import com.css.base.uibase.inner.OnToolBarClickListener
 import com.css.base.uibase.viewmodel.BaseViewModel
+import com.css.base.view.ToolBarView
 import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
+import com.css.ble.ui.DeviceInfoActivity
 import com.css.ble.utils.BleUtils
 import com.css.ble.utils.QuickTransUtils
 import com.css.ble.viewmodel.BleEnvVM
+import com.css.service.router.ARouterConst
 import com.css.service.utils.CacheKey
+import com.css.service.utils.ImageUtils
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
+import razerdp.basepopup.BasePopupWindow
 
 /**
  * @author yuedong
@@ -33,6 +42,7 @@ import kotlinx.coroutines.launch
  */
 abstract class BaseWeightFragment<VM : BaseViewModel, VB : ViewBinding> : BaseFragment<VM, VB>() {
     protected var checkEnvDone = false
+    val deviceType = DeviceType.WEIGHT
 
     override fun enabledVisibleToolBar() = true
 
@@ -45,6 +55,21 @@ abstract class BaseWeightFragment<VM : BaseViewModel, VB : ViewBinding> : BaseFr
     override fun onVisible() {
         super.onVisible()
         setToolBarLeftText(BondDeviceData.displayName(DeviceType.WEIGHT))
+    }
+
+    fun setUpJumpToDeviceInfo() {
+        val view = LayoutInflater.from(context).inflate(R.layout.layout_weight_measure_header, null, false)
+        setRightImage(ImageUtils.getBitmap(view))
+        getCommonToolBarView()?.setToolBarClickListener(object : OnToolBarClickListener {
+            override fun onClickToolBarView(view: View, event: ToolBarView.ViewType) {
+                when (event) {
+                    ToolBarView.ViewType.LEFT_IMAGE -> onBackPressed()
+                    ToolBarView.ViewType.RIGHT_IMAGE -> {
+                        DeviceInfoActivity.start(deviceType.name)
+                    }
+                }
+            }
+        })
     }
 
     protected fun checkBleEnv() {

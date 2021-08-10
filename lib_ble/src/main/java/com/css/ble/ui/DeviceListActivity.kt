@@ -1,10 +1,10 @@
 package com.css.ble.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -97,7 +97,6 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
             }
             addItemDecoration(SpaceItemDecoration(30))
             layoutManager = LinearLayoutManager(context)
-            //(layoutManager as LinearLayoutManager).orientation = LinearLayoutManager.VERTICAL
             adapter = mAdapter
             //addItemDecoration(DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL))
         }

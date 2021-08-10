@@ -1,19 +1,30 @@
 package com.css.ble.ui
 
+import LogUtils
 import android.content.ComponentName
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
+import android.view.Gravity
+import android.view.View
+import cn.wandersnail.ble.EasyBLE
+import com.alibaba.android.arouter.facade.Postcard
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.facade.callback.NavCallback
+import com.alibaba.android.arouter.launcher.ARouter
+import com.css.base.dialog.CommonAlertDialog
+import com.css.base.dialog.inner.DialogClickListener
+import com.css.ble.R
+import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.ActivityBleEntryBinding
 import com.css.ble.ui.fragment.WheelMeasureBeginFragment
 import com.css.ble.utils.FragmentUtils
+import com.css.ble.utils.UiUtils
 import com.css.ble.viewmodel.WheelMeasureVM
 import com.css.service.router.ARouterConst
-import com.css.service.utils.CacheKey
-import com.css.service.utils.WonderCoreCache
+import razerdp.basepopup.BasePopupWindow
 
 @Route(path = ARouterConst.PATH_APP_BLE_WHEELMEASURE)
 class WheelMeasureActivity : BaseDeviceActivity<WheelMeasureVM, ActivityBleEntryBinding>(DeviceType.WHEEL) {
@@ -30,13 +41,31 @@ class WheelMeasureActivity : BaseDeviceActivity<WheelMeasureVM, ActivityBleEntry
         super.initView(savedInstanceState)
         FragmentUtils.changeFragment(WheelMeasureBeginFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
             .apply { arguments = Bundle().apply { putBoolean("autoConnect", intent.getBooleanExtra("autoConnect", false)) } }
-        WonderCoreCache.getLiveData2(CacheKey.BOND_WHEEL_INFO).observe(this) { //解绑自动断开并结束
-            if (it == null) {
-                mViewModel.disconnect()
-                finish()
-            }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (BondDeviceData.getDevice(deviceType) == null) {
+            mViewModel.disconnect()
+            CommonAlertDialog(this).apply {
+                type = CommonAlertDialog.DialogType.Image
+                imageResources = R.mipmap.icon_tick
+                content = getString(R.string.please_bond_first)
+                onDismissListener = object : BasePopupWindow.OnDismissListener() {
+                    override fun onDismiss() {
+                        mViewModel.disconnect()
+                        ARouter.getInstance().build(ARouterConst.PATH_APP_BLE_DEVICELIST).navigation(context,
+                            object : NavCallback() {
+                                override fun onArrival(postcard: Postcard?) {
+                                    finish()
+                                }
+                            })
+                    }
+                }
+            }.show()
         }
     }
+
 
     override fun initData() {
         super.initData()
@@ -44,19 +73,21 @@ class WheelMeasureActivity : BaseDeviceActivity<WheelMeasureVM, ActivityBleEntry
         bindService(Intent(this, BleEnvService::class.java), object : ServiceConnection {
             override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
                 val binder: BleEnvService.MyBinder = service as BleEnvService.MyBinder
-                binder.setViewModel(mViewModel,mViewModel)
+                binder.setViewModel(mViewModel)
             }
+
             override fun onServiceDisconnected(name: ComponentName?) {
             }
         }, BIND_AUTO_CREATE)
+        EasyBLE.getInstance().registerObserver(mViewModel)
     }
-
 
     override fun onStop() {
         super.onStop()
         if (isFinishing) {
             LogUtils.d("WheelMeasureActivity#onStop")
             mViewModel.stopExercise()
+            EasyBLE.getInstance().unregisterObserver(mViewModel)
         }
     }
 

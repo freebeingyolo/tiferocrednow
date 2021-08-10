@@ -3,14 +3,10 @@ package com.css.ble.ui.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.lifecycleScope
-import com.alibaba.android.arouter.facade.Postcard
-import com.alibaba.android.arouter.facade.callback.NavCallback
-import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.ActivityUtils
 import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.LayoutCommonBondBondedBinding
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
-import com.css.service.router.ARouterConst
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
@@ -29,17 +25,12 @@ class CommonBondEndFragment(d: DeviceType, val model: BaseDeviceScan2ConnVM) : B
     override fun initViewModel(): BaseDeviceScan2ConnVM = model
 
     var backListener = View.OnClickListener {
-        ARouter.getInstance().build(ARouterConst.PATH_APP_BLE_COMMON)
-            .withInt("mode", BaseDeviceScan2ConnVM.WorkMode.MEASURE.ordinal)
-            .withInt("deviceType", d.ordinal)
-            .navigation(requireContext(), object : NavCallback() {
-                override fun onArrival(postcard: Postcard?) {
-                    val activities = ActivityUtils.getActivityList()
-                    for (i in 0 until activities.size - 1) {//后加的activity在队首
-                        ActivityUtils.finishActivity(activities[i])
-                    }
-                }
-            })
+        mViewModel.workMode = BaseDeviceScan2ConnVM.WorkMode.MEASURE
+        //只保留本Activity和首页Activity
+        val activities = ActivityUtils.getActivityList()
+        for (i in 1 until activities.size - 1) {//后加的activity在队首
+            ActivityUtils.finishActivity(activities[i])
+        }
     }
 
     override fun initData() {

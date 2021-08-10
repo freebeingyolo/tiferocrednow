@@ -29,6 +29,7 @@ class DeviceListVM : BaseViewModel() {
                         } else {
                             for (d1 in ret.data!!) {
                                 BondDeviceData(d1).let {
+                                    //LogUtils.d("DeviceListVM#loadDeviceInfo-->$it")
                                     BondDeviceData.setDevice(it.deviceType, it)
                                 }
                             }

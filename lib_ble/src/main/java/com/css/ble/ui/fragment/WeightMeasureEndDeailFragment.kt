@@ -4,29 +4,21 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.widget.NestedScrollView
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.css.base.net.api.repository.HistoryRepository
-import com.css.base.uibase.BaseFragment
 import com.css.base.view.ToolBarView
 import com.css.ble.BodyDetailAdapter
-import com.css.ble.bean.BondDeviceData
-import com.css.ble.bean.DeviceType
 import com.css.ble.bean.WeightDetailBean
 import com.css.ble.databinding.ActivityWeightMeasureEndDetailBinding
 import com.css.ble.utils.FragmentUtils
 import com.css.ble.viewmodel.WeightMeasureVM
-import com.css.service.utils.CacheKey
 
 /**
  * @author yuedong
  * @date 2021-05-17
  */
 class WeightMeasureEndDeailFragment :
-    BaseFragment<WeightMeasureVM, ActivityWeightMeasureEndDetailBinding>() {
+    BaseWeightFragment<WeightMeasureVM, ActivityWeightMeasureEndDetailBinding>() {
     private val TAG: String = "WeightMeasureEndDeailFragment"
     lateinit var mBodyDetailAdapter: BodyDetailAdapter
 
@@ -50,7 +42,7 @@ class WeightMeasureEndDeailFragment :
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        setToolBarLeftText(BondDeviceData.displayName(DeviceType.WEIGHT))
+        setUpJumpToDeviceInfo()
         mBodyDetailAdapter = BodyDetailAdapter(requireContext(), ArrayList<WeightDetailBean>())
         mViewBinding!!.rvData.layoutManager = LinearLayoutManager(requireContext())
         mViewBinding!!.rvData.adapter = mBodyDetailAdapter

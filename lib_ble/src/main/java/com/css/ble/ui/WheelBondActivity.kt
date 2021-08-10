@@ -5,11 +5,13 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
+import cn.wandersnail.ble.EasyBLE
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.ActivityBleEntryBinding
 import com.css.ble.ui.fragment.WheelBondBeginFragment
 import com.css.ble.utils.FragmentUtils
+import com.css.ble.utils.UiUtils
 import com.css.ble.viewmodel.WheelMeasureVM
 import com.css.service.router.ARouterConst
 
@@ -37,17 +39,21 @@ class WheelBondActivity : BaseDeviceActivity<WheelMeasureVM, ActivityBleEntryBin
         bindService(Intent(this, BleEnvService::class.java), object : ServiceConnection {
             override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
                 val binder: BleEnvService.MyBinder = service as BleEnvService.MyBinder
-                binder.setViewModel(mViewModel,mViewModel)
+                binder.setViewModel(mViewModel)
+                LogUtils.d("onServiceConnected:${javaClass::class.java}")
             }
+
             override fun onServiceDisconnected(name: ComponentName?) {
             }
         }, BIND_AUTO_CREATE)
+        EasyBLE.getInstance().registerObserver(mViewModel)
     }
 
     override fun onStop() {
         super.onStop()
         if (isFinishing) {
             LogUtils.d("WheelBondActivity#onStop")
+            EasyBLE.getInstance().unregisterObserver(mViewModel)
         }
     }
 }

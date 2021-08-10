@@ -48,10 +48,7 @@
             android:name=".ui.activity.setting.TermsActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.css.ble.ui.ABRollerActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name=".ui.activity.setting.FeedbackActivity"
             android:launchMode="singleTask"
