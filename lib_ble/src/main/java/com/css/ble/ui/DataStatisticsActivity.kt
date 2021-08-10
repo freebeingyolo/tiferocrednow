@@ -29,8 +29,9 @@ class DataStatisticsActivity : BaseActivity<DataStatisticsVM, ActivityStatistics
     View.OnClickListener {
 
     companion object {
-        fun starActivity(context: Context) {
+        fun starActivity(context: Context,bundle: Bundle) {
             val intent = Intent(context, DataStatisticsActivity::class.java)
+            intent.putExtras(bundle)
             context.startActivity(intent)
         }
     }
