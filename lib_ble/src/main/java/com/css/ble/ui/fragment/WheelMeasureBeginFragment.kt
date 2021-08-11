@@ -22,6 +22,7 @@ import com.css.ble.databinding.LayoutPlayRecommendItemBinding
 import com.css.ble.ui.DeviceInfoActivity
 import com.css.ble.ui.view.BaseBindingAdapter
 import com.css.ble.viewmodel.BleEnvVM
+import com.css.ble.viewmodel.DeviceVMFactory
 import com.css.ble.viewmodel.WheelMeasureVM
 import com.css.ble.viewmodel.WheelMeasureVM.State
 import com.css.service.data.CourseData
@@ -36,7 +37,7 @@ import kotlinx.coroutines.launch
 class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbrollerBinding>(DeviceType.WHEEL) {
 
     override fun initViewModel(): WheelMeasureVM {
-        return WheelMeasureVM
+        return DeviceVMFactory.getViewModel(deviceType)
     }
 
     override fun initData() {
@@ -47,9 +48,6 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
         mViewBinding!!.model = mViewModel
         mViewBinding!!.lifecycleOwner = viewLifecycleOwner
 
-        mViewModel.batteryLevel.observe(viewLifecycleOwner) {
-            mViewBinding!!.electricityView.setProgress((it * 100).toInt())
-        }
         mViewModel.stateObsrv.observe(viewLifecycleOwner) {
             refreshBottom(it)
             when (it) {

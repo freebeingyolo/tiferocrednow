@@ -12,6 +12,7 @@ import com.css.ble.databinding.ActivityBleEntryBinding
 import com.css.ble.ui.fragment.WheelBondBeginFragment
 import com.css.ble.utils.FragmentUtils
 import com.css.ble.utils.UiUtils
+import com.css.ble.viewmodel.DeviceVMFactory
 import com.css.ble.viewmodel.WheelMeasureVM
 import com.css.service.router.ARouterConst
 
@@ -26,7 +27,7 @@ class WheelBondActivity : BaseDeviceActivity<WheelMeasureVM, ActivityBleEntryBin
     override val vbCls: Class<ActivityBleEntryBinding> get() = ActivityBleEntryBinding::class.java
     override fun enabledVisibleToolBar() = false
 
-    override fun initViewModel(): WheelMeasureVM = WheelMeasureVM
+    override fun initViewModel(): WheelMeasureVM = DeviceVMFactory.getViewModel(deviceType)
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)

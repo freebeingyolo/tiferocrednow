@@ -13,10 +13,6 @@ object CourseRepository {
     }
 
     suspend fun queryVideo(): CommonResponse<List<CourseData>> {
-//        val map: MutableMap<String, Any> = HashMap()
-//        map["applicationScenes"] = "教程"
-//        map["deviceCategoryName"] = "单杠"
-//        map["id"] = 0
         val param = RequestBodyBuilder()
                 .addParams("applicationScenes", "教程")
                 .addParams("id", 0)

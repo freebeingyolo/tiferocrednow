@@ -1,19 +1,16 @@
 package com.css.ble.viewmodel
 
-import androidx.annotation.NonNull
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import cn.wandersnail.ble.Device
 import cn.wandersnail.ble.Request
-import cn.wandersnail.ble.callback.NotificationChangeCallback
 import cn.wandersnail.ble.callback.WriteCharacteristicCallback
 import cn.wandersnail.commons.util.StringUtils
 import com.css.ble.R
 import com.css.ble.bean.DeviceType
 import com.css.ble.utils.DataUtils
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
-import com.css.ble.viewmodel.base.BaseWheelVM
 import java.util.*
 
 /**
@@ -21,11 +18,14 @@ import java.util.*
  *@time 2021-08-03 17:23
  *@description 单杠
  */
-object HorizontalBarVM : BaseDeviceScan2ConnVM() {
+open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
     override val deviceType: DeviceType = DeviceType.HORIZONTAL_BAR
-    val UUID_SRVC = "0000ffb0-0000-1000-8000-00805f9b34fb"
-    val UUID_WRITE = "0000ffb1-0000-1000-8000-00805f9b34fb"
-    val UUID_NOTIFY = "0000ffb2-0000-1000-8000-00805f9b34fb"
+
+    companion object {
+        val UUID_SRVC = "0000ffb0-0000-1000-8000-00805f9b34fb"
+        val UUID_WRITE = "0000ffb1-0000-1000-8000-00805f9b34fb"
+        val UUID_NOTIFY = "0000ffb2-0000-1000-8000-00805f9b34fb"
+    }
 
 
     val modeObsvr: LiveData<Mode> by lazy { MutableLiveData(Mode.byTime60) }
@@ -80,15 +80,16 @@ object HorizontalBarVM : BaseDeviceScan2ConnVM() {
     fun switchMode(m: Mode, cb: WriteCharacteristicCallback? = null) {
         val data: ByteArray = StringUtils.toByteArray("F55F060402", "")
         val data2 = DataUtils.shortToByteBig(m.ordinal.toShort())
-        val data3 =((data + data2).sum() and 0xff).toByte()
+        val data3 = ((data + data2).sum() and 0xff).toByte()
         val data4 = data + data2 + data3
-        writeCharacter(UUID.fromString(UUID_SRVC), UUID.fromString(UUID_WRITE), data4, object : WriteCharacteristicCallback{
+        LogUtils.d("switchMode:data4:"+StringUtils.toHex(data4,""))
+        writeCharacter(UUID.fromString(UUID_SRVC), UUID.fromString(UUID_WRITE), data4, object : WriteCharacteristicCallback {
             override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
-                cb?.onRequestFailed(request,failType,value)
+                cb?.onRequestFailed(request, failType, value)
             }
 
             override fun onCharacteristicWrite(request: Request, value: ByteArray) {
-                cb?.onCharacteristicWrite(request,value)
+                cb?.onCharacteristicWrite(request, value)
                 mode = m
             }
         })
@@ -97,15 +98,15 @@ object HorizontalBarVM : BaseDeviceScan2ConnVM() {
     fun reset(cb: WriteCharacteristicCallback? = null) {
         val data: ByteArray = StringUtils.toByteArray("F55F060502", "")
         val data2 = DataUtils.shortToByteBig(0x0001)
-        val data3 =((data + data2).sum() and 0xff).toByte()
+        val data3 = ((data + data2).sum() and 0xff).toByte()
         val data4 = data + data2 + data3
-        writeCharacter(UUID.fromString(UUID_SRVC), UUID.fromString(UUID_WRITE), data4, object : WriteCharacteristicCallback{
+        writeCharacter(UUID.fromString(UUID_SRVC), UUID.fromString(UUID_WRITE), data4, object : WriteCharacteristicCallback {
             override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
-                cb?.onRequestFailed(request,failType,value)
+                cb?.onRequestFailed(request, failType, value)
             }
 
             override fun onCharacteristicWrite(request: Request, value: ByteArray) {
-                cb?.onCharacteristicWrite(request,value)
+                cb?.onCharacteristicWrite(request, value)
             }
         })
     }
@@ -141,14 +142,12 @@ object HorizontalBarVM : BaseDeviceScan2ConnVM() {
             }
             hexData.startsWith("F55F0707") -> {//电池电量
                 val v = DataUtils.bytes2IntBig(value[5], value[6])
-                val map = mapOf(0 to 0.1f, 1 to 0.25f, 3 to 0.5f, 4 to 0.75f, 5 to 1f)
-                (batteryLevel as MutableLiveData).value = map[v]
+                (batteryLevel as MutableLiveData).value = v
             }
-            hexData.startsWith("F55F0707") -> {//提醒上传数据
-
+            hexData.startsWith("F55F0708") -> {//提醒上传数据
+                finishExercise()
             }
         }
     }
-
 
 }

@@ -2,6 +2,7 @@ package com.css.base.net.interceptor
 
 import com.blankj.utilcode.util.EncryptUtils
 import com.blankj.utilcode.util.LogUtils
+import com.css.base.net.NetLongLogger
 import com.css.service.utils.WonderCoreCache
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -73,7 +74,6 @@ class HeaderInterceptor : Interceptor {
             "get" -> {
                 var merge = ""
                 if (request.url.query != null) {
-
                     val query: List<String> = ArrayList(request.url.query!!.split("&"))
                     Collections.sort(query) { str1, str2 -> // 按首字母倒序排
                         str2.compareTo(str1)
@@ -89,15 +89,15 @@ class HeaderInterceptor : Interceptor {
                 } else {
                     merge = signatureStr
                 }
-//                val strs: List<String> = merge.split("&")
-//                Collections.sort(strs) { str1, str2 -> // 按首字母升序排
-//                    str1.compareTo(str2);
-//                }
-//                LogUtils.v("suisui", "merge=" + merge)
-//                var sortStr = ""
-//                for (query in strs) {
-//                    sortStr = "${sortStr}${query}&"
-//                }
+                /* val strs: List<String> = merge.split("&")
+                Collections.sort(strs) { str1, str2 -> // 按首字母升序排
+                    str1.compareTo(str2);
+                }
+                LogUtils.v("suisui", "merge=" + merge)
+                var sortStr = ""
+                for (query in strs) {
+                    sortStr = "${sortStr}${query}&"
+                }*/
                 EncryptUtils.encryptMD5ToString(merge)
 
             }

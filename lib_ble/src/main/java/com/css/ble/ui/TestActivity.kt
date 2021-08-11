@@ -19,6 +19,7 @@ import com.css.ble.ui.fragment.CommonMeasureBeginFragment
 import com.css.ble.ui.fragment.HorizontalBarMeasureBeginFragment
 import com.css.ble.ui.fragment.WheelMeasureBeginFragment
 import com.css.ble.utils.FragmentUtils
+import com.css.ble.viewmodel.DeviceVMFactory
 import com.css.ble.viewmodel.HorizontalBarVM
 import com.css.ble.viewmodel.WheelMeasureVM
 import com.css.service.router.ARouterConst
@@ -30,14 +31,14 @@ class TestActivity : BaseDeviceActivity<HorizontalBarVM, ActivityBleEntryBinding
     override val vbCls: Class<ActivityBleEntryBinding> = ActivityBleEntryBinding::class.java
 
     override fun initViewModel(): HorizontalBarVM {
-        return HorizontalBarVM
+        return DeviceVMFactory.getViewModel(deviceType)
     }
 
     override fun enabledVisibleToolBar() = false
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        val f = CommonMeasureBeginFragment.getExplicitFragment(HorizontalBarVM, deviceType)
+        val f = CommonMeasureBeginFragment.getExplicitFragment(mViewModel, deviceType)
         FragmentUtils.changeFragment(
             f::class.java,
             "${javaClass.simpleName}#$deviceType",

@@ -37,12 +37,12 @@ import java.util.*
  * @date 2021-05-1
  * @description 因为WheelMeasureVM需要绑定之后就能测量，绑定测量共用同一个单例
  */
-object WheelMeasureVM : BaseWheelVM(), EventObserver {
+class WheelMeasureVM : BaseWheelVM(), EventObserver {
     //测量
-    private const val connectTimeout = 5 * 1000L
+    private val connectTimeout = 5 * 1000L
     private var exerciseDurationJob: Job? = null
     val stateObsrv: LiveData<State> by lazy { MutableLiveData(State.disconnected) }
-    val batteryLevel: LiveData<Float> by lazy { MutableLiveData(-1f) }
+    val batteryLevel: LiveData<Int> by lazy { MutableLiveData(-1) }
     val exerciseCount: LiveData<Int> by lazy { MutableLiveData(-1) } //锻炼个数
     val exerciseDuration: LiveData<Long> by lazy { MutableLiveData(-1) }
     private var exerciseLiveCount: Int = 0 //锻炼长存计数
@@ -62,8 +62,8 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
     }
     val exerciseDurationTxt = Transformations.map(exerciseDuration) { if (it == -1L) "--" else formatTime(it) }
     val batteryLevelTxt = Transformations.map(batteryLevel) {
-        if (it == -1f) "--" else
-            String.format("%d%%", (it * 100).toInt())
+        if (it == -1) "--" else
+            String.format("%d%%", it)
     }
     val exerciseCountTxt = Transformations.map(exerciseCount) { if (it == -1) "--" else it.toString() }
     val exerciseKcalTxt = Transformations.map(exerciseCount) {
@@ -464,7 +464,7 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         super.onCharacteristicChanged(device, service, characteristic, value)
         LogUtils.d("onCharacteristicChanged：" + StringUtils.toHex(value, " ") + (Looper.myLooper() == Looper.getMainLooper()))
         if (value.size > 3) {
-            (batteryLevel as MutableLiveData).value = 1f / value[value.size - 1]
+            (batteryLevel as MutableLiveData).value = (1f / value[value.size - 1] * 100).toInt()
             when (value[0]) {
                 0x54.toByte() -> { //查询当前健腹轮个数
                     ActivityUtils.getTopActivity().runOnUiThread {
@@ -556,7 +556,9 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
     private var connection: Connection? = null
 
 
-    object EasterEggs {
+    val easterEggs: EasterEggs by lazy { EasterEggs() }
+
+    inner class EasterEggs {
         //volatile适用于改的所有操作或者写的所有操作在同一线程
         private var count = 0
         private var clickTime = 0L
@@ -573,5 +575,4 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
 
         }
     }
-
 }

@@ -1,4 +1,60 @@
-1. //解决Android低版本，对list排序引起的错误
+# 技术点
+
+1. 自定义属性	
+
+   - 如何自定义属性
+     attrs.xml  --> 自定义View中解析（Typed）
+     fraction：百分数
+
+     属性定义时可以指定多种类型值
+
+   - 自定义属性需要解析多个，比如color既支持"#ff0000"又支持"@color/red"呢？
+
+     
+
+# 注意点
+
+后端这边上传限制文件格式，还有大小是300m
+
+
+
+
+
+# 遗留问题
+
+1. 查看App使用的资源，删除无效资源(20210811)
+2. App内存泄漏检测、CPU、内存、耗电量、流量使用统计(20210811)
+3. Activity嵌套Fragment，会出现最上面的布局与状态栏重叠问题（数据统计页面）  (20210811)
+
+
+
+# 坑
+
+1. HTTP请求参数带有汉字
+
+   
+
+2. 自定义属性没有recycle()
+
+   ```
+   try {
+       for (i in 0 until ta.indexCount) {
+           when (val id = ta.getIndex(i)) {
+               R.styleable.ElectricityView_progress -> {
+                   val p = ta.getInteger(id, 0)
+                   setProgress(p)
+               }
+               R.styleable.ElectricityView_lowPowerColor -> {
+   
+               }
+           }
+       }
+   } finally {
+       ta.recycle()
+   }
+   ```
+
+2. //解决Android低版本，对list排序引起的错误
 
   ```
   val query: List<String> = request.url.query!!.split("&")
@@ -29,3 +85,4 @@
   
 
   
+

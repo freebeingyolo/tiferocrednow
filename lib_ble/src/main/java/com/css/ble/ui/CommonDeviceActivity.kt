@@ -20,6 +20,7 @@ import com.css.ble.ui.fragment.CommonBondBeginFragment
 import com.css.ble.ui.fragment.CommonMeasureBeginFragment
 import com.css.ble.utils.FragmentUtils
 import com.css.ble.viewmodel.CounterVM
+import com.css.ble.viewmodel.DeviceVMFactory
 import com.css.ble.viewmodel.HorizontalBarVM
 import com.css.ble.viewmodel.PushUpVM
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
@@ -29,11 +30,6 @@ import razerdp.basepopup.BasePopupWindow
 
 @Route(path = ARouterConst.PATH_APP_BLE_COMMON)
 class CommonDeviceActivity : BaseDeviceActivity<BaseDeviceScan2ConnVM, ActivityBleEntryBinding>() {
-    private val vmMap = mapOf(
-        DeviceType.HORIZONTAL_BAR to HorizontalBarVM,
-        DeviceType.PUSH_UP to PushUpVM,
-        DeviceType.COUNTER to CounterVM,
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         deviceType = DeviceType.values()[intent.getIntExtra("deviceType", 0)]
@@ -83,7 +79,7 @@ class CommonDeviceActivity : BaseDeviceActivity<BaseDeviceScan2ConnVM, ActivityB
     override val vbCls get() = ActivityBleEntryBinding::class.java
 
     override fun initViewModel(): BaseDeviceScan2ConnVM {
-        return vmMap[deviceType]!!
+        return DeviceVMFactory.getViewModel(deviceType)
     }
 
     override fun onResume() {

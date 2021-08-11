@@ -7,6 +7,7 @@ import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.LayoutWheelBondBeginBinding
 import com.css.ble.utils.FragmentUtils
 import com.css.ble.viewmodel.BleEnvVM
+import com.css.ble.viewmodel.DeviceVMFactory
 import com.css.ble.viewmodel.ErrorType
 import com.css.ble.viewmodel.WheelMeasureVM
 import com.css.ble.viewmodel.WheelMeasureVM.State
@@ -21,7 +22,7 @@ class WheelBondBeginFragment : BaseDeviceFragment<WheelMeasureVM, LayoutWheelBon
     override val vmCls get() = WheelMeasureVM::class.java
     override val vbCls get() = LayoutWheelBondBeginBinding::class.java
 
-    override fun initViewModel(): WheelMeasureVM = WheelMeasureVM
+    override fun initViewModel(): WheelMeasureVM = DeviceVMFactory.getViewModel(deviceType)
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)

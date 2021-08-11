@@ -10,7 +10,7 @@ import java.util.*
  *@time 2021-08-03 17:23
  *@description 俯卧撑板
  */
-object PushUpVM : BaseDeviceScan2ConnVM() {
+class PushUpVM : HorizontalBarVM() {
     override val deviceType: DeviceType = DeviceType.PUSH_UP
     val UUID_SRVC = "0000ffb0-0000-1000-8000-00805f9b34fb"
     val UUID_WRITE = "0000ffb1-0000-1000-8000-00805f9b34fb"

@@ -1,5 +1,6 @@
 package com.css.ble.ui.fragment
 
+import android.os.Bundle
 import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.LayoutHorizontalbarBinding
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
@@ -14,5 +15,7 @@ class CounterMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
 
     override val vbCls: Class<LayoutHorizontalbarBinding> get() = LayoutHorizontalbarBinding::class.java
 
-
+    override fun initView(savedInstanceState: Bundle?) {
+        super.initView(savedInstanceState)
+    }
 }

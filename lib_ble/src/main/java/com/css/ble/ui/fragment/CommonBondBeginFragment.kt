@@ -8,7 +8,6 @@ import com.css.ble.databinding.LayoutCommonBondBeginBinding
 import com.css.ble.utils.FragmentUtils
 import com.css.ble.viewmodel.BleEnvVM
 import com.css.ble.viewmodel.ErrorType
-import com.css.ble.viewmodel.HorizontalBarVM
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM.State
 import kotlinx.coroutines.delay

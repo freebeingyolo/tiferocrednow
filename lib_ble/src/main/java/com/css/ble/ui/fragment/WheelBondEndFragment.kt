@@ -9,6 +9,7 @@ import com.blankj.utilcode.util.ActivityUtils
 import com.css.ble.R
 import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.LayoutWeightBondBondedBinding
+import com.css.ble.viewmodel.DeviceVMFactory
 import com.css.ble.viewmodel.WheelMeasureVM
 import com.css.service.router.ARouterConst
 import kotlinx.coroutines.Job
@@ -27,7 +28,7 @@ class WheelBondEndFragment : BaseDeviceFragment<WheelMeasureVM, LayoutWeightBond
 
     private var selfDestroyJob: Job? = null
 
-    override fun initViewModel(): WheelMeasureVM  = WheelMeasureVM
+    override fun initViewModel(): WheelMeasureVM = DeviceVMFactory.getViewModel(deviceType)
 
     override fun initData() {
         super.initData()

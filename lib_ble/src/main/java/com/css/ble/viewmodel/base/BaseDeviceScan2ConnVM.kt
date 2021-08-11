@@ -25,6 +25,7 @@ import com.css.res.R
 import com.css.service.bus.LiveDataBus.BusMutableLiveData
 import com.css.service.data.CourseData
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.lang.IllegalStateException
 import java.text.DecimalFormat
@@ -111,11 +112,11 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     }
     val exerciseDuration: LiveData<Long> by lazy { MutableLiveData(-1) }
     val exerciseDurationTxt = Transformations.map(exerciseDuration) { if (it == -1L) "--" else formatTime(it) }
-    val batteryLevel: LiveData<Float> by lazy { MutableLiveData(-1f) }
+    val batteryLevel: LiveData<Int> by lazy { MutableLiveData(-1) }
 
     val batteryLevelTxt = Transformations.map(batteryLevel) {
-        if (it == -1f) "--" else
-            String.format("%d%%", (it * 100).toInt())
+        if (it == -1) "--" else
+            String.format("%d%%", it)
     }
 
     private fun formatTime(ms: Long): String {
@@ -384,6 +385,38 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     }
 
 
+    fun finishExercise(
+        success: ((String?, Any?) -> Unit)? = null,
+        failed: ((Int, String?, Any?) -> Unit)? = null
+    ) {
+        val time = (exerciseDuration.value!! / 1000).toInt()
+        val num = exerciseCountTxt.value!!.toInt()
+        val calory = (exerciseKcalTxt.value!!).toFloat()
+        val d = deviceType.alias
+        netLaunch({
+            withContext(Dispatchers.IO) {
+                var ret = DeviceRepository.addPushUps(time, num, calory, d)
+                var retry = 0
+                while (!ret.isSuccess) {
+                    delay(100)
+                    retry++
+                    ret = DeviceRepository.addPushUps(time, num, calory, d)
+                    if (retry >= 2) break
+                }
+                ret
+            }
+        },
+            { msg, d ->
+                success?.invoke(msg, d)
+            },
+            { code, msg, d ->
+                showToast(msg)
+                failed?.invoke(code, msg, d)
+            }
+        )
+    }
+
+    /****/
     val easterEggs: EasterEggs by lazy { EasterEggs() }
 
     inner class EasterEggs {

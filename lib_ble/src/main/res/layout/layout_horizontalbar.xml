@@ -29,22 +29,6 @@
         android:orientation="vertical"
         tools:context=".ui.WeightMeasureActivity">
 
-        <com.css.base.view.ToolBarView
-            android:id="@+id/toolBarView"
-            style="@style/base_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/common_toolbar_height"
-            android:background="@color/bg_gray"
-            android:minHeight="44dp"
-            android:navigationIcon="@null"
-            android:visibility="gone"
-            app:centerText=""
-            app:centerTextColor="@color/common_black_color"
-            app:leftImageView="@drawable/ic_common_back_black"
-            app:popupTheme="@style/popup_theme"
-            app:rightTextColor="@color/common_black_color"
-            app:showBottomLine="false" />
-
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="173dp"
             android:layout_height="173dp"
@@ -121,8 +105,10 @@
                 android:layout_marginEnd="4dp"
                 android:visibility="@{model.stateObsrv.ordinal() >= State.discovered.ordinal() ? View.VISIBLE : View.GONE,default=gone}"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:lowPowerColor="#00ff00"
                 app:layout_constraintEnd_toStartOf="@+id/batteryLevel"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:progress="@{model.batteryLevel}" />
 
             <TextView
                 android:id="@+id/batteryLevel"
@@ -299,13 +285,14 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:onClick="@{v->view.openSwitchSpinner(v)}"
-                    app:constraint_referenced_ids="mode_switch,mode_switch2"
+                    app:constraint_referenced_ids="mode_switch,mode_switch2,mode_switch3"
                     app:layout_constraintBottom_toBottomOf="@+id/mode_switch2"
-                    app:layout_constraintEnd_toEndOf="@id/mode_switch"
+                    app:layout_constraintEnd_toEndOf="@id/mode_switch3"
                     app:layout_constraintStart_toStartOf="@id/mode_switch"
                     app:layout_constraintTop_toTopOf="@+id/mode_switch" />
 
                 <ImageView
+                    android:id="@+id/mode_switch3"
                     android:layout_width="27dp"
                     android:layout_height="27dp"
                     android:src="@mipmap/icon_mode_switch"

@@ -91,9 +91,6 @@ internal interface WonderCoreApi {
         @POST("appHistory/queryInitialBodyWeight")
         suspend fun queryInitialBodyWeight(@Body requestBody: RequestBody): CommonResponse<List<HistoryWeight>>
 
-        //单杠/俯卧撑板查询
-        @POST("appHistory/queryPushUps")
-        suspend fun queryPushUps(@Body requestBody: RequestBody): CommonResponse<Any>
     }
 
     interface Device {

@@ -22,6 +22,7 @@ import com.css.ble.databinding.ActivityBleEntryBinding
 import com.css.ble.ui.fragment.WheelMeasureBeginFragment
 import com.css.ble.utils.FragmentUtils
 import com.css.ble.utils.UiUtils
+import com.css.ble.viewmodel.DeviceVMFactory
 import com.css.ble.viewmodel.WheelMeasureVM
 import com.css.service.router.ARouterConst
 import razerdp.basepopup.BasePopupWindow
@@ -32,7 +33,7 @@ class WheelMeasureActivity : BaseDeviceActivity<WheelMeasureVM, ActivityBleEntry
     override val vbCls: Class<ActivityBleEntryBinding> = ActivityBleEntryBinding::class.java
 
     override fun initViewModel(): WheelMeasureVM {
-        return WheelMeasureVM
+        return DeviceVMFactory.getViewModel(deviceType)
     }
 
     override fun enabledVisibleToolBar() = false
