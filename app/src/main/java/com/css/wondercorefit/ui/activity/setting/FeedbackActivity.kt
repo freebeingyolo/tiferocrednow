@@ -201,7 +201,7 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
      */
     private fun checkSubmitStatus() {
         //手机、内容必填之后，按钮才高亮可点击
-        if (!TextUtils.isEmpty(mViewBinding.etPhone.text) && !TextUtils.isEmpty(mViewBinding.etContent.text)
+        if (!TextUtils.isEmpty(mViewBinding.etPhone.text) && !TextUtils.isEmpty(mViewBinding.etContent.text) && mViewBinding.etContent.text.length >= 10
 //        日期、时间、 && !TextUtils.isEmpty(mViewBinding.tvErrorData.text) && !TextUtils.isEmpty(mViewBinding.tvErrorTime.text)
         ) {
             isSubmitStatus = true

@@ -67,14 +67,18 @@ class SettingFragment : BaseFragment<DefaultViewModel, FragmentSettingBinding>()
                 activity?.let { MyDeviceActivity.starActivity(it) }
             }
             R.id.rl_about_us -> {
-                activity?.let { AboutUsActivity.starActivity(it) }
+                activity?.let {
+                    AboutUsActivity.starActivity(it)
+//                    DataStatisticsActivity.starActivity(
+//                        it,
+//                        Bundle().apply { putString("deviceType", "健腹轮") })
+                }
             }
             R.id.rl_feedback -> {
                 activity?.let {
-//                    DataStatisticsActivity.starActivity(it)
                     if (NetworkUtils.isConnected()) {
                         FeedbackActivity.starActivity(it)
-                    }else{
+                    } else {
                         showCenterToast("网络异常")
                     }
                 }

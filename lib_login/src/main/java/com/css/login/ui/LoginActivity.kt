@@ -39,6 +39,7 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>(), View
         mViewBinding.tvLogin.setOnClickListener(this)
         mViewBinding.forgetPassword.setOnClickListener(this)
 
+
         mViewBinding.etTelephone.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 

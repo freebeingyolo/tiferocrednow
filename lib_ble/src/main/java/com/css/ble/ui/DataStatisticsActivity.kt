@@ -17,6 +17,7 @@ import com.css.ble.R
 import com.css.ble.databinding.ActivityStatisticsBinding
 import com.css.ble.ui.fragment.DataStatisticsFragment
 import com.css.ble.viewmodel.DataStatisticsVM
+import com.css.service.utils.SystemBarHelper
 import java.text.FieldPosition
 import java.util.ArrayList
 
@@ -28,25 +29,33 @@ import java.util.ArrayList
 class DataStatisticsActivity : BaseActivity<DataStatisticsVM, ActivityStatisticsBinding>(),
     View.OnClickListener {
 
+    private var deviceType: String? = null
+
     companion object {
-        fun starActivity(context: Context,bundle: Bundle) {
+        fun starActivity(context: Context, bundle: Bundle) {
             val intent = Intent(context, DataStatisticsActivity::class.java)
             intent.putExtras(bundle)
             context.startActivity(intent)
         }
     }
 
-    override fun enabledVisibleToolBar(): Boolean {
-        return true
-    }
+//    override fun enabledVisibleToolBar(): Boolean {
+//        return true
+//    }
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        setToolBarLeftTitle("数据统计")
+//        setToolBarLeftTitle("数据统计")
 
         mViewBinding.tvWeek.setOnClickListener(this)
         mViewBinding.tvMonth.setOnClickListener(this)
+        mViewBinding.imgLeft.setOnClickListener(this)
+    }
 
+    override fun initData() {
+        super.initData()
+        var bundle = this.intent.extras
+        deviceType = bundle!!.getString("deviceType")!!
         initListener()
     }
 
@@ -57,11 +66,10 @@ class DataStatisticsActivity : BaseActivity<DataStatisticsVM, ActivityStatistics
             val bundle = Bundle()
             if (i == 0) {
                 bundle.putString("dataType", "周")
-                bundle.putString("deviceType", "健腹轮")
             } else {
                 bundle.putString("dataType", "月")
-                bundle.putString("deviceType", "健腹轮")
             }
+            bundle.putString("deviceType", deviceType)
             fragment.arguments = bundle
             list.add(fragment)
         }
@@ -84,12 +92,6 @@ class DataStatisticsActivity : BaseActivity<DataStatisticsVM, ActivityStatistics
         })
     }
 
-    override fun initData() {
-        super.initData()
-
-    }
-
-    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onClick(v: View?) {
         when (v) {
             mViewBinding.tvWeek -> {
@@ -101,6 +103,10 @@ class DataStatisticsActivity : BaseActivity<DataStatisticsVM, ActivityStatistics
                 //选中月
                 mViewBinding.vpStatistics.currentItem = 1;
                 showSelected(1)
+            }
+            mViewBinding.imgLeft -> {
+                //返回
+                finish()
             }
         }
 
@@ -118,7 +124,6 @@ class DataStatisticsActivity : BaseActivity<DataStatisticsVM, ActivityStatistics
             mViewBinding.tvMonth.setTextColor(resources.getColor(R.color.colorAccent))
             mViewBinding.tvMonthIcon.visibility = View.VISIBLE
         }
-
     }
 
 

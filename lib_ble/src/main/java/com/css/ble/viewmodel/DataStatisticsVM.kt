@@ -31,8 +31,5 @@ class DataStatisticsVM : BaseViewModel() {
         )
     }
 
-    fun formatDate(date: String): String {
-        val str = DateTimeHelper.parseStringToDate(date);
-        return "---哈哈哈" //注意这里需要改成
-    }
+
 }

@@ -73,10 +73,10 @@ class DataStatisticsFragment : BaseFragment<DataStatisticsVM, FragmentStatistics
         deviceType = arguments?.getString("deviceType")
         LogUtils.dTag("---->", "$dataType--$deviceType");
 
-        loadDate(true, 1, currentDay)
+        loadDate(1, currentDay)
     }
 
-    private fun loadDate(isToDay: Boolean, dateType: Int, date: Date) {
+    private fun loadDate( dateType: Int, date: Date) {
         //根据参数拿数据
         dateList = if (TextUtils.equals(dataType, "周")) {
             //周
@@ -85,18 +85,13 @@ class DataStatisticsFragment : BaseFragment<DataStatisticsVM, FragmentStatistics
             //月
             DateTimeHelper.getCurrentMonth(dateType, date)
         }
-        updateData(true, dateList[0], dateList[1]);
+        updateData(dateList[0], dateList[1])
+        selectedDay = DateTimeHelper.parseStringToDate(dateList[0])
     }
 
-    private fun updateData(isToDay: Boolean, startDate: String, endDate: String) {
-        //刷新时间
+    private fun updateData( startDate: String, endDate: String) {
+        //刷新时日期
         updateDateView(startDate, endDate)
-
-        if (isToDay) {
-            updateCurrentDayView(DateTimeHelper.formatToString(currentDay, "MM月dd日"))
-        } else {
-            updateCurrentDayView(DateTimeHelper.formatToString(startDate, "MM月dd日"))
-        }
         //获取数据
         mViewModel.queryPushUps(deviceType!!, startDate, endDate)
     }
@@ -106,15 +101,20 @@ class DataStatisticsFragment : BaseFragment<DataStatisticsVM, FragmentStatistics
         super.registorUIChangeLiveDataCallBack()
         mViewModel.pullUpDataList.observe(this, {
             LogUtils.dTag("---->", it);
-//            没有数据场景
-//            单击事件
-//            默认选中时间
-            //历史数据
-            mData.addAll(it)
-            mAdapter.setItems(mData)
 
-            //绘制图表
-            initMPChat()
+            //数据场景
+            if(it.isEmpty()){
+                //数据隐藏
+                updateExerciseNumber(false,0)
+                updateCurrentDayView(false,DateTimeHelper.formatToString(currentDay, "MM月dd日"))
+            }else{
+                //历史数据
+                mData.clear()
+                mData.addAll(it)
+                mAdapter.setItems(mData)
+                //绘制图表
+                initMPChat()
+            }
         })
     }
 
@@ -126,18 +126,19 @@ class DataStatisticsFragment : BaseFragment<DataStatisticsVM, FragmentStatistics
         mViewBinding!!.tvCurrentDate.text = text
     }
 
-    private fun updateCurrentDayView(day: String) {
-//        if (DateTimeHelper.isSameDay(currentDay, DateTimeHelper.parseStringToDate(day))) {
-//            //是今天
-//            mViewBinding!!.tvCurrentDay.text = DateTimeHelper.formatToString(currentDay, "MM月dd日")
-//            selectedDay = currentDay
-//        } else {
-        //不是今天
-        mViewBinding!!.tvCurrentDay.text = day
-        selectedDay = DateTimeHelper.parseStringToDate(day)
-//        }
+    private fun updateCurrentDayView(isShow: Boolean,day: String) {
+        if (isShow) {
+            mViewBinding!!.tvCurrentDay.visibility = View.VISIBLE
+            mViewBinding!!.tvCurrentDay.text = day
+
+        }else{
+            mViewBinding!!.tvCurrentDay.visibility = View.INVISIBLE
+        }
     }
 
+    /**
+     * 运动次数
+     */
     private fun updateExerciseNumber(isShow: Boolean,number: Int) {
         if (isShow) {
             mViewBinding!!.tvType.visibility = View.VISIBLE
@@ -239,7 +240,7 @@ class DataStatisticsFragment : BaseFragment<DataStatisticsVM, FragmentStatistics
             OnChartValueSelectedListener {
             override fun onValueSelected(e: Entry, h: Highlight) {
                 updateExerciseNumber(true,e.y.toInt())
-                updateCurrentDayView(DateTimeHelper.formatToString(carList[e.x.toInt()], "MM月dd日"))
+                updateCurrentDayView(true,DateTimeHelper.formatToString(carList[e.x.toInt()], "MM月dd日"))
             }
 
             override fun onNothingSelected() {
@@ -260,10 +261,10 @@ class DataStatisticsFragment : BaseFragment<DataStatisticsVM, FragmentStatistics
     override fun onClick(v: View?) {
         when (v) {
             mViewBinding!!.imgLastDate -> {
-                loadDate(false, 0, selectedDay)
+                loadDate(0, selectedDay)
             }
             mViewBinding!!.imgNextDate -> {
-                loadDate(false, 2, selectedDay)
+                loadDate( 2, selectedDay)
             }
         }
     }
