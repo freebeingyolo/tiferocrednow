@@ -1,22 +1,28 @@
 package com.css.step.service
 
 import android.app.*
+import android.bluetooth.BluetoothAdapter
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorManager
+import android.location.LocationManager
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Message
 import android.util.Log
 import com.css.service.data.StepData
+import com.css.service.data.UserData
 import com.css.service.utils.CacheKey
 import com.css.service.utils.WonderCoreCache
 import com.css.step.*
 import com.css.step.data.ConstantData
 import com.css.step.data.TodayStepData
+import com.css.step.utils.BootstrapService
 import com.css.step.utils.Logger
 import com.css.step.utils.OnStepCounterListener
 import com.css.step.utils.TodayStepDBHelper
@@ -29,28 +35,17 @@ import java.util.*
 
 class TodayStepService : Service(), Handler.Callback {
     private val TAG = "TodayStepService"
-
     //保存数据库频率
     private val DB_SAVE_COUNTER = 50
     private var currentNotifySteps: Int = 0
-
-    //当前日期
-    private var currentDate: String? = null
-
-    //昨天日期
-    private var yesterdayDate: String? = null
-
-    //当前步数
-    private var currentStep: Int = 0
     private lateinit var stepData: StepData
+    private var notificationIsOpen = true
 
     //传感器的采样周期，这里使用SensorManager.SENSOR_DELAY_FASTEST，如果使用SENSOR_DELAY_UI会导致部分手机后台清理内存之后传感器不记步
     private val SAMPLING_PERIOD_US = SensorManager.SENSOR_DELAY_FASTEST
 
     private val HANDLER_WHAT_SAVE_STEP = 0
     private val LAST_SAVE_STEP_DURATION = 5000
-
-    private val BROADCAST_REQUEST_CODE = 100
 
     val INTENT_NAME_0_SEPARATE = "intent_name_0_separate"
     val INTENT_NAME_BOOT = "intent_name_boot"
@@ -72,6 +67,19 @@ class TodayStepService : Service(), Handler.Callback {
 
     private var mTodayStepDBHelper: TodayStepDBHelper? = null
 
+    private var receiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            Log.d("9999","action：" + intent!!.action)
+            when (intent!!.action) {
+                "android.intent.action.OPEN_NOTIFICATION" -> {
+                    notificationIsOpen = true
+                }
+                "android.intent.action.CLOSE_NOTIFICATION" -> {
+                    notificationIsOpen = false
+                }
+            }
+        }
+    }
 
     private val sHandler: Handler = Handler(this)
 
@@ -95,6 +103,13 @@ class TodayStepService : Service(), Handler.Callback {
         sensorManager = this
             .getSystemService(Context.SENSOR_SERVICE) as SensorManager?
         initNotification(currentTimeSportStep + defaultSteps())
+
+        //广播
+        val filter = IntentFilter()
+        filter.addAction("android.intent.action.OPEN_NOTIFICATION")
+        filter.addAction("android.intent.action.CLOSE_NOTIFICATION")
+        registerReceiver(receiver, filter)
+
 
     }
 
@@ -232,10 +247,11 @@ class TodayStepService : Service(), Handler.Callback {
 
     override fun onDestroy() {
         Logger().e(TAG, "onDestroy:" + currentTimeSportStep)
-        val intent = Intent(this, TodayStepService::class.java)
-        startService(intent)
+        stopForeground(true)
+//        unregisterReceiver(receiver)
         super.onDestroy()
     }
+
 
     override fun onUnbind(intent: Intent?): Boolean {
         Logger().e(TAG, "onUnbind:" + currentTimeSportStep)
@@ -301,21 +317,31 @@ class TodayStepService : Service(), Handler.Callback {
      * 更新通知
      */
     private fun updateNotification(stepCount: Int) {
-        val realSteps = stepCount + defaultSteps()
-        if (null == builder || null == nm) {
-            return
-        }
-        builder!!.setContentTitle(getString(R.string.title_notification_bar, realSteps.toString()))
-        val km = getDistanceByStep(realSteps.toLong())
-        val calorie = getCalorieByStep(realSteps.toLong())
-        builder!!.setContentText("步行 $km km    消耗 $calorie kcal")
-        notification = builder!!.build()
-        nm!!.notify(R.string.app_name, notification)
-        currentNotifySteps = realSteps
+            this.stepData = WonderCoreCache.getData(CacheKey.STEP_DATA, StepData::class.java) ?: StepData()
+            val realSteps = stepCount + defaultSteps()
+            if (null == builder || null == nm) {
+                return
+            }
+            builder!!.setContentTitle(getString(R.string.title_notification_bar, realSteps.toString()))
+            val km = getDistanceByStep(realSteps.toLong())
+            val calorie = getCalorieByStep(realSteps.toLong())
+            builder!!.setContentText("步行 $km km    消耗 $calorie kcal")
+            notification = builder!!.build()
+            nm!!.notify(R.string.app_name, notification)
+            currentNotifySteps = realSteps
 //        EventBus.getDefault()
 //            .post(EventMessage<StepData>(EventMessage.Code.MAIN_INDEX_BACK, StepData(1, 2, 3, "")))
-        stepData.todaySteps = realSteps
-        WonderCoreCache.saveData(CacheKey.STEP_DATA, stepData)
+            this.stepData.todaySteps = realSteps
+            WonderCoreCache.saveData(CacheKey.STEP_DATA, stepData)
+            if (!notificationIsOpen) {
+                Log.d("0000" , " stop notification ")
+                val intentBootstrap = Intent(this, BootstrapService::class.java)
+                if (Build.VERSION.SDK_INT >= 26) {
+                    startForegroundService(intentBootstrap)
+                } else {
+                    startService(intentBootstrap)
+                }
+            }
     }
 
     private fun isStepCounter(): Boolean {
@@ -337,7 +363,6 @@ class TodayStepService : Service(), Handler.Callback {
             cleanDb()
         }
     }
-
 
     inner class mIBinder : ISportStepInterface.Stub() {
         val SPORT_DATE = "sportDate"
@@ -402,39 +427,4 @@ class TodayStepService : Service(), Handler.Callback {
         return String.format("%.1f", steps * 0.7f * 60 * 1.036f / 1000)
     }
 
-    fun getReceiver(context: Context): String? {
-        try {
-            val packageInfo = context.packageManager.getPackageInfo(
-                context.packageName,
-                PackageManager.GET_RECEIVERS
-            )
-            val activityInfos = packageInfo.receivers
-            if (null != activityInfos && activityInfos.size > 0) {
-                for (i in activityInfos.indices) {
-                    val receiverName = activityInfos[i].name
-                    var superClazz = Class.forName(receiverName).superclass
-                    var count = 1
-                    while (null != superClazz) {
-                        if (superClazz.name == "java.lang.Object") {
-                            break
-                        }
-                        if (superClazz.name == BaseClickBroadcast::class.java.name) {
-                            Log.e(TAG, "receiverName : $receiverName")
-                            return receiverName
-                        }
-                        if (count > 20) {
-                            //用来做容错，如果20个基类还不到Object直接跳出防止while死循环
-                            break
-                        }
-                        count++
-                        superClazz = superClazz.superclass
-                        Log.e(TAG, "superClazz : $superClazz")
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return null
-    }
 }

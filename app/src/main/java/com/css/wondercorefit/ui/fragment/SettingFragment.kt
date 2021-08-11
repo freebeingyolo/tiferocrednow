@@ -8,9 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.CleanUtils
 import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.NetworkUtils
@@ -21,18 +19,18 @@ import com.css.base.uibase.BaseFragment
 import com.css.base.uibase.viewmodel.DefaultViewModel
 import com.css.ble.ui.DataStatisticsActivity
 import com.css.service.data.UserData
-import com.css.service.router.ARouterConst
 import com.css.service.router.ARouterUtil
 import com.css.service.utils.CacheKey
 import com.css.service.utils.SystemBarHelper
 import com.css.service.utils.WonderCoreCache
+import com.css.step.service.TodayStepService
+import com.css.step.utils.BootstrapService
 import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.FragmentSettingBinding
 import com.css.wondercorefit.ui.activity.setting.AboutUsActivity
 import com.css.wondercorefit.ui.activity.setting.FeedbackActivity
 import com.css.wondercorefit.ui.activity.setting.MyDeviceActivity
 import com.css.wondercorefit.ui.activity.setting.PersonInformationActivity
-import com.css.wondercorefit.utils.BootstrapService
 import razerdp.basepopup.BasePopupWindow
 
 
@@ -44,7 +42,7 @@ class SettingFragment : BaseFragment<DefaultViewModel, FragmentSettingBinding>()
         SystemBarHelper.immersiveStatusBar(activity, 0f)
         SystemBarHelper.setHeightAndPadding(activity, mViewBinding?.topView)
         userInfo = WonderCoreCache.getUserInfo()
-        mViewBinding?.rlNotificationSet?.isChecked = userInfo.pushSet == "开"
+        mViewBinding?.rlNotificationSet?.isChecked = "开" == userInfo.notification
         mViewBinding?.rlPersonInfo?.setOnClickListener(this)
         mViewBinding?.rlMyDevice?.setOnClickListener(this)
         mViewBinding?.rlAboutUs?.setOnClickListener(this)
@@ -130,23 +128,33 @@ class SettingFragment : BaseFragment<DefaultViewModel, FragmentSettingBinding>()
         when (compoundButton?.id) {
             R.id.rl_notification_set -> {
                 val intentBootstrap = Intent(activity, BootstrapService::class.java)
+                val intentsteps = Intent(activity, TodayStepService::class.java)
                 if (mViewBinding?.rlNotificationSet?.isChecked == true) {
-                    userInfo = WonderCoreCache.getUserInfo()
-                    userInfo.pushSet = "开"
+                    userInfo.notification = "开"
                     WonderCoreCache.saveData(CacheKey.USER_INFO, userInfo)
-                    Toast.makeText(activity, " 通知栏状态是   ： 存为开 ", Toast.LENGTH_SHORT).show()
+                    val intent = Intent()
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    intent.action = "android.intent.action.OPEN_NOTIFICATION"
+                    activity?.sendBroadcast(intent)
+                    if (Build.VERSION.SDK_INT >= 26) {
+                        activity?.startForegroundService(intentsteps)
+                    } else {
+                        activity?.startService(intentsteps)
+                    }
                 } else {
-                    userInfo = WonderCoreCache.getUserInfo()
-                    userInfo.pushSet = "关"
+                    userInfo.notification = "关"
                     WonderCoreCache.saveData(CacheKey.USER_INFO, userInfo)
-                    Toast.makeText(activity, " 通知栏状态   ：   存为关 ", Toast.LENGTH_SHORT).show()
+                    val intent = Intent()
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    intent.action = "android.intent.action.CLOSE_NOTIFICATION"
+                    activity?.sendBroadcast(intent)
+                    if (Build.VERSION.SDK_INT >= 26) {
+                        activity?.startForegroundService(intentBootstrap)
+                    } else {
+                        activity?.startService(intentBootstrap)
+                    }
                 }
 
-                if (Build.VERSION.SDK_INT >= 26) {
-                    activity?.startForegroundService(intentBootstrap)
-                } else {
-                    activity?.startService(intentBootstrap)
-                }
             }
         }
     }
