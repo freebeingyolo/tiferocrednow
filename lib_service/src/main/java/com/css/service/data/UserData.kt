@@ -1,5 +1,7 @@
 package com.css.service.data
 
+import android.app.Notification
+
 data class UserData(
     var sex: String = "男",
     var age: String = "30",
@@ -10,6 +12,7 @@ data class UserData(
     var userName: String = "",
     var userId: Int = 0,
     var pushSet: String = "开",
+    var notification: String = "开",
     var isDel: String = "0",
     var isFirst: Boolean = true,
     var isFirstOpenApp: Boolean = true,

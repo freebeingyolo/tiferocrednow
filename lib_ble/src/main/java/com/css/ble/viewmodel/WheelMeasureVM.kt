@@ -299,14 +299,17 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
             }
             ConnectionState.SERVICE_DISCOVERED -> {
                 state = State.discovered
-                val services: List<BluetoothGattService> = EasyBLE.getInstance().getConnection(device)!!.gatt!!.services
-                for (service in services) {
-                    if (service.uuid == UUID.fromString(UUID_SRVC)) {
-                        if (workMode == WorkMode.BOND) {
+                if (workMode == WorkMode.BOND) {
+                    val services: List<BluetoothGattService> = EasyBLE.getInstance().getConnection(device)!!.gatt!!.services
+                    for (service in services) {
+                        if (service.uuid == UUID.fromString(UUID_SRVC)) {
                             foundDevice(device)
+                            break
                         }
-                        discovered(device)
                     }
+                    discovered(device)
+                } else {
+                    discovered(device)
                 }
             }
             ConnectionState.RELEASED -> {
@@ -320,15 +323,19 @@ object WheelMeasureVM : BaseWheelVM(), EventObserver {
         cancelTimeOutTimer()
         viewModelScope.launch {
             //上位码
-            writeCharacter(UUID_SRVC2, UUID_WRITE2, StringUtils.toByteArray("F1F1FF0100007E", ""), object : WriteCharacteristicCallback {
-                override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
-                    LogUtils.d("discovered#shangweima#onRequestFailed：$failType")
-                }
+            writeCharacter(
+                UUID_SRVC2,
+                UUID_WRITE2,
+                StringUtils.toByteArray("F1F1FF0100007E", ""),
+                object : WriteCharacteristicCallback {
+                    override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
+                        LogUtils.d("discovered#shangweima#onRequestFailed：$failType")
+                    }
 
-                override fun onCharacteristicWrite(request: Request, value: ByteArray) {
-                    LogUtils.d("discovered#shangweima：" + StringUtils.toHex(value, " "))
-                }
-            })
+                    override fun onCharacteristicWrite(request: Request, value: ByteArray) {
+                        LogUtils.d("discovered#shangweima：" + StringUtils.toHex(value, " "))
+                    }
+                })
             //开启通知
             sendNotification(UUID_SRVC2, UUID_NOTIFY2, true, object : NotificationChangeCallback {
                 override fun onRequestFailed(request: Request, failType: Int, value: Any?) {

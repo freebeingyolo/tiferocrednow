@@ -27,7 +27,6 @@ class CoursePlayActivity : AppCompatActivity() {
         setContentView(R.layout.activity_course_play)
         var bundle = this.intent.extras
         currentPlayIndex = bundle!!.getString("videoLink")!!
-        Log.d("999" , "get video Link    $currentPlayIndex")
         playerView = findViewById(R.id.player_view)
         playerView.setProgressColor(resources.getColor(R.color.colorAccent), Color.YELLOW)
         // config

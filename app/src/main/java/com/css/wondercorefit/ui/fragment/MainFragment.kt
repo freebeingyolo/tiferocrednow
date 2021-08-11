@@ -28,6 +28,7 @@ import com.css.step.ISportStepInterface
 import com.css.step.TodayStepManager
 import com.css.step.service.SensorService
 import com.css.step.service.TodayStepService
+import com.css.step.utils.BootstrapService
 import com.css.wondercorefit.R
 import com.css.wondercorefit.adapter.MainDeviceAdapter
 import com.css.wondercorefit.databinding.FragmentMainBinding
@@ -38,6 +39,7 @@ import com.css.wondercorefit.viewmodel.MainViewModel
 class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.OnClickListener {
     private val TAG = "MainFragment"
 
+    lateinit var userInfo: UserData
     private var iSportStepInterface: ISportStepInterface? = null
     private var stepArray: Int = 0
     private val mDelayHandler = Handler(TodayStepCounterCall())
@@ -90,6 +92,27 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             mUserData.isFirst = false
             WonderCoreCache.saveUserInfo(mUserData)
         }
+        startBootStrapService()
+    }
+
+    private fun startBootStrapService() {
+        userInfo = WonderCoreCache.getUserInfo()
+        if ("关" == userInfo.notification  ) {
+            val intentSteps = Intent(activity, BootstrapService::class.java)
+            val intent = Intent()
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            intent.action = "android.intent.action.CLOSE_NOTIFICATION"
+            Handler().postDelayed({
+                activity?.sendBroadcast(intent)
+                if (Build.VERSION.SDK_INT >= 26) {
+                    activity?.startForegroundService(intentSteps)
+                } else {
+                    activity?.startService(intentSteps)
+                }
+            }, 1000)
+
+        }
+
     }
 
 

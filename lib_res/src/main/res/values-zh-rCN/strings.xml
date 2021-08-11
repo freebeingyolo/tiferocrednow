@@ -83,7 +83,7 @@
     <string name="feedback_submit">提交</string>
     <string name="feedback_history">反馈记录</string>
     <string name="byCount">计数模式</string>
-    <string name="byTime">计时模式%d</string>
+    <string name="byTime">计时模式%ds</string>
 
     <string name="statistics_week">周</string>
     <string name="statistics_month">月</string>
