@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.NetworkUtils
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.uibase.BaseActivity
@@ -58,6 +59,7 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel, ActivityReset
     override fun onClick(v: View) {
         when (v) {
             mViewBinding.tvSubmit -> {
+                KeyboardUtils.hideSoftInput(this)
                 if (NetworkUtils.isConnected()) {
                     mViewModel.checkData(
                         mViewBinding.etPhone.text.toString(),

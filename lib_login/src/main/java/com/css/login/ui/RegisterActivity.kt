@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.NetworkUtils
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.uibase.BaseActivity
@@ -68,6 +69,7 @@ class RegisterActivity : BaseActivity<RegisterViewModel, ActivityRegisterBinding
     override fun onClick(v: View) {
         when (v) {
             mViewBinding.tvRegisterBtn -> {
+                KeyboardUtils.hideSoftInput(this)
                 if (NetworkUtils.isConnected()) {
                     mViewModel.checkData(
                         mViewBinding.etTelephone.text.toString(),

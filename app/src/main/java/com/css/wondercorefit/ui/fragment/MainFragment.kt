@@ -18,6 +18,7 @@ import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.bean.WeightBondData
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
+import com.css.service.data.GlobalData
 import com.css.service.data.StepData
 import com.css.service.data.UserData
 import com.css.service.router.ARouterConst
@@ -87,10 +88,9 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         startStep()
         initClickListenr()
         initProgressRate()
-        if (mUserData.isFirst) {
+        if (WonderCoreCache.getGlobalData().isFirst) {
             activity?.let { PersonInformationActivity.starActivity(it) }
-            mUserData.isFirst = false
-            WonderCoreCache.saveUserInfo(mUserData)
+            WonderCoreCache.saveGlobalData(GlobalData(false))
         }
         startBootStrapService()
     }

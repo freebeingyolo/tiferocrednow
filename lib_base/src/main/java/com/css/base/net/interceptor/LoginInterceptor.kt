@@ -23,7 +23,7 @@ class LoginInterceptor : Interceptor {
     private fun logout() {
         WonderCoreCache.removeKey(CacheKey.LOGIN_DATA)
         WonderCoreCache.removeKey(CacheKey.USER_INFO)
+        ActivityUtils.finishAllActivities()
         ARouterUtil.openLogin()
-        ActivityUtils.finishAllActivitiesExceptNewest()
     }
 }

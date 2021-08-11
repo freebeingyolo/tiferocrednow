@@ -3,6 +3,7 @@ package com.css.login.model
 import android.os.CountDownTimer
 import androidx.lifecycle.MutableLiveData
 import com.alibaba.android.arouter.launcher.ARouter
+import com.blankj.utilcode.util.RegexUtils
 import com.css.base.net.api.repository.UserRepository
 import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.service.router.ARouterConst
@@ -81,7 +82,9 @@ class RegisterViewModel : BaseViewModel() {
             showCenterToast("请输入手机号码")
         } else if (phone.length != 11) {
             showCenterToast("请输入正确的手机号码")
-        } else if (password.isEmpty()) {
+        }  else if (!RegexUtils.isMobileExact(phone)) {
+            showCenterToast("请输入正确的手机号码")
+        }else if (password.isEmpty()) {
             showCenterToast("请输入密码")
         } else if (password.length < 6 || password.length > 16) {
             showCenterToast("密码格式错误")

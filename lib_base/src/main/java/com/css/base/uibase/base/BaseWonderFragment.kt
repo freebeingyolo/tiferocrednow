@@ -1,5 +1,7 @@
 package com.css.base.uibase.base
 
+//import com.blankj.utilcode.util.LogUtils
+import LogUtils
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
@@ -11,7 +13,6 @@ import androidx.core.view.contains
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.viewbinding.ViewBinding
-//import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.css.base.R
 import com.css.base.dialog.LoadingDialog
@@ -117,7 +118,7 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
         if (mRootView == null) {
             //为空时初始化。
             //根布局
-            mRootView = inflater.inflate(R.layout.activity_base, viewGroup, false)
+            mRootView = inflater.inflate(R.layout.fragment_base, viewGroup, false)
             //toolbar容器
             val toolbarVs = mRootView!!.findViewById<ViewStub>(R.id.vs_toolbar)
             if (enabledVisibleToolBar()) {

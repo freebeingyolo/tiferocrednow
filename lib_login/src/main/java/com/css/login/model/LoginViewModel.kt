@@ -1,6 +1,8 @@
 package com.css.login.model
 
 import androidx.lifecycle.MutableLiveData
+import com.blankj.utilcode.util.CollectionUtils
+import com.blankj.utilcode.util.RegexUtils
 import com.css.base.net.api.repository.UserRepository
 import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.service.data.LoginUserData
@@ -38,6 +40,8 @@ class LoginViewModel : BaseViewModel() {
         if (phone.isEmpty()) {
             showCenterToast("请输入手机号码")
         } else if (phone.length != 11) {
+            showCenterToast("请输入正确的手机号码")
+        } else if (!RegexUtils.isMobileExact(phone)) {
             showCenterToast("请输入正确的手机号码")
         } else if (password.isEmpty()) {
             showCenterToast("请输入密码")

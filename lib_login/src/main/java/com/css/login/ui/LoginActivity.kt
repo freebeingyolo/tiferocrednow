@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.NetworkUtils
 import com.css.base.dialog.CenterCommonAlertDialog
 import com.css.base.dialog.CommonAlertDialog
@@ -73,6 +74,7 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>(), View
     ): ActivityLoginBinding = ActivityLoginBinding.inflate(layoutInflater, parent, false)
 
     override fun registorUIChangeLiveDataCallBack() {
+        super.registorUIChangeLiveDataCallBack()
         WonderCoreCache.getLiveData<LoginUserData>(CacheKey.LOGIN_DATA).observe(this) {
             ARouterUtil.openMainActivity()
             finish()
@@ -106,6 +108,7 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>(), View
                 ARouterUtil.openRegister()
             }
             mViewBinding.tvLogin -> {
+                KeyboardUtils.hideSoftInput(this)
                 if (NetworkUtils.isConnected()) {
                     mViewModel.checkPhoneAnddPassword(
                         mViewBinding.etTelephone.text.toString(),
