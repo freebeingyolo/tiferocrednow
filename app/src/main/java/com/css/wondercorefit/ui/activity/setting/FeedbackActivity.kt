@@ -16,6 +16,7 @@ import android.widget.FrameLayout
 import androidx.core.view.get
 import androidx.lifecycle.ViewModelProvider
 import com.blankj.utilcode.util.LogUtils
+import com.blankj.utilcode.util.RegexUtils
 import com.css.base.uibase.BaseActivity
 import com.css.base.utils.DateTimeHelper
 import com.css.pickerview.builder.TimePickerBuilder
@@ -201,7 +202,7 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
      */
     private fun checkSubmitStatus() {
         //手机、内容必填之后，按钮才高亮可点击
-        if (!TextUtils.isEmpty(mViewBinding.etPhone.text) && !TextUtils.isEmpty(mViewBinding.etContent.text) && mViewBinding.etContent.text.length >= 10
+        if (!TextUtils.isEmpty(mViewBinding.etPhone.text) && !TextUtils.isEmpty(mViewBinding.etContent.text)
 //        日期、时间、 && !TextUtils.isEmpty(mViewBinding.tvErrorData.text) && !TextUtils.isEmpty(mViewBinding.tvErrorTime.text)
         ) {
             isSubmitStatus = true

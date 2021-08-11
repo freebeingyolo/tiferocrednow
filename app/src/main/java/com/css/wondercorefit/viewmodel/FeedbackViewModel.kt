@@ -1,6 +1,7 @@
 package com.css.wondercorefit.viewmodel
 
 import androidx.lifecycle.MutableLiveData
+import com.blankj.utilcode.util.RegexUtils
 import com.css.base.net.api.repository.SettingRepository
 import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.service.data.FeedbackData
@@ -26,8 +27,10 @@ class FeedbackViewModel : BaseViewModel() {
         if (isShowSubmit) {
             //可以提交
             //检查电话是否合规
-            if (phone.length != 11) {
+            if (!RegexUtils.isMobileExact(phone)) {
                 showCenterToast("手机格式有误")
+            } else if (content.length < 10) {
+                showCenterToast("请输入至少10个字以上")
             } else {
                 netLaunch(
                     {
@@ -65,7 +68,7 @@ class FeedbackViewModel : BaseViewModel() {
         )
     }
 
-    fun queryFeedBackHistoryDetail(id:Int) {
+    fun queryFeedBackHistoryDetail(id: Int) {
         netLaunch(
             {
                 showLoading()
