@@ -11,8 +11,6 @@ data class UserData(
     var userId: Int = 0,
     var pushSet: String = "开",
     var isDel: String = "0",
-    var isFirst: Boolean = true,
-    var isFirstOpenApp: Boolean = true,
     var sexLocation: Int = 0,
     var ageLocation: Int = 70,
     var statureLocation: Int = 75,
@@ -25,6 +23,9 @@ data class UserData(
     val targetWeightFloat get() = goalBodyWeight.toFloat()
 }
 
+data class GlobalData(
+    var isFirst: Boolean = true
+)
 data class StepData(
     var sensorSteps: Int = 0,
     var defaultSteps: Int = 0,

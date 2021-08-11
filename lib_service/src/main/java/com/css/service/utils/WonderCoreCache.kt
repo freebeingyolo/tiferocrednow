@@ -6,6 +6,7 @@ import androidx.lifecycle.Transformations
 import com.blankj.utilcode.util.SPUtils
 import com.css.service.bus.LiveDataBus
 import com.css.service.bus.LiveDataBus.BusMediatorLiveData
+import com.css.service.data.GlobalData
 import com.css.service.data.LoginUserData
 import com.css.service.data.UserData
 import com.google.gson.Gson
@@ -14,6 +15,7 @@ import kotlin.reflect.typeOf
 
 enum class CacheKey(val k: String) {
     USER_INFO("user_info"),
+    GLOBAL_DATA("GLOBAL_DATA"),
     BOND_WEIGHT_INFO("BOND_WEIGHT_INFO"), //体脂秤
     BOND_WHEEL_INFO("BOND_WHEEL_INFO"), //健腹轮
     BOND_HORIZONTALBAR_INFO("BOND_HORIZONTALBAR_INFO"), //单杠
@@ -135,7 +137,19 @@ class WonderCoreCache { //一切围绕CacheKey
         }
 
         /**User**/
+        /**Global**/
 
+        /**User**/
+        fun saveGlobalData(globalData: GlobalData) {
+            saveData(CacheKey.GLOBAL_DATA, globalData)
+        }
+
+        fun getGlobalData(): GlobalData {
+            var ret = getData(CacheKey.GLOBAL_DATA, GlobalData::class.java)
+            return ret ?: GlobalData()
+        }
+
+        /**Global**/
         /**Device**/
 
 

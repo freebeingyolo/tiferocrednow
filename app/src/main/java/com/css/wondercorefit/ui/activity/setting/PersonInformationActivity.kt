@@ -53,8 +53,6 @@ class PersonInformationActivity :
         super.registorUIChangeLiveDataCallBack()
         mViewModel.personInfoData.observe(this, {
             var userData = it[0]
-            Log.v("suisui", "age=" + userData.age)
-            Log.v("suisui", "username=" + userData.userName)
             mViewBinding.tvTargetWeight.text = "${userData.goalBodyWeight}kg"
             mViewBinding.tvTargetStep.text = "${userData.goalStepCount}步"
             mViewBinding.tvStature.text = "${userData.height}cm"
@@ -68,7 +66,6 @@ class PersonInformationActivity :
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-
         setToolBarLeftTitle("个人信息")
         mViewBinding.rlSex.setOnClickListener(this)
         mViewBinding.rlAge.setOnClickListener(this)
