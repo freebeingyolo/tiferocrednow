@@ -68,7 +68,7 @@
         android:background="@drawable/login_edittext_bg"
         android:hint="@string/login_input_password"
         android:inputType="textPassword"
-        android:maxLength="11"
+        android:maxLength="16"
         android:paddingStart="7dp"
         android:textSize="12sp" />
 

@@ -12,7 +12,7 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="wrap_content"
-        android:layout_height="24dp"
+        android:layout_height="25dp"
         android:layout_marginTop="90dp"
         android:src="@mipmap/wonder_logo_2" />
 
@@ -23,9 +23,10 @@
         android:text="@string/app_name"
         android:textColor="@color/black"
         android:textSize="15sp"
-        android:textStyle="bold" />
+       />
 
     <TextView
+        android:id="@+id/tv_version1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"

@@ -22,6 +22,7 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.launcher.ARouter
+import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.NetworkUtils
 import com.css.base.dialog.CommonAlertDialog
@@ -89,6 +90,7 @@ open class AboutUsActivity : BaseActivity<AboutUsViewModel, ActivityAboutUsBindi
                         }
                     }.show()
                 } else {
+
                     CommonAlertDialog(this).apply {
                         gravity = Gravity.BOTTOM
                         type = CommonAlertDialog.DialogType.Confirm
@@ -105,8 +107,16 @@ open class AboutUsActivity : BaseActivity<AboutUsViewModel, ActivityAboutUsBindi
 //                                downloadAndInstall()
 
                             }
+
+                            override fun onLeftBtnClick(view: View) {
+                                super.onLeftBtnClick(view)
+                                if (it.mandatoryUpgrade == "是") {
+                                    ActivityUtils.finishAllActivities()
+                                }
+                            }
                         }
                     }.show()
+
                 }
             }
         })
@@ -179,6 +189,7 @@ open class AboutUsActivity : BaseActivity<AboutUsViewModel, ActivityAboutUsBindi
     override fun initData() {
         super.initData()
         mViewBinding.tvVersion.text = "V${AppUtils.getAppVersionName()}"
+        mViewBinding.tvVersion1.text = "V${AppUtils.getAppVersionName()}"
     }
 
     override fun enabledVisibleToolBar(): Boolean {
