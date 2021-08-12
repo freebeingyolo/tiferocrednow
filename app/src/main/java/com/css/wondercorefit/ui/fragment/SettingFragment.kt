@@ -65,7 +65,7 @@ class SettingFragment : BaseFragment<DefaultViewModel, FragmentSettingBinding>()
                 activity?.let { MyDeviceActivity.starActivity(it) }
             }
             R.id.rl_about_us -> {
-                activity?.let {AboutUsActivity.starActivity(it)}
+                activity?.let { AboutUsActivity.starActivity(it) }
             }
             R.id.rl_feedback -> {
                 activity?.let {
