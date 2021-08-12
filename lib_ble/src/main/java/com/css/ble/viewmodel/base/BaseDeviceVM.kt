@@ -61,6 +61,5 @@ abstract class BaseDeviceVM : BaseViewModel() {
     abstract fun onTimerCancel()
     abstract fun disconnect()
     abstract fun connect()
-
-
+    abstract fun unBind()
 }

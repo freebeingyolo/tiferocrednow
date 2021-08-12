@@ -147,5 +147,3 @@ open class WeightBondVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPa
     }
 
 }
-
-

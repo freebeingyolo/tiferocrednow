@@ -2,10 +2,9 @@ package com.css.ble.viewmodel.base
 
 import LogUtils
 import android.bluetooth.BluetoothGattService
+import android.os.Looper
 import androidx.annotation.NonNull
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.*
 import cn.wandersnail.ble.*
 import cn.wandersnail.ble.callback.NotificationChangeCallback
 import cn.wandersnail.ble.callback.ScanListener
@@ -20,14 +19,13 @@ import com.css.base.net.api.repository.DeviceRepository
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.viewmodel.IBleConnect
 import com.css.ble.viewmodel.IBleScan
-import com.css.ble.viewmodel.WheelMeasureVM
 import com.css.res.R
 import com.css.service.bus.LiveDataBus.BusMutableLiveData
 import com.css.service.data.CourseData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.lang.IllegalStateException
 import java.text.DecimalFormat
 import java.util.*
 
@@ -83,20 +81,24 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     var state: State
         set(value) {
             (stateObsrv as MutableLiveData).value = value
-            BondDeviceData.getDeviceStateLiveData().value = Pair(deviceType.alias, connectStateTxt.value)
+            BondDeviceData.getDeviceStateLiveData().value = Pair(deviceType.alias, connectStateTxt(value))
         }
         get() = stateObsrv.value!!
 
     private val _recommentationData by lazy { BusMutableLiveData<List<CourseData>>() }
     val recommentationData: LiveData<List<CourseData>> get() = _recommentationData
 
-
     //Transformations
     val isConnecting = Transformations.map(stateObsrv) {
         it >= State.connecting && it < State.discovered
     }
+
     val connectStateTxt = Transformations.map(stateObsrv) {
-        if (it >= State.discovered) {
+        connectStateTxt(it)
+    }
+
+    private fun connectStateTxt(it: State): String {
+        return if (it >= State.discovered) {
             getString(R.string.device_connected)
         } else {
             if (it == State.disconnected) getString(R.string.device_disconnected)
@@ -147,8 +149,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
 
     private val scanListener = object : ScanListener {
         override fun onScanStart() {
-            LogUtils.d("onScanStart")
-            state = State.scanStart
+            LogUtils.d("onScanStart,isMain:${Looper.myLooper() == Looper.getMainLooper()}")
         }
 
         override fun onScanStop() {
@@ -195,10 +196,11 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         EasyBLE.getInstance().startScan()
         EasyBLE.getInstance().addScanListener(scanListener)
         startTimeoutTimer(bondTimeout)
+        state = State.scanStart
     }
 
     override fun stopScanBle() {
-        LogUtils.d("stopScan")
+        LogUtils.d("stopScan,isScanning:${EasyBLE.getInstance().isScanning}")
         if (EasyBLE.getInstance().isScanning) {
             EasyBLE.getInstance().stopScan()
             this.state = State.disconnected
@@ -261,6 +263,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
                 }
             }
             ConnectionState.RELEASED -> {
+                release()
                 state = State.disconnected
             }
         }
@@ -283,6 +286,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         if (connection == null) {
             val config = ConnectionConfiguration()
             config.setRequestTimeoutMillis(connectTimeout.toInt())
+            config.setRequestTimeoutMillis(5000)
             config.setDiscoverServicesDelayMillis(300)
             config.setAutoReconnect(false)
             val mac = BondDeviceData.getDevice(deviceType)!!.mac
@@ -296,8 +300,18 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     //断开连接
     override fun disconnect() {
         cancelTimeOutTimer()
-        if (state > State.disconnected) {
+        if (state != State.disconnected) {
+            LogUtils.d("disconnect", 5)
             connection?.disconnect()
+            state = State.disconnected
+        }
+    }
+
+    fun release() {
+        cancelTimeOutTimer()
+        if (connection != null) {
+            LogUtils.d("release", 5)
+            connection?.release()
             state = State.disconnected
             connection = null
         }
@@ -311,12 +325,17 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
             avaliableDevice!!.address,
             "",
             deviceType
-        )
+        ).apply {
+
+        }
         netLaunch(
             {
                 withContext(Dispatchers.IO) {
                     val ret = DeviceRepository.bindDevice(d.buidUploadParams())
-                    takeIf { ret.isSuccess }.let { BondDeviceData.setDevice(deviceType, BondDeviceData(ret.data!!)) }
+                    takeIf { ret.isSuccess }.let {
+                        val d = BondDeviceData(ret.data!!).apply { this.deviceConnect = connectStateTxt(state) }
+                        BondDeviceData.setDevice(deviceType, d)
+                    }
                     ret
                 }
             },
@@ -393,6 +412,9 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         val num = exerciseCountTxt.value!!.toInt()
         val calory = (exerciseKcalTxt.value!!).toFloat()
         val d = deviceType.alias
+        if (time == 0 && num == 0) {
+            return LogUtils.d("the time and the num is zero,ignore this uploading")
+        }
         netLaunch({
             withContext(Dispatchers.IO) {
                 var ret = DeviceRepository.addPushUps(time, num, calory, d)
@@ -437,4 +459,15 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         }
     }
 
+    fun clearAllExerciseData() {
+        (exerciseCount as MutableLiveData).value = 0
+        (exerciseDuration as MutableLiveData).value = 0
+    }
+
+
+    override fun unBind() {
+        release()
+        clearAllExerciseData()
+        state = State.disconnected
+    }
 }

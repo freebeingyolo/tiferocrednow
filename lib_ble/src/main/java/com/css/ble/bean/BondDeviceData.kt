@@ -50,19 +50,41 @@ enum class DeviceType(
     }
 }
 
-class BondDeviceData(
-    var mac: String,
-    var manufacturerDataHex: String,
-    var type: Int
-) : BaseData() {
+class BondDeviceData private constructor() : BaseData() {
+    lateinit var mac: String
+    lateinit var manufacturerDataHex: String
+    lateinit var deviceType: DeviceType
+
     var alias: String? = null
     var id: Int = 0
     var deviceCategory: String = ""
-    val deviceType: DeviceType get() = DeviceType.values()[type]
     val deviceImg: Int get() = deviceType.icon2
     var deviceConnect: String? = "未连接"
     var moduleType: String = "" //设备型号
     var moduleVersion: String = "" //固件版本
+
+    constructor(mac: String, manufacturerDataHex: String, deviceType: DeviceType) : this() {
+        this.mac = mac
+        this.manufacturerDataHex = manufacturerDataHex
+        this.deviceType = deviceType
+        this.deviceCategory = deviceType.alias
+        this.alias = deviceType.alias
+    }
+
+    constructor(d: DeviceData) : this(d.bluetoothAddress, "", DeviceType.findByAlias(d.deviceCategory)) {
+        this.id = d.id
+        this.alias = d.deviceName
+        this.deviceCategory = d.deviceCategory
+        this.moduleType = d.moduleType
+        this.moduleVersion = d.moduleVersion
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other is BondDeviceData) {
+            return this.mac == other.mac && this.id == other.id && this.deviceType == other.deviceType
+        }
+        return false
+    }
 
     fun buidUploadParams(): HashMap<String, Any?> {
         return hashMapOf(
@@ -72,25 +94,6 @@ class BondDeviceData(
             "moduleType" to moduleType,
             "moduleVersion" to moduleVersion
         )
-    }
-
-    constructor(d: DeviceData) : this() {
-        this.id = d.id
-        this.mac = d.bluetoothAddress
-        this.alias = d.deviceName
-        this.deviceCategory = d.deviceCategory
-        this.type = DeviceType.findByAlias(d.deviceCategory).ordinal
-        this.moduleType = d.moduleType
-        this.moduleVersion = d.moduleVersion
-    }
-
-    constructor() : this("", "", DeviceType.WEIGHT)
-    constructor(mac: String, manufacturerDataHex: String, type: DeviceType) : this(
-        mac,
-        manufacturerDataHex,
-        type.ordinal
-    ) {
-        this.deviceCategory = type.alias
     }
 
     companion object {
@@ -133,11 +136,11 @@ class BondDeviceData(
 
     val displayName: String
         get() = if (alias.isNullOrEmpty()) {
-            ActivityUtils.getTopActivity().getString(DeviceType.values()[type].nameId)
+            ActivityUtils.getTopActivity().getString(deviceType.nameId)
         } else alias!!
 
     override fun toString(): String {
-        return "BondDeviceData(mac='$mac', manufacturerDataHex='$manufacturerDataHex', type=$type, alias=$alias, id=$id, deviceCategory='$deviceCategory', deviceConnect=$deviceConnect, moduleType='$moduleType', moduleVersion='$moduleVersion')"
+        return "BondDeviceData(mac='$mac', manufacturerDataHex='$manufacturerDataHex', alias=$alias, id=$id, deviceCategory='$deviceCategory', deviceConnect=$deviceConnect, moduleType='$moduleType', moduleVersion='$moduleVersion')"
     }
 
 }

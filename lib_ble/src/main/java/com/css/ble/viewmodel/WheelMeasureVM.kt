@@ -25,6 +25,7 @@ import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.utils.DataUtils
+import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
 import com.css.ble.viewmodel.base.BaseWheelVM
 import com.css.service.data.CourseData
 import kotlinx.coroutines.*
@@ -53,12 +54,13 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
         it >= State.connecting && it < State.discovered
     }
     val connectStateTxt = Transformations.map(stateObsrv) {
-        if (it >= State.discovered) {
-            ActivityUtils.getTopActivity().getString(R.string.device_connected)
-        } else {
-            if (it == State.disconnected) ActivityUtils.getTopActivity().getString(R.string.device_disconnected)
-            else ActivityUtils.getTopActivity().getString(R.string.device_connecting)
-        }
+        connectStateTxt(it)
+    }
+    private fun connectStateTxt(it: State) = if (it >= State.discovered) {
+        ActivityUtils.getTopActivity().getString(R.string.device_connected)
+    } else {
+        if (it == State.disconnected) ActivityUtils.getTopActivity().getString(R.string.device_disconnected)
+        else ActivityUtils.getTopActivity().getString(R.string.device_connecting)
     }
     val exerciseDurationTxt = Transformations.map(exerciseDuration) { if (it == -1L) "--" else formatTime(it) }
     val batteryLevelTxt = Transformations.map(batteryLevel) {
@@ -145,7 +147,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
     }
 
     fun stopScanBle() {
-        LogUtils.d("stopScan")
+        LogUtils.d("stopScan,isScanning:${EasyBLE.getInstance().isScanning}")
         if (EasyBLE.getInstance().isScanning) {
             EasyBLE.getInstance().stopScan()
             state = State.disconnected
@@ -258,16 +260,14 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
         connection?.disconnect()
     }
 
-    val stateStr get() = if (state.ordinal < State.discovered.ordinal) "未连接" else "已连接"
-
     override fun onTimerCancel() {
     }
 
     var state: State
         set(value) {
             (stateObsrv as MutableLiveData).value = value
+            BondDeviceData.getDeviceStateLiveData().value = Pair(deviceType.alias, connectStateTxt(value))
             if (value == State.disconnected) stopExercise()
-            BondDeviceData.getDeviceStateLiveData().value = Pair(deviceType.alias, connectStateTxt.value)
         }
         get() = stateObsrv.value!!
 
@@ -375,12 +375,15 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
         success: ((String?, Any?) -> Unit)? = null,
         failed: ((Int, String?, Any?) -> Unit)? = null
     ) {
+        val time = (exerciseDuration.value!! / 1000).toInt()
+        val num = exerciseCountTxt.value!!.toInt()
+        val calory = (exerciseKcalTxt.value!!).toFloat()
+        val deviceType = deviceType.alias
+        if (time == 0 && num == 0) {
+            return LogUtils.d("the time and the num is zero,ignore this uploading")
+        }
         netLaunch({
             withContext(Dispatchers.IO) {
-                val time = (exerciseDuration.value!! / 1000).toInt()
-                val num = exerciseCountTxt.value!!.toInt()
-                val calory = (exerciseKcalTxt.value!!).toFloat()
-                val deviceType = DeviceType.WHEEL.alias
                 val ret = DeviceRepository.addAbroller(time, num, calory, deviceType)
                 ret
             }

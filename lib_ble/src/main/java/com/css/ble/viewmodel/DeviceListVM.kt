@@ -14,31 +14,28 @@ import kotlinx.coroutines.withContext
 class DeviceListVM : BaseViewModel() {
 
 
-    fun loadDeviceInfo() {
-
+    fun loadDeviceInfo(
+        success: ((msg: String?, d: Any?) -> Unit)? = null,
+        failed: ((Int, String?, d: Any?) -> Unit)? = null
+    ) {
         netLaunch(
             {
                 withContext(Dispatchers.IO) {
                     val userId = WonderCoreCache.getLoginInfo()!!.userInfo.userId
                     val ret = DeviceRepository.queryBindDevice(userId.toString())
                     if (ret.isSuccess) {
-                        if (ret.data.isNullOrEmpty()) {
-                            for (d in DeviceType.values()) {
-                                BondDeviceData.setDevice(d, null)
-                            }
-                        } else {
-                            for (d1 in ret.data!!) {
-                                BondDeviceData(d1).let {
-                                    //LogUtils.d("DeviceListVM#loadDeviceInfo-->$it")
-                                    BondDeviceData.setDevice(it.deviceType, it)
-                                }
+                        for (d in DeviceType.values()) {
+                            val data = ret.data?.find { it.deviceCategory == d.alias }
+                            val data2 = data?.let { BondDeviceData(it) }
+                            if (data2 != BondDeviceData.getDevice(d)) {
+                                BondDeviceData.setDevice(d, data2)//本地与云端不一致同步云端的
                             }
                         }
                     }
                     ret
                 }
             },
-            { _, devices ->
+            { m, devices ->
                 //更新BondDevice
                 val list = mutableListOf<DeviceInfo>()
                 for (d in DeviceType.values()) {
@@ -46,10 +43,12 @@ class DeviceListVM : BaseViewModel() {
                     list.add(one)
                 }
                 _deviceInfos.value = list
+                success?.invoke(m, devices)
             },
-            { _, msg, _ ->
+            { code, msg, data ->
                 showToast(msg)
                 hideLoading()
+                failed?.invoke(code, msg, data)
             }
         )
     }

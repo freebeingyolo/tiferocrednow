@@ -24,7 +24,8 @@ class StatisticsAdapter(mData: List<PullUpData>) :
     override fun onBindItem(binding: ItemStatisticsBinding, item: PullUpData, position: Int) {
         binding.tvDate.text = DateTimeHelper.formatToString(item.todayDate,"MM月dd日")
         binding.tvNumber.text = item.exerciseNumber.toString() + "次"
-        binding.tvCalories.text = item.burnCalories.toInt().toString() + "cal"
+        val cal = item.burnCalories *1000
+        binding.tvCalories.text = cal.toInt().toString() + "cal"
 //        binding.data = item
 //        binding.clItem.setOnClickListener {
 //            mItemClickListener?.invoke(item)

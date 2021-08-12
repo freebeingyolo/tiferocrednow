@@ -126,9 +126,10 @@ class ElectricityView : View {
             mSpecHeightSize - (2 + mBatteryStroke) - 2
         )
         canvas.drawRoundRect(mBatteryRect, 5f, 5f, mBatteryPaint!!)
-        canvas.drawRoundRect(mCapRect, 5f, 5f, mPowerPaint!!) // 画电池盖
+        canvas.drawRoundRect(mCapRect, 5f, 5f, mBatteryPaint!!) // 画电池盖
         canvas.drawRoundRect(mPowerRect, 5f, 5f, mPowerPaint!!) // 画电量
     }
+
 
     fun setProgress(power: Int) {
         if (power < 0) {

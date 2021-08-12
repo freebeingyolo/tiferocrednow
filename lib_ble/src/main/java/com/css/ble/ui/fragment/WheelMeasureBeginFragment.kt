@@ -19,6 +19,7 @@ import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.ActivityAbrollerBinding
 import com.css.ble.databinding.LayoutPlayRecommendItemBinding
+import com.css.ble.ui.DataStatisticsActivity
 import com.css.ble.ui.DeviceInfoActivity
 import com.css.ble.ui.view.BaseBindingAdapter
 import com.css.ble.viewmodel.BleEnvVM
@@ -46,6 +47,7 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
         //arguments?.takeIf { it.getBoolean("autoConnect") }?.let { mViewBinding!!.left.performClick() }
         mViewModel.state = mViewModel.state
         mViewBinding!!.model = mViewModel
+        mViewBinding!!.view = this
         mViewBinding!!.lifecycleOwner = viewLifecycleOwner
 
         mViewModel.stateObsrv.observe(viewLifecycleOwner) {
@@ -69,6 +71,10 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
             recommendationAdapter.setItems(it)
             recommendationAdapter.notifyDataSetChanged()
         }
+    }
+
+    fun jumpToStatistic() {
+        DataStatisticsActivity.starActivity(requireContext(), Bundle().apply { putString("deviceType", deviceType.alias) })
     }
 
     private fun refreshBottom(s: State) {

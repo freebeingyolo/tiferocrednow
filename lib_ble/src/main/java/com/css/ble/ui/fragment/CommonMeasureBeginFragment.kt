@@ -83,7 +83,6 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
                 }
             }
         }
-
     }
 
     val recommendationAdapter = object : BaseBindingAdapter<CourseData, LayoutPlayRecommendItemBinding>() {

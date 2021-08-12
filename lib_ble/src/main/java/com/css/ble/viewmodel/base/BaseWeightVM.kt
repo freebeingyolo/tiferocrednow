@@ -183,4 +183,7 @@ abstract class BaseWeightVM : BaseDeviceVM() {
     override fun connect() {
     }
 
+    override fun unBind() {
+
+    }
 }

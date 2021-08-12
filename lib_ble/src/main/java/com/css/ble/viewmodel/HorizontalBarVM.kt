@@ -144,10 +144,16 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
                 val v = DataUtils.bytes2IntBig(value[5], value[6])
                 (batteryLevel as MutableLiveData).value = v
             }
-            hexData.startsWith("F55F0708") -> {//提醒上传数据
+            hexData.startsWith("F55F0708") -> {//提醒上传数据：【切换模式，双击power,时间超出范围，计数超过范围】
                 finishExercise()
+                //本地清零
+                clearAllExerciseData()
             }
         }
+    }
+
+    fun jumpToStatistic() {
+        (callUILiveData as MutableLiveData).value = "jumpToStatistic"
     }
 
 }

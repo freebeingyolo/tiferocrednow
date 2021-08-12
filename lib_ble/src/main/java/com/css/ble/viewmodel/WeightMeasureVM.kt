@@ -121,6 +121,4 @@ class WeightMeasureVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPars
             }
         )
     }
-
-
 }

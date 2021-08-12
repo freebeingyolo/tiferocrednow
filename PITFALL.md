@@ -8,6 +8,8 @@
 
      属性定义时可以指定多种类型值
 
+     
+
    - 自定义属性需要解析多个，比如color既支持"#ff0000"又支持"@color/red"呢？
 
      
@@ -30,11 +32,29 @@
 
 # 坑
 
-1. HTTP请求参数带有汉字
+1. LiveData的Transformations.map()引起的LiveData若没被观察，那他的值不会更新
+
+   ```
+   val stateObsrv: LiveData<State> by lazy { BusMutableLiveData(State.disconnected) }
+   val connectStateTxt = Transformations.map(stateObsrv) {}
+   
+   var state: State
+   set(value) {
+   	(stateObsrv as MutableLiveData).value = value //如果connectStateTxt没有被订阅，那么connectStateTxt的值不会被修改
+   	BondDeviceData.getDeviceStateLiveData().value = Pair(deviceType.alias, connectStateTxt.value)//此处connectStateTxt.value永远为null
+   }
+   
+   原因：
+   Transformations.map()的LiveData只有在Active的时候才会被赋值
+   ```
 
    
 
-2. 自定义属性没有recycle()
+2. HTTP请求参数带有汉字
+
+   
+
+3. 自定义属性没有recycle()
 
    ```
    try {
@@ -54,7 +74,7 @@
    }
    ```
 
-2. //解决Android低版本，对list排序引起的错误
+4. //解决Android低版本，对list排序引起的错误
 
   ```
   val query: List<String> = request.url.query!!.split("&")
