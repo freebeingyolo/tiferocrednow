@@ -103,12 +103,18 @@ class DataStatisticsFragment : BaseFragment<DataStatisticsVM, FragmentStatistics
             LogUtils.dTag("---->", it);
 
             //数据场景
-            if(it.isEmpty()){
+            if(it == null){
                 //数据隐藏
+                showToast("您这个时间段内没有数据")
                 updateExerciseNumber(false,0)
                 updateCurrentDayView(false,DateTimeHelper.formatToString(currentDay, "MM月dd日"))
+                mViewBinding!!.barStatistics.visibility = View.INVISIBLE
+                mViewBinding!!.tvHistoryData.visibility = View.INVISIBLE
+                mViewBinding!!.rlHistoryData.visibility = View.INVISIBLE
             }else{
                 //历史数据
+                mViewBinding!!.tvHistoryData.visibility = View.VISIBLE
+                mViewBinding!!.rlHistoryData.visibility = View.VISIBLE
                 mData.clear()
                 mData.addAll(it)
                 mAdapter.setItems(mData)
@@ -156,6 +162,9 @@ class DataStatisticsFragment : BaseFragment<DataStatisticsVM, FragmentStatistics
 
 
     private fun initMPChat() {
+        if (mViewBinding!!.barStatistics.visibility == View.INVISIBLE){
+            mViewBinding!!.barStatistics.visibility = View.VISIBLE
+        }
         //获取时间集合
         val carList = DateTimeHelper.getDates(
             DateTimeHelper.parseStringToDate(dateList[0]),
