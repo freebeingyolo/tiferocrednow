@@ -43,6 +43,7 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel, ActivityReset
             mViewBinding.tvSendCode.text = "${it}秒后可重发"
         })
         mViewModel.resetPwdData.observe(this, {
+            showCenterToast("重置成功")
             finish()
         })
     }
