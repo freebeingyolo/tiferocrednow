@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -22,9 +23,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="2021年06月14日-2021年06月20日"
             android:textColor="@color/black"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            tools:text="2021年8月1日-2021年8月31日"/>
 
         <ImageView
             android:id="@+id/img_nextDate"
@@ -43,10 +44,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="5dp"
-        android:text="6月20日"
         android:textColor="@color/black"
         android:textSize="12sp"
-        android:visibility="invisible" />
+        android:visibility="invisible"
+        tools:text="8月2日"
+        tools:visibility="visible"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -59,10 +61,11 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="bottom"
-            android:text="蹦跳次数"
             android:textColor="@color/black"
             android:textSize="13sp"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            tools:text="单杆次数"
+            tools:visibility="visible"/>
 
         <TextView
             android:id="@+id/tv_number"
@@ -70,35 +73,42 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:text="70"
             android:textColor="@color/black"
             android:textSize="20sp"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            tools:text="70"
+            tools:visibility="visible"/>
 
         <TextView
             android:id="@+id/tv_unit"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="bottom"
-            android:text="次"
             android:textColor="@color/black"
             android:textSize="13sp"
-            android:visibility="invisible" />
+            android:text="@string/statistics_unit"
+            android:visibility="invisible"
+            tools:visibility="visible"/>
     </LinearLayout>
     <!--统计图表-->
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/bar_statistics"
         android:layout_width="match_parent"
-        android:layout_height="200dp" />
+        android:layout_height="200dp"
+        android:visibility="invisible"
+        tools:visibility="visible"/>
 
     <TextView
+        android:id="@+id/tv_historyData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="20dp"
-        android:text="历史次数"
+        android:text="@string/statistics_historyData"
         android:textColor="@color/black"
-        android:textSize="10sp" />
+        android:textSize="10sp"
+        android:visibility="invisible"
+        tools:visibility="visible"/>
     <!--历史数据-->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rl_historyData"
@@ -106,5 +116,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="6dp"
         android:paddingLeft="15dp"
-        android:paddingRight="15dp" />
+        android:paddingRight="15dp"
+        android:visibility="invisible"
+       tools:visibility="visible"/>
 </LinearLayout>

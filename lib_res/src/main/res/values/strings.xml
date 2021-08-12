@@ -91,6 +91,8 @@
 
     <string name="statistics_week">周</string>
     <string name="statistics_month">月</string>
+    <string name="statistics_unit">次</string>
     <string name="statistics_title">数据统计</string>
+    <string name="statistics_historyData">历史次数</string>
 
 </resources>
