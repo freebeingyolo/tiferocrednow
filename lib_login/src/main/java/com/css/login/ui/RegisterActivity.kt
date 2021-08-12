@@ -57,6 +57,7 @@ class RegisterActivity : BaseActivity<RegisterViewModel, ActivityRegisterBinding
         })
         mViewModel.registerData.observe(this, {
             finish()
+            showCenterToast("注册成功")
             ARouterUtil.openLogin()
         })
     }
