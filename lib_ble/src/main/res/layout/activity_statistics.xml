@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="44dp"
+    android:layout_marginTop="37dp"
     android:background="@color/white"
     android:orientation="vertical"
     tools:context=".ui.DataStatisticsActivity">
@@ -48,7 +48,7 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
             android:layout_weight="1"
             android:gravity="right"
             android:orientation="vertical">
@@ -60,9 +60,9 @@
                 android:drawablePadding="11dp"
                 android:gravity="center"
                 android:paddingLeft="26dp"
-                android:paddingTop="18dp"
+                android:paddingTop="10dp"
                 android:paddingRight="26dp"
-                android:paddingBottom="9dp"
+                android:paddingBottom="7dp"
                 android:text="@string/statistics_week"
                 android:textColor="@color/colorAccent"
                 android:textSize="17sp" />
@@ -79,7 +79,7 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
             android:layout_weight="1"
             android:gravity="left"
             android:orientation="vertical">
@@ -91,9 +91,9 @@
                 android:drawablePadding="11dp"
                 android:gravity="center"
                 android:paddingLeft="26dp"
-                android:paddingTop="18dp"
+                android:paddingTop="10dp"
                 android:paddingRight="26dp"
-                android:paddingBottom="9dp"
+                android:paddingBottom="7dp"
                 android:text="@string/statistics_month"
                 android:textColor="@color/color_262626"
                 android:textSize="17sp" />
