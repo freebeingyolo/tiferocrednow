@@ -1,5 +1,7 @@
 package com.css.wondercorefit.adapter
 
+import android.util.Log
+import android.view.View
 import com.css.ble.ui.view.BaseBindingAdapter
 import com.css.service.data.DeviceData
 import com.css.wondercorefit.R
@@ -10,6 +12,7 @@ class MyDeviceRecycleAdapter(mData: List<DeviceData>): BaseBindingAdapter<Device
     private var mDeleteDeviceClickListener: ((DeviceData) -> Unit)? = null
     private var mItemView: ItemViewDeviceBinding? = null
     private var itemPosition: Int = 0
+    private var opened  = false
 
     fun setOnItemClickListener(listener: ((DeviceData) -> Unit)?) {
         mItemClickListener = listener
@@ -32,7 +35,7 @@ class MyDeviceRecycleAdapter(mData: List<DeviceData>): BaseBindingAdapter<Device
     override fun onBindItem(binding: ItemViewDeviceBinding, item: DeviceData, position: Int) {
         binding.deviceData = item
         binding.myDeviceRecycle.setOnClickListener {
-            mItemClickListener?.invoke(item)
+            deviceInfoManager(binding)
         }
         binding.relDeviceDelete.setOnClickListener {
             mDeleteDeviceClickListener?.invoke(item)
@@ -41,4 +44,17 @@ class MyDeviceRecycleAdapter(mData: List<DeviceData>): BaseBindingAdapter<Device
         itemPosition = position
         binding.executePendingBindings()
     }
+
+    private fun deviceInfoManager(view : ItemViewDeviceBinding) {
+        if (opened) {
+            view.deviceImage?.setImageResource(R.mipmap.icon_next)
+            view.lnDeviceInfo?.visibility = View.GONE
+            opened = false
+        } else {
+            view.deviceImage?.setImageResource(R.mipmap.icon_more)
+            view.lnDeviceInfo?.visibility = View.VISIBLE
+            opened = true
+        }
+    }
+
 }
