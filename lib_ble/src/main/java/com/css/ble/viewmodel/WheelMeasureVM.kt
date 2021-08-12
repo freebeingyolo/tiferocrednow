@@ -235,14 +235,18 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
 
     override fun connect() {
         //连接配置，举个例随意配置两项
-        val config = ConnectionConfiguration()
-        config.setRequestTimeoutMillis(connectTimeout.toInt())
-        config.setDiscoverServicesDelayMillis(300)
-        config.setAutoReconnect(false)
-        val mac = BondDeviceData.getDevice(DeviceType.WHEEL)!!.mac
-        connection = EasyBLE.getInstance().connect(mac, config)!!
-        startTimeoutTimer(connectTimeout)
+        if (connection == null) {
+            val config = ConnectionConfiguration()
+            config.setRequestTimeoutMillis(connectTimeout.toInt())
+            config.setDiscoverServicesDelayMillis(300)
+            config.setAutoReconnect(false)
+            val mac = BondDeviceData.getDevice(DeviceType.WHEEL)!!.mac
+            connection = EasyBLE.getInstance().connect(mac, config)!!
+        } else {
+            connection!!.reconnect()
+        }
         workMode = WorkMode.MEASURE
+        startTimeoutTimer(connectTimeout)
     }
 
     override fun disconnect() {

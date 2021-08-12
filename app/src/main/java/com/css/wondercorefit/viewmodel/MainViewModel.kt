@@ -7,7 +7,6 @@ import com.css.service.data.DeviceData
 
 class MainViewModel : BaseViewModel() {
     var deviceData = MutableLiveData<List<DeviceData>>()
-
     //加载设备
     fun loadDevice() {
         DeviceListVM().loadDeviceInfo(

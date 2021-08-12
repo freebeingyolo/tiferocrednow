@@ -325,9 +325,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
             avaliableDevice!!.address,
             "",
             deviceType
-        ).apply {
-
-        }
+        )
         netLaunch(
             {
                 withContext(Dispatchers.IO) {

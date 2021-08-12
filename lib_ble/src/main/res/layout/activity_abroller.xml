@@ -248,7 +248,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
-            android:layout_weight="1.2"
+            android:layout_weight="1"
             android:background="@drawable/bg_while_radius4"
             android:orientation="vertical">
 
@@ -274,7 +274,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="54dp"
-            android:layout_marginTop="45dp"
+            android:layout_marginTop="10dp"
             android:background="@color/white"
             android:divider="#848484"
             android:dividerPadding="20dp"

@@ -81,7 +81,7 @@ class BondDeviceData private constructor() : BaseData() {
 
     override fun equals(other: Any?): Boolean {
         if (other is BondDeviceData) {
-            return this.mac == other.mac && this.id == other.id && this.deviceType == other.deviceType
+            return this.mac == other.mac && this.id == other.id
         }
         return false
     }

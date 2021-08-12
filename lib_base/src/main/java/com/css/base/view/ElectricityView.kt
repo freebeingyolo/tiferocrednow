@@ -11,6 +11,7 @@ class ElectricityView : View {
     private var mBatteryPaint: Paint? = null//电池画笔
     private var mPowerPaint: Paint? = null//电量画笔
     private var mBatteryStroke = 2f //电池框宽度
+    private var mCapWidth = 5f
     private val mBatteryRect: RectF by lazy { RectF() }//电池矩形
     private val mCapRect: RectF by lazy { RectF() } //电池盖矩形
     private val mPowerRect: RectF by lazy { RectF() }//电量矩形
@@ -20,8 +21,9 @@ class ElectricityView : View {
     private var mPowerColor = Color.parseColor("#000000")//电量颜色
     private var mLowPowerColor = Color.parseColor("#ff0000") //低电颜色
     private var mPower = 0 //当前电量（满电100）
-    private var mCapWidth = 5f
+    private var mLowerPower = 10 //低电量判定
 
+    private val TAG = "ElectricityView"
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
@@ -42,9 +44,21 @@ class ElectricityView : View {
                         val p = ta.getInteger(id, 0)
                         setProgress(p)
                     }
+                    R.styleable.ElectricityView_lowPower -> {
+                        val p = ta.getInteger(id, 0)
+                        this.mLowerPower = p
+                    }
                     R.styleable.ElectricityView_lowPowerColor -> {
-                        val v = ta.getColor(R.styleable.ElectricityView_lowPowerColor,0)
-
+                        val v = ta.getColor(id, 0)
+                        mLowPowerColor = v
+                    }
+                    R.styleable.ElectricityView_powerColor -> {
+                        val v = ta.getColor(id, 0)
+                        mPowerColor = v
+                    }
+                    R.styleable.ElectricityView_batteryColor -> {
+                        val v = ta.getColor(id, 0)
+                        mBatteryColor = v
                     }
                 }
             }
@@ -85,7 +99,7 @@ class ElectricityView : View {
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        if (mPower <= 20) {
+        if (mPower <= mLowerPower) {
             mPowerPaint!!.color = mLowPowerColor
         } else {
             mPowerPaint!!.color = mPowerColor
@@ -114,8 +128,8 @@ class ElectricityView : View {
         /**
          * 设置电量矩形
          */
-        val right: Float = if (mPower < 20) {
-            (mSpecWidthSize - 10 - mCapWidth - 2) / 100.0f * 20
+        val right: Float = if (mPower < mLowerPower) {
+            (mSpecWidthSize - 10 - mCapWidth - 2) / 100.0f * mPower
         } else {
             (mSpecWidthSize - 10 - mCapWidth - 2) / 100.0f * mPower
         }
