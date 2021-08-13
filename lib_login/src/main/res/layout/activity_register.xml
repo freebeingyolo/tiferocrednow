@@ -51,7 +51,7 @@
                 android:background="@drawable/login_edittext_bg"
                 android:hint="@string/register_username_tip"
                 android:paddingStart="7dp"
-                android:textSize="12sp" />
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/tv_username_tip"
@@ -78,7 +78,7 @@
                 android:inputType="phone"
                 android:maxLength="11"
                 android:paddingStart="7dp"
-                android:textSize="12sp" />
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/tv_phone_tip"
@@ -109,7 +109,7 @@
                     android:inputType="number"
                     android:maxLength="6"
                     android:paddingStart="7dp"
-                    android:textSize="12sp" />
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/tv_send_code"
@@ -120,7 +120,7 @@
                     android:layout_marginEnd="10dp"
                     android:text="发送验证码"
                     android:textColor="#FFF2682A"
-                    android:textSize="10dp" />
+                    android:textSize="11dp" />
             </RelativeLayout>
 
             <TextView
@@ -148,7 +148,7 @@
                 android:hint="@string/register_password_tip"
                 android:maxLength="16"
                 android:paddingStart="7dp"
-                android:textSize="12sp" />
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/tv_password_tip"
@@ -175,7 +175,7 @@
                 android:hint="@string/register_password_again_tip"
                 android:maxLength="16"
                 android:paddingStart="7dp"
-                android:textSize="12sp" />
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/tv_password_again_tip"
@@ -200,7 +200,7 @@
                 android:checked="true"
                 android:text="勾选同意《用户服务协议》"
                 android:textColor="#FFAAAAAA"
-                android:textSize="10dp" />
+                android:textSize="11dp" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <com.css.base.view.RoundTextView
@@ -211,11 +211,11 @@
             android:layout_centerHorizontal="true"
             android:layout_marginStart="51dp"
             android:layout_marginEnd="51dp"
-            android:layout_marginBottom="6dp"
+            android:layout_marginBottom="7dp"
             android:gravity="center"
             android:text="@string/register"
             android:textColor="@color/white"
-            android:textSize="13sp"
+            android:textSize="14sp"
             app:rv_backgroundColor="#FFF2682A"
             app:rv_cornerRadius="164dp" />
 
@@ -228,6 +228,6 @@
             android:layout_marginBottom="79dp"
             android:text="@string/have_account_to_login"
             android:textColor="#FFF2682A"
-            android:textSize="10dp" />
+            android:textSize="12dp" />
     </RelativeLayout>
 </androidx.core.widget.NestedScrollView>
