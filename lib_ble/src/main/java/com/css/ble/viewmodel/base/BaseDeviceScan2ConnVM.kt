@@ -168,7 +168,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
                 config.setRequestTimeoutMillis(5000)
                 config.setDiscoverServicesDelayMillis(300)
                 config.setAutoReconnect(false)
-                connection = EasyBLE.getInstance().connect(device, config)!!
+                connection = EasyBLE.getInstance().connect(device, config,this@BaseDeviceScan2ConnVM)!!
             }
         }
 
