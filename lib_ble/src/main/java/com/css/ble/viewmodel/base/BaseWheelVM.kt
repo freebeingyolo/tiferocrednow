@@ -22,6 +22,6 @@ abstract class BaseWheelVM : BaseDeviceVM() {
     }
 
     override val deviceType: DeviceType = DeviceType.WHEEL
-    override fun unBind() {
+    override fun release() {
     }
 }

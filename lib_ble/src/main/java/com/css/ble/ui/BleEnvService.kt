@@ -15,7 +15,6 @@ import cn.wandersnail.ble.EventObserver
 import cn.wandersnail.commons.util.ToastUtils
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.utils.BleUtils
-import com.css.ble.utils.UiUtils
 import com.css.ble.viewmodel.BleEnvVM
 import com.css.ble.viewmodel.base.BaseDeviceVM
 import com.css.service.bus.LiveDataBus
@@ -26,7 +25,6 @@ import com.css.service.bus.LiveDataBus
  */
 class BleEnvService : LifecycleService() {
     private var mViewModels = mutableListOf<BaseDeviceVM>()
-    /*private var observers = mutableListOf<EventObserver>()*/
 
     override fun onBind(intent: Intent): IBinder {
         super.onBind(intent)
@@ -37,20 +35,12 @@ class BleEnvService : LifecycleService() {
 
         fun setViewModel(vm: BaseDeviceVM) {
             mViewModels.takeIf { !it.contains(vm) }?.add(vm)
-            /*observers.takeIf { !it.contains(obsvr) }?.add(obsvr)*/
-            /*if (!EasyBLE.getInstance().isInitialized) {
-                EasyBLE.getInstance().initialize(UiUtils.getApplication())
-            }
-            if (!EasyBLE.getInstance().isObserverRegistered(obsvr)) {
-                EasyBLE.getInstance().registerObserver(obsvr)
-            }*/
             LogUtils.d("setViewModel:mViewModels.size：${mViewModels.size}")
         }
 
-        fun removeViewModel(vm: BaseDeviceVM) {
+        fun removeViewModel(vm: BaseDeviceVM, obsvr: EventObserver) {
             mViewModels.remove(vm)
-            /*observers.remove(obsvr)*/
-            /*EasyBLE.getInstance().unregisterObserver(obsvr)*/
+            EasyBLE.getInstance().unregisterObserver(obsvr)
         }
     }
 
@@ -70,14 +60,21 @@ class BleEnvService : LifecycleService() {
         BondDeviceData.getDeviceLiveDataMerge().observe(this) { it ->//解绑时断开
             val k1 = it.first
             val v1 = it.second
-            if (v1 == null) mViewModels.forEach { if (it.deviceType.cacheKey == k1) it.unBind() }
+            if (v1 == null) {
+                val iterator = mViewModels.iterator()
+                while (iterator.hasNext()) {
+                    val item = iterator.next()
+                    if (item.deviceType.cacheKey == k1) {
+                        item.release()
+                        iterator.remove()
+                    }
+                }
+            }
         }
         //app退出是断开连接
         LiveDataBus.get().with<Boolean>("AppExit").observe(this) {
             LogUtils.d("AppExit:do disconnecting job")
-            mViewModels.forEach { it.disconnect() }
-            /*observers.forEach { EasyBLE.getInstance().unregisterObserver(it) }
-            observers.clear()*/
+            mViewModels.forEach { it.release() }
             mViewModels.clear()
         }
         LogUtils.d("BleDeviceService#onCreate")

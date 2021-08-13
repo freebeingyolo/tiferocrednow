@@ -7,6 +7,9 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ToastUtils
@@ -36,6 +39,22 @@ import kotlinx.coroutines.launch
  * @date 2021-05-17
  */
 class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbrollerBinding>(DeviceType.WHEEL) {
+
+    private val lowPowerAlert: View by lazy {
+        val view = LayoutInflater.from(requireContext()).inflate(R.layout.layout_network_error, null)
+        view.findViewById<TextView>(R.id.textView).text = getString(R.string.lowpower_error, 10)
+        view.post {//这里延缓获取坐标，高度
+            val location = IntArray(2)
+            val anchor = mViewBinding!!.root.findViewById<View>(R.id.ll_parent)
+            anchor.getLocationOnScreen(location)
+            val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
+            lp.topMargin = location[1]
+            view.layoutParams = lp
+        }
+        val root = requireActivity().window.decorView.findViewById<ViewGroup>(android.R.id.content)
+        root.addView(view)
+        view
+    }
 
     override fun initViewModel(): WheelMeasureVM {
         return DeviceVMFactory.getViewModel(deviceType)
@@ -70,6 +89,13 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
         mViewModel.recommentationData.observe(viewLifecycleOwner) {
             recommendationAdapter.setItems(it)
             recommendationAdapter.notifyDataSetChanged()
+        }
+        mViewModel.batteryLevel.observe(viewLifecycleOwner) {
+            if (it < 10 && it != -1) {
+                lowPowerAlert.visibility = View.VISIBLE
+            } else {
+                lowPowerAlert.visibility = View.GONE
+            }
         }
     }
 

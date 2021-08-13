@@ -56,12 +56,14 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
     val connectStateTxt = Transformations.map(stateObsrv) {
         connectStateTxt(it)
     }
+
     private fun connectStateTxt(it: State) = if (it >= State.discovered) {
         ActivityUtils.getTopActivity().getString(R.string.device_connected)
     } else {
         if (it == State.disconnected) ActivityUtils.getTopActivity().getString(R.string.device_disconnected)
         else ActivityUtils.getTopActivity().getString(R.string.device_connecting)
     }
+
     val exerciseDurationTxt = Transformations.map(exerciseDuration) { if (it == -1L) "--" else formatTime(it) }
     val batteryLevelTxt = Transformations.map(batteryLevel) {
         if (it == -1) "--" else
@@ -176,7 +178,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
                 config.setRequestTimeoutMillis(5000)
                 config.setDiscoverServicesDelayMillis(300)
                 config.setAutoReconnect(false)
-                connection = EasyBLE.getInstance().connect(device, config)!!
+                connection = EasyBLE.getInstance().connect(device, config, this@WheelMeasureVM)!!
             }
         }
 
@@ -240,8 +242,8 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
             config.setRequestTimeoutMillis(connectTimeout.toInt())
             config.setDiscoverServicesDelayMillis(300)
             config.setAutoReconnect(false)
-            val mac = BondDeviceData.getDevice(DeviceType.WHEEL)!!.mac
-            connection = EasyBLE.getInstance().connect(mac, config)!!
+            val mac = BondDeviceData.getDevice(deviceType)!!.mac
+            connection = EasyBLE.getInstance().connect(mac, config, this@WheelMeasureVM)!!
         } else {
             connection!!.reconnect()
         }
@@ -252,6 +254,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
     override fun disconnect() {
         cancelTimeOutTimer()
         if (state > State.disconnected) {
+            LogUtils.d("disconnect", 7)
             connection?.disconnect()
             connection = null
             state = State.disconnected
@@ -288,6 +291,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
             ConnectionState.DISCONNECTED -> {
                 state = State.disconnected
                 cancelTimeOutTimer()
+                resetData()
             }
             ConnectionState.CONNECTING -> {
                 state = State.connecting
@@ -558,6 +562,12 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
                 .build()
         )*/
         connection?.execute(builder.build())
+    }
+
+    fun resetData(){
+        (exerciseCount as MutableLiveData).value = -1
+        (exerciseDuration as MutableLiveData).value = -1
+        (batteryLevel as MutableLiveData).value = -1
     }
 
     private var connection: Connection? = null
