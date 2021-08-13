@@ -100,7 +100,6 @@ class DataStatisticsFragment : BaseFragment<DataStatisticsVM, FragmentStatistics
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
         mViewModel.pullUpDataList.observe(this, {
-            LogUtils.dTag("---->", it);
 
             //数据场景
             if(it == null){
