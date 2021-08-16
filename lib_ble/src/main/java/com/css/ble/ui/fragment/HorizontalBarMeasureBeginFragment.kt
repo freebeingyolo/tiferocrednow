@@ -1,19 +1,17 @@
 package com.css.ble.ui.fragment
 
+import LogUtils
 import android.os.Bundle
-import android.text.TextUtils
-import android.util.TypedValue
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import android.widget.Toast
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.*
+import android.widget.*
 import cn.wandersnail.ble.Request
 import cn.wandersnail.ble.callback.WriteCharacteristicCallback
 import cn.wandersnail.commons.util.StringUtils
-import com.blankj.utilcode.util.ToastUtils
+import cn.wandersnail.commons.util.ToastUtils
+import com.css.ble.R
 import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.LayoutHorizontalbarBinding
 import com.css.ble.viewmodel.HorizontalBarVM
@@ -44,52 +42,40 @@ class HorizontalBarMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM
         if (mViewModel.state == BaseDeviceScan2ConnVM.State.disconnected) {
             mViewModel.connect()
         }
+
     }
 
     fun openSwitchSpinner(v: View) {
-        val modes = HorizontalBarVM.Mode.values()
-        mViewModel2.switchMode(modes[(mViewModel2.mode.ordinal + 1) % modes.size], object : WriteCharacteristicCallback {
-            override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
-                ToastUtils.showShort("切换模式失败")
-            }
+        val anchorView = mViewBinding!!.modeContainer
+        val popUpWindow = object : BasePopupWindow(requireContext(), anchorView.width, AbsListView.LayoutParams.WRAP_CONTENT) {
+            override fun onCreateContentView(): View {
+                val view = ListView(requireContext())
+                view.background = resources.getDrawable(R.drawable.bg_while_radius4)
+                view.divider = null
+                val datas = mViewModel2.getModels()
+                view.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, datas)
+                view.setOnItemClickListener { _, _, position, _ ->
+                    val modes = HorizontalBarVM.Mode.values()
+                    mViewModel2.switchMode(modes[position], object : WriteCharacteristicCallback {
+                        override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
+                            ToastUtils.showShort("切换模式失败")
+                        }
 
-            override fun onCharacteristicWrite(request: Request, value: ByteArray) {
-                LogUtils.d("切换模式成功:${StringUtils.toHex(value, "")}")
+                        override fun onCharacteristicWrite(request: Request, value: ByteArray) {
+                            LogUtils.d("切换模式成功:${StringUtils.toHex(value, "")}")
+                            popupWindow.dismiss()
+                        }
+                    })
+                }
+                return view
             }
-        })
+        }
+            .setOutSideDismiss(true)
+            .setPopupGravity(Gravity.TOP)
+            .setBackground(null)
+            .setOffsetY(-10)
+            .setBackPressEnable(false)
 
-//        val popUpWindow = object : BasePopupWindow(requireContext(),200,200) {
-//            override fun onCreateContentView(): View {
-//                val view = RecyclerView(requireContext())
-//                view.layoutParams = LayoutParams(200, 200)
-//                view.layoutManager = LinearLayoutManager(requireContext())
-//                val datas = mViewModel2.getModels()
-//                view.adapter = object : Adapter<ViewHolder>() {
-//                    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-//                        val item = TextView(requireContext())
-//                        item.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-//                        item.textSize = TypedValue.applyDimension(
-//                            TypedValue.COMPLEX_UNIT_SP,
-//                            25f,
-//                            resources.displayMetrics
-//                        );
-//                        return VH(item)
-//                    }
-//
-//                    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-//                        val tv = holder.itemView as TextView
-//                        tv.text = datas[position]
-//                    }
-//
-//                    override fun getItemCount(): Int {
-//                        return datas.size
-//                    }
-//
-//                    inner class VH(v: View) : ViewHolder(v)
-//                }
-//                return view
-//            }
-//        }.setOutSideDismiss(true)
-//        popUpWindow.showPopupWindow(mViewBinding!!.modeSwitchGroup)
+        popUpWindow.showPopupWindow(anchorView)
     }
 }

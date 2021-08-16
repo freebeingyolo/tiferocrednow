@@ -80,7 +80,6 @@ class WheelMeasureActivity : BaseDeviceActivity<WheelMeasureVM, ActivityBleEntry
             override fun onServiceDisconnected(name: ComponentName?) {
             }
         }, BIND_AUTO_CREATE)
-        EasyBLE.getInstance().registerObserver(mViewModel)
     }
 
     override fun onStop() {
@@ -88,7 +87,6 @@ class WheelMeasureActivity : BaseDeviceActivity<WheelMeasureVM, ActivityBleEntry
         if (isFinishing) {
             LogUtils.d("WheelMeasureActivity#onStop")
             mViewModel.stopExercise()
-            EasyBLE.getInstance().unregisterObserver(mViewModel)
         }
     }
 

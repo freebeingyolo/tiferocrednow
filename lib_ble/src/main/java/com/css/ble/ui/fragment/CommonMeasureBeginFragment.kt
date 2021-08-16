@@ -7,6 +7,9 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModel
@@ -44,9 +47,23 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
 
     override fun initViewModel(): BaseDeviceScan2ConnVM = vm
     override val vmCls: Class<BaseDeviceScan2ConnVM> get() = BaseDeviceScan2ConnVM::class.java
+    private val lowPowerAlert: View by lazy {
+        val view = LayoutInflater.from(requireContext()).inflate(R.layout.layout_network_error, null)
+        view.findViewById<TextView>(R.id.textView).text = getString(R.string.lowpower_error, 10)
+        view.post {//这里延缓获取坐标，高度
+            val location = IntArray(2)
+            val anchor = mViewBinding!!.root.findViewById<View>(R.id.ll_parent)
+            anchor.getLocationOnScreen(location)
+            val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
+            lp.topMargin = location[1]
+            view.layoutParams = lp
+        }
+        val root = requireActivity().window.decorView.findViewById<ViewGroup>(android.R.id.content)
+        root.addView(view)
+        view
+    }
 
     companion object {
-
 
         fun getExplicitFragment(vm: BaseDeviceScan2ConnVM, t: DeviceType): CommonMeasureBeginFragment<out ViewDataBinding> {
 
@@ -113,7 +130,13 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
             it.adapter = recommendationAdapter
             it.layoutManager = LinearLayoutManager(requireContext())
         }
-
+        mViewModel.batteryLevel.observe(viewLifecycleOwner) {
+            if (it < 10 && it != -1) {
+                lowPowerAlert.visibility = View.VISIBLE
+            } else {
+                lowPowerAlert.visibility = View.GONE
+            }
+        }
     }
 
     override fun initCommonToolBarBg(): ToolBarView.ToolBarBg {
@@ -139,6 +162,6 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
     }
 
     fun jumpToStatistic() {
-        DataStatisticsActivity.starActivity(requireContext(),Bundle().apply { putString("deviceType",deviceType.alias) })
+        DataStatisticsActivity.starActivity(requireContext(), Bundle().apply { putString("deviceType", deviceType.alias) })
     }
 }

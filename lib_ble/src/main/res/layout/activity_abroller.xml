@@ -135,7 +135,7 @@
             android:layout_marginEnd="20dp"
             android:background="@drawable/bg_while_radius4"
             android:orientation="horizontal">
-            <!--  android:visibility="@{model.stateObsrv.ordinal() >= State.discovered.ordinal() ? View.VISIBLE : View.GONE,default=gone}" -->
+
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="0dp"
                 android:layout_height="match_parent"

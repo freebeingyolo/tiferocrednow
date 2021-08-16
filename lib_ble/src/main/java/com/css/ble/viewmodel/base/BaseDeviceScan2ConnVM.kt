@@ -24,7 +24,6 @@ import com.css.service.bus.LiveDataBus.BusMutableLiveData
 import com.css.service.data.CourseData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.DecimalFormat
 import java.util.*
@@ -57,6 +56,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     /*** abstractable start ****/
     abstract fun filterName(name: String): Boolean
     abstract fun filterUUID(uuid: UUID): Boolean
+    abstract fun discovered(d: Device)
     /*** abstractable start ****/
 
     /*** overridable start ****/
@@ -76,7 +76,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     val workModeObsrv: LiveData<WorkMode> by lazy { BusMutableLiveData(WorkMode.BOND) }
 
     private var avaliableDevice: Device? = null
-    private var connection: Connection? = null
+    protected var connection: Connection? = null
     val stateObsrv: LiveData<State> by lazy { BusMutableLiveData(State.disconnected) }
     var state: State
         set(value) {
@@ -168,7 +168,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
                 config.setRequestTimeoutMillis(5000)
                 config.setDiscoverServicesDelayMillis(300)
                 config.setAutoReconnect(false)
-                connection = EasyBLE.getInstance().connect(device, config)!!
+                connection = EasyBLE.getInstance().connect(device, config,this@BaseDeviceScan2ConnVM)!!
             }
         }
 
@@ -220,13 +220,14 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     @Tag("onConnectionStateChanged")
     @Observe
     @RunOn(ThreadMode.MAIN)
-    final override fun onConnectionStateChanged(@NonNull device: Device) {
+    override fun onConnectionStateChanged(@NonNull device: Device) {
         LogUtils.d("onConnectionStateChanged:${device.connectionState},${device.name},${deviceType}")
         when (device.connectionState) {
             ConnectionState.DISCONNECTED -> {
                 state = State.disconnected
                 cancelTimeOutTimer()
                 avaliableDevice = null
+                resetData()
             }
             ConnectionState.CONNECTING -> {
                 state = State.connecting
@@ -269,8 +270,6 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         }
     }
 
-    abstract fun discovered(d: Device)
-
     override fun onCharacteristicChanged(device: Device, service: UUID, characteristic: UUID, value: ByteArray) {
         LogUtils.d("onCharacteristicChanged：" + StringUtils.toHex(value, ""))
     }
@@ -290,7 +289,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
             config.setDiscoverServicesDelayMillis(300)
             config.setAutoReconnect(false)
             val mac = BondDeviceData.getDevice(deviceType)!!.mac
-            connection = EasyBLE.getInstance().connect(mac, config)
+            connection = EasyBLE.getInstance().connect(mac, config, this@BaseDeviceScan2ConnVM)
         } else {
             connection?.reconnect()
         }
@@ -307,7 +306,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         }
     }
 
-    fun release() {
+    override fun release() {
         cancelTimeOutTimer()
         if (connection != null) {
             LogUtils.d("release", 5)
@@ -383,8 +382,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         cb: WriteCharacteristicCallback?,
         tag: String? = null
     ) {
-        //开启通知
-        if (connection?.connectionState != ConnectionState.SERVICE_DISCOVERED) return
+
         val builder = RequestBuilderFactory().getWriteCharacteristicBuilder(serviceUUID, characterUUID, data)
         builder.setCallback(cb)
         builder.setTag(tag)
@@ -398,6 +396,11 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
                 .setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT)
                 .build()
         )*/
+        //开启通知
+        if (connection?.connectionState != ConnectionState.SERVICE_DISCOVERED) {
+            cb?.onRequestFailed(builder.build(), -1, null)
+            return
+        }
         connection?.execute(builder.build())
     }
 
@@ -461,11 +464,9 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         (exerciseCount as MutableLiveData).value = 0
         (exerciseDuration as MutableLiveData).value = 0
     }
-
-
-    override fun unBind() {
-        release()
-        clearAllExerciseData()
-        state = State.disconnected
+    fun resetData(){
+        (exerciseCount as MutableLiveData).value = -1
+        (exerciseDuration as MutableLiveData).value = -1
+        (batteryLevel as MutableLiveData).value = -1
     }
 }
