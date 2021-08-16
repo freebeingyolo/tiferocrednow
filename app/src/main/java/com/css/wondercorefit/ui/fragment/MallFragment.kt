@@ -38,6 +38,11 @@ class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(), View.On
             }
 
         }
+        if (NetworkUtils.isConnected()){
+            mViewBinding?.llNetError?.visibility = View.GONE
+        }else{
+            mViewBinding?.llNetError?.visibility = View.VISIBLE
+        }
         NetworkUtils.registerNetworkStatusChangedListener(this)
     }
 
@@ -102,5 +107,6 @@ class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(), View.On
 
     override fun onConnected(networkType: NetworkUtils.NetworkType?) {
         mViewBinding?.llNetError?.visibility = View.GONE
+        mViewModel.getMallInfo()
     }
 }

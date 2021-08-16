@@ -16,7 +16,8 @@
 
     <include
         android:id="@+id/ll_net_error"
-        layout="@layout/layout_network_error" />
+        layout="@layout/layout_network_error"
+        android:visibility="gone" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
