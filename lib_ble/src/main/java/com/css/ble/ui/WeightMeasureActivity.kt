@@ -14,6 +14,7 @@ import com.css.ble.databinding.ActivityBleEntryBinding
 import com.css.ble.ui.fragment.WeightMeasureBeginFragment
 import com.css.ble.ui.fragment.WeightMeasureEndDeailFragment
 import com.css.ble.utils.FragmentUtils
+import com.css.ble.viewmodel.DeviceVMFactory
 import com.css.ble.viewmodel.WeightMeasureVM
 import com.css.service.router.ARouterConst
 import com.css.service.utils.CacheKey
@@ -27,6 +28,10 @@ class WeightMeasureActivity : BaseWeightActivity<WeightMeasureVM, ActivityBleEnt
     override val vbCls: Class<ActivityBleEntryBinding> = ActivityBleEntryBinding::class.java
 
     override fun enabledVisibleToolBar() = false
+
+    override fun initViewModel(): WeightMeasureVM {
+        return DeviceVMFactory.getViewModel(deviceType)
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)

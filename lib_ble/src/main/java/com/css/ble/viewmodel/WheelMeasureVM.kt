@@ -58,10 +58,10 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
     }
 
     private fun connectStateTxt(it: State) = if (it >= State.discovered) {
-        ActivityUtils.getTopActivity().getString(R.string.device_connected)
+        getString(R.string.device_connected)
     } else {
-        if (it == State.disconnected) ActivityUtils.getTopActivity().getString(R.string.device_disconnected)
-        else ActivityUtils.getTopActivity().getString(R.string.device_connecting)
+        if (it == State.disconnected) getString(R.string.device_disconnected)
+        else getString(R.string.device_connecting)
     }
 
     val exerciseDurationTxt = Transformations.map(exerciseDuration) { if (it == -1L) "--" else formatTime(it) }
@@ -107,7 +107,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
         netLaunch(
             {
                 withContext(Dispatchers.IO) {
-                    val ret = CourseRepository.queryVideo("玩法推荐", "健腹轮")
+                    val ret = CourseRepository.queryVideo("教程", "健腹轮")
                     ret
                 }
             },
@@ -210,7 +210,8 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
         val d = BondDeviceData(
             avaliableDevice!!.address,
             "",
-            DeviceType.WHEEL
+            avaliableDevice!!.name,
+            deviceType
         )
         netLaunch(
             {
@@ -249,6 +250,10 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
         }
         workMode = WorkMode.MEASURE
         startTimeoutTimer(connectTimeout)
+    }
+
+    override fun connectStateTxt(): String {
+        return connectStateTxt(stateObsrv.value!!)
     }
 
     override fun disconnect() {
@@ -564,7 +569,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
         connection?.execute(builder.build())
     }
 
-    fun resetData(){
+    fun resetData() {
         (exerciseCount as MutableLiveData).value = -1
         (exerciseDuration as MutableLiveData).value = -1
         (batteryLevel as MutableLiveData).value = -1

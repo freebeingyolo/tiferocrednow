@@ -34,11 +34,11 @@ class WeightMeasureVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPars
     }
 
     override fun onScanFilter(bleValueBean: BleValueBean): Boolean {
-        val d: BondDeviceData? = BondDeviceData.getDevice(DeviceType.WEIGHT)
+        val d: BondDeviceData? = BondDeviceData.getDevice(deviceType)
         return if (d == null) true else d.mac == bleValueBean.mac
     }
 
-    override fun onBroadCastData(mac: String, dataHexStr: String, data: ByteArray, isAilink: Boolean) {
+    override fun onBroadCastData(mac: String, dataHexStr: String, data: ByteArray, isAilink: Boolean, bean: BleValueBean) {
         Log.d(TAG, "mac:$mac Hex的data:  $dataHexStr " + (Looper.myLooper() == Looper.getMainLooper()))
         mBroadcastDataParsing.dataParsing(data, isAilink)
     }
@@ -46,6 +46,7 @@ class WeightMeasureVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPars
     override fun onTimerTimeout() {
         _state.value = State.timeout
     }
+
     override fun onTimerCancel() {
     }
 

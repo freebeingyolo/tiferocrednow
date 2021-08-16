@@ -221,6 +221,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
             android:background="@drawable/bg_while_radius4"
+            android:visibility="visible"
             android:paddingStart="22dp"
             android:paddingEnd="22dp">
 
@@ -258,7 +259,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="11dp"
                 android:gravity="center_vertical"
-                android:text="玩法推荐"
+                android:text="教学视频"
                 android:textColor="@color/black"
                 android:textSize="10sp"
                 android:textStyle="bold" />

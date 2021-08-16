@@ -103,6 +103,10 @@ class WheelBondVM : BaseWheelVM(), EventObserver {
 
     }
 
+    override fun connectStateTxt(): String {
+        TODO("Not yet implemented")
+    }
+
     override fun onTimerTimeout() {
         _state.value = State.timeOut
         stopScanBle()

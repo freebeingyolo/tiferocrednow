@@ -97,6 +97,10 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         connectStateTxt(it)
     }
 
+    override fun connectStateTxt(): String {
+        return (connectStateTxt(stateObsrv.value!!))
+    }
+
     private fun connectStateTxt(it: State): String {
         return if (it >= State.discovered) {
             getString(R.string.device_connected)
@@ -168,7 +172,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
                 config.setRequestTimeoutMillis(5000)
                 config.setDiscoverServicesDelayMillis(300)
                 config.setAutoReconnect(false)
-                connection = EasyBLE.getInstance().connect(device, config,this@BaseDeviceScan2ConnVM)!!
+                connection = EasyBLE.getInstance().connect(device, config, this@BaseDeviceScan2ConnVM)!!
             }
         }
 
@@ -323,6 +327,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         val d = BondDeviceData(
             avaliableDevice!!.address,
             "",
+            avaliableDevice!!.name,
             deviceType
         )
         netLaunch(
@@ -354,7 +359,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         netLaunch(
             {
                 withContext(Dispatchers.IO) {
-                    val ret = CourseRepository.queryVideo("玩法推荐", deviceType.alias)
+                    val ret = CourseRepository.queryVideo("教程", deviceType.alias)
                     ret
                 }
             },
@@ -464,7 +469,8 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         (exerciseCount as MutableLiveData).value = 0
         (exerciseDuration as MutableLiveData).value = 0
     }
-    fun resetData(){
+
+    fun resetData() {
         (exerciseCount as MutableLiveData).value = -1
         (exerciseDuration as MutableLiveData).value = -1
         (batteryLevel as MutableLiveData).value = -1

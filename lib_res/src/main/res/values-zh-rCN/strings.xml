@@ -69,7 +69,7 @@
     <string name="device_disconnected">未连接</string>
     <string name="device_connecting">连接中</string>
     <string name="device_horizontalbar">单杠</string>
-    <string name="device_pushup">俯卧撑</string>
+    <string name="device_pushup">俯卧撑板</string>
     <string name="device_counter">计数器</string>
 
     <string name="feedback">意见和反馈</string>

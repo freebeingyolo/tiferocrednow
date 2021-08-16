@@ -5,7 +5,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
-import com.blankj.utilcode.util.ActivityUtils
+import com.blankj.utilcode.util.Utils
 
 /**
  *@author baoyuedong
@@ -15,15 +15,15 @@ import com.blankj.utilcode.util.ActivityUtils
 interface IResource {
 
     fun getString(@StringRes id: Int): String {
-        return ActivityUtils.getTopActivity().resources.getString(id)
+        return Utils.getApp().getString(id)
     }
 
     fun getColor(@ColorRes id: Int): Int {
-        return ContextCompat.getColor(ActivityUtils.getTopActivity(), id)
+        return ContextCompat.getColor(Utils.getApp(), id)
     }
 
     fun getDrawable(@DrawableRes id: Int): Drawable? {
-        return ContextCompat.getDrawable(ActivityUtils.getTopActivity(), id)
+        return ContextCompat.getDrawable(Utils.getApp(), id)
     }
 
 

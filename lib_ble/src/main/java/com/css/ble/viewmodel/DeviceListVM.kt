@@ -7,6 +7,7 @@ import com.css.base.net.api.repository.DeviceRepository
 import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
+import com.css.ble.viewmodel.base.BaseDeviceVM
 import com.css.service.utils.WonderCoreCache
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -26,10 +27,13 @@ class DeviceListVM : BaseViewModel() {
                     if (ret.isSuccess) {
                         for (d in DeviceType.values()) {
                             val data = ret.data?.find { it.deviceCategory == d.alias }
-                            val data2 = data?.let { BondDeviceData(it) }
-                            if (data2 != BondDeviceData.getDevice(d)) {
-                                BondDeviceData.setDevice(d, data2)//本地与云端不一致同步云端的
+                            val data2 = data?.let {
+                                val ret = BondDeviceData(it)
+                                val vm = DeviceVMFactory.getViewModel<BaseDeviceVM>(ret.deviceType)
+                                ret.deviceConnect = vm.connectStateTxt()
+                                ret
                             }
+                            BondDeviceData.setDevice(d, data2)//本地与云端不一致同步云端的
                         }
                     }
                     ret

@@ -21,7 +21,7 @@ class CounterVM : BaseDeviceScan2ConnVM() {
     override val deviceType: DeviceType = DeviceType.COUNTER
 
     override fun filterName(name: String): Boolean {
-        return name.startsWith("Hi-WDK")
+        return name.startsWith("Hi-COUNTER")
     }
 
     override fun filterUUID(uuid: UUID): Boolean {

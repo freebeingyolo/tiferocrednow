@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
  */
 abstract class BaseDeviceVM : BaseViewModel() {
     private val TAG = javaClass.simpleName
-    abstract val deviceType:DeviceType
+    abstract val deviceType: DeviceType
 
     companion object {
         const val TIMEOUT_NEVER = -1L
@@ -23,7 +23,7 @@ abstract class BaseDeviceVM : BaseViewModel() {
 
     class BondDeviceInfo {
         var mac: String = ""
-        var name: String = ""
+        var name: String? = null
         var isAilink: Boolean = false
         var manifactureHex: String = ""
 
@@ -31,6 +31,7 @@ abstract class BaseDeviceVM : BaseViewModel() {
             return "BondDeviceInfo(mac='$mac', manifactureHex='$manifactureHex')"
         }
     }
+
 
     private var timeOutJob: Job? = null
 
@@ -62,4 +63,6 @@ abstract class BaseDeviceVM : BaseViewModel() {
     abstract fun disconnect()
     abstract fun connect()
     abstract fun release()
+    abstract fun connectStateTxt(): String
+
 }
