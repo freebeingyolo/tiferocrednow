@@ -48,13 +48,14 @@ class ResetPasswordViewModel : BaseViewModel() {
                             resetCodeData.value = "重发验证码"
                         }
                     }
-                    mTimer!!.start()
+
                     showLoading()
                     withContext(Dispatchers.IO) {
                         UserRepository.sendCode(phone)
                     }
                 }, { msg, _ ->
                     hideLoading()
+                    mTimer!!.start()
                     showToast(msg)
                 }, { _, msg, _ ->
                     hideLoading()

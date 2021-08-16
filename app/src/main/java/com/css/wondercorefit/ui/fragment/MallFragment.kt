@@ -17,7 +17,8 @@ import com.css.wondercorefit.adapter.MallProductAdapter
 import com.css.wondercorefit.databinding.FragmentMallBinding
 import com.css.wondercorefit.viewmodel.MallViewModel
 
-class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(), View.OnClickListener, NetworkUtils.OnNetworkStatusChangedListener {
+class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(), View.OnClickListener,
+    NetworkUtils.OnNetworkStatusChangedListener {
     var mData = ArrayList<MallData>()
     lateinit var mAdapter: MallProductAdapter
     override fun initView(savedInstanceState: Bundle?) {
@@ -30,7 +31,12 @@ class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(), View.On
         mViewBinding?.productList?.layoutManager = GridLayoutManager(activity, 3)
         mViewBinding?.productList?.adapter = mAdapter
         mAdapter.setOnItemClickListener {
-            openUrl(it.mallLink)
+            try {
+                openUrl(it.mallLink)
+            } catch (e: Throwable) {
+                showToast("暂无连接")
+            }
+
         }
         NetworkUtils.registerNetworkStatusChangedListener(this)
     }
@@ -89,6 +95,7 @@ class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(), View.On
         super.onDestroy()
         NetworkUtils.unregisterNetworkStatusChangedListener(this)
     }
+
     override fun onDisconnected() {
         mViewBinding?.llNetError?.visibility = View.VISIBLE
     }
