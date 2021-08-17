@@ -18,6 +18,7 @@ import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.css.base.R
+import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.LoadingDialog
 import com.css.base.dialog.ToastDialog
 import com.css.base.uibase.inner.IBaseView
@@ -27,6 +28,7 @@ import com.css.base.utils.FragmentStarter
 import com.css.base.utils.OSUtils
 import com.css.base.view.ToolBarView
 import com.css.service.bus.LiveDataBus
+import razerdp.basepopup.BasePopupWindow
 
 abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompatActivity(),
     IBaseView, OnToolBarClickListener {
@@ -515,6 +517,19 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
 
     protected open fun getFragmentContainerId(): Int {
         return 0
+    }
+
+    //显示网络异常dialog
+    fun showNetworkErrorDialog(lis: BasePopupWindow.OnDismissListener? = null): CommonAlertDialog {
+        return CommonAlertDialog(this).apply {
+            type = CommonAlertDialog.DialogType.Image
+            imageResources = R.mipmap.icon_error
+            content = getString(R.string.network_error)
+            onDismissListener = lis
+
+        }.apply {
+            show()
+        }
     }
 }
 
