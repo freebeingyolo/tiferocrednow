@@ -3,6 +3,7 @@ package com.css.service.router
 object ARouterConst {
 
     const val PATH_APP_MAIN = "/app/main"
+    const val PATH_APP_MAIN_COURSE = "/app/course"
     const val PATH_APP_BLE_WEIGHTBOND = "/lib_ble/main/WeightBond"
     const val PATH_APP_BLE_WHEELBOND = "/lib_ble/main/WheelBond"
     const val PATH_APP_BLE_DEVICELIST = "/lib_ble/main/devicelist"

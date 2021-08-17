@@ -12,6 +12,7 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.ToastUtils
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
@@ -30,6 +31,7 @@ import com.css.ble.viewmodel.DeviceVMFactory
 import com.css.ble.viewmodel.WheelMeasureVM
 import com.css.ble.viewmodel.WheelMeasureVM.State
 import com.css.service.data.CourseData
+import com.css.service.router.ARouterConst
 import com.css.service.utils.ImageUtils
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -200,13 +202,19 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
                 //val url = "https://www.baidu.com"
                 val url = item.videoLink
                 try {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                    startActivity(intent)
+                    startIntent(url)
                 } catch (e: ActivityNotFoundException) {
                     ToastUtils.showShort("链接无效:${url}")
                 }
             }
             binding.executePendingBindings()
+        }
+
+        private fun startIntent(videoLink: String) {
+            ARouter.getInstance()
+                .build(ARouterConst.PATH_APP_MAIN_COURSE)
+                .with(Bundle().apply { putString("videoLink", videoLink) })
+                .navigation()
         }
     }
 

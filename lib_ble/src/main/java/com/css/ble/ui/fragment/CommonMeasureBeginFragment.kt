@@ -1,8 +1,6 @@
 package com.css.ble.ui.fragment
 
 import android.content.ActivityNotFoundException
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -10,31 +8,26 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
-import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewbinding.ViewBinding
+import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.ToastUtils
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
-import com.css.base.uibase.inner.OnToolBarClickListener
 import com.css.base.view.ToolBarView
 import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
-import com.css.ble.databinding.ActivityAbrollerBinding
 import com.css.ble.databinding.LayoutPlayRecommendItemBinding
 import com.css.ble.ui.DataStatisticsActivity
-import com.css.ble.ui.DeviceInfoActivity
 import com.css.ble.ui.view.BaseBindingAdapter
 import com.css.ble.viewmodel.BleEnvVM
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM.State
 import com.css.service.data.CourseData
-import com.css.service.utils.ImageUtils
+import com.css.service.router.ARouterConst
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -113,13 +106,19 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
                 //val url = "https://www.baidu.com"
                 val url = item.videoLink
                 try {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                    startActivity(intent)
+                    startIntent(url)
                 } catch (e: ActivityNotFoundException) {
                     ToastUtils.showShort("链接无效:${url}")
                 }
             }
             binding.executePendingBindings()
+        }
+
+        private fun startIntent(videoLink: String) {
+            ARouter.getInstance()
+                .build(ARouterConst.PATH_APP_MAIN_COURSE)
+                .with(Bundle().apply { putString("videoLink", videoLink) })
+                .navigation()
         }
     }
 
