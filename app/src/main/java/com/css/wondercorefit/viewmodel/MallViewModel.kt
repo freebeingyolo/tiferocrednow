@@ -1,6 +1,7 @@
 package com.css.wondercorefit.viewmodel
 
 import androidx.lifecycle.MutableLiveData
+import com.css.base.net.HttpNetCode.NET_CONNECT_ERROR
 import com.css.base.net.api.repository.MallRepository
 import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.service.data.MallData
@@ -19,9 +20,11 @@ class MallViewModel : BaseViewModel() {
             }, { _, data ->
                 hideLoading()
                 mallData.value = data
-            }, { _, msg, _ ->
+            }, { code, msg, _ ->
                 hideLoading()
-                showToast(msg)
+                if (code != NET_CONNECT_ERROR) {
+                    showToast(msg)
+                }
             }
         )
     }
