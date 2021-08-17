@@ -8,28 +8,35 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.NetworkUtils
 import com.css.base.uibase.BaseFragment
 import com.css.service.data.MallData
 import com.css.service.utils.SystemBarHelper
 import com.css.wondercorefit.R
 import com.css.wondercorefit.adapter.MallProductAdapter
+import com.css.wondercorefit.adapter.MallStoreAdapter
 import com.css.wondercorefit.databinding.FragmentMallBinding
 import com.css.wondercorefit.viewmodel.MallViewModel
 
-class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(), View.OnClickListener,
+class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(),
     NetworkUtils.OnNetworkStatusChangedListener {
     var mData = ArrayList<MallData>()
+    var mStoreData = ArrayList<MallData>()
     lateinit var mAdapter: MallProductAdapter
+    lateinit var mStoreAdapter: MallStoreAdapter
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        mViewBinding?.tvStoreDetails1?.setOnClickListener(this)
-        mViewBinding?.tvStoreDetails2?.setOnClickListener(this)
         SystemBarHelper.immersiveStatusBar(activity, 0f)
         SystemBarHelper.setHeightAndPadding(activity, mViewBinding?.topView)
         mAdapter = MallProductAdapter(mData)
+        mStoreAdapter = MallStoreAdapter(mStoreData)
         mViewBinding?.productList?.layoutManager = GridLayoutManager(activity, 3)
         mViewBinding?.productList?.adapter = mAdapter
+        var linearLayoutManager = LinearLayoutManager(activity)
+        linearLayoutManager.isAutoMeasureEnabled = true;
+        mViewBinding?.storeList?.layoutManager = LinearLayoutManager(activity)
+        mViewBinding?.storeList?.adapter = mStoreAdapter
         mAdapter.setOnItemClickListener {
             try {
                 openUrl(it.mallLink)
@@ -38,10 +45,17 @@ class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(), View.On
             }
 
         }
-        if (NetworkUtils.isConnected()){
+        mStoreAdapter.setOnItemClickListener {
+            try {
+                openUrl(it.mallLink)
+            } catch (e: Throwable) {
+                showToast("暂无连接")
+            }
+        }
+        if (NetworkUtils.isConnected()) {
             mViewBinding?.networkError?.visibility = View.GONE
             mViewBinding?.mainLayout?.visibility = View.VISIBLE
-        }else{
+        } else {
             mViewBinding?.networkError?.visibility = View.VISIBLE
             mViewBinding?.mainLayout?.visibility = View.GONE
         }
@@ -51,24 +65,24 @@ class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(), View.On
     override fun initData() {
         super.initData()
         mViewModel.getMallInfo()
-//        mData.add(ProductBean(R.mipmap.icon_product_1, "计数单杠"))   q
-//        mData.add(ProductBean(R.mipmap.icon_product_2, "计数俯卧撑板"))
-//        mData.add(ProductBean(R.mipmap.icon_product_3, "计数健腹轮"))
-////        mData.add(ProductBean(R.mipmap.icon_product_4, "计数跳绳"))
-//        mData.add(ProductBean(R.mipmap.icon_product_5, "计数羽毛球拍"))
-//        mData.add(ProductBean(R.mipmap.icon_product_6, "家用跑步机"))
-////        mData.add(ProductBean(R.mipmap.icon_product_7, "腕力球"))
-////        mData.add(ProductBean(R.mipmap.icon_product_8, "智能计数跳绳"))
-//        mData.add(ProductBean(R.mipmap.icon_product_9, "智能体脂秤"))
-//        mAdapter.setItems(mData)
     }
 
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
         mViewModel.mallData.observe(viewLifecycleOwner, {
             mData.clear()
-            mData.addAll(it)
+            mStoreData.clear()
+            for (item in it) {
+                if (item.position == 1) {
+                    mStoreData.add(item)
+                }
+                if (item.position == 2) {
+                    mData.add(item)
+                }
+
+            }
             mAdapter.setItems(mData)
+            mStoreAdapter.setItems(mStoreData)
         })
     }
 
@@ -80,16 +94,6 @@ class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(), View.On
         viewGroup: ViewGroup?
     ): FragmentMallBinding = FragmentMallBinding.inflate(inflater, viewGroup, false)
 
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.tv_store_details_1 -> {
-                openUrl("https://www.tmall.com/")
-            }
-            R.id.tv_store_details_2 -> {
-                openUrl("https://mall.jd.com/index-1000096602.html")
-            }
-        }
-    }
 
     private fun openUrl(url: String) {
         val uri: Uri = Uri.parse(url)

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="data"
+            type="com.css.service.data.MallData" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="71dp"
+        android:layout_marginTop="5dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_store_logo"
+            android:layout_width="90dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="15dp"
+            android:scaleType="fitXY"
+            android:src="@{data.mallPreview}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_store_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@{data.titleCopywriting}"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_store_logo"
+            app:layout_constraintStart_toEndOf="@+id/iv_store_logo"
+            app:layout_constraintTop_toTopOf="@+id/iv_store_logo" />
+
+        <TextView
+            android:id="@+id/tv_store_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/bg_details_btn"
+            android:paddingStart="13dp"
+            android:paddingEnd="13dp"
+            android:text="@string/details"
+            android:textColor="#007DFF"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_store_logo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/iv_store_logo"
+            app:layout_goneMarginEnd="3dp" />
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_height="1dp"
+            app:layout_constraintStart_toEndOf="@+id/iv_store_logo"
+            app:layout_goneMarginStart="9dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:background="@color/color_e5e5e5"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
