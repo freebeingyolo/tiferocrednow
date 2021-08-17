@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.util.ToastUtils
 import com.css.base.R
+import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.LoadingDialog
 import com.css.base.uibase.BaseActivity
 import com.css.base.uibase.inner.IBaseView
@@ -22,6 +23,7 @@ import com.css.base.uibase.inner.OnToolBarClickListener
 import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.base.utils.FragmentStarter
 import com.css.base.view.ToolBarView
+import razerdp.basepopup.BasePopupWindow
 import java.lang.ref.Reference
 import java.lang.ref.WeakReference
 
@@ -569,4 +571,17 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
         FragmentStarter.startFragment(this, toFragment, tag)
     }
     //--------------------- control fragment end --------------------------
+
+    //显示网络异常dialog
+    fun showNetworkErrorDialog(lis: BasePopupWindow.OnDismissListener? = null): CommonAlertDialog {
+        return CommonAlertDialog(requireContext()).apply {
+            type = CommonAlertDialog.DialogType.Image
+            imageResources = R.mipmap.icon_error
+            content = getString(R.string.network_error)
+            onDismissListener = lis
+
+        }.apply {
+            show()
+        }
+    }
 }
