@@ -13,7 +13,7 @@ import java.util.*
  *@time 2021-08-03 17:23
  *@description 计数器
  */
-class CounterVM : BaseDeviceScan2ConnVM() {
+class CounterVM : HorizontalBarVM() {
     val UUID_SRVC = "0000ffb0-0000-1000-8000-00805f9b34fb"
     val UUID_WRITE = "0000ffb1-0000-1000-8000-00805f9b34fb"
     val UUID_NOTIFY = "0000ffb2-0000-1000-8000-00805f9b34fb"
@@ -31,9 +31,11 @@ class CounterVM : BaseDeviceScan2ConnVM() {
     override val bonded_tip: String
         get() = "计数器已连接成功，开启你的健康之旅吧！"
 
+    @Observe
     override fun discovered(d: Device) {
-        TODO("Not yet implemented")
+       super.discovered(d)
     }
+
     @Observe
     override fun onConnectionStateChanged(@NonNull device: Device) {
         super.onConnectionStateChanged(device)

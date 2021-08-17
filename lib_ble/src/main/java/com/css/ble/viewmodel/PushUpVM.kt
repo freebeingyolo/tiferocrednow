@@ -21,7 +21,7 @@ class PushUpVM : HorizontalBarVM() {
 
 
     override fun filterName(name: String): Boolean {
-        return name.startsWith("Hi-PUSHUP")
+        return name.startsWith("Hi-PUSH")
     }
 
     override fun filterUUID(uuid: UUID): Boolean {
@@ -31,8 +31,9 @@ class PushUpVM : HorizontalBarVM() {
     override val bonded_tip: String
         get() = "俯卧撑板已连接成功，开启你的健康之旅吧！"
 
+    @Observe
     override fun discovered(d: Device) {
-        TODO("Not yet implemented")
+        super.discovered(d)
     }
 
     @Observe

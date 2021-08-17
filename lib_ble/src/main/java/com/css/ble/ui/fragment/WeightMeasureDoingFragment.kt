@@ -11,6 +11,7 @@ import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.ActivityWeightMeasureDoingBinding
 import com.css.ble.utils.FragmentUtils
 import com.css.ble.viewmodel.BleEnvVM
+import com.css.ble.viewmodel.DeviceVMFactory
 import com.css.ble.viewmodel.ErrorType
 import com.css.ble.viewmodel.WeightMeasureVM
 import kotlinx.coroutines.delay
@@ -37,7 +38,7 @@ class WeightMeasureDoingFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
     }
 
     override fun initViewModel(): WeightMeasureVM {
-        return ViewModelProvider(requireActivity()).get(WeightMeasureVM::class.java)
+        return DeviceVMFactory.getViewModel(deviceType)
     }
 
     override fun initView(savedInstanceState: Bundle?) {

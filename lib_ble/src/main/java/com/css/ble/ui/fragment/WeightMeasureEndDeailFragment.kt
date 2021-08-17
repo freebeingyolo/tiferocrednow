@@ -11,6 +11,7 @@ import com.css.ble.BodyDetailAdapter
 import com.css.ble.bean.WeightDetailBean
 import com.css.ble.databinding.ActivityWeightMeasureEndDetailBinding
 import com.css.ble.utils.FragmentUtils
+import com.css.ble.viewmodel.DeviceVMFactory
 import com.css.ble.viewmodel.WeightMeasureVM
 
 /**
@@ -30,8 +31,7 @@ class WeightMeasureEndDeailFragment :
     }
 
     override fun initViewModel(): WeightMeasureVM {
-
-        return ViewModelProvider(requireActivity()).get(WeightMeasureVM::class.java)
+        return return DeviceVMFactory.getViewModel(deviceType)
     }
 
     override fun initCommonToolBarBg(): ToolBarView.ToolBarBg {

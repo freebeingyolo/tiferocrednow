@@ -34,7 +34,7 @@
             android:layout_height="173dp"
             android:layout_marginTop="3dp"
             android:onClick="@{v->model.easterEggs.click()}"
-            android:src="@mipmap/icon_abroller" />
+            android:src="@{model.deviceType.icon}" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

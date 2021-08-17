@@ -8,6 +8,7 @@ import androidx.lifecycle.*
 import com.css.base.view.ToolBarView
 import com.css.ble.databinding.*
 import com.css.ble.utils.FragmentUtils
+import com.css.ble.viewmodel.DeviceVMFactory
 import com.css.ble.viewmodel.WeightMeasureVM
 
 /**
@@ -26,7 +27,7 @@ class WeightMeasureDoneFragment : BaseWeightFragment<WeightMeasureVM, ActivityWe
 
 
     override fun initViewModel(): WeightMeasureVM {
-        return ViewModelProvider(requireActivity()).get(WeightMeasureVM::class.java)
+        return DeviceVMFactory.getViewModel(deviceType)
     }
 
     override fun enabledVisibleToolBar(): Boolean = true

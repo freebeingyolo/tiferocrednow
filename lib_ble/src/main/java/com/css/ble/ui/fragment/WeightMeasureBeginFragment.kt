@@ -8,6 +8,7 @@ import com.css.base.view.ToolBarView
 import com.css.ble.bean.WeightBondData
 import com.css.ble.databinding.ActivityWeightMeasureBeginBinding
 import com.css.ble.utils.FragmentUtils
+import com.css.ble.viewmodel.DeviceVMFactory
 import com.css.ble.viewmodel.WeightMeasureVM
 import com.css.service.utils.CacheKey
 import com.css.service.utils.WonderCoreCache
@@ -48,7 +49,7 @@ class WeightMeasureBeginFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
     }
 
     override fun initViewModel(): WeightMeasureVM {
-        return ViewModelProvider(requireActivity()).get(WeightMeasureVM::class.java)
+        return DeviceVMFactory.getViewModel(deviceType)
     }
 
     override fun enabledVisibleToolBar(): Boolean = true

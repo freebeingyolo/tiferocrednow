@@ -116,11 +116,7 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
         super.initData()
         mViewModel.loadDeviceInfo(null, { code, msg, _ ->
             run {
-                if (code == HttpNetCode.NET_CONNECT_ERROR) {
-                    showNetworkErrorDialog { finish() }
-                } else {
-                    showNetworkErrorDialog(msg) { finish() }
-                }
+                showNetworkErrorDialog(msg) { finish() }
             }
         })
     }

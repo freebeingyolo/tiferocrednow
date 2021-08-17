@@ -24,8 +24,8 @@ enum class DeviceType(
     @DrawableRes val icon2: Int,
     val cacheKey: CacheKey
 ) {
-    WEIGHT("体脂秤", R.string.device_weight, R.mipmap.icon_weight, R.mipmap.card_weight, CacheKey.BOND_WEIGHT_INFO),
-    WHEEL("健腹轮", R.string.device_wheel, R.mipmap.icon_abroller, R.mipmap.card_wheel, CacheKey.BOND_WHEEL_INFO),
+    WEIGHT("体脂秤", R.string.device_weight, R.mipmap.icon_weight, R.mipmap.icon_weight, CacheKey.BOND_WEIGHT_INFO),
+    WHEEL("健腹轮", R.string.device_wheel, R.mipmap.icon_abroller, R.mipmap.icon_abroller, CacheKey.BOND_WHEEL_INFO),
 
     //HORIZONTAL_BAR("单杠");
     HORIZONTAL_BAR("单杠", R.string.device_horizontalbar, R.mipmap.icon_product_1, R.mipmap.icon_product_1, CacheKey.BOND_HORIZONTALBAR_INFO),
