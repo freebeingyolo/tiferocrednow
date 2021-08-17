@@ -55,6 +55,7 @@ class PersonInformationActivity :
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
         mViewModel.personInfoData.observe(this, {
+            hideLoading()
             var userData = it[0]
             mViewBinding.tvTargetWeight.text = "${userData.goalBodyWeight}kg"
             mViewBinding.tvTargetStep.text = "${userData.goalStepCount}步"
@@ -63,7 +64,11 @@ class PersonInformationActivity :
             mViewBinding.tvSex.text = userData.sex
         })
         mViewModel.upPersonInfoData.observe(this, {
+            hideLoading()
             showToast(it)
+        })
+        mViewModel.nonePersonInfoData.observe(this, {
+            hideLoading()
         })
     }
 
@@ -86,7 +91,7 @@ class PersonInformationActivity :
 //        mViewBinding.tvStature.text = mUserData.stature + "cm"
 //        mViewBinding.tvAge.text = mUserData.age + "岁"
 //        mViewBinding.tvSex.text = mUserData.sex
-            mViewModel.getPersonInfo()
+        mViewModel.getPersonInfo()
 
     }
 
