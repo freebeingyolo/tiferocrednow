@@ -80,7 +80,7 @@ class SettingFragment : BaseFragment<DefaultViewModel, FragmentSettingBinding>()
                     if (NetworkUtils.isConnected()) {
                         FeedbackActivity.starActivity(it)
                     } else {
-                        showCenterToast("网络异常")
+                        showNetworkErrorDialog()
                     }
                 }
             }
