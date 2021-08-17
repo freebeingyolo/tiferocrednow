@@ -3,13 +3,12 @@ package com.css.wondercorefit.ui.activity.index
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.alibaba.android.arouter.facade.annotation.Route
+import com.css.service.router.ARouterConst
 import com.css.wondercorefit.R
 import com.css.wondercorefit.utils.ConfigHolder
 import com.css.wondercorefit.utils.LoadingOverlay
-import com.css.wondercorefit.utils.VideoCacheHelper
-import com.css.wondercorefit.viewmodel.CourseViewModel
 import com.css.wondercorefit.widget.MediaController
 import com.seagazer.liteplayer.LitePlayerView
 import com.seagazer.liteplayer.bean.DataSource
@@ -17,9 +16,10 @@ import com.seagazer.liteplayer.listener.PlayerViewModeChangedListener
 import com.seagazer.liteplayer.widget.LiteGestureController
 import com.seagazer.liteplayer.widget.LiteMediaTopbar
 
+@Route(path = ARouterConst.PATH_APP_MAIN_COURSE)
 class CoursePlayActivity : AppCompatActivity() {
     private lateinit var playerView: LitePlayerView
-    private var fullScreenPlay:Int = 0
+    private var fullScreenPlay: Int = 0
     private val handler = Handler()
     private var currentPlayIndex = ""
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +40,7 @@ class CoursePlayActivity : AppCompatActivity() {
             supportBrightness = true
             supportVolume = true
         })
-        playerView.addPlayerViewModeChangedListener(object: PlayerViewModeChangedListener{
+        playerView.addPlayerViewModeChangedListener(object : PlayerViewModeChangedListener {
             override fun onAutoSensorModeChanged(isAutoSensor: Boolean) {
 
             }
@@ -68,6 +68,7 @@ class CoursePlayActivity : AppCompatActivity() {
             fullScreenPlay = 1
         }, 500)
     }
+
     override fun onBackPressed() {
         if (playerView.isFullScreen()) {
             playerView.setFullScreenMode(false)

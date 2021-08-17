@@ -221,9 +221,10 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
             android:background="@drawable/bg_while_radius4"
-            android:visibility="visible"
+            android:onClick="@{()->view.jumpToStatistic()}"
             android:paddingStart="22dp"
-            android:paddingEnd="22dp">
+            android:paddingEnd="22dp"
+            android:visibility="visible">
 
             <TextView
                 android:id="@+id/tv"
@@ -239,7 +240,7 @@
                 android:layout_height="27dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:onClick="@{()->view.jumpToStatistic()}"
+
                 android:src="@mipmap/icon_statistics" />
         </RelativeLayout>
 

@@ -115,6 +115,10 @@ class BondDeviceData private constructor() : BaseData() {
 
         fun setDevice(key: DeviceType, data: BondDeviceData?) {
             WonderCoreCache.saveData(key.cacheKey, data)
+            if (key == DeviceType.WEIGHT && data == null) {//解绑时删除所有体重数据
+                WonderCoreCache.saveData(CacheKey.FIRST_WEIGHT_INFO, null)
+                WonderCoreCache.saveData(CacheKey.LAST_WEIGHT_INFO, null)
+            }
         }
 
         fun getDeviceStateLiveData(): MutableLiveData<Pair<String, String>> {

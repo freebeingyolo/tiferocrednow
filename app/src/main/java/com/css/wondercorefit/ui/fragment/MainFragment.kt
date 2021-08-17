@@ -150,6 +150,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
                     mViewBinding?.tvBodyType?.text = it2.bodyFatData.bmiJudge
                 } else {
                     mViewBinding?.llBmi?.visibility = View.GONE
+                    mViewBinding?.tvCurrentWeight?.text = "--"
                 }
             }
     }

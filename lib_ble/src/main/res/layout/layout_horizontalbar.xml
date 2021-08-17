@@ -224,6 +224,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/bg_while_radius4"
+                android:onClick="@{()->view.jumpToStatistic()}"
                 android:paddingStart="22dp"
                 android:paddingEnd="22dp">
 
@@ -241,7 +242,7 @@
                     android:layout_height="27dp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:onClick="@{()->view.jumpToStatistic()}"
+
                     android:src="@mipmap/icon_statistics" />
             </RelativeLayout>
 
@@ -252,6 +253,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_while_radius4"
+                android:onClick="@{v->view.openSwitchSpinner(v)}"
                 android:paddingStart="22dp"
                 android:paddingEnd="22dp"
                 android:visibility="visible">
@@ -285,7 +287,7 @@
                     android:id="@+id/mode_switch_group"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:onClick="@{v->view.openSwitchSpinner(v)}"
+
                     app:constraint_referenced_ids="mode_switch,mode_switch2,mode_switch3"
                     app:layout_constraintBottom_toBottomOf="@+id/mode_switch2"
                     app:layout_constraintEnd_toEndOf="@id/mode_switch3"
