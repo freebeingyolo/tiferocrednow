@@ -126,7 +126,6 @@ abstract class BaseViewModel : ViewModel(), IBaseViewModel, INetView, IResource 
     ): Job {
         val job = viewModelScope.launch(Dispatchers.Main) {
             try {
-
                 val response = block()
                 response.process(success, failed)
             } catch (t: Throwable) {
@@ -190,9 +189,9 @@ abstract class BaseViewModel : ViewModel(), IBaseViewModel, INetView, IResource 
                 }
                 is SSLException -> {
                     if (UICoreConfig.mode) {
-                        failed(HttpNetCode.NET_CONNECT_ERROR, "SSL校验未通过：${t.message}")
+                        failed(HttpNetCode.SSL_ERROR, "SSL校验未通过：${t.message}")
                     } else {
-                        failed(HttpNetCode.NET_CONNECT_ERROR, "SSL校验未通过")
+                        failed(HttpNetCode.SSL_ERROR, "SSL校验未通过")
                     }
                 }
                 is ParseException -> {

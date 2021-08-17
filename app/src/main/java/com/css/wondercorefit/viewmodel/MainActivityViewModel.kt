@@ -2,6 +2,7 @@ package com.css.wondercorefit.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.AppUtils
+import com.css.base.net.HttpNetCode
 import com.css.base.net.api.repository.HistoryRepository
 import com.css.base.net.api.repository.SettingRepository
 import com.css.base.uibase.viewmodel.BaseViewModel
@@ -30,9 +31,11 @@ class MainActivityViewModel : BaseViewModel() {
                     showToast(msg)
                 }
 
-            }, { _, msg, _ ->
+            }, { code, msg, _ ->
                 hideLoading()
-                showToast(msg)
+                if (code != HttpNetCode.NET_CONNECT_ERROR) {
+                    showToast(msg)
+                }
             }
         )
     }

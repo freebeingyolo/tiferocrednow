@@ -1,6 +1,7 @@
 package com.css.wondercorefit.viewmodel
 
 import androidx.lifecycle.MutableLiveData
+import com.css.base.net.HttpNetCode
 import com.css.base.net.api.repository.CourseRepository
 import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.service.data.CourseData
@@ -20,9 +21,11 @@ class CourseViewModel : BaseViewModel() {
             }, { _, data ->
                 hideLoading()
                 courseData.value = data
-            }, { _, msg, _ ->
+            }, {code, msg, _ ->
                 hideLoading()
-                showToast(msg)
+                if (code != HttpNetCode.NET_CONNECT_ERROR) {
+                    showToast(msg)
+                }
             }
         )
     }

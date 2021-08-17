@@ -13,5 +13,6 @@ object HttpNetCode {
     const val NET_TIMEOUT = 15003//网络请求超时
     const val PARSE_ERROR = 15004//Parse解析异常
     const val JSON_ERROR = 15005//Json解析异常
+    const val SSL_ERROR = 15006//校验异常
 
 }
