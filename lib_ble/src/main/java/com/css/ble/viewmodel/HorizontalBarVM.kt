@@ -1,11 +1,13 @@
 package com.css.ble.viewmodel
 
+import androidx.annotation.NonNull
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import cn.wandersnail.ble.Device
 import cn.wandersnail.ble.Request
 import cn.wandersnail.ble.callback.WriteCharacteristicCallback
+import cn.wandersnail.commons.observer.Observe
 import cn.wandersnail.commons.util.StringUtils
 import com.css.ble.R
 import com.css.ble.bean.DeviceType
@@ -110,6 +112,16 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
             }
         })
     }
+    //这个是必须的，由于EasyBle的框架bug，必须声明才能反射调用到
+    @Observe
+    override fun onConnectionStateChanged(@NonNull device: Device) {
+        super.onConnectionStateChanged(device)
+    }
+
+    @Observe
+    override fun onNotificationChanged(@NonNull request: Request, isEnabled: Boolean) {
+        LogUtils.d("onNotificationChanged#${request.type}#$isEnabled")
+    }
 
     //F5 5F 07 07 01 00 64 C8   电量
     //F55F0701  计数模式时间
@@ -144,10 +156,16 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
                 val v = DataUtils.bytes2IntBig(value[5], value[6])
                 (batteryLevel as MutableLiveData).value = v
             }
-            hexData.startsWith("F55F0708") -> {//提醒上传数据
+            hexData.startsWith("F55F0708") -> {//提醒上传数据：【切换模式，双击power,时间超出范围，计数超过范围】
                 finishExercise()
+                //本地清零
+                clearAllExerciseData()
             }
         }
+    }
+
+    fun jumpToStatistic() {
+        (callUILiveData as MutableLiveData).value = "jumpToStatistic"
     }
 
 }

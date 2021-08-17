@@ -68,8 +68,9 @@ class HeaderInterceptor : Interceptor {
                 str = str?.substring(0, str.length - 1)
                 val merge = "method=${str}&${signatureStr}"*/
                 val merge = signatureStr
-                LogUtils.v("suisui", merge)
-                EncryptUtils.encryptMD5ToString(merge)
+                val md5 = EncryptUtils.encryptMD5ToString(merge)
+                LogUtils.v("signatures#post#merge-->$merge,md5:$md5")
+                md5
             }
             "get" -> {
                 var merge = ""
@@ -98,8 +99,9 @@ class HeaderInterceptor : Interceptor {
                 for (query in strs) {
                     sortStr = "${sortStr}${query}&"
                 }*/
-                EncryptUtils.encryptMD5ToString(merge)
-
+                val md5 = EncryptUtils.encryptMD5ToString(merge)
+                LogUtils.v("signatures#get#merge-->$merge,md5:$md5")
+                md5
             }
             else -> {
                 EncryptUtils.encryptMD5ToString(signatureStr)

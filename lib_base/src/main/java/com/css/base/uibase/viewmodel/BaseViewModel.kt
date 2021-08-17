@@ -32,6 +32,8 @@ abstract class BaseViewModel : ViewModel(), IBaseViewModel, INetView, IResource 
     val showCenterToastResEvent = MutableLiveData<Int>()
     val showCenterLongToastResEvent = MutableLiveData<Int>()
     val finishAcEvent = MutableLiveData<String>()
+    val callUILiveData: LiveData<Any?> by lazy { MutableLiveData() }//调用UI
+
     var isViewDestroyed = false
 
     override fun onAny(owner: LifecycleOwner, event: Lifecycle.Event) {

@@ -44,7 +44,7 @@
         android:inputType="phone"
         android:maxLength="11"
         android:paddingStart="7dp"
-        android:textSize="12sp" />
+        android:textSize="13sp" />
 
     <TextView
         android:id="@+id/tv_phone_tip"
@@ -70,7 +70,7 @@
         android:inputType="textPassword"
         android:maxLength="16"
         android:paddingStart="7dp"
-        android:textSize="12sp" />
+        android:textSize="13sp" />
 
     <com.css.base.view.RoundTextView
         android:id="@+id/tv_login"
@@ -82,7 +82,7 @@
         android:gravity="center"
         android:text="@string/login"
         android:textColor="@color/white"
-        android:textSize="13sp"
+        android:textSize="14sp"
         app:rv_backgroundColor="#FFF2682A"
         app:rv_cornerRadius="164dp" />
 
@@ -90,7 +90,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="62dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="7dp"
         android:layout_marginEnd="62dp"
         android:gravity="end"
         android:orientation="horizontal">
@@ -102,7 +102,7 @@
             android:layout_marginEnd="17dp"
             android:text="注册新用户"
             android:textColor="#FFF2682A"
-            android:textSize="10dp" />
+            android:textSize="12dp" />
 
         <TextView
             android:id="@+id/forget_password"
@@ -110,6 +110,6 @@
             android:layout_height="wrap_content"
             android:text="忘记密码？"
             android:textColor="#FFF2682A"
-            android:textSize="10dp" />
+            android:textSize="12dp" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.appcompat.widget.LinearLayoutCompat>

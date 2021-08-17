@@ -4,7 +4,8 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.blankj.utilcode.util.ActivityUtils
+import cn.wandersnail.ble.Device
+import com.blankj.utilcode.util.Utils
 import com.css.ble.R
 import com.css.service.bus.LiveDataBus
 import com.css.service.data.BaseData
@@ -28,7 +29,7 @@ enum class DeviceType(
 
     //HORIZONTAL_BAR("单杠");
     HORIZONTAL_BAR("单杠", R.string.device_horizontalbar, R.mipmap.icon_horizontalbar, R.mipmap.card_wheel, CacheKey.BOND_HORIZONTALBAR_INFO),
-    PUSH_UP("俯卧撑", R.string.device_pushup, R.mipmap.icon_pushup, R.mipmap.card_wheel, CacheKey.BOND_PUSHUP_INFO),
+    PUSH_UP("俯卧撑板", R.string.device_pushup, R.mipmap.icon_pushup, R.mipmap.card_wheel, CacheKey.BOND_PUSHUP_INFO),
     COUNTER("计数器", R.string.device_counter, R.mipmap.icon_counter, R.mipmap.card_wheel, CacheKey.BOND_COUNTER_INFO),
     ;
 
@@ -50,19 +51,43 @@ enum class DeviceType(
     }
 }
 
-class BondDeviceData(
-    var mac: String,
-    var manufacturerDataHex: String,
-    var type: Int
-) : BaseData() {
+class BondDeviceData private constructor() : BaseData() {
+    lateinit var mac: String
+    lateinit var manufacturerDataHex: String
+    lateinit var deviceType: DeviceType
+
     var alias: String? = null
     var id: Int = 0
     var deviceCategory: String = ""
-    val deviceType: DeviceType get() = DeviceType.values()[type]
     val deviceImg: Int get() = deviceType.icon2
     var deviceConnect: String? = "未连接"
-    var moduleType: String = "" //设备型号
-    var moduleVersion: String = "" //固件版本
+    var moduleType: String? = null //设备型号
+    var moduleVersion: String? = "1.0" //固件版本
+
+
+    constructor(mac: String, manufacturerDataHex: String, modeType: String?, deviceType: DeviceType) : this() {
+        this.mac = mac
+        this.manufacturerDataHex = manufacturerDataHex
+        this.deviceType = deviceType
+        this.deviceCategory = deviceType.alias
+        this.alias = deviceType.alias
+        this.moduleType = modeType
+    }
+
+
+    constructor(d: DeviceData) : this(d.bluetoothAddress, "", d.moduleType, DeviceType.findByAlias(d.deviceCategory)) {
+        this.id = d.id
+        this.alias = d.deviceName
+        this.deviceCategory = d.deviceCategory
+        this.moduleVersion = d.moduleVersion
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other is BondDeviceData) {
+            return this.mac == other.mac && this.id == other.id
+        }
+        return false
+    }
 
     fun buidUploadParams(): HashMap<String, Any?> {
         return hashMapOf(
@@ -74,31 +99,12 @@ class BondDeviceData(
         )
     }
 
-    constructor(d: DeviceData) : this() {
-        this.id = d.id
-        this.mac = d.bluetoothAddress
-        this.alias = d.deviceName
-        this.deviceCategory = d.deviceCategory
-        this.type = DeviceType.findByAlias(d.deviceCategory).ordinal
-        this.moduleType = d.moduleType
-        this.moduleVersion = d.moduleVersion
-    }
-
-    constructor() : this("", "", DeviceType.WEIGHT)
-    constructor(mac: String, manufacturerDataHex: String, type: DeviceType) : this(
-        mac,
-        manufacturerDataHex,
-        type.ordinal
-    ) {
-        this.deviceCategory = type.alias
-    }
-
     companion object {
 
         fun displayName(type: DeviceType): String {
             val data = getDevice(type)
             return if (data == null) {
-                ActivityUtils.getTopActivity().getString(type.nameId)
+                Utils.getApp().getString(type.nameId)
             } else {
                 return data.displayName
             }
@@ -111,7 +117,7 @@ class BondDeviceData(
             WonderCoreCache.saveData(key.cacheKey, data)
         }
 
-        fun getDeviceStateLiveData(): MutableLiveData<Pair<String, String?>> {
+        fun getDeviceStateLiveData(): MutableLiveData<Pair<String, String>> {
             return LiveDataBus.get().with("DeviceState")
         }
 
@@ -133,11 +139,11 @@ class BondDeviceData(
 
     val displayName: String
         get() = if (alias.isNullOrEmpty()) {
-            ActivityUtils.getTopActivity().getString(DeviceType.values()[type].nameId)
+            Utils.getApp().getString(deviceType.nameId)
         } else alias!!
 
     override fun toString(): String {
-        return "BondDeviceData(mac='$mac', manufacturerDataHex='$manufacturerDataHex', type=$type, alias=$alias, id=$id, deviceCategory='$deviceCategory', deviceConnect=$deviceConnect, moduleType='$moduleType', moduleVersion='$moduleVersion')"
+        return "BondDeviceData(mac='$mac', manufacturerDataHex='$manufacturerDataHex', alias=$alias, id=$id, deviceCategory='$deviceCategory', deviceConnect=$deviceConnect, moduleType='$moduleType', moduleVersion='$moduleVersion')"
     }
 
 }

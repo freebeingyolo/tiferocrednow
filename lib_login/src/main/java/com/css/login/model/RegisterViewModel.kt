@@ -54,13 +54,13 @@ class RegisterViewModel : BaseViewModel() {
                             resetCodeData.value = "重发验证码"
                         }
                     }
-                    mTimer!!.start()
                     showLoading()
                     withContext(Dispatchers.IO) {
                         UserRepository.sendCode(phone)
                     }
                 }, { msg, _ ->
                     hideLoading()
+                    mTimer!!.start()
                     showToast(msg)
                 }, { _, msg, _ ->
                     hideLoading()
@@ -82,9 +82,9 @@ class RegisterViewModel : BaseViewModel() {
             showCenterToast("请输入手机号码")
         } else if (phone.length != 11) {
             showCenterToast("请输入正确的手机号码")
-        }  else if (!RegexUtils.isMobileExact(phone)) {
+        } else if (!RegexUtils.isMobileExact(phone)) {
             showCenterToast("请输入正确的手机号码")
-        }else if (password.isEmpty()) {
+        } else if (password.isEmpty()) {
             showCenterToast("请输入密码")
         } else if (password.length < 6 || password.length > 16) {
             showCenterToast("密码格式错误")

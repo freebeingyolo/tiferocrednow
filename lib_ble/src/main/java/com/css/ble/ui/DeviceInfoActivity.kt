@@ -133,8 +133,8 @@ class DeviceInfoActivity : BaseActivity<DeviceInfoVM, FragmentDeviceInfoBinding>
                                             }
                                         }
                                     }.show()
-                                }, { _, _, _ ->
-
+                                }, { _, msg, _ ->
+                                    showToast(msg)
                                 })
                         }
                     }

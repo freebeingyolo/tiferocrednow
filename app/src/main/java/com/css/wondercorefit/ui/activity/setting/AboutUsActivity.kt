@@ -31,6 +31,7 @@ import com.css.base.uibase.BaseActivity
 import com.css.base.utils.DownloadUtil
 import com.css.base.view.ToolBarView
 import com.css.ble.R
+import com.css.service.data.UpGradeData
 import com.css.service.router.ARouterConst
 import com.css.wondercorefit.databinding.ActivityAboutUsBinding
 import com.css.wondercorefit.viewmodel.AboutUsViewModel
@@ -65,32 +66,6 @@ open class AboutUsActivity : BaseActivity<AboutUsViewModel, ActivityAboutUsBindi
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
         mViewModel.upGradeData.observe(this, Observer {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val hasInstallPermission: Boolean = isHasInstallPermissionWithO(this)
-                if (!hasInstallPermission) {
-                    Log.d("555", "enter hasInstallPermission   false")
-                    //弹框提示用户手动打开
-                    CommonAlertDialog(this).apply {
-                        gravity = Gravity.CENTER
-                        type = CommonAlertDialog.DialogType.Confirm
-                        title = "安装权限"
-                        content = "需要打开允许来自此来源，请去设置中开启此权限"
-                        rightBtnText = "确认"
-                        leftBtnText = "取消"
-                        listener = object : DialogClickListener.DefaultLisener() {
-                            override fun onRightBtnClick(view: View) {
-                                super.onRightBtnClick(view)
-                                toInstallPermissionSettingIntent()
-                            }
-
-                            override fun onLeftBtnClick(view: View) {
-                                super.onLeftBtnClick(view)
-                                return
-                            }
-                        }
-                    }.show()
-                } else {
-
                     CommonAlertDialog(this).apply {
                         gravity = Gravity.BOTTOM
                         type = CommonAlertDialog.DialogType.Confirm
@@ -102,25 +77,44 @@ open class AboutUsActivity : BaseActivity<AboutUsViewModel, ActivityAboutUsBindi
                             override fun onRightBtnClick(view: View) {
                                 super.onRightBtnClick(view)
                                 val upgradeUrl = it.upgradePackage
-                                Log.d("222", it.toString())
-                                getFileFromServer(upgradeUrl)
-//                                downloadAndInstall()
+                                startUpgrade(it)
 
-                            }
-
-                            override fun onLeftBtnClick(view: View) {
-                                super.onLeftBtnClick(view)
-                                if (it.mandatoryUpgrade == "是") {
-                                    ActivityUtils.finishAllActivities()
-                                }
                             }
                         }
                     }.show()
-
-                }
-            }
         })
 
+    }
+
+    private fun startUpgrade( it: UpGradeData) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val hasInstallPermission: Boolean = isHasInstallPermissionWithO(this)
+            if (!hasInstallPermission) {
+                Log.d("555", "enter hasInstallPermission   false")
+                //弹框提示用户手动打开
+                CommonAlertDialog(this).apply {
+                    gravity = Gravity.CENTER
+                    type = CommonAlertDialog.DialogType.Confirm
+                    title = "安装权限"
+                    content = "需要打开允许来自此来源，请去设置中开启此权限"
+                    rightBtnText = "确认"
+                    leftBtnText = "取消"
+                    listener = object : DialogClickListener.DefaultLisener() {
+                        override fun onRightBtnClick(view: View) {
+                            super.onRightBtnClick(view)
+                            toInstallPermissionSettingIntent()
+                        }
+
+                        override fun onLeftBtnClick(view: View) {
+                            super.onLeftBtnClick(view)
+                            return
+                        }
+                    }
+                }.show()
+            } else {
+                getFileFromServer(it.upgradePackage)
+            }
+        }
     }
 
     fun getFileFromServer(downUrl: String?) {

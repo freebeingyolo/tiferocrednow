@@ -59,7 +59,7 @@ Handler
 case 9	 ELinkBleServer.this.finish() //结束服务
 */
 @Deprecated("use WhellMeasureVM instead")
-object WheelBondVM : BaseWheelVM(), EventObserver {
+class WheelBondVM : BaseWheelVM(), EventObserver {
     private val _state: MutableLiveData<State> by lazy { MutableLiveData<State>(State.disconnect) }
     val state: LiveData<State> get() = _state
     private var avaliableDevice: Device? = null
@@ -101,6 +101,10 @@ object WheelBondVM : BaseWheelVM(), EventObserver {
 
     override fun connect() {
 
+    }
+
+    override fun connectStateTxt(): String {
+        TODO("Not yet implemented")
     }
 
     override fun onTimerTimeout() {

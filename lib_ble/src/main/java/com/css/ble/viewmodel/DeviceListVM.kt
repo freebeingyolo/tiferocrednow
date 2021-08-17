@@ -7,6 +7,7 @@ import com.css.base.net.api.repository.DeviceRepository
 import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
+import com.css.ble.viewmodel.base.BaseDeviceVM
 import com.css.service.utils.WonderCoreCache
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -14,31 +15,31 @@ import kotlinx.coroutines.withContext
 class DeviceListVM : BaseViewModel() {
 
 
-    fun loadDeviceInfo() {
-
+    fun loadDeviceInfo(
+        success: ((msg: String?, d: Any?) -> Unit)? = null,
+        failed: ((Int, String?, d: Any?) -> Unit)? = null
+    ) {
         netLaunch(
             {
                 withContext(Dispatchers.IO) {
                     val userId = WonderCoreCache.getLoginInfo()!!.userInfo.userId
                     val ret = DeviceRepository.queryBindDevice(userId.toString())
                     if (ret.isSuccess) {
-                        if (ret.data.isNullOrEmpty()) {
-                            for (d in DeviceType.values()) {
-                                BondDeviceData.setDevice(d, null)
+                        for (d in DeviceType.values()) {
+                            val data = ret.data?.find { it.deviceCategory == d.alias }
+                            val data2 = data?.let {
+                                val ret = BondDeviceData(it)
+                                val vm = DeviceVMFactory.getViewModel<BaseDeviceVM>(ret.deviceType)
+                                ret.deviceConnect = vm.connectStateTxt()
+                                ret
                             }
-                        } else {
-                            for (d1 in ret.data!!) {
-                                BondDeviceData(d1).let {
-                                    //LogUtils.d("DeviceListVM#loadDeviceInfo-->$it")
-                                    BondDeviceData.setDevice(it.deviceType, it)
-                                }
-                            }
+                            BondDeviceData.setDevice(d, data2)//本地与云端不一致同步云端的
                         }
                     }
                     ret
                 }
             },
-            { _, devices ->
+            { m, devices ->
                 //更新BondDevice
                 val list = mutableListOf<DeviceInfo>()
                 for (d in DeviceType.values()) {
@@ -46,10 +47,12 @@ class DeviceListVM : BaseViewModel() {
                     list.add(one)
                 }
                 _deviceInfos.value = list
+                success?.invoke(m, devices)
             },
-            { _, msg, _ ->
+            { code, msg, data ->
                 showToast(msg)
                 hideLoading()
+                failed?.invoke(code, msg, data)
             }
         )
     }

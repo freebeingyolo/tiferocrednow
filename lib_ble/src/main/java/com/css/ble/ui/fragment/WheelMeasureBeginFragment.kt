@@ -7,6 +7,9 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ToastUtils
@@ -19,6 +22,7 @@ import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.ActivityAbrollerBinding
 import com.css.ble.databinding.LayoutPlayRecommendItemBinding
+import com.css.ble.ui.DataStatisticsActivity
 import com.css.ble.ui.DeviceInfoActivity
 import com.css.ble.ui.view.BaseBindingAdapter
 import com.css.ble.viewmodel.BleEnvVM
@@ -36,6 +40,22 @@ import kotlinx.coroutines.launch
  */
 class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbrollerBinding>(DeviceType.WHEEL) {
 
+    private val lowPowerAlert: View by lazy {
+        val view = LayoutInflater.from(requireContext()).inflate(R.layout.layout_network_error, null)
+        view.findViewById<TextView>(R.id.textView).text = getString(R.string.lowpower_error, 10)
+        view.post {//这里延缓获取坐标，高度
+            val location = IntArray(2)
+            val anchor = mViewBinding!!.root.findViewById<View>(R.id.ll_parent)
+            anchor.getLocationOnScreen(location)
+            val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
+            lp.topMargin = location[1]
+            view.layoutParams = lp
+        }
+        val root = requireActivity().window.decorView.findViewById<ViewGroup>(android.R.id.content)
+        root.addView(view)
+        view
+    }
+
     override fun initViewModel(): WheelMeasureVM {
         return DeviceVMFactory.getViewModel(deviceType)
     }
@@ -46,6 +66,7 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
         //arguments?.takeIf { it.getBoolean("autoConnect") }?.let { mViewBinding!!.left.performClick() }
         mViewModel.state = mViewModel.state
         mViewBinding!!.model = mViewModel
+        mViewBinding!!.view = this
         mViewBinding!!.lifecycleOwner = viewLifecycleOwner
 
         mViewModel.stateObsrv.observe(viewLifecycleOwner) {
@@ -69,6 +90,17 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
             recommendationAdapter.setItems(it)
             recommendationAdapter.notifyDataSetChanged()
         }
+        mViewModel.batteryLevel.observe(viewLifecycleOwner) {
+            if (it < 10 && it != -1) {
+                lowPowerAlert.visibility = View.VISIBLE
+            } else {
+                lowPowerAlert.visibility = View.GONE
+            }
+        }
+    }
+
+    fun jumpToStatistic() {
+        DataStatisticsActivity.starActivity(requireContext(), Bundle().apply { putString("deviceType", deviceType.alias) })
     }
 
     private fun refreshBottom(s: State) {

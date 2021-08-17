@@ -2,8 +2,10 @@
 <resources>
     <declare-styleable name="ElectricityView">
         <attr name="progress" format="integer" />
+        <attr name="lowPower" format="integer" />
         <attr name="lowPowerColor" format="color|reference" />
-
+        <attr name="powerColor" format="color|reference" />
+        <attr name="batteryColor" format="color|reference" />
     </declare-styleable>
 
     <declare-styleable name="toolbarView">

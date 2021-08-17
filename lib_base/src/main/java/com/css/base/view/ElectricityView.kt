@@ -10,7 +10,8 @@ import com.css.base.R
 class ElectricityView : View {
     private var mBatteryPaint: Paint? = null//电池画笔
     private var mPowerPaint: Paint? = null//电量画笔
-    private var mBatteryStroke = 2f //电池框宽度
+    private var mBatteryStroke = 2f //电池框画笔宽度
+    private var mCapWidth = 5f
     private val mBatteryRect: RectF by lazy { RectF() }//电池矩形
     private val mCapRect: RectF by lazy { RectF() } //电池盖矩形
     private val mPowerRect: RectF by lazy { RectF() }//电量矩形
@@ -19,9 +20,10 @@ class ElectricityView : View {
     private var mBatteryColor = Color.parseColor("#000000")//电池框颜色
     private var mPowerColor = Color.parseColor("#000000")//电量颜色
     private var mLowPowerColor = Color.parseColor("#ff0000") //低电颜色
-    private var mPower = 0 //当前电量（满电100）
-    private var mCapWidth = 5f
+    private var mPower = 100 //当前电量（满电100）
+    private var mLowerPower = 10 //低电量判定
 
+    private val TAG = "ElectricityView"
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
@@ -42,9 +44,21 @@ class ElectricityView : View {
                         val p = ta.getInteger(id, 0)
                         setProgress(p)
                     }
+                    R.styleable.ElectricityView_lowPower -> {
+                        val p = ta.getInteger(id, 0)
+                        this.mLowerPower = p
+                    }
                     R.styleable.ElectricityView_lowPowerColor -> {
-                        val v = ta.getColor(R.styleable.ElectricityView_lowPowerColor,0)
-
+                        val v = ta.getColor(id, 0)
+                        mLowPowerColor = v
+                    }
+                    R.styleable.ElectricityView_powerColor -> {
+                        val v = ta.getColor(id, 0)
+                        mPowerColor = v
+                    }
+                    R.styleable.ElectricityView_batteryColor -> {
+                        val v = ta.getColor(id, 0)
+                        mBatteryColor = v
                     }
                 }
             }
@@ -80,12 +94,13 @@ class ElectricityView : View {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         mSpecWidthSize = MeasureSpec.getSize(widthMeasureSpec);//宽
         mSpecHeightSize = MeasureSpec.getSize(heightMeasureSpec);//高
+        mCapWidth = mSpecWidthSize * 0.1f;
         setMeasuredDimension(mSpecWidthSize, mSpecHeightSize);
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        if (mPower <= 20) {
+        if (mPower <= mLowerPower) {
             mPowerPaint!!.color = mLowPowerColor
         } else {
             mPowerPaint!!.color = mPowerColor
@@ -96,7 +111,7 @@ class ElectricityView : View {
          * 2 间隔距离
          */
         mBatteryRect.set(
-            2f, 2f, mSpecWidthSize - 10 - mCapWidth,
+            mBatteryStroke, 2f, mSpecWidthSize - mBatteryStroke - mCapWidth,
             (mSpecHeightSize - 4).toFloat()
         )
 
@@ -105,30 +120,26 @@ class ElectricityView : View {
          * 设置电池盖矩形
          */
         mCapRect.set(
-            mSpecWidthSize - 8 - mCapWidth,
+            mSpecWidthSize - mCapWidth - mBatteryStroke,//贴合
             (mSpecHeightSize - 2) * 0.25f,
-            (mSpecWidthSize - 10).toFloat(),
+            (mSpecWidthSize - mBatteryStroke).toFloat(),
             (mSpecHeightSize - 4) * 0.75f
         )
-
         /**
          * 设置电量矩形
          */
-        val right: Float = if (mPower < 20) {
-            (mSpecWidthSize - 10 - mCapWidth - 2) / 100.0f * 20
-        } else {
-            (mSpecWidthSize - 10 - mCapWidth - 2) / 100.0f * mPower
-        }
+        val right: Float = mBatteryRect.left + 2 - mPowerPaint!!.strokeWidth + (mBatteryRect.width() - 4) * mPower / 100f
         mPowerRect.set(
-            mBatteryStroke + 2,
+            mBatteryRect.left + 2,
             2 + mBatteryStroke,
             right,
             mSpecHeightSize - (2 + mBatteryStroke) - 2
         )
         canvas.drawRoundRect(mBatteryRect, 5f, 5f, mBatteryPaint!!)
-        canvas.drawRoundRect(mCapRect, 5f, 5f, mPowerPaint!!) // 画电池盖
-        canvas.drawRoundRect(mPowerRect, 5f, 5f, mPowerPaint!!) // 画电量
+        canvas.drawRoundRect(mCapRect, 5f, 5f, mBatteryPaint!!) // 画电池盖
+        canvas.drawRoundRect(mPowerRect, 0f, 0f, mPowerPaint!!) // 画电量
     }
+
 
     fun setProgress(power: Int) {
         if (power < 0) {

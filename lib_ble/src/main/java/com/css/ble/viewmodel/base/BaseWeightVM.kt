@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.css.ble.R
 import com.css.ble.bean.DeviceType
 import com.pingwang.bluetoothlib.bean.BleValueBean
 import com.pingwang.bluetoothlib.listener.OnCallbackBle
@@ -70,7 +71,8 @@ abstract class BaseWeightVM : BaseDeviceVM() {
                         onBroadCastData(
                             bleValueBean.mac, BleStrUtils.byte2HexStr(data),
                             bytes,
-                            true
+                            true,
+                            bleValueBean
                         )
                     }
                 } else {
@@ -83,14 +85,14 @@ abstract class BaseWeightVM : BaseDeviceVM() {
                 vid = (manufacturerDatax[6].toInt() and 255) shl 8 or (manufacturerDatax[7].toInt() and 255)
                 if (vid == 2) {//匹配成功，第7,8位组成的数据是2
                     val hex = BleStrUtils.byte2HexStr(manufacturerDatax)
-                    onBroadCastData(bleValueBean.mac, hex, manufacturerDatax, false)
+                    onBroadCastData(bleValueBean.mac, hex, manufacturerDatax, false,bleValueBean)
                 }
             }
         }
     }
 
     open fun onScanFilter(bleValueBean: BleValueBean): Boolean = true
-    open fun onBroadCastData(mac: String, dataHexStr: String, data: ByteArray, isAilink: Boolean) {}
+    open fun onBroadCastData(mac: String, dataHexStr: String, data: ByteArray, isAilink: Boolean,bean:BleValueBean) {}
     open fun onScanStart() {}
     override fun onTimerTimeout() {}
     override fun onTimerCancel() {}
@@ -180,7 +182,14 @@ abstract class BaseWeightVM : BaseDeviceVM() {
         this.mBluetoothService?.disconnectAll()
     }
 
+    override fun connectStateTxt(): String {
+        return  getString(R.string.device_disconnected)
+    }
+
     override fun connect() {
     }
 
+    override fun release() {
+
+    }
 }

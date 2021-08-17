@@ -90,7 +90,6 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel, ActivityReset
             content = getString(R.string.network_error)
             onDismissListener = object : BasePopupWindow.OnDismissListener() {
                 override fun onDismiss() {
-
                 }
             }
         }.show()

@@ -72,7 +72,6 @@ class CommonDeviceActivity : BaseDeviceActivity<BaseDeviceScan2ConnVM, ActivityB
 
             override fun onServiceDisconnected(name: ComponentName?) {}
         }, BIND_AUTO_CREATE)
-        EasyBLE.getInstance().registerObserver(mViewModel)
     }
 
     override val vmCls get() = BaseDeviceScan2ConnVM::class.java
@@ -109,7 +108,6 @@ class CommonDeviceActivity : BaseDeviceActivity<BaseDeviceScan2ConnVM, ActivityB
     override fun onStop() {
         super.onStop()
         if (isFinishing) {
-            EasyBLE.getInstance().unregisterObserver(mViewModel)
         }
     }
 }

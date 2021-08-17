@@ -3,6 +3,7 @@ package com.css.wondercorefit.ui.activity.setting
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -44,27 +45,15 @@ class MyDeviceActivity : BaseActivity<MyDeviceViewModel, ActivityMyDeviceBinding
         mAdapter = MyDeviceRecycleAdapter(mData)
         mViewBinding?.deviceRecycle?.layoutManager = LinearLayoutManager(this)
         mViewBinding?.deviceRecycle?.adapter = mAdapter
-        mAdapter.setOnItemClickListener {
-            deviceInfoManager()
-        }
+//        mAdapter.setOnItemClickListener {
+//        }
         mAdapter.setOnDeleteDeviceClickListener {
+            Log.d("888" , " setOnDeleteDeviceClickListener    :   "  + mAdapter.getPosition())
             deleteDevice(it)
         }
         initRecycle()
     }
 
-    private fun deviceInfoManager() {
-        mAdapter.getDeviceInfo()?.deviceImage?.setImageResource(R.mipmap.icon_more)
-        if (opened) {
-            mAdapter.getDeviceInfo()?.deviceImage?.setImageResource(R.mipmap.icon_next)
-            mAdapter.getDeviceInfo()?.lnDeviceInfo?.visibility = View.GONE
-            opened = false
-        } else {
-            mAdapter.getDeviceInfo()?.deviceImage?.setImageResource(R.mipmap.icon_more)
-            mAdapter.getDeviceInfo()?.lnDeviceInfo?.visibility = View.VISIBLE
-            opened = true
-        }
-    }
 
     override fun initData() {
         super.initData()

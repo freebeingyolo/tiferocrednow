@@ -41,13 +41,15 @@ open class WeightBondVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPa
         mac: String,
         dataHexStr: String,
         data: ByteArray,
-        isAilink: Boolean
+        isAilink: Boolean,
+        bean:BleValueBean
     ) {
         Log.d(TAG, "mac:$mac,$dataHexStr,${isAilink},${(filterDevice == null)},${state.value}")
         filterDeviceTemp.apply {
             this.mac = mac
             this.manifactureHex = dataHexStr
             this.isAilink = isAilink
+            this.name = bean.name
         }
         mBroadcastDataParsing.dataParsing(data, isAilink)
         mBroadcastDataParsing.reset()
@@ -124,7 +126,8 @@ open class WeightBondVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPa
         val d = BondDeviceData(
             filterDevice!!.mac,
             filterDevice!!.manifactureHex,
-            DeviceType.WEIGHT
+            filterDevice!!.name,
+            deviceType
         )
         netLaunch(
             {
@@ -147,5 +150,3 @@ open class WeightBondVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPa
     }
 
 }
-
-

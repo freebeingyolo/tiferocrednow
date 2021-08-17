@@ -47,14 +47,12 @@ class WheelBondActivity : BaseDeviceActivity<WheelMeasureVM, ActivityBleEntryBin
             override fun onServiceDisconnected(name: ComponentName?) {
             }
         }, BIND_AUTO_CREATE)
-        EasyBLE.getInstance().registerObserver(mViewModel)
     }
 
     override fun onStop() {
         super.onStop()
         if (isFinishing) {
             LogUtils.d("WheelBondActivity#onStop")
-            EasyBLE.getInstance().unregisterObserver(mViewModel)
         }
     }
 }

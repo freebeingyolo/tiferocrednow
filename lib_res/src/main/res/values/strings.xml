@@ -73,7 +73,7 @@
     <string name="device_device_hardware">固件版本</string>
     <string name="device_device_delete">解除绑定</string>
     <string name="device_horizontalbar">单杠</string>
-    <string name="device_pushup">俯卧撑</string>
+    <string name="device_pushup">俯卧撑板</string>
     <string name="device_counter">计数器</string>
 
     <string name="feedback">意见和反馈</string>
@@ -94,5 +94,6 @@
     <string name="statistics_unit">次</string>
     <string name="statistics_title">数据统计</string>
     <string name="statistics_historyData">历史次数</string>
+    <string name="lowpower_error">设备电量已低于%d%%，请及时更换电池</string>
 
 </resources>
