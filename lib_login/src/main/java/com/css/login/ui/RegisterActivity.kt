@@ -98,18 +98,7 @@ class RegisterActivity : BaseActivity<RegisterViewModel, ActivityRegisterBinding
             }
         }
     }
-    private fun showNetworkErrorDialog() {
-        CommonAlertDialog(this).apply {
-            type = CommonAlertDialog.DialogType.Image
-            imageResources = R.mipmap.icon_error
-            content = getString(R.string.network_error)
-            onDismissListener = object : BasePopupWindow.OnDismissListener() {
-                override fun onDismiss() {
 
-                }
-            }
-        }.show()
-    }
     private fun checkEdittext() {
         mViewBinding.etUsername.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {

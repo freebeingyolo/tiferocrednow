@@ -15,7 +15,6 @@ object CourseRepository {
     suspend fun queryVideo(): CommonResponse<List<CourseData>> {
         val param = RequestBodyBuilder()
                 .addParams("applicationScenes", "教程")
-                .addParams("id", 0)
                 .build()
         return otherApi.queryVideo(param)
     }
