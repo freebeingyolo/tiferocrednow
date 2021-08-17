@@ -81,20 +81,34 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
         mAdapter = FeedbackAdapter(this)
         mViewBinding.eListviewFeedback.setAdapter(mAdapter)
         mViewBinding.eListviewFeedback.setOnGroupClickListener { parent, v, groupPosition, id ->
-            selectPosition = groupPosition
             if (parent.isGroupExpanded(groupPosition)) {
                 //收起删除缓存
+                feedbackId = 0
+                selectPosition = 0
             } else {
                 //展开获取反馈详情数据
 //                var bean =  parent.adapter.getItem(groupPosition) as FeedbackData
-                var bean = feedbackData.get(groupPosition)
-                LogUtils.dTag("---", ":" + bean.id)
+                val bean = feedbackData[groupPosition]
+//                LogUtils.dTag("---", ":" + bean.id)
+                feedbackId = bean.id
+                selectPosition = groupPosition
                 mViewModel.queryFeedBackHistoryDetail(bean.id)
                 setFeedbackDate(DateTimeHelper.parseStringToDate(bean.feedbackDate))
             }
-
+            LogUtils.dTag("---", "feedbackId:" + feedbackId)
             false
         }
+
+        mViewBinding.eListviewFeedback.setOnGroupExpandListener {
+//            LogUtils.dTag("---", ":" + it)
+            for (i in feedbackData.indices) {
+                if (i != it) {
+                    mViewBinding.eListviewFeedback.collapseGroup(i)
+                }
+            }
+
+        }
+
         //加载历史反馈数据
         mViewModel.queryFeedBackHistory()
     }
@@ -133,7 +147,11 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
         mViewModel.submitData.observe(this, {
-            showToast(it)
+            showToast("提交成功")
+            mViewBinding.etPhone.setText("")
+            mViewBinding.etContent.setText("")
+            mViewModel.queryFeedBackHistory()
+
         })
 
         mViewModel.historyData.observe(this, {
@@ -141,6 +159,9 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
             feedbackData = it
             mAdapter.setGroupData(feedbackData)
             mAdapter.notifyDataSetChanged()
+            for (i in feedbackData.indices) {
+                mViewBinding.eListviewFeedback.expandGroup(i)
+            }
         })
 
         mViewModel.historyDetails.observe(this, {

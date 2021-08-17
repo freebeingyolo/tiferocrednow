@@ -24,12 +24,12 @@ class FeedbackAdapter(mContext: Context) : BaseExpandableListAdapter() {
     fun setGroupData(groupData: ArrayList<FeedbackData>) {
         mGroupData = groupData
         for (i in 0 until groupData.size) {
-            mChildData.put(i, ArrayList<FeedbackData>())
+            mChildData[i] = ArrayList<FeedbackData>()
         }
     }
 
     fun setChildData(position: Int, childData: ArrayList<FeedbackData>) {
-        mChildData.put(position, childData)
+        mChildData[position] = childData
     }
 
     override fun getGroupCount(): Int {
@@ -37,7 +37,7 @@ class FeedbackAdapter(mContext: Context) : BaseExpandableListAdapter() {
     }
 
     override fun getChildrenCount(groupPosition: Int): Int {
-        return mChildData.get(groupPosition)!!.size
+        return mChildData[groupPosition]!!.size
     }
 
     override fun getGroup(groupPosition: Int): Any {
@@ -101,8 +101,8 @@ class FeedbackAdapter(mContext: Context) : BaseExpandableListAdapter() {
         val binding =
             ItemFeedbackChildBinding.inflate(LayoutInflater.from(parent!!.context), parent, false)
 //        //数据
-        if (mChildData.get(groupPosition)?.size!! > 0) {
-            val bean = mChildData.get(groupPosition)?.get(childPosition) as FeedbackData
+        if (mChildData[groupPosition]?.size!! > 0) {
+            val bean = mChildData[groupPosition]?.get(childPosition) as FeedbackData
             binding.tvHistoryDate.text = bean.feedbackDate
             binding.tvHistoryStatus.text = bean.feedbackStatus
             binding.tvHistoryContent.text = bean.feedbackContent
@@ -113,4 +113,5 @@ class FeedbackAdapter(mContext: Context) : BaseExpandableListAdapter() {
     override fun isChildSelectable(groupPosition: Int, childPosition: Int): Boolean {
         return true
     }
+
 }
