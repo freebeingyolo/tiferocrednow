@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.arouter.launcher.ARouter
+import com.blankj.utilcode.util.NetworkUtils
 import com.css.base.dialog.ToastDialog
 import com.css.base.uibase.BaseFragment
 import com.css.ble.bean.BondDeviceData
@@ -37,7 +38,8 @@ import com.css.wondercorefit.ui.activity.setting.PersonInformationActivity
 import com.css.wondercorefit.viewmodel.MainViewModel
 
 
-class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.OnClickListener {
+class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.OnClickListener,
+    NetworkUtils.OnNetworkStatusChangedListener {
     private val TAG = "MainFragment"
 
     lateinit var userInfo: UserData
@@ -93,6 +95,14 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             WonderCoreCache.saveGlobalData(GlobalData(false))
         }
         startBootStrapService()
+        if (NetworkUtils.isConnected()){
+            mViewBinding?.networkError?.visibility = View.GONE
+            mViewBinding?.mainLayout?.visibility = View.VISIBLE
+        }else{
+            mViewBinding?.networkError?.visibility = View.VISIBLE
+            mViewBinding?.mainLayout?.visibility = View.GONE
+        }
+        NetworkUtils.registerNetworkStatusChangedListener(this)
     }
 
     private fun startBootStrapService() {
@@ -367,5 +377,16 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             )
             pauseResume = false
         }
+    }
+
+    override fun onDisconnected() {
+        mViewBinding?.networkError?.visibility = View.VISIBLE
+        mViewBinding?.mainLayout?.visibility = View.GONE
+    }
+
+    override fun onConnected(networkType: NetworkUtils.NetworkType?) {
+        mViewBinding?.networkError?.visibility = View.GONE
+        mViewBinding?.mainLayout?.visibility = View.VISIBLE
+        mViewModel.loadDevice()
     }
 }

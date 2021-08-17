@@ -39,9 +39,11 @@ class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(), View.On
 
         }
         if (NetworkUtils.isConnected()){
-            mViewBinding?.llNetError?.visibility = View.GONE
+            mViewBinding?.networkError?.visibility = View.GONE
+            mViewBinding?.mainLayout?.visibility = View.VISIBLE
         }else{
-            mViewBinding?.llNetError?.visibility = View.VISIBLE
+            mViewBinding?.networkError?.visibility = View.VISIBLE
+            mViewBinding?.mainLayout?.visibility = View.GONE
         }
         NetworkUtils.registerNetworkStatusChangedListener(this)
     }
@@ -64,6 +66,7 @@ class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(), View.On
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
         mViewModel.mallData.observe(viewLifecycleOwner, {
+            mData.clear()
             mData.addAll(it)
             mAdapter.setItems(mData)
         })
@@ -102,11 +105,13 @@ class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(), View.On
     }
 
     override fun onDisconnected() {
-        mViewBinding?.llNetError?.visibility = View.VISIBLE
+        mViewBinding?.networkError?.visibility = View.VISIBLE
+        mViewBinding?.mainLayout?.visibility = View.GONE
     }
 
     override fun onConnected(networkType: NetworkUtils.NetworkType?) {
-        mViewBinding?.llNetError?.visibility = View.GONE
+        mViewBinding?.networkError?.visibility = View.GONE
+        mViewBinding?.mainLayout?.visibility = View.VISIBLE
         mViewModel.getMallInfo()
     }
 }

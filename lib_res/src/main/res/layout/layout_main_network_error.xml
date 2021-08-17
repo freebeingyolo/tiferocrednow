@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="#FFF6F6F6"
+    android:gravity="center_horizontal"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="167dp"
+        android:layout_marginTop="115dp"
+        android:layout_height="158dp"
+        android:src="@drawable/main_network_error" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="网络异常"
+        android:textColor="#FF333333"
+        android:layout_marginTop="7dp"
+        android:textSize="14sp"/>
+
+</androidx.appcompat.widget.LinearLayoutCompat>
