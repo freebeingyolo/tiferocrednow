@@ -4,6 +4,8 @@ import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
+import android.os.Handler
+import android.os.Looper
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
@@ -17,7 +19,7 @@ import razerdp.basepopup.BasePopupWindow
  * author Ruis
  * date 2019/11/7
  */
-class CommonAlertDialog {
+class CommonAlertDialog : BasePopupWindow.OnDismissListener {
 
     var context: Context
     var dialog: BasePopupWindow? = null
@@ -52,6 +54,7 @@ class CommonAlertDialog {
     var gravity: Int = Gravity.CENTER
     var outSideDismiss = true//设置BasePopup是否允许点击外部触发Dismiss
     var backPressEnable = true//设置BasePopup是否允许返回键dismiss
+    var autoDismisSeconds = -1 //自动dismiss
 
     constructor(context: Context) {
         this.context = context
@@ -320,7 +323,7 @@ class CommonAlertDialog {
                 centerCommonAlertDialog.setListener(listener)
             }
         }
-        dialog!!.onDismissListener = onDismissListener
+        dialog!!.onDismissListener = this
         if (openBackgroudColor) {
             dialog!!.setBackgroundColor(Color.parseColor("#4D000000"))
         } else {
@@ -330,6 +333,28 @@ class CommonAlertDialog {
             .setOutSideDismiss(outSideDismiss)
             .setBackPressEnable(backPressEnable)
         dialog!!.showPopupWindow()
+        //dialog自动消失
+        if (autoDismisSeconds >= 0) {
+            val h = Handler(Looper.getMainLooper())
+            h.postDelayed({
+                dialog?.dismiss()
+                dialog = null
+            }, autoDismisSeconds * 1000L)
+        }
     }
 
+    override fun onBeforeDismiss(): Boolean {
+        return super.onBeforeDismiss()
+        onDismissListener?.onBeforeDismiss()
+    }
+
+    override fun onDismissAnimationStart() {
+        super.onDismissAnimationStart()
+        onDismissListener?.onDismissAnimationStart()
+    }
+
+    override fun onDismiss() {
+        onDismissListener?.onDismiss()
+        dialog = null
+    }
 }

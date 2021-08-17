@@ -12,6 +12,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
+import com.css.base.net.HttpNetCode
 import com.css.base.uibase.BaseActivity
 import com.css.ble.R
 import com.css.ble.bean.DeviceType
@@ -113,7 +114,15 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
 
     override fun initData() {
         super.initData()
-        mViewModel.loadDeviceInfo()
+        mViewModel.loadDeviceInfo(null, { code, msg, _ ->
+            run {
+                if (code == HttpNetCode.NET_CONNECT_ERROR) {
+                    showNetworkErrorDialog { finish() }
+                } else {
+                    showNetworkErrorDialog(msg) { finish() }
+                }
+            }
+        })
     }
 
     class RecycleViewAdapter : RecyclerView.Adapter<RecycleViewAdapter.MyViewHolder>() {

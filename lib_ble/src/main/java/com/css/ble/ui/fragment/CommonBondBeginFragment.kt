@@ -65,8 +65,8 @@ class CommonBondBeginFragment(d: DeviceType, val model: BaseDeviceScan2ConnVM) :
                             )
                         },
                         { _, msg, _ ->
-                            showToast(msg)
-                            onBackPressed()
+                            //showToast(msg)
+                            showNetworkErrorDialog { onBackPressed() }
                         })
                 }
                 State.timeOut -> {

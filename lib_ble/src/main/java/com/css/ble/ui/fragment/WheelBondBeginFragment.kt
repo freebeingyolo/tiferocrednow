@@ -58,8 +58,10 @@ class WheelBondBeginFragment : BaseDeviceFragment<WheelMeasureVM, LayoutWheelBon
                     mViewModel.bindDevice({ _, _ ->
                         FragmentUtils.changeFragment(WheelBondEndFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
                     }, { _, msg, _ ->
-                        showToast("$msg,请检查网络重新绑定")
-                        finishAc()
+                        //showToast("$msg,请检查网络重新绑定")
+                        showNetworkErrorDialog {
+                            finishAc()
+                        }
                     })
                 }
                 State.timeOut -> {

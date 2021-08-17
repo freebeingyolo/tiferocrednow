@@ -6,12 +6,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.css.ble.R
-import com.css.ble.bean.BondDeviceData
-import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.LayoutWeightBondFoundBinding
 import com.css.ble.utils.FragmentUtils
 import com.css.ble.viewmodel.WeightBondVM
-import com.css.service.utils.CacheKey
 
 /**
  * @author yuedong
@@ -32,8 +29,8 @@ class WeightBondDoingFragment : BaseWeightFragment<WeightBondVM, LayoutWeightBon
                     { _, _ ->
                     },
                     { _, msg, _ ->
-                        showToast("$msg,请检查网络重新绑定")
-                        finishAc()
+                        //showToast("$msg,请检查网络重新绑定")
+                        showNetworkErrorDialog { finishAc() }
                     })
             }
         }

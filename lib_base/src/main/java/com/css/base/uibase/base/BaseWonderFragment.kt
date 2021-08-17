@@ -573,13 +573,17 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
     //--------------------- control fragment end --------------------------
 
     //显示网络异常dialog
-    fun showNetworkErrorDialog(lis: BasePopupWindow.OnDismissListener? = null): CommonAlertDialog {
+    fun showNetworkErrorDialog(msg: String? = getString(R.string.network_error), onDismiss: (() -> Unit)? = null): CommonAlertDialog {
         return CommonAlertDialog(requireContext()).apply {
             type = CommonAlertDialog.DialogType.Image
             imageResources = R.mipmap.icon_error
-            content = getString(R.string.network_error)
-            onDismissListener = lis
-
+            content = msg
+            onDismissListener = object : BasePopupWindow.OnDismissListener() {
+                override fun onDismiss() {
+                    onDismiss?.invoke()
+                }
+            }
+            autoDismisSeconds = 2
         }.apply {
             show()
         }

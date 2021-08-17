@@ -50,7 +50,6 @@ class DeviceListVM : BaseViewModel() {
                 success?.invoke(m, devices)
             },
             { code, msg, data ->
-                showToast(msg)
                 hideLoading()
                 failed?.invoke(code, msg, data)
             }
