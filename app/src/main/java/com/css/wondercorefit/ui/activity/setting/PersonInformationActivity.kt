@@ -13,6 +13,8 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
+import com.blankj.utilcode.util.NetworkUtils
+import com.css.base.dialog.CommonAlertDialog
 import com.css.base.uibase.BaseActivity
 import com.css.pickerview.builder.OptionsPickerBuilder
 import com.css.pickerview.listener.CustomListener
@@ -22,6 +24,7 @@ import com.css.service.utils.WonderCoreCache
 import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.ActivityPersonInformationBinding
 import com.css.wondercorefit.viewmodel.PersonInformationViewModel
+import razerdp.basepopup.BasePopupWindow
 
 class PersonInformationActivity :
     BaseActivity<PersonInformationViewModel, ActivityPersonInformationBinding>(),
@@ -83,7 +86,7 @@ class PersonInformationActivity :
 //        mViewBinding.tvStature.text = mUserData.stature + "cm"
 //        mViewBinding.tvAge.text = mUserData.age + "岁"
 //        mViewBinding.tvSex.text = mUserData.sex
-        mViewModel.getPersonInfo()
+            mViewModel.getPersonInfo()
 
     }
 
@@ -269,7 +272,8 @@ class PersonInformationActivity :
             mUserData.targetWeightLocation = options1
             WonderCoreCache.saveUserInfo(mUserData)
             mViewModel.upDataPersonInfo("", "", "", str, "")
-        }.setLayoutRes(R.layout.dialog_person_info_setting
+        }.setLayoutRes(
+            R.layout.dialog_person_info_setting
         ) { v ->
             var title = v?.findViewById<TextView>(R.id.tv_title)
             var cancel = v?.findViewById<TextView>(R.id.btn_cancel)
@@ -352,5 +356,6 @@ class PersonInformationActivity :
         mTargetStepPickerDialog?.show()
 
     }
+
 
 }
