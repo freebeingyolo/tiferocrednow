@@ -3,10 +3,12 @@ package com.css.wondercorefit.ui.fragment
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import com.blankj.utilcode.util.NetworkUtils
 import com.css.base.uibase.BaseFragment
 
 import com.css.service.data.CourseData
@@ -17,7 +19,8 @@ import com.css.wondercorefit.ui.activity.index.CoursePlayActivity
 import com.css.wondercorefit.viewmodel.CourseViewModel
 
 
-class CourseFragment : BaseFragment<CourseViewModel, FragmentCourseBinding>() {
+class CourseFragment : BaseFragment<CourseViewModel, FragmentCourseBinding>(),
+    NetworkUtils.OnNetworkStatusChangedListener {
     private val TAG = "CourseFragment"
     private var toast: Toast? = null
     var mData = ArrayList<CourseData>()
@@ -32,16 +35,25 @@ class CourseFragment : BaseFragment<CourseViewModel, FragmentCourseBinding>() {
         mAdapter.setOnItemClickListener {
             startIntent(it.videoLink)
         }
-        initRecycle()
+        if (NetworkUtils.isConnected()) {
+            mViewBinding?.networkError?.visibility = View.GONE
+            mViewBinding?.courseRecycle?.visibility = View.VISIBLE
+        } else {
+            mViewBinding?.networkError?.visibility = View.VISIBLE
+            mViewBinding?.courseRecycle?.visibility = View.GONE
+        }
+        NetworkUtils.registerNetworkStatusChangedListener(this)
     }
 
-    private fun initRecycle() {
+    override fun initData() {
+        super.initData()
         mViewModel.getCourseInfo()
     }
 
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
         mViewModel.courseData.observe(viewLifecycleOwner, {
+            mData.clear()
             mData.addAll(it)
             mAdapter.setItems(mData)
         })
@@ -61,5 +73,16 @@ class CourseFragment : BaseFragment<CourseViewModel, FragmentCourseBinding>() {
         bundle.putString("videoLink", videoLink)
         recyclerIntent.putExtras(bundle)
         startActivity(recyclerIntent)
-}
+    }
+
+    override fun onDisconnected() {
+        mViewBinding?.networkError?.visibility = View.VISIBLE
+        mViewBinding?.courseRecycle?.visibility = View.GONE
+    }
+
+    override fun onConnected(networkType: NetworkUtils.NetworkType?) {
+        mViewBinding?.networkError?.visibility = View.GONE
+        mViewBinding?.courseRecycle?.visibility = View.VISIBLE
+        mViewModel.getCourseInfo()
+    }
 }

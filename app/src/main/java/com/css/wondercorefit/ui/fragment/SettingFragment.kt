@@ -59,10 +59,18 @@ class SettingFragment : BaseFragment<DefaultViewModel, FragmentSettingBinding>()
     override fun onClick(v: View) {
         when (v.id) {
             R.id.rl_person_info -> {
-                activity?.let { PersonInformationActivity.starActivity(it) }
+                if (NetworkUtils.isConnected()) {
+                    activity?.let { PersonInformationActivity.starActivity(it) }
+                }else{
+                    showNetworkErrorDialog()
+                }
             }
             R.id.rl_my_device -> {
-                activity?.let { MyDeviceActivity.starActivity(it) }
+                if (NetworkUtils.isConnected()) {
+                    activity?.let { MyDeviceActivity.starActivity(it) }
+                }else{
+                    showNetworkErrorDialog()
+                }
             }
             R.id.rl_about_us -> {
                 activity?.let { AboutUsActivity.starActivity(it) }

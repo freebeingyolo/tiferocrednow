@@ -19,7 +19,6 @@ class MainActivityViewModel : BaseViewModel() {
     fun getUpGrade() {
         netLaunch(
             {
-                showLoading()
                 withContext(Dispatchers.IO) {
                     SettingRepository.upGrade(AppUtils.getAppVersionCode().toString())
                 }
