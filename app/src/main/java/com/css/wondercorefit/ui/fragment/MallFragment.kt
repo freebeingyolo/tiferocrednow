@@ -81,6 +81,11 @@ class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(),
                 }
 
             }
+            if (mStoreData.size==0){
+                mViewBinding?.storeLayout?.visibility = View.GONE
+            }else{
+                mViewBinding?.storeLayout?.visibility = View.VISIBLE
+            }
             mAdapter.setItems(mData)
             mStoreAdapter.setItems(mStoreData)
         })
