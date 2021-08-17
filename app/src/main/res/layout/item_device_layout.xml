@@ -26,6 +26,7 @@
             android:ellipsize="end"
             android:maxEms="6"
             android:maxLines="1"
+            android:minWidth="65dp"
             android:text="@{data.alias}"
             android:textColor="@color/text_color"
             android:textSize="13sp" />
