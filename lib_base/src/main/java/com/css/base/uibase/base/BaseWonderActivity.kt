@@ -3,6 +3,7 @@ package com.css.base.uibase.base
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.text.TextUtils
 import android.view.*
 import android.widget.FrameLayout
@@ -10,7 +11,6 @@ import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.contains
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.util.BarUtils
@@ -20,7 +20,6 @@ import com.blankj.utilcode.util.ToastUtils
 import com.css.base.R
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.LoadingDialog
-import com.css.base.dialog.ToastDialog
 import com.css.base.uibase.inner.IBaseView
 import com.css.base.uibase.inner.OnToolBarClickListener
 import com.css.base.uibase.viewmodel.BaseViewModel
@@ -261,52 +260,76 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
         LogUtils.i(TAG, args)
     }
 
-    override fun showToast(msg: String?) {
+    override fun showToast(msg: String?, onDismiss: (() -> Unit)?) {
         msg?.let {
             ToastUtils.setGravity(-1, -1, -1)
             ToastUtils.showShort(it)
+            onDismiss?.let {
+                Handler(Looper.getMainLooper()).postDelayed({ it() }, 2000)
+            }
         }
     }
 
-    override fun showLongToast(msg: String?) {
+    override fun showLongToast(msg: String?, onDismiss: (() -> Unit)?) {
         msg?.let {
             ToastUtils.setGravity(-1, -1, -1)
             ToastUtils.showLong(it)
+            onDismiss?.let {
+                Handler(Looper.getMainLooper()).postDelayed({ it() }, 3000)
+            }
         }
     }
 
-    override fun showToast(resId: Int) {
+    override fun showToast(resId: Int, onDismiss: (() -> Unit)?) {
         ToastUtils.setGravity(-1, -1, -1)
         ToastUtils.showShort(resId)
+        onDismiss?.let {
+            Handler(Looper.getMainLooper()).postDelayed({ it() }, 2000)
+        }
     }
 
-    override fun showLongToast(resId: Int) {
+    override fun showLongToast(resId: Int, onDismiss: (() -> Unit)?) {
         ToastUtils.setGravity(-1, -1, -1)
         ToastUtils.showLong(resId)
+        onDismiss?.let {
+            Handler(Looper.getMainLooper()).postDelayed({ it() }, 3000)
+        }
     }
 
-    override fun showCenterToast(msg: String?) {
+    override fun showCenterToast(msg: String?, onDismiss: (() -> Unit)?) {
         msg?.let {
             ToastUtils.setGravity(Gravity.CENTER, 0, 0)
             ToastUtils.showShort(msg)
+            onDismiss?.let {
+                Handler(Looper.getMainLooper()).postDelayed({ it() }, 2000)
+            }
         }
     }
 
-    override fun showCenterLongToast(msg: String?) {
+    override fun showCenterLongToast(msg: String?, onDismiss: (() -> Unit)?) {
         msg?.let {
             ToastUtils.setGravity(Gravity.CENTER, 0, 0)
             ToastUtils.showLong(msg)
+            onDismiss?.let {
+                Handler(Looper.getMainLooper()).postDelayed({ it() }, 3000)
+            }
         }
     }
 
-    override fun showCenterToast(resId: Int) {
+    override fun showCenterToast(resId: Int, onDismiss: (() -> Unit)?) {
         ToastUtils.setGravity(Gravity.CENTER, 0, 0)
         ToastUtils.showShort(resId)
+        onDismiss?.let {
+            Handler(Looper.getMainLooper()).postDelayed({ it() }, 2000)
+        }
     }
 
-    override fun showCenterLongToast(resId: Int) {
+    override fun showCenterLongToast(resId: Int, onDismiss: (() -> Unit)?) {
         ToastUtils.setGravity(Gravity.CENTER, 0, 0)
         ToastUtils.showLong(resId)
+        onDismiss?.let {
+            Handler(Looper.getMainLooper()).postDelayed({ it() }, 3000)
+        }
     }
 
     override fun showLoading() {
