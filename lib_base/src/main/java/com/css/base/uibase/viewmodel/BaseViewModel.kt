@@ -1,5 +1,7 @@
 package com.css.base.uibase.viewmodel
 
+import android.os.Handler
+import android.os.Looper
 import androidx.annotation.StringRes
 import androidx.lifecycle.*
 import com.blankj.utilcode.util.LogUtils
@@ -66,36 +68,60 @@ abstract class BaseViewModel : ViewModel(), IBaseViewModel, INetView, IResource 
         hideLoadingEvent.value = ""
     }
 
-    override fun showToast(msg: String?) {
+    override fun showToast(msg: String?, onDismiss: (() -> Unit)?) {
         showToastStrEvent.value = msg
+        onDismiss?.let {
+            Handler(Looper.getMainLooper()).postDelayed({ it() }, 2000)
+        }
     }
 
-    override fun showLongToast(msg: String?) {
+    override fun showLongToast(msg: String?, onDismiss: (() -> Unit)?) {
         showLongToastStrEvent.value = msg
+        onDismiss?.let {
+            Handler(Looper.getMainLooper()).postDelayed({ it() }, 3500)
+        }
     }
 
-    override fun showToast(@StringRes resId: Int) {
+    override fun showToast(@StringRes resId: Int, onDismiss: (() -> Unit)?) {
         showToastResEvent.value = resId
+        onDismiss?.let {
+            Handler(Looper.getMainLooper()).postDelayed({ it() }, 2000)
+        }
     }
 
-    override fun showLongToast(resId: Int) {
+    override fun showLongToast(resId: Int, onDismiss: (() -> Unit)?) {
         showLongToastResEvent.value = resId
+        onDismiss?.let {
+            Handler(Looper.getMainLooper()).postDelayed({ it() }, 3500)
+        }
     }
 
-    override fun showCenterToast(msg: String?) {
+    override fun showCenterToast(msg: String?, onDismiss: (() -> Unit)?) {
         showCenterToastStrEvent.value = msg
+        onDismiss?.let {
+            Handler(Looper.getMainLooper()).postDelayed({ it() }, 2000)
+        }
     }
 
-    override fun showCenterLongToast(msg: String?) {
+    override fun showCenterLongToast(msg: String?, onDismiss: (() -> Unit)?) {
         showCenterLongToastStrEvent.value = msg
+        onDismiss?.let {
+            Handler(Looper.getMainLooper()).postDelayed({ it() }, 3500)
+        }
     }
 
-    override fun showCenterToast(resId: Int) {
+    override fun showCenterToast(resId: Int, onDismiss: (() -> Unit)?) {
         showCenterToastResEvent.value = resId
+        onDismiss?.let {
+            Handler(Looper.getMainLooper()).postDelayed({ it() }, 2000)
+        }
     }
 
-    override fun showCenterLongToast(resId: Int) {
+    override fun showCenterLongToast(resId: Int, onDismiss: (() -> Unit)?) {
         showCenterLongToastResEvent.value = resId
+        onDismiss?.let {
+            Handler(Looper.getMainLooper()).postDelayed({ it() }, 3500)
+        }
     }
 
     override fun finishAc() {

@@ -116,7 +116,7 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
         super.initData()
         mViewModel.loadDeviceInfo(null, { code, msg, _ ->
             run {
-                showNetworkErrorDialog(msg) { finish() }
+                showToast(msg) { finish() }
             }
         })
     }

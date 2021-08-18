@@ -29,8 +29,8 @@ class WeightBondDoingFragment : BaseWeightFragment<WeightBondVM, LayoutWeightBon
                     { _, _ ->
                     },
                     { _, msg, _ ->
-                        //showToast("$msg,请检查网络重新绑定")
-                        showNetworkErrorDialog { finishAc() }
+                        showToast("$msg")
+                        //showNetworkErrorDialog(msg)
                     })
             }
         }
