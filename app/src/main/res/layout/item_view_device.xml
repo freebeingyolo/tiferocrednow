@@ -101,7 +101,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:text="@{deviceData.productType.toString()}"
+            android:text="@{deviceData.moduleType.toString()}"
             android:textColor="@color/black"
             android:textSize="11sp" />
         <View
