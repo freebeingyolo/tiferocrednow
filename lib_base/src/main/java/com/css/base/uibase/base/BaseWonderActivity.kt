@@ -275,7 +275,7 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
             ToastUtils.setGravity(-1, -1, -1)
             ToastUtils.showLong(it)
             onDismiss?.let {
-                Handler(Looper.getMainLooper()).postDelayed({ it() }, 3000)
+                Handler(Looper.getMainLooper()).postDelayed({ it() }, 3500)
             }
         }
     }
@@ -292,7 +292,7 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
         ToastUtils.setGravity(-1, -1, -1)
         ToastUtils.showLong(resId)
         onDismiss?.let {
-            Handler(Looper.getMainLooper()).postDelayed({ it() }, 3000)
+            Handler(Looper.getMainLooper()).postDelayed({ it() }, 3500)
         }
     }
 
@@ -311,7 +311,7 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
             ToastUtils.setGravity(Gravity.CENTER, 0, 0)
             ToastUtils.showLong(msg)
             onDismiss?.let {
-                Handler(Looper.getMainLooper()).postDelayed({ it() }, 3000)
+                Handler(Looper.getMainLooper()).postDelayed({ it() }, 3500)
             }
         }
     }
@@ -328,7 +328,7 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
         ToastUtils.setGravity(Gravity.CENTER, 0, 0)
         ToastUtils.showLong(resId)
         onDismiss?.let {
-            Handler(Looper.getMainLooper()).postDelayed({ it() }, 3000)
+            Handler(Looper.getMainLooper()).postDelayed({ it() }, 3500)
         }
     }
 
