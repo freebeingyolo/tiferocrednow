@@ -41,7 +41,8 @@
         android:layout_marginEnd="51dp"
         android:background="@drawable/login_edittext_bg"
         android:hint="@string/register_phone_tip"
-        android:inputType="phone"
+        android:digits="1234567890"
+        android:inputType="phone|number"
         android:maxLength="11"
         android:paddingStart="7dp"
         android:textSize="13sp" />
