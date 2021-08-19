@@ -42,6 +42,7 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
     private var isSubmitStatus = false;
     private var feedbackId = 0;
     private var selectPosition = 0;
+    private var isRefresh = false;
 
     private var feedbackData = ArrayList<FeedbackData>()
 
@@ -81,10 +82,13 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
         mAdapter = FeedbackAdapter(this)
         mViewBinding.eListviewFeedback.setAdapter(mAdapter)
         mViewBinding.eListviewFeedback.setOnGroupClickListener { parent, v, groupPosition, id ->
+            LogUtils.dTag("---", "eListviewFeedback:" + groupPosition)
+            isRefresh = true
             if (parent.isGroupExpanded(groupPosition)) {
                 //收起删除缓存
                 feedbackId = 0
                 selectPosition = 0
+                setFeedbackDate(Calendar.getInstance().time);
             } else {
                 //展开获取反馈详情数据
 //                var bean =  parent.adapter.getItem(groupPosition) as FeedbackData
@@ -95,18 +99,19 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
                 mViewModel.queryFeedBackHistoryDetail(bean.id)
                 setFeedbackDate(DateTimeHelper.parseStringToDate(bean.feedbackDate))
             }
-            LogUtils.dTag("---", "feedbackId:" + feedbackId)
+//            LogUtils.dTag("---", "feedbackId:" + feedbackId)
             false
         }
 
         mViewBinding.eListviewFeedback.setOnGroupExpandListener {
 //            LogUtils.dTag("---", ":" + it)
-            for (i in feedbackData.indices) {
-                if (i != it) {
-                    mViewBinding.eListviewFeedback.collapseGroup(i)
+            if (isRefresh) {
+                for (i in feedbackData.indices) {
+                    if (i != it) {
+                        mViewBinding.eListviewFeedback.collapseGroup(i)
+                    }
                 }
             }
-
         }
 
         //加载历史反馈数据
@@ -150,17 +155,19 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
             showToast("提交成功")
             mViewBinding.etPhone.setText("")
             mViewBinding.etContent.setText("")
+            setFeedbackDate(Calendar.getInstance().time);
             mViewModel.queryFeedBackHistory()
-
         })
 
         mViewModel.historyData.observe(this, {
             //意见反馈历史数据
             feedbackData = it
+            isRefresh = false;
             mAdapter.setGroupData(feedbackData)
             mAdapter.notifyDataSetChanged()
             for (i in feedbackData.indices) {
-                mViewBinding.eListviewFeedback.expandGroup(i)
+                mViewBinding.eListviewFeedback.collapseGroup(i)
+//                LogUtils.dTag("---", "expandGroup:" + i)
             }
         })
 
