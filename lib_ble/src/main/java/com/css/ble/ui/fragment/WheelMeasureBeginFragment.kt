@@ -198,7 +198,7 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
 
         override fun onBindItem(binding: LayoutPlayRecommendItemBinding, item: CourseData, position: Int) {
             binding.courseData = item
-            binding.rtvPlay.setOnClickListener {
+            binding.itemContainer.setOnClickListener {
                 //val url = "https://www.baidu.com"
                 val url = item.videoLink
                 try {

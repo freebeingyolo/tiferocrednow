@@ -44,6 +44,7 @@
                 android:gravity="center"
                 android:text="@{model.bonded_tip}"
                 android:textColor="#333333"
+                tools:text="@string/weight_bonded_tip"
                 android:textSize="13sp" />
 
             <LinearLayout

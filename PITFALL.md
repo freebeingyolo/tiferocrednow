@@ -11,8 +11,7 @@
      
 
    - 自定义属性需要解析多个，比如color既支持"#ff0000"又支持"@color/red"呢？
-
-     
+        直接使用ta.getColor(id, 0),可以兼容两种方式
 
 # 注意点
 
@@ -28,7 +27,7 @@
 2. App内存泄漏检测、CPU、内存、耗电量、流量使用统计(20210811)
 3. Activity嵌套Fragment，会出现最上面的布局与状态栏重叠问题（数据统计页面）  (20210811)
 
-
+   框架问题
 
 # 坑
 
@@ -38,9 +37,6 @@
    EasyBLE.getInstance().registerObserver(observer);
    
    使用跟connection相关的观察者
-   
-   
-   
    ```
    
    
