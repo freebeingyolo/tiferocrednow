@@ -28,9 +28,9 @@ class FeedbackViewModel : BaseViewModel() {
             //可以提交
             //检查电话是否合规
             if (!RegexUtils.isMobileExact(phone)) {
-                showCenterToast("手机格式有误")
+                showToast("手机格式有误")
             } else if (content.length < 10) {
-                showCenterToast("请输入至少10个字以上")
+                showToast("请输入至少10个字以上")
             } else {
                 netLaunch(
                     {

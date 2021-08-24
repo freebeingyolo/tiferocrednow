@@ -179,7 +179,7 @@ class DataStatisticsFragment : BaseFragment<DataStatisticsVM, FragmentStatistics
             for (j in mData.indices) {
                 if (carList[i].time == DateTimeHelper.parseStringToDate(mData[j].todayDate).time) {
                     exerciseNumber = mData[j].exerciseNumber
-                    LogUtils.dTag("运动日期--->", mData[j].todayDate + "--次数：" + exerciseNumber)
+//                    LogUtils.dTag("运动日期--->", mData[j].todayDate + "--次数：" + exerciseNumber)
                 }
             }
 
@@ -229,7 +229,8 @@ class DataStatisticsFragment : BaseFragment<DataStatisticsVM, FragmentStatistics
         //Y轴自定义坐标
         mViewBinding!!.barStatistics.axisRight.valueFormatter = object : ValueFormatter() {
             override fun getFormattedValue(v: Float): String {
-                return "  " + v
+//                LogUtils.dTag("Y轴", "--次数："+ String.format("%.1f", v))
+                return String.format("%.1f", v)
             }
         }
 //        mViewBinding!!.barStatistics.axisLeft.gridColor = Color.parseColor("#CCCCCC")
