@@ -61,8 +61,8 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
 
     /*** overridable start ****/
     abstract val bonded_tip: String
-    open val foundMethod: FoundWay = FoundWay.UUID
-    open val bondTimeout = 6 * 1000L
+    open val foundMethod: FoundWay = FoundWay.NAME
+    open val bondTimeout = 5 * 1000L
     open val connectTimeout = 5 * 1000L
 
     /*** overridable end ****/
@@ -248,16 +248,18 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
             ConnectionState.SERVICE_DISCOVERED -> {
                 state = State.discovered
                 if (workMode == WorkMode.BOND) {
-                    val services: List<BluetoothGattService> = connection!!.gatt!!.services
-                    loop@ for (service in services) {
-                        if (filterUUID(service.uuid)) {
-                            foundDevice(device)
-                            break@loop
-                        }
-                        for (ch in service.characteristics) {
-                            if (filterUUID(ch.uuid)) {
+                    if(foundMethod == FoundWay.UUID){
+                        val services: List<BluetoothGattService> = connection!!.gatt!!.services
+                        loop@ for (service in services) {
+                            if (filterUUID(service.uuid)) {
                                 foundDevice(device)
                                 break@loop
+                            }
+                            for (ch in service.characteristics) {
+                                if (filterUUID(ch.uuid)) {
+                                    foundDevice(device)
+                                    break@loop
+                                }
                             }
                         }
                     }
@@ -334,7 +336,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
             {
                 withContext(Dispatchers.IO) {
                     val ret = DeviceRepository.bindDevice(d.buidUploadParams())
-                    takeIf { ret.isSuccess }.let {
+                    if (ret.isSuccess) {
                         val d = BondDeviceData(ret.data!!).apply { this.deviceConnect = connectStateTxt(state) }
                         BondDeviceData.setDevice(deviceType, d)
                     }

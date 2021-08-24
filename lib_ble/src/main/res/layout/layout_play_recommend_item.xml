@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
+
     <data>
+
         <variable
             name="courseData"
             type="com.css.service.data.CourseData" />
-        <import type="com.css.res.R"/>
+
+        <import type="com.css.res.R" />
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/item_container"
         android:layout_width="match_parent"
         android:layout_height="71dp"
         android:background="@color/white">
@@ -20,8 +23,8 @@
             android:layout_width="90dp"
             android:layout_height="50dp"
             android:layout_marginStart="10dp"
-            android:scaleType="centerCrop"
             android:error="@{R.mipmap.load_failed}"
+            android:scaleType="centerCrop"
             android:src="@{courseData.videoPreview}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

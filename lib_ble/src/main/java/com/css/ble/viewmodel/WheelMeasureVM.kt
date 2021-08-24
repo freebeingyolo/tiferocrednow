@@ -80,8 +80,8 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
     val recommentationData: LiveData<List<CourseData>> get() = _recommentationData
 
     //绑定
-    private val bondTimeout = 6 * 1000L
-    private val fondMethod = FoundByUuid
+    private val bondTimeout = 5 * 1000L
+    private val fondMethod = FoundByName
     private var avaliableDevice: Device? = null
     private var workMode = WorkMode.BOND
 
@@ -217,7 +217,9 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
             {
                 withContext(Dispatchers.IO) {
                     val ret = DeviceRepository.bindDevice(d.buidUploadParams())
-                    takeIf { ret.isSuccess }.let { BondDeviceData.setDevice(DeviceType.WHEEL, BondDeviceData(ret.data!!)) }
+                    if (ret.isSuccess) {
+                        BondDeviceData.setDevice(DeviceType.WHEEL, BondDeviceData(ret.data!!))
+                    }
                     ret
                 }
             },
@@ -313,11 +315,13 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
             ConnectionState.SERVICE_DISCOVERED -> {
                 state = State.discovered
                 if (workMode == WorkMode.BOND) {
-                    val services: List<BluetoothGattService> = EasyBLE.getInstance().getConnection(device)!!.gatt!!.services
-                    for (service in services) {
-                        if (service.uuid == UUID.fromString(UUID_SRVC)) {
-                            foundDevice(device)
-                            break
+                    if (fondMethod == FoundByUuid) {
+                        val services: List<BluetoothGattService> = EasyBLE.getInstance().getConnection(device)!!.gatt!!.services
+                        for (service in services) {
+                            if (service.uuid == UUID.fromString(UUID_SRVC)) {
+                                foundDevice(device)
+                                break
+                            }
                         }
                     }
                     discovered(device)
