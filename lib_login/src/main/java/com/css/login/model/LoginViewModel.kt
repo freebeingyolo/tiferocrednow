@@ -31,7 +31,7 @@ class LoginViewModel : BaseViewModel() {
             }, { _, msg, _ ->
                 hideLoading()
                 loginFailureData.value = msg
-//                showToast(msg)
+//                showCenterToast(msg)
             }
         )
     }

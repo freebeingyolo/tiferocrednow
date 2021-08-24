@@ -104,7 +104,7 @@ class DataStatisticsFragment : BaseFragment<DataStatisticsVM, FragmentStatistics
             //数据场景
             if(it == null){
                 //数据隐藏
-                showToast("您这个时间段内没有数据")
+                showCenterToast("您这个时间段内没有数据")
                 updateExerciseNumber(false,0)
                 updateCurrentDayView(false,DateTimeHelper.formatToString(currentDay, "MM月dd日"))
                 mViewBinding!!.barStatistics.visibility = View.INVISIBLE

@@ -26,7 +26,7 @@ class ResetPasswordViewModel : BaseViewModel() {
             }, { msg, _ ->
                 resetPwdData.value = msg
             }, { _, msg, _ ->
-                showToast(msg)
+                showCenterToast(msg)
             }
         )
     }
@@ -56,14 +56,14 @@ class ResetPasswordViewModel : BaseViewModel() {
                 }, { msg, _ ->
                     hideLoading()
                     mTimer!!.start()
-                    showToast(msg)
+                    showCenterToast(msg)
                 }, { _, msg, _ ->
                     hideLoading()
-                    showToast(msg)
+                    showCenterToast(msg)
                 }
             )
         } else {
-            showToast("请输入手机号")
+            showCenterToast("请输入手机号")
         }
     }
     fun checkData(

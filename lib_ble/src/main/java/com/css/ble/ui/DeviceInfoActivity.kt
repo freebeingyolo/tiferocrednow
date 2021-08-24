@@ -83,7 +83,7 @@ class DeviceInfoActivity : BaseActivity<DeviceInfoVM, FragmentDeviceInfoBinding>
                             //                                    content!!
                             //                                )
                             if (StringUtils.getCheckSymbol(content.toString())) {
-                                showToast("设备名称只可为10个汉字或英文字母，包含其他字符将无法保存")
+                                showCenterToast("设备名称只可为10个汉字或英文字母，包含其他字符将无法保存")
                             } else {
                                 val validContent = if (content.isNullOrEmpty()) {
                                     data.displayName
@@ -98,7 +98,7 @@ class DeviceInfoActivity : BaseActivity<DeviceInfoVM, FragmentDeviceInfoBinding>
                                         setToolBarLeftText(data.displayName)
                                     },
                                     { _, msg, _ ->
-                                        showToast(msg)
+                                        showCenterToast(msg)
                                     })
 
                             }
@@ -134,7 +134,7 @@ class DeviceInfoActivity : BaseActivity<DeviceInfoVM, FragmentDeviceInfoBinding>
                                         }
                                     }.show()
                                 }, { _, msg, _ ->
-                                    showToast(msg)
+                                    showCenterToast(msg)
                                 })
                         }
                     }

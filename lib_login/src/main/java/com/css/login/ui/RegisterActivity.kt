@@ -45,7 +45,7 @@ class RegisterActivity : BaseActivity<RegisterViewModel, ActivityRegisterBinding
 
     override fun registorUIChangeLiveDataCallBack() {
         mViewModel.registerData.observe(this, {
-            showToast(it)
+            showCenterToast(it)
         })
         mViewModel.resetCodeData.observe(this, {
             mViewBinding.tvSendCode.isEnabled = true

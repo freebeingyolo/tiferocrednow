@@ -28,9 +28,9 @@ class FeedbackViewModel : BaseViewModel() {
             //可以提交
             //检查电话是否合规
             if (!RegexUtils.isMobileExact(phone)) {
-                showToast("手机格式有误")
+                showCenterToast("手机格式有误")
             } else if (content.length < 10) {
-                showToast("请输入至少10个字以上")
+                showCenterToast("请输入至少10个字以上")
             } else {
                 netLaunch(
                     {
@@ -46,7 +46,7 @@ class FeedbackViewModel : BaseViewModel() {
                         submitData.value = msg
                     }, { _, msg, _ ->
                         hideLoading()
-                        showToast(msg)
+                        showCenterToast(msg)
                     }
                 )
             }
@@ -63,7 +63,7 @@ class FeedbackViewModel : BaseViewModel() {
                 historyData.value = d
             }, { _, msg, _ ->
                 hideLoading()
-                showToast(msg)
+                showCenterToast(msg)
             }
         )
     }
@@ -78,7 +78,7 @@ class FeedbackViewModel : BaseViewModel() {
                 historyDetails.value = d
             }, { _, msg, _ ->
                 hideLoading()
-                showToast(msg)
+                showCenterToast(msg)
             }
         )
     }

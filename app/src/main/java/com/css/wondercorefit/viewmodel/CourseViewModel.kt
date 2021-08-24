@@ -24,7 +24,7 @@ class CourseViewModel : BaseViewModel() {
             }, {code, msg, _ ->
                 hideLoading()
                 if (code != HttpNetCode.NET_CONNECT_ERROR) {
-                    showToast(msg)
+                    showCenterToast(msg)
                 }
             }
         )

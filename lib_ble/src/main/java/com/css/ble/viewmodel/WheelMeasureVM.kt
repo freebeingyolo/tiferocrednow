@@ -410,7 +410,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
                 success?.invoke(msg, d)
             },
             { code, msg, d ->
-                showToast(msg)
+                showCenterToast(msg)
                 failed?.invoke(code, msg, d)
             }
         )

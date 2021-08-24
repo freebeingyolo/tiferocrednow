@@ -45,7 +45,7 @@ class WeightMeasureDoneFragment : BaseWeightFragment<WeightMeasureVM, ActivityWe
             },
             { _, msg, _ ->
                 mLoadingDialog.dismiss()
-                showToast(msg)
+                showCenterToast(msg)
                 FragmentUtils.changeFragment(WeightMeasureEndDeailFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
             })
     }

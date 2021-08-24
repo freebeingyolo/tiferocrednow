@@ -87,7 +87,7 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
                                                 content = context.getString(R.string.unbond_ok)
                                             }.show()
                                         }, { _, msg, _ ->
-                                            showToast(msg)
+                                            showCenterToast(msg)
                                         })
 
                                 }
@@ -116,7 +116,7 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
         super.initData()
         mViewModel.loadDeviceInfo(null, { code, msg, _ ->
             run {
-                showToast(msg) { finish() }
+                showCenterToast(msg) { finish() }
             }
         })
     }

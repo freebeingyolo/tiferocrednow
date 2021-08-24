@@ -65,7 +65,7 @@ class CommonBondBeginFragment(d: DeviceType, val model: BaseDeviceScan2ConnVM) :
                             )
                         },
                         { _, msg, _ ->
-                            showToast(msg)
+                            showCenterToast(msg)
                             //showNetworkErrorDialog(msg)
                         })
                 }

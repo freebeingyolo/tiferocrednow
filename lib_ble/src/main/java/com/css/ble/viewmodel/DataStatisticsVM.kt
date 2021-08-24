@@ -26,7 +26,7 @@ class DataStatisticsVM : BaseViewModel() {
                 pullUpDataList.value = d
             }, { _, msg, _ ->
                 hideLoading()
-                showToast(msg)
+                showCenterToast(msg)
             }
         )
     }

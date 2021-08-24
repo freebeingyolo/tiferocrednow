@@ -120,6 +120,7 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>(), View
             }
             mViewBinding.forgetPassword -> {
                 ARouterUtil.openForgetPassword()
+                mViewBinding.etPassword.setText("")
             }
         }
     }

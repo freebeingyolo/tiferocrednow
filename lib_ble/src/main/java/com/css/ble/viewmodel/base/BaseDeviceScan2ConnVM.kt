@@ -440,7 +440,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
                 success?.invoke(msg, d)
             },
             { code, msg, d ->
-                showToast(msg)
+                showCenterToast(msg)
                 failed?.invoke(code, msg, d)
             }
         )

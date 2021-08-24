@@ -41,7 +41,7 @@ class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(),
             try {
                 openUrl(it.mallLink)
             } catch (e: Throwable) {
-                showToast("暂无连接")
+                showCenterToast("暂无连接")
             }
 
         }
@@ -49,7 +49,7 @@ class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(),
             try {
                 openUrl(it.mallLink)
             } catch (e: Throwable) {
-                showToast("暂无连接")
+                showCenterToast("暂无连接")
             }
         }
         if (NetworkUtils.isConnected()) {
