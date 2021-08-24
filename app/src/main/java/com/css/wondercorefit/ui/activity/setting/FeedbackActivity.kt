@@ -2,32 +2,21 @@ package com.css.wondercorefit.ui.activity.setting
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import androidx.core.view.get
 import androidx.lifecycle.ViewModelProvider
-import com.blankj.utilcode.util.LogUtils
-import com.blankj.utilcode.util.RegexUtils
 import com.css.base.uibase.BaseActivity
 import com.css.base.utils.DateTimeHelper
-import com.css.pickerview.builder.TimePickerBuilder
-import com.css.pickerview.view.TimePickerView
 import com.css.service.data.FeedbackData
 import com.css.wondercorefit.R
 import com.css.wondercorefit.adapter.FeedbackAdapter
-import com.css.wondercorefit.adapter.MallProductAdapter
 import com.css.wondercorefit.databinding.ActivityFeedbackBinding
 import com.css.wondercorefit.viewmodel.FeedbackViewModel
-import java.text.ParseException
 import java.util.*
 
 /**
@@ -39,10 +28,10 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
     View.OnClickListener {
 
     //提交按钮是否可用，false不可用，true可用
-    private var isSubmitStatus = false;
-    private var feedbackId = 0;
-    private var selectPosition = 0;
-    private var isRefresh = false;
+    private var isSubmitStatus = false
+    private var feedbackId = 0
+    private var selectPosition = 0
+    private var isRefresh = false
 
     private var feedbackData = ArrayList<FeedbackData>()
 
@@ -73,7 +62,7 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
     override fun initData() {
         super.initData()
         //初始化日期数据
-        setFeedbackDate(Calendar.getInstance().time);
+        setFeedbackDate(Calendar.getInstance().time)
 //        try {
 //            startDate.time = DateTimeHelper.parseStringToDate("1970-01-01")
 //        } catch (e: ParseException) {
@@ -82,13 +71,13 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
         mAdapter = FeedbackAdapter(this)
         mViewBinding.eListviewFeedback.setAdapter(mAdapter)
         mViewBinding.eListviewFeedback.setOnGroupClickListener { parent, v, groupPosition, id ->
-            LogUtils.dTag("---", "eListviewFeedback:" + groupPosition)
+//            LogUtils.dTag("---", "eListviewFeedback:" + groupPosition)
             isRefresh = true
             if (parent.isGroupExpanded(groupPosition)) {
                 //收起删除缓存
                 feedbackId = 0
                 selectPosition = 0
-                setFeedbackDate(Calendar.getInstance().time);
+                setFeedbackDate(Calendar.getInstance().time)
             } else {
                 //展开获取反馈详情数据
 //                var bean =  parent.adapter.getItem(groupPosition) as FeedbackData
