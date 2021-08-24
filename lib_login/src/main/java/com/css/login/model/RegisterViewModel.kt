@@ -32,7 +32,7 @@ class RegisterViewModel : BaseViewModel() {
                 registerData.value = msg
             }, { _, msg, _ ->
                 hideLoading()
-                showToast(msg)
+                showCenterToast(msg)
             }
         )
     }
@@ -61,14 +61,14 @@ class RegisterViewModel : BaseViewModel() {
                 }, { msg, _ ->
                     hideLoading()
                     mTimer!!.start()
-                    showToast(msg)
+                    showCenterToast(msg)
                 }, { _, msg, _ ->
                     hideLoading()
-                    showToast(msg)
+                    showCenterToast(msg)
                 }
             )
         } else {
-            showToast("请输入手机号")
+            showCenterToast("请输入手机号")
         }
     }
 

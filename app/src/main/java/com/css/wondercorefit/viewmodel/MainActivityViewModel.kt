@@ -27,13 +27,13 @@ class MainActivityViewModel : BaseViewModel() {
                 if (data != null) {
                     upGradeData.value = data
                 } else {
-                    showToast(msg)
+                    showCenterToast(msg)
                 }
 
             }, { code, msg, _ ->
                 hideLoading()
                 if (code != HttpNetCode.NET_CONNECT_ERROR) {
-                    showToast(msg)
+                    showCenterToast(msg)
                 }
             }
         )

@@ -65,7 +65,7 @@ class PersonInformationActivity :
         })
         mViewModel.upPersonInfoData.observe(this, {
             hideLoading()
-            showToast(it)
+            showCenterToast(it)
         })
         mViewModel.nonePersonInfoData.observe(this, {
             hideLoading()

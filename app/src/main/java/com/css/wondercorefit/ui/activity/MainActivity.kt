@@ -70,7 +70,7 @@ class MainActivity : BaseActivity<MainActivityViewModel, ActivityMainBinding>() 
             CommonAlertDialog(this).apply {
                 gravity = Gravity.BOTTOM
                 type = CommonAlertDialog.DialogType.Confirm
-                title = "检测更新?"
+                title = "检测更新"
                 content = "检测到新版本${it.version}\n更新内容：\n${it.updateContent}"
                 leftBtnText = "暂不更新"
                 rightBtnText = "立即更新"

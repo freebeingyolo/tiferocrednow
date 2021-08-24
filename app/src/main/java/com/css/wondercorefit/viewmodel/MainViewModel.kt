@@ -17,7 +17,7 @@ class MainViewModel : BaseViewModel() {
             },
             { code, msg, d ->
                 if (code != HttpNetCode.NET_CONNECT_ERROR) {
-                    showToast(msg)
+                    showCenterToast(msg)
                 }
             })
     }

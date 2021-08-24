@@ -31,7 +31,7 @@ class PersonInformationViewModel : BaseViewModel() {
             }, { _, msg, _ ->
                 hideLoading()
                 nonePersonInfoData.value = ""
-                showToast(msg)
+                showCenterToast(msg)
             }
         )
     }
@@ -54,7 +54,7 @@ class PersonInformationViewModel : BaseViewModel() {
                 hideLoading()
             }, { _, msg, _ ->
                 hideLoading()
-                showToast(msg)
+                showCenterToast(msg)
             }
         )
     }

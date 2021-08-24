@@ -58,7 +58,7 @@ class WheelBondBeginFragment : BaseDeviceFragment<WheelMeasureVM, LayoutWheelBon
                     mViewModel.bindDevice({ _, _ ->
                         FragmentUtils.changeFragment(WheelBondEndFragment::class.java, FragmentUtils.Option.OPT_REPLACE)
                     }, { _, msg, _ ->
-                        showToast("$msg")
+                        showCenterToast("$msg")
                         //showNetworkErrorDialog(msg)
                     })
                 }

@@ -23,7 +23,7 @@ class MallViewModel : BaseViewModel() {
             }, { code, msg, _ ->
                 hideLoading()
                 if (code != NET_CONNECT_ERROR) {
-                    showToast(msg)
+                    showCenterToast(msg)
                 }
             }
         )

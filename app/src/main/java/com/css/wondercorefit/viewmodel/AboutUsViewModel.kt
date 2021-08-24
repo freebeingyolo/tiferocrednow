@@ -25,12 +25,12 @@ class AboutUsViewModel : BaseViewModel() {
                 if (data != null) {
                     upGradeData.value = data
                 } else {
-                    showToast(msg)
+                    showCenterToast(msg)
                 }
 
             }, { _, msg, _ ->
                 hideLoading()
-                showToast(msg)
+                showCenterToast(msg)
             }
         )
     }

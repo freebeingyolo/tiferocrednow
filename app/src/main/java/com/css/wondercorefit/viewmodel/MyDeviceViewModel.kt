@@ -27,7 +27,7 @@ class MyDeviceViewModel : BaseViewModel() {
                 _deviceInfos.value = data as List<DeviceData>
             },
             { code, msg, d ->
-                showToast(msg)
+                showCenterToast(msg)
             })
     }
 
@@ -48,7 +48,7 @@ class MyDeviceViewModel : BaseViewModel() {
                 //WonderCoreCache.saveData(CacheKey.BOND_WEIGHT_INFO,null) //下一步用WonderCoreCache解耦BondDeviceData
             },
             { code, msg, data ->
-                showToast(msg)
+                showCenterToast(msg)
             }
         )
     }

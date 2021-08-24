@@ -141,7 +141,7 @@ class FeedbackActivity : BaseActivity<FeedbackViewModel, ActivityFeedbackBinding
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
         mViewModel.submitData.observe(this, {
-            showToast("提交成功")
+            showCenterToast("提交成功")
             mViewBinding.etPhone.setText("")
             mViewBinding.etContent.setText("")
             setFeedbackDate(Calendar.getInstance().time);

@@ -29,7 +29,7 @@ class WeightBondDoingFragment : BaseWeightFragment<WeightBondVM, LayoutWeightBon
                     { _, _ ->
                     },
                     { _, msg, _ ->
-                        showToast("$msg")
+                        showCenterToast("$msg")
                         //showNetworkErrorDialog(msg)
                     })
             }
