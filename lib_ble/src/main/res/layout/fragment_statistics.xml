@@ -64,7 +64,7 @@
             android:textColor="@color/black"
             android:textSize="13sp"
             android:visibility="invisible"
-            tools:text="单杆次数"
+            tools:text="运动次数"
             tools:visibility="visible"/>
 
         <TextView

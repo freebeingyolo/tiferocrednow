@@ -150,7 +150,7 @@ class DataStatisticsFragment : BaseFragment<DataStatisticsVM, FragmentStatistics
             mViewBinding!!.tvNumber.visibility = View.VISIBLE
             mViewBinding!!.tvUnit.visibility = View.VISIBLE
 
-            mViewBinding!!.tvType.text = deviceType
+//            mViewBinding!!.tvType.text = deviceType
             mViewBinding!!.tvNumber.text = number.toString()
         }else{
             mViewBinding!!.tvType.visibility = View.INVISIBLE
