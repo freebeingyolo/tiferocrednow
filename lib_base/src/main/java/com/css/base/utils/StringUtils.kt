@@ -64,6 +64,17 @@ class StringUtils {
             val matcher: Matcher = pattern.matcher(content)
             return matcher.find()
         }
+        /**
+         *
+         * @param content
+         * @return
+         */
+        fun getCheckPwdSymbol(content: String): Boolean {
+            val speChat = "[`~!@#\$%^&*()\\-+=<>?:\"{},.\\\\/;'\\[\\]·！#￥（——）：；“”‘、，|《。》？、【】]"
+            val pattern: Pattern = Pattern.compile(speChat)
+            val matcher: Matcher = pattern.matcher(content)
+            return matcher.find()
+        }
 
         /**
          *

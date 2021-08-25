@@ -11,10 +11,10 @@
 
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="wrap_content"
-        android:layout_height="25dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_marginTop="90dp"
-        android:src="@mipmap/wonder_logo_2" />
+        android:src="@mipmap/icon" />
 
     <TextView
         android:layout_width="wrap_content"

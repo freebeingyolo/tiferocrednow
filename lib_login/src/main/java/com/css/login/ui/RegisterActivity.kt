@@ -76,7 +76,7 @@ class RegisterActivity : BaseActivity<RegisterViewModel, ActivityRegisterBinding
             mViewBinding.tvRegisterBtn -> {
                 KeyboardUtils.hideSoftInput(this)
                 if (NetworkUtils.isConnected()) {
-                    if (mInputIsOk1&&mInputIsOk2&&mInputIsOk3&&mInputIsOk4&&mInputIsOk5) {
+                    if (mInputIsOk1 && mInputIsOk2 && mInputIsOk3 && mInputIsOk4 && mInputIsOk5) {
                         mViewModel.checkData(
                             mViewBinding.etTelephone.text.toString(),
                             mViewBinding.etPassword.text.toString(),
@@ -185,6 +185,9 @@ class RegisterActivity : BaseActivity<RegisterViewModel, ActivityRegisterBinding
 
             override fun afterTextChanged(s: Editable?) {
                 if (mViewBinding.etPassword.text.toString().length < 6 || mViewBinding.etPassword.text.toString().length > 16) {
+                    mViewBinding.tvPasswordTip.visibility = View.VISIBLE
+                    mInputIsOk4 = false
+                } else if (StringUtils.getCheckPwdSymbol(mViewBinding.etPassword.text.toString())) {
                     mViewBinding.tvPasswordTip.visibility = View.VISIBLE
                     mInputIsOk4 = false
                 } else {
