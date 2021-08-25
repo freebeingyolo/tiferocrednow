@@ -29,7 +29,11 @@ import razerdp.basepopup.BasePopupWindow
 @Route(path = PATH_APP_REGISTER)
 class RegisterActivity : BaseActivity<RegisterViewModel, ActivityRegisterBinding>(),
     View.OnClickListener {
-
+    var mInputIsOk1 = true
+    var mInputIsOk2 = true
+    var mInputIsOk3 = true
+    var mInputIsOk4 = true
+    var mInputIsOk5 = true
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         SystemBarHelper.immersiveStatusBar(this, 0f)
@@ -72,14 +76,18 @@ class RegisterActivity : BaseActivity<RegisterViewModel, ActivityRegisterBinding
             mViewBinding.tvRegisterBtn -> {
                 KeyboardUtils.hideSoftInput(this)
                 if (NetworkUtils.isConnected()) {
-                    mViewModel.checkData(
-                        mViewBinding.etTelephone.text.toString(),
-                        mViewBinding.etPassword.text.toString(),
-                        mViewBinding.etPasswordAgain.text.toString(),
-                        mViewBinding.etSmsCode.text.toString(),
-                        mViewBinding.etUsername.text.toString(),
-                        mViewBinding.cbAgreement.isChecked
-                    )
+                    if (mInputIsOk1 && mInputIsOk2 && mInputIsOk3 && mInputIsOk4 && mInputIsOk5) {
+                        mViewModel.checkData(
+                            mViewBinding.etTelephone.text.toString(),
+                            mViewBinding.etPassword.text.toString(),
+                            mViewBinding.etPasswordAgain.text.toString(),
+                            mViewBinding.etSmsCode.text.toString(),
+                            mViewBinding.etUsername.text.toString(),
+                            mViewBinding.cbAgreement.isChecked
+                        )
+                    } else {
+                        showCenterToast("请输入正确内容")
+                    }
                 } else {
                     showNetworkErrorDialog()
                 }
@@ -110,12 +118,16 @@ class RegisterActivity : BaseActivity<RegisterViewModel, ActivityRegisterBinding
             override fun afterTextChanged(s: Editable?) {
                 if (mViewBinding.etUsername.text.toString().length > 10) {
                     mViewBinding.tvUsernameTip.visibility = View.VISIBLE
+                    mInputIsOk1 = false
                 } else if (mViewBinding.etUsername.text.toString().isEmpty()) {
                     mViewBinding.tvUsernameTip.visibility = View.INVISIBLE
+                    mInputIsOk1 = true
                 } else if (StringUtils.getCheckSymbol(mViewBinding.etUsername.text.toString())) {
                     mViewBinding.tvUsernameTip.visibility = View.VISIBLE
+                    mInputIsOk1 = false
                 } else {
                     mViewBinding.tvUsernameTip.visibility = View.INVISIBLE
+                    mInputIsOk1 = true
                 }
             }
         })
@@ -127,12 +139,17 @@ class RegisterActivity : BaseActivity<RegisterViewModel, ActivityRegisterBinding
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (mViewBinding.etTelephone.text.toString().length != 11&&mViewBinding.etTelephone.text.toString().isNotEmpty()) {
+                if (mViewBinding.etTelephone.text.toString().length != 11 && mViewBinding.etTelephone.text.toString()
+                        .isNotEmpty()
+                ) {
                     mViewBinding.tvPhoneTip.visibility = View.VISIBLE
+                    mInputIsOk2 = false
                 } else if (mViewBinding.etTelephone.text.toString().isEmpty()) {
                     mViewBinding.tvPhoneTip.visibility = View.INVISIBLE
+                    mInputIsOk2 = true
                 } else {
                     mViewBinding.tvPhoneTip.visibility = View.INVISIBLE
+                    mInputIsOk2 = true
                 }
             }
         })
@@ -145,12 +162,17 @@ class RegisterActivity : BaseActivity<RegisterViewModel, ActivityRegisterBinding
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (mViewBinding.etSmsCode.text.toString().length != 6&&mViewBinding.etSmsCode.text.toString().isNotEmpty()) {
+                if (mViewBinding.etSmsCode.text.toString().length != 6 && mViewBinding.etSmsCode.text.toString()
+                        .isNotEmpty()
+                ) {
                     mViewBinding.tvCodeTip.visibility = View.VISIBLE
+                    mInputIsOk3 = false
                 } else if (mViewBinding.etSmsCode.text.toString().isEmpty()) {
                     mViewBinding.tvCodeTip.visibility = View.INVISIBLE
+                    mInputIsOk3 = true
                 } else {
                     mViewBinding.tvCodeTip.visibility = View.INVISIBLE
+                    mInputIsOk3 = true
                 }
             }
         })
@@ -164,11 +186,17 @@ class RegisterActivity : BaseActivity<RegisterViewModel, ActivityRegisterBinding
             override fun afterTextChanged(s: Editable?) {
                 if (mViewBinding.etPassword.text.toString().length < 6 || mViewBinding.etPassword.text.toString().length > 16) {
                     mViewBinding.tvPasswordTip.visibility = View.VISIBLE
-                }else {
+                    mInputIsOk4 = false
+                } else if (StringUtils.getCheckPwdSymbol(mViewBinding.etPassword.text.toString())) {
+                    mViewBinding.tvPasswordTip.visibility = View.VISIBLE
+                    mInputIsOk4 = false
+                } else {
                     mViewBinding.tvPasswordTip.visibility = View.INVISIBLE
+                    mInputIsOk4 = true
                 }
                 if (mViewBinding.etPassword.text.toString().isEmpty()) {
                     mViewBinding.tvPasswordTip.visibility = View.INVISIBLE
+                    mInputIsOk4 = true
                 }
             }
         })
@@ -180,12 +208,17 @@ class RegisterActivity : BaseActivity<RegisterViewModel, ActivityRegisterBinding
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (mViewBinding.etPasswordAgain.text.toString() != mViewBinding.etPassword.text.toString()&&mViewBinding.etPasswordAgain.text.toString().isNotEmpty()) {
+                if (mViewBinding.etPasswordAgain.text.toString() != mViewBinding.etPassword.text.toString() && mViewBinding.etPasswordAgain.text.toString()
+                        .isNotEmpty()
+                ) {
+                    mInputIsOk5 = false
                     mViewBinding.tvPasswordAgainTip.visibility = View.VISIBLE
                 } else if (mViewBinding.etPasswordAgain.text.toString().isEmpty()) {
                     mViewBinding.tvPasswordAgainTip.visibility = View.INVISIBLE
+                    mInputIsOk5 = true
                 } else {
                     mViewBinding.tvPasswordAgainTip.visibility = View.INVISIBLE
+                    mInputIsOk5 = true
                 }
             }
         })

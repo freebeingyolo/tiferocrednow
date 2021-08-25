@@ -18,10 +18,10 @@
         android:background="@color/white" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="108dp"
-        android:layout_height="28dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginTop="62dp"
-        android:src="@mipmap/wonder_logo" />
+        android:src="@mipmap/icon" />
 
     <TextView
         android:layout_width="wrap_content"

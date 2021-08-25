@@ -12,6 +12,7 @@ import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.NetworkUtils
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.uibase.BaseActivity
+import com.css.base.utils.StringUtils
 import com.css.login.R
 import com.css.login.databinding.ActivityResetPasswordBinding
 import com.css.login.model.ResetPasswordViewModel
@@ -22,7 +23,10 @@ import razerdp.basepopup.BasePopupWindow
 @Route(path = ARouterConst.PATH_APP_RESET_PWD)
 class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel, ActivityResetPasswordBinding>(),
     View.OnClickListener {
-
+    var mInputIsOk1 = true
+    var mInputIsOk2 = true
+    var mInputIsOk3 = true
+    var mInputIsOk4 = true
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         SystemBarHelper.immersiveStatusBar(this, 0f)
@@ -62,12 +66,16 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel, ActivityReset
             mViewBinding.tvSubmit -> {
                 KeyboardUtils.hideSoftInput(this)
                 if (NetworkUtils.isConnected()) {
-                    mViewModel.checkData(
-                        mViewBinding.etPhone.text.toString(),
-                        mViewBinding.etPassword.text.toString(),
-                        mViewBinding.etPasswordAgain.text.toString(),
-                        mViewBinding.etSmsCode.text.toString()
-                    )
+                    if (mInputIsOk1 && mInputIsOk2 && mInputIsOk3 && mInputIsOk4) {
+                        mViewModel.checkData(
+                            mViewBinding.etPhone.text.toString(),
+                            mViewBinding.etPassword.text.toString(),
+                            mViewBinding.etPasswordAgain.text.toString(),
+                            mViewBinding.etSmsCode.text.toString()
+                        )
+                    } else {
+                        showCenterToast("请输入正确内容")
+                    }
                 } else {
                     showNetworkErrorDialog()
                 }
@@ -109,10 +117,13 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel, ActivityReset
                         .isNotEmpty()
                 ) {
                     mViewBinding.tvPhoneTip.visibility = View.VISIBLE
+                    mInputIsOk1 = false
                 } else if (mViewBinding.etPhone.text.toString().isEmpty()) {
                     mViewBinding.tvPhoneTip.visibility = View.INVISIBLE
+                    mInputIsOk1 = true
                 } else {
                     mViewBinding.tvPhoneTip.visibility = View.INVISIBLE
+                    mInputIsOk1 = true
                 }
             }
         })
@@ -129,10 +140,13 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel, ActivityReset
                         .isNotEmpty()
                 ) {
                     mViewBinding.tvCodeTip.visibility = View.VISIBLE
+                    mInputIsOk2 = false
                 } else if (mViewBinding.etSmsCode.text.toString().isEmpty()) {
                     mViewBinding.tvCodeTip.visibility = View.INVISIBLE
+                    mInputIsOk2 = true
                 } else {
                     mViewBinding.tvCodeTip.visibility = View.INVISIBLE
+                    mInputIsOk2 = true
                 }
             }
         })
@@ -146,11 +160,16 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel, ActivityReset
             override fun afterTextChanged(s: Editable?) {
                 if (mViewBinding.etPassword.text.toString().length < 6 || mViewBinding.etPassword.text.toString().length > 16) {
                     mViewBinding.tvPasswordTip.visibility = View.VISIBLE
+                } else if (StringUtils.getCheckPwdSymbol(mViewBinding.etPassword.text.toString())) {
+                    mViewBinding.tvPasswordTip.visibility = View.VISIBLE
+                    mInputIsOk3 = false
                 } else {
                     mViewBinding.tvPasswordTip.visibility = View.INVISIBLE
+                    mInputIsOk3 = true
                 }
                 if (mViewBinding.etPassword.text.toString().isEmpty()) {
                     mViewBinding.tvPasswordTip.visibility = View.INVISIBLE
+                    mInputIsOk3 = true
                 }
             }
         })
@@ -166,10 +185,13 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel, ActivityReset
                         .isNotEmpty()
                 ) {
                     mViewBinding.tvPasswordAgainTip.visibility = View.VISIBLE
+                    mInputIsOk4 = false
                 } else if (mViewBinding.etPasswordAgain.text.toString().isEmpty()) {
                     mViewBinding.tvPasswordAgainTip.visibility = View.INVISIBLE
+                    mInputIsOk4 = true
                 } else {
                     mViewBinding.tvPasswordAgainTip.visibility = View.INVISIBLE
+                    mInputIsOk4 = true
                 }
             }
         })
