@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,7 +11,6 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
-import com.css.base.net.HttpNetCode
 import com.css.base.uibase.BaseActivity
 import com.css.ble.R
 import com.css.ble.bean.DeviceType
@@ -22,6 +20,7 @@ import com.css.ble.ui.view.SpaceItemDecoration
 import com.css.ble.viewmodel.DeviceListVM
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
 import com.css.service.router.ARouterConst
+import razerdp.basepopup.BasePopupWindow
 
 /**
  * @author yuedong
@@ -85,6 +84,11 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
                                                 type = CommonAlertDialog.DialogType.Image
                                                 imageResources = R.mipmap.icon_tick
                                                 content = context.getString(R.string.unbond_ok)
+                                                onDismissListener = object : BasePopupWindow.OnDismissListener() {
+                                                    override fun onDismiss() {
+                                                        ARouter.getInstance().build(ARouterConst.PATH_APP_MAIN).navigation()
+                                                    }
+                                                }
                                             }.show()
                                         }, { _, msg, _ ->
                                             showCenterToast(msg)

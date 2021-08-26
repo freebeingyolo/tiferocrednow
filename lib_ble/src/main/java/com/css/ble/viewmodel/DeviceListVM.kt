@@ -22,7 +22,7 @@ class DeviceListVM : BaseViewModel() {
         netLaunch(
             {
                 withContext(Dispatchers.IO) {
-                    val userId = WonderCoreCache.getLoginInfo()!!.userInfo.userId
+                    val userId = WonderCoreCache.getLoginInfo()!!.userId
                     val ret = DeviceRepository.queryBindDevice(userId.toString())
                     if (ret.isSuccess) {
                         for (d in DeviceType.values()) {

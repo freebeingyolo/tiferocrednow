@@ -351,7 +351,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
             },
             { code, msg, d ->
                 avaliableDevice = null
-                state = State.disconnected
+                disconnect()
                 failed?.invoke(code, msg, d)
             }
         )

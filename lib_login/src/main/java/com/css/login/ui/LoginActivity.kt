@@ -80,6 +80,10 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>(), View
         }
 
         mViewModel.loginFailureData.observe(this, {
+            if (it?.contains("未注册") == true) {
+                showToast(it)
+                return@observe
+            }
             CommonAlertDialog(baseContext).apply {
                 type = CommonAlertDialog.DialogType.Center
                 content = "账号或密码错误，请重新输入"

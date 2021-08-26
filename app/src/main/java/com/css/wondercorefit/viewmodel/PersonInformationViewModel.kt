@@ -22,7 +22,7 @@ class PersonInformationViewModel : BaseViewModel() {
                 showLoading()
                 withContext(Dispatchers.IO) {
                     UserRepository.queryPersonalInformation(
-                        WonderCoreCache.getLoginInfo()?.userInfo?.userId.toString()
+                        WonderCoreCache.getLoginInfo()?.userId.toString()
                     )
                 }
             }, { _, d ->
@@ -47,7 +47,7 @@ class PersonInformationViewModel : BaseViewModel() {
             {
                 showLoading()
                 UserRepository.updatePersonalInformation(
-                    WonderCoreCache.getLoginInfo()!!.userInfo.userId.toString(), sex, age, height, goalBodyWeight, goalStepCount
+                    WonderCoreCache.getLoginInfo()!!.userId.toString(), sex, age, height, goalBodyWeight, goalStepCount
                 )
             }, { msg, _ ->
                 upPersonInfoData.value = msg

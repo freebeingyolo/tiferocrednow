@@ -231,7 +231,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
             },
             { code, msg, d ->
                 avaliableDevice = null
-                state = State.disconnected
+                disconnect()
                 failed(code, msg, d)
             }
         )

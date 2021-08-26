@@ -108,7 +108,7 @@ class WeightMeasureVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPars
             {
                 withContext(Dispatchers.IO) {
                     val t1 = System.currentTimeMillis()
-                    val uid = WonderCoreCache.getLoginInfo()!!.userInfo.userId
+                    val uid = WonderCoreCache.getLoginInfo()!!.userId
                     val ret = HistoryRepository.uploadMeasureWeight(uid, weight, adc)
                     delay(System.currentTimeMillis() + 1000 - t1)
                     ret

@@ -139,16 +139,35 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/exerciseCount"
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1.5"
                     android:gravity="center"
-                    android:text="@{model.exerciseCountTxt,default=`--`}"
-                    android:textColor="@color/black"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/exerciseCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{model.exerciseCountTxt,default=`--`}"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        tools:text="5" />
+
+                    <TextView
+                        android:id="@+id/exerciseCountlUnit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="25dp"
+                        android:layout_marginStart="8dp"
+                        android:gravity="bottom"
+                        android:text="次"
+                        android:textColor="@color/text_color"
+                        android:textSize="12sp"
+                        android:visibility="@{model.exerciseKcalTxt.equals(`--`) ? View.GONE:View.VISIBLE,default=gone}"
+                        tools:visibility="visible" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -180,21 +199,20 @@
                         android:text="@{model.exerciseKcalTxt,default=`--`}"
                         android:textColor="@color/black"
                         android:textSize="24sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:text="35" />
 
                     <TextView
                         android:id="@+id/exerciseKcalUnit"
                         android:layout_width="wrap_content"
                         android:layout_height="25dp"
                         android:layout_marginStart="8dp"
-                        android:layout_toStartOf="@+id/exerciseKcalUnit"
                         android:gravity="bottom"
                         android:text="kcal"
                         android:textColor="@color/text_color"
                         android:textSize="12sp"
                         android:visibility="@{model.exerciseKcalTxt.equals(`--`) ? View.GONE:View.VISIBLE,default=gone}"
-
-                        />
+                        tools:visibility="visible" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
 

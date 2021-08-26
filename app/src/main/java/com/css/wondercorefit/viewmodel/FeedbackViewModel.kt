@@ -36,7 +36,7 @@ class FeedbackViewModel : BaseViewModel() {
                     {
                         showLoading()
                         SettingRepository.submit(
-                            WonderCoreCache.getLoginInfo()?.userInfo?.userId,
+                            WonderCoreCache.getLoginInfo()?.userId,
                             id,
                             phone,
                             content

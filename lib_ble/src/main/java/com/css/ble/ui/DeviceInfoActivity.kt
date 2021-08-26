@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.css.base.dialog.CommonAlertDialog
@@ -17,6 +18,7 @@ import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.FragmentDeviceInfoBinding
 import com.css.ble.viewmodel.DeviceInfoVM
+import com.css.service.router.ARouterConst
 import razerdp.basepopup.BasePopupWindow
 
 /**
@@ -129,7 +131,7 @@ class DeviceInfoActivity : BaseActivity<DeviceInfoVM, FragmentDeviceInfoBinding>
                                         content = context.getString(R.string.unbond_ok)
                                         onDismissListener = object : BasePopupWindow.OnDismissListener() {
                                             override fun onDismiss() {
-                                                finish()
+                                                ARouter.getInstance().build(ARouterConst.PATH_APP_MAIN).navigation()
                                             }
                                         }
                                     }.show()

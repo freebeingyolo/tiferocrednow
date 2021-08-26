@@ -44,7 +44,7 @@ class MainActivityViewModel : BaseViewModel() {
         netLaunch(
             {
                 withContext(Dispatchers.IO) {
-                    val uid = WonderCoreCache.getLoginInfo()!!.userInfo.userId
+                    val uid = WonderCoreCache.getLoginInfo()!!.userId
                     val ret = HistoryRepository.queryInitialBodyWeight(uid)
                     if (ret.isSuccess && !ret.data.isNullOrEmpty()) {
                         val ret2 = HistoryRepository.queryBodyWeight(uid)

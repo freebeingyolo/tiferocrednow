@@ -2,26 +2,23 @@ package com.css.service.data
 
 
 data class LoginUserData(
-    var token: String="",
-    var userInfo: UserInfo
-)
-data class UserInfo(
-    var age: String="",
-    var goalBodyWeight: String="",
-    var goalStepCount: String="",
-    var height: String="",
-    var isDel: String="",
-    var lastLoginTime: String="",
-    var password: String="",
-    var phone: String="",
+    val age: String="",
+    val goalBodyWeight: String="",
+    val goalStepCount: String="",
+    val height: String="",
+    val isDel: String="",
+    val lastLoginTime: String="",
+    val password: String="",
+    val phone: String="",
     val productFivesId: Any,
     val productFourId: Any,
     val productOneId: Any,
     val productThreeId: Any,
     val productTwoId: Any,
-    var pushSet: String="",
-    var sex: String="",
-    var userId: Int=-1,
-    var userName: String="",
-    var userRegisterTime: String="",
+    val pushSet: String="",
+    val sex: String="",
+    val token: String="",
+    val userId: Int=-1,
+    val userName: String="",
+    val userRegisterTime: String=""
 )
