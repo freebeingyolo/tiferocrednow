@@ -29,7 +29,7 @@ class CounterVM : HorizontalBarVM() {
     }
 
     override val bonded_tip: String
-        get() = "计数器已连接成功，开启你的健康之旅吧！"
+        get() = "计数器已连接成功，开启你的挑战之旅吧！"
 
     @Observe
     override fun discovered(d: Device) {

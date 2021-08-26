@@ -47,7 +47,7 @@
                 android:text="@{model.bonded_tip}"
                 android:textColor="#333333"
                 android:textSize="13sp"
-                tools:text="@string/weight_bonded_tip" />
+                tools:text="@string/wheel_bonded_tip" />
 
             <LinearLayout
                 android:layout_width="wrap_content"

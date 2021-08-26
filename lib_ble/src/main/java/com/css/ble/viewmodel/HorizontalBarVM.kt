@@ -72,7 +72,7 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
         )
     }
 
-    override val bonded_tip: String get() = "单杠已连接成功，开启你的健康之旅吧！"
+    override val bonded_tip: String get() = "单杠已连接成功，开启你的挑战之旅吧！"
 
     override fun discovered(d: Device) {
         //开启通知

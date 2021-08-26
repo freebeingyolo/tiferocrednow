@@ -64,7 +64,7 @@
     <string name="unbond_ok">解绑成功</string>
     <string name="please_bond_first">请先绑定设备</string>
     <string name="network_error">网络异常</string>
-    <string name="wheel_bonded_tip">健腹轮已连接成功，开启你的健康之旅吧！</string>
+    <string name="wheel_bonded_tip">健腹轮已连接成功，开启你的挑战之旅吧！</string>
     <string name="device_connected">已连接</string>
     <string name="device_disconnected">未连接</string>
     <string name="device_connecting">连接中</string>

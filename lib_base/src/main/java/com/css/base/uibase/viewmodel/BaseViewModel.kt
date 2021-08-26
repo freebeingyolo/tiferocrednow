@@ -13,7 +13,9 @@ import com.css.base.uibase.inner.INetView
 import com.css.base.uibase.inner.IResource
 import com.css.base.utils.UICoreConfig
 import com.google.gson.JsonSyntaxException
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.EOFException
 import java.net.ConnectException
@@ -195,7 +197,7 @@ abstract class BaseViewModel : ViewModel(), IBaseViewModel, INetView, IResource 
     }
 
     private suspend fun onFailSuspend(t: Throwable, failed: suspend (Int, String?) -> Unit) {
-        val loginExpired = t.message?.contains("HTTP 401") ?: false
+        val loginExpired = t.message?.contains("HTTP ${HttpNetCode.LOGIN_EXPIRED}") ?: false
         if (!loginExpired) {
             LogUtils.e(t)
             when (t) {
@@ -249,7 +251,7 @@ abstract class BaseViewModel : ViewModel(), IBaseViewModel, INetView, IResource 
     }
 
     private fun <T> onFailException(t: Throwable, failed: (Int, String?, d: T?) -> Unit) {
-        val loginExpired = t.message?.contains("HTTP 401") ?: false
+        val loginExpired = t.message?.contains("HTTP ${HttpNetCode.LOGIN_EXPIRED}") ?: false
         if (!loginExpired) {
             LogUtils.e(t)
             when (t) {
