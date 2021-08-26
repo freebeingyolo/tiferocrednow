@@ -76,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:text="@{model.moduleType,default=`XXX-XXXX`}"
+                android:text="@{model.productType,default=`XXX-XXXX`}"
                 android:textColor="@color/text_666666"
                 android:textSize="14sp" />
 

@@ -10,203 +10,220 @@
 
         <import type="com.css.res.R" />
     </data>
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/cl_device"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-    <RelativeLayout
-        android:id="@+id/my_device_recycle"
-        android:layout_height="50dp"
-        android:layout_width="match_parent"
-        tools:ignore="MissingConstraints">
-    <TextView
-        android:id="@+id/my_device_name"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:gravity="center"
-        android:text="@{deviceData.deviceCategory}"
-        android:layout_centerVertical="true"
-        tools:ignore="MissingConstraints"
-        android:textSize="10sp" />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/device_image"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/cl_device"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@mipmap/icon_next"
-        android:layout_centerVertical="true"
-        tools:ignore="MissingConstraints"
-        android:layout_alignParentEnd="true"
-        />
-    </RelativeLayout>
-    <LinearLayout
-        android:id="@+id/ln_device_info"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/my_device_recycle"
-        android:visibility="gone"
-        tools:ignore="MissingConstraints"
         android:orientation="vertical">
-    <RelativeLayout
-        android:id="@+id/rel_device_name"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        tools:ignore="MissingConstraints">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="@string/device_device_name"
-            android:textColor="@color/black"
-            android:textSize="13sp" />
-
-        <TextView
-            android:id="@+id/text_device_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:text="@{deviceData.deviceName}"
-            android:textColor="@color/black"
-            android:textSize="11sp" />
-        <View
+        <RelativeLayout
+            android:id="@+id/my_device_recycle"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginStart="5dp"
-            android:layout_alignParentBottom="true"
-            android:background="@color/color_e5e5e5"
-            tools:ignore="MissingConstraints" />
-    </RelativeLayout>
-    <RelativeLayout
-        android:id="@+id/rel_device_model"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        app:layout_constraintTop_toBottomOf="@id/rel_device_name"
-        tools:ignore="MissingConstraints">
+            android:layout_height="50dp"
+            tools:ignore="MissingConstraints">
 
-        <TextView
+            <TextView
+                android:id="@+id/my_device_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:text="@{deviceData.deviceCategory}"
+                android:textSize="10sp"
+                tools:ignore="MissingConstraints"
+                tools:text="@string/device_horizontalbar" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/device_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/icon_next"
+                tools:ignore="MissingConstraints" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/ln_device_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="@string/device_device_model"
-            android:textColor="@color/black"
-            android:textSize="13sp" />
-
-        <TextView
-            android:id="@+id/device_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:text="@{deviceData.moduleType.toString()}"
-            android:textColor="@color/black"
-            android:textSize="11sp" />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginStart="5dp"
-            android:layout_alignParentBottom="true"
-            android:background="@color/color_e5e5e5"
-            tools:ignore="MissingConstraints" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/rel_device_address"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        app:layout_constraintTop_toBottomOf="@id/rel_device_model"
-        tools:ignore="MissingConstraints">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="@string/device_device_address"
-            android:textColor="@color/black"
-            android:textSize="13sp" />
-
-        <TextView
-            android:id="@+id/device_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="@{deviceData.bluetoothAddress}"
-            android:layout_centerVertical="true"
-            android:textColor="@color/black"
-            android:textSize="11sp" />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginStart="5dp"
-            android:layout_alignParentBottom="true"
-            android:background="@color/color_e5e5e5"
-            tools:ignore="MissingConstraints" />
-    </RelativeLayout>
-    <RelativeLayout
-        android:id="@+id/rel_device_hardware"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        app:layout_constraintTop_toBottomOf="@id/rel_device_address"
-        tools:ignore="MissingConstraints">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="@string/device_device_hardware"
-            android:textColor="@color/black"
-            android:textSize="13sp" />
-
-        <TextView
-            android:id="@+id/device_model"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="@{deviceData.moduleVersion.toString()}"
-            android:layout_centerVertical="true"
-            android:textColor="@color/black"
-            android:textSize="11sp" />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginStart="5dp"
-            android:layout_alignParentBottom="true"
-            android:background="@color/color_e5e5e5"
-            tools:ignore="MissingConstraints" />
-    </RelativeLayout>
-    <RelativeLayout
-        android:id="@+id/rel_device_delete"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        app:layout_constraintTop_toBottomOf="@id/rel_device_hardware"
-        tools:ignore="MissingConstraints">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="@string/device_device_delete"
-            android:textColor="@color/black"
-            android:textSize="13sp" />
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/icon_next"
-            android:layout_centerVertical="true"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/my_device_recycle"
             tools:ignore="MissingConstraints"
-            android:layout_alignParentEnd="true"
-            />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginStart="5dp"
-            android:layout_alignParentBottom="true"
-            android:background="@color/color_e5e5e5"
-            tools:ignore="MissingConstraints" />
-    </RelativeLayout>
-    </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+            tools:visibility="visible">
+
+            <RelativeLayout
+                android:id="@+id/rel_device_name"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                tools:ignore="MissingConstraints">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/device_device_name"
+                    android:textColor="@color/black"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/text_device_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:text="@{deviceData.deviceName}"
+                    android:textColor="@color/black"
+                    android:textSize="11sp"
+                    tools:text="@string/device_horizontalbar" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="5dp"
+                    android:background="@color/color_e5e5e5"
+                    tools:ignore="MissingConstraints" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rel_device_model"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                app:layout_constraintTop_toBottomOf="@id/rel_device_name"
+                tools:ignore="MissingConstraints">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/device_device_model"
+                    android:textColor="@color/black"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/device_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:text="@{deviceData.productType.toString()}"
+                    android:textColor="@color/black"
+                    android:textSize="11sp"
+                    tools:text="Hi-DG21-124CC80007D8" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="5dp"
+                    android:background="@color/color_e5e5e5"
+                    tools:ignore="MissingConstraints" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rel_device_address"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                app:layout_constraintTop_toBottomOf="@id/rel_device_model"
+                tools:ignore="MissingConstraints">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/device_device_address"
+                    android:textColor="@color/black"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/device_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:text="@{deviceData.bluetoothAddress}"
+                    android:textColor="@color/black"
+                    android:textSize="11sp"
+                    tools:text="12:32:00:00:07:D8" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="5dp"
+                    android:background="@color/color_e5e5e5"
+                    tools:ignore="MissingConstraints" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rel_device_hardware"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                app:layout_constraintTop_toBottomOf="@id/rel_device_address"
+                tools:ignore="MissingConstraints">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/device_device_hardware"
+                    android:textColor="@color/black"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/device_model"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:text="@{deviceData.moduleVersion.toString()}"
+                    android:textColor="@color/black"
+                    android:textSize="11sp"
+                    tools:text="1.0" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="5dp"
+                    android:background="@color/color_e5e5e5"
+                    tools:ignore="MissingConstraints" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rel_device_delete"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                app:layout_constraintTop_toBottomOf="@id/rel_device_hardware"
+                tools:ignore="MissingConstraints">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/device_device_delete"
+                    android:textColor="@color/black"
+                    android:textSize="13sp" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/icon_next"
+                    tools:ignore="MissingConstraints" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="5dp"
+                    android:background="@color/color_e5e5e5"
+                    tools:ignore="MissingConstraints" />
+            </RelativeLayout>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

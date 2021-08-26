@@ -13,7 +13,7 @@ data class DeviceData(
     val mcuVersion: Any,
     val moduleType: String,
     val moduleVersion: String,
-    val productType: Any,
+    val productType: String?,
     val status: Any,
     var connect: String = "未连接",
     var deviceImg: Int

@@ -4,7 +4,6 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import cn.wandersnail.ble.Device
 import com.blankj.utilcode.util.Utils
 import com.css.ble.R
 import com.css.service.bus.LiveDataBus
@@ -61,21 +60,21 @@ class BondDeviceData private constructor() : BaseData() {
     var deviceCategory: String = ""
     val deviceImg: Int get() = deviceType.icon2
     var deviceConnect: String? = "未连接"
-    var moduleType: String? = null //设备型号
+    var productType: String? = null //设备型号
     var moduleVersion: String? = "1.0" //固件版本
 
 
-    constructor(mac: String, manufacturerDataHex: String, modeType: String?, deviceType: DeviceType) : this() {
+    constructor(mac: String, manufacturerDataHex: String, productType: String?, deviceType: DeviceType) : this() {
         this.mac = mac
         this.manufacturerDataHex = manufacturerDataHex
         this.deviceType = deviceType
         this.deviceCategory = deviceType.alias
         this.alias = deviceType.alias
-        this.moduleType = modeType
+        this.productType = productType
     }
 
 
-    constructor(d: DeviceData) : this(d.bluetoothAddress, "", d.moduleType, DeviceType.findByAlias(d.deviceCategory)) {
+    constructor(d: DeviceData) : this(d.bluetoothAddress, "", d.productType, DeviceType.findByAlias(d.deviceCategory)) {
         this.id = d.id
         this.alias = d.deviceName
         this.deviceCategory = d.deviceCategory
@@ -94,7 +93,6 @@ class BondDeviceData private constructor() : BaseData() {
             "deviceCategory" to deviceCategory,
             "deviceName" to displayName,
             "bluetoothAddress" to mac,
-            "moduleType" to moduleType,
             "moduleVersion" to moduleVersion
         )
     }
@@ -147,7 +145,7 @@ class BondDeviceData private constructor() : BaseData() {
         } else alias!!
 
     override fun toString(): String {
-        return "BondDeviceData(mac='$mac', manufacturerDataHex='$manufacturerDataHex', alias=$alias, id=$id, deviceCategory='$deviceCategory', deviceConnect=$deviceConnect, moduleType='$moduleType', moduleVersion='$moduleVersion')"
+        return "BondDeviceData(mac='$mac', manufacturerDataHex='$manufacturerDataHex', alias=$alias, id=$id, deviceCategory='$deviceCategory', deviceConnect=$deviceConnect, moduleType='$productType', moduleVersion='$moduleVersion')"
     }
 
 }
