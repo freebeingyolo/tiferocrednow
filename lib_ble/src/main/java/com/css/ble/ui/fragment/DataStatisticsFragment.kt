@@ -3,7 +3,6 @@ package com.css.ble.ui.fragment
 import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +23,7 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
+import com.github.mikephil.charting.utils.ColorTemplate
 import java.util.*
 
 /**
@@ -171,6 +171,8 @@ class DataStatisticsFragment : BaseFragment<DataStatisticsVM, FragmentStatistics
         )
 
         val barList = ArrayList<BarEntry>()
+        var selectedX = 0f
+        var selectedY = 0f
 
         for (i in carList.indices) {
 
@@ -180,6 +182,9 @@ class DataStatisticsFragment : BaseFragment<DataStatisticsVM, FragmentStatistics
                 if (carList[i].time == DateTimeHelper.parseStringToDate(mData[j].todayDate).time) {
                     exerciseNumber = mData[j].exerciseNumber
 //                    LogUtils.dTag("运动日期--->", mData[j].todayDate + "--次数：" + exerciseNumber)
+                    //设置最后选中柱子X轴和Y轴
+                    selectedX = i.toFloat()
+                    selectedY = exerciseNumber.toFloat()
                 }
             }
 
@@ -244,7 +249,6 @@ class DataStatisticsFragment : BaseFragment<DataStatisticsVM, FragmentStatistics
         mViewBinding!!.barStatistics.invalidate()
         //动画（如果使用了动画可以则省去更新数据的那一步）
         mViewBinding!!.barStatistics.animateY(1500) //在Y轴的动画  参数是动画执行时间 毫秒为单位
-
         mViewBinding!!.barStatistics.setOnChartValueSelectedListener(object :
             OnChartValueSelectedListener {
             override fun onValueSelected(e: Entry, h: Highlight) {
@@ -256,6 +260,10 @@ class DataStatisticsFragment : BaseFragment<DataStatisticsVM, FragmentStatistics
                 updateExerciseNumber(false,0)
             }
         })
+
+        //设置默认选中柱子
+        val high = Highlight(selectedX,selectedY , 0)
+        mViewBinding!!.barStatistics.highlightValues(arrayOf(high))
     }
 
     override fun initViewBinding(
