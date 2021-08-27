@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.arouter.launcher.ARouter
+import com.blankj.utilcode.util.NetworkUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
@@ -80,19 +81,23 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
         mViewModel.stateObsrv.observe(viewLifecycleOwner) {
             when (it) {
                 State.timeOut -> {
-                    CommonAlertDialog(requireContext()).apply {
-                        type = CommonAlertDialog.DialogType.Tip
-                        gravity = Gravity.BOTTOM
-                        listener = object : DialogClickListener.DefaultLisener() {
-                            override fun onRightBtnClick(view: View) {
-                                //TODO 重新连接
-                                mViewModel.connect()
-                            }
-                        }
-                    }.show()
+                    showReconnectDialog()
                 }
             }
         }
+    }
+
+    private fun showReconnectDialog() {
+        CommonAlertDialog(requireContext()).apply {
+            type = CommonAlertDialog.DialogType.Tip
+            gravity = Gravity.BOTTOM
+            listener = object : DialogClickListener.DefaultLisener() {
+                override fun onRightBtnClick(view: View) {
+                    //TODO 重新连接
+                    startConnect()
+                }
+            }
+        }.show()
     }
 
     val recommendationAdapter = object : BaseBindingAdapter<CourseData, LayoutPlayRecommendItemBinding>() {
@@ -103,22 +108,24 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
         override fun onBindItem(binding: LayoutPlayRecommendItemBinding, item: CourseData, position: Int) {
             binding.courseData = item
             binding.itemContainer.setOnClickListener {
-                //val url = "https://www.baidu.com"
-                val url = item.videoLink
-                try {
-                    startIntent(url)
-                } catch (e: ActivityNotFoundException) {
-                    ToastUtils.showShort("链接无效:${url}")
-                }
+                playCourseVideo(item.videoLink)
             }
             binding.executePendingBindings()
         }
 
-        private fun startIntent(videoLink: String) {
-            ARouter.getInstance()
-                .build(ARouterConst.PATH_APP_MAIN_COURSE)
-                .with(Bundle().apply { putString("videoLink", videoLink) })
-                .navigation()
+        private fun playCourseVideo(videoLink: String) {
+            try {
+                if (NetworkUtils.isConnected()) {
+                    ARouter.getInstance()
+                        .build(ARouterConst.PATH_APP_MAIN_COURSE)
+                        .with(Bundle().apply { putString("videoLink", videoLink) })
+                        .navigation()
+                } else {
+                    showNetworkErrorDialog();
+                }
+            } catch (e: ActivityNotFoundException) {
+                ToastUtils.showShort("链接无效:${videoLink}")
+            }
         }
     }
 
@@ -155,7 +162,10 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
                     mViewModel.connect()
                 }
             } else {
-                BleErrorFragment.Builder.errorType(BleEnvVM.bleErrType).leftTitle(BondDeviceData.displayName(deviceType)).create()
+                showToast(BleEnvVM.bleErrType.content) {
+                    showReconnectDialog()
+                }
+                //BleErrorFragment.Builder.errorType(BleEnvVM.bleErrType).leftTitle(BondDeviceData.displayName(deviceType)).create()
             }
         }
     }

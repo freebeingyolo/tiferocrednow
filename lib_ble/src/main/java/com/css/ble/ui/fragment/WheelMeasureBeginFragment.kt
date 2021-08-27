@@ -1,8 +1,6 @@
 package com.css.ble.ui.fragment
 
 import android.content.ActivityNotFoundException
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -13,6 +11,7 @@ import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.android.arouter.launcher.ARouter
+import com.blankj.utilcode.util.NetworkUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
@@ -75,16 +74,7 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
             refreshBottom(it)
             when (it) {
                 State.timeOut -> {
-                    CommonAlertDialog(requireContext()).apply {
-                        type = CommonAlertDialog.DialogType.Tip
-                        gravity = Gravity.BOTTOM
-                        listener = object : DialogClickListener.DefaultLisener() {
-                            override fun onRightBtnClick(view: View) {
-                                //TODO 重新连接
-                                mViewModel.connect()
-                            }
-                        }
-                    }.show()
+                    showReconnectDialog()
                 }
             }
         }
@@ -99,6 +89,19 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
                 lowPowerAlert.visibility = View.GONE
             }
         }
+    }
+
+    private fun showReconnectDialog() {
+        CommonAlertDialog(requireContext()).apply {
+            type = CommonAlertDialog.DialogType.Tip
+            gravity = Gravity.BOTTOM
+            listener = object : DialogClickListener.DefaultLisener() {
+                override fun onRightBtnClick(view: View) {
+                    //TODO 重新连接
+                    startConnect()
+                }
+            }
+        }.show()
     }
 
     fun jumpToStatistic() {
@@ -199,22 +202,24 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
         override fun onBindItem(binding: LayoutPlayRecommendItemBinding, item: CourseData, position: Int) {
             binding.courseData = item
             binding.itemContainer.setOnClickListener {
-                //val url = "https://www.baidu.com"
-                val url = item.videoLink
-                try {
-                    startIntent(url)
-                } catch (e: ActivityNotFoundException) {
-                    ToastUtils.showShort("链接无效:${url}")
-                }
+                playCourseVideo(item.videoLink)
             }
             binding.executePendingBindings()
         }
 
-        private fun startIntent(videoLink: String) {
-            ARouter.getInstance()
-                .build(ARouterConst.PATH_APP_MAIN_COURSE)
-                .with(Bundle().apply { putString("videoLink", videoLink) })
-                .navigation()
+        private fun playCourseVideo(videoLink: String) {
+            try {
+                if (NetworkUtils.isConnected()) {
+                    ARouter.getInstance()
+                        .build(ARouterConst.PATH_APP_MAIN_COURSE)
+                        .with(Bundle().apply { putString("videoLink", videoLink) })
+                        .navigation()
+                } else {
+                    showNetworkErrorDialog();
+                }
+            } catch (e: ActivityNotFoundException) {
+                ToastUtils.showShort("链接无效:${videoLink}")
+            }
         }
     }
 
@@ -235,7 +240,10 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
                     mViewModel.connect()
                 }
             } else {
-                BleErrorFragment.Builder.errorType(BleEnvVM.bleErrType).leftTitle(BondDeviceData.displayName(deviceType)).create()
+                //BleErrorFragment.Builder.errorType(BleEnvVM.bleErrType).leftTitle(BondDeviceData.displayName(deviceType)).create()
+                showToast(BleEnvVM.bleErrType.content) {
+                    showReconnectDialog()
+                }
             }
         }
     }

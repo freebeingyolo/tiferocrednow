@@ -3,6 +3,7 @@ package com.css.ble.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.css.base.uibase.viewmodel.BaseViewModel
+import com.css.service.bus.LiveDataBus
 import java.lang.IllegalArgumentException
 
 /**
@@ -32,7 +33,7 @@ object BleEnvVM : BaseViewModel() {
             if (bleInitMap.size == 3 && !isBleEnvironmentInit.value!!) isBleEnvironmentInit.value = true
             (locationOpenObsrv as MutableLiveData).value = v
         }
-    val bleObsrv: LiveData<Boolean> by lazy { MutableLiveData() }
+    val bleObsrv: LiveData<Boolean> by lazy { LiveDataBus.BusMutableLiveData(false) }
     val locationPermissionObsrv: LiveData<Boolean> by lazy { MutableLiveData() }
     val locationOpenObsrv: LiveData<Boolean> by lazy { MutableLiveData() }
 

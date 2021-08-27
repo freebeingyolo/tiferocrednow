@@ -136,9 +136,9 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         val second = (ms - day * dd - hour * hh - minute * mi) / ss
         val milliSecond = ms - day * dd - hour * hh - minute * mi - second * ss
         val sb = StringBuffer()
-        sb.append(String.format("%02d", hour))
-        sb.append(String.format(":%02d", minute))
-        sb.append(String.format(":%02d", second))
+        //sb.append(String.format("%02d:", hour))
+        sb.append(String.format("%02d:", minute))
+        sb.append(String.format("%02d", second))
         return sb.toString()
     }
 

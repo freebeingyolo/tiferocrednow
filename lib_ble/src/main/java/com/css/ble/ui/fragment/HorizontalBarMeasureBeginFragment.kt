@@ -3,10 +3,11 @@ package com.css.ble.ui.fragment
 import LogUtils
 import android.os.Bundle
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import cn.wandersnail.ble.Request
 import cn.wandersnail.ble.callback.WriteCharacteristicCallback
 import cn.wandersnail.commons.util.StringUtils
@@ -39,36 +40,45 @@ class HorizontalBarMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        if (mViewModel.state == BaseDeviceScan2ConnVM.State.disconnected) {
-            mViewModel.connect()
+        lifecycleScope.launchWhenResumed {
+            startConnect()
         }
-
     }
 
     fun openSwitchSpinner(v: View) {
         val anchorView = mViewBinding!!.modeContainer
         val popUpWindow = object : BasePopupWindow(requireContext(), anchorView.width, AbsListView.LayoutParams.WRAP_CONTENT) {
             override fun onCreateContentView(): View {
-                val view = ListView(requireContext())
-                view.background = resources.getDrawable(R.drawable.bg_while_radius4)
-                view.divider = null
+                val listView = ListView(requireContext())
+                listView.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_while_radius4)
+                listView.divider = null
                 val datas = mViewModel2.getModels()
-                view.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, datas)
-                view.setOnItemClickListener { _, _, position, _ ->
-                    val modes = HorizontalBarVM.Mode.values()
-                    mViewModel2.switchMode(modes[position], object : WriteCharacteristicCallback {
-                        override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
-                            ToastUtils.showShort("切换模式失败")
-                        }
+                listView.adapter = object : ArrayAdapter<String>(requireContext(), R.layout.layout_device_mode_switch_item, datas) {
 
-                        override fun onCharacteristicWrite(request: Request, value: ByteArray) {
-                            LogUtils.d("切换模式成功:${StringUtils.toHex(value, "")}")
-                            popupWindow.dismiss()
+                    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                        val ret = super.getView(position, convertView, parent)
+                        ret.setOnClickListener {
+                            val modes = HorizontalBarVM.Mode.values()
+                            mViewModel2.switchMode(modes[position], object : WriteCharacteristicCallback {
+                                override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
+                                    ToastUtils.showShort("切换模式失败")
+                                    popupWindow.dismiss()
+                                }
+
+                                override fun onCharacteristicWrite(request: Request, value: ByteArray) {
+                                    LogUtils.d("切换模式成功:${StringUtils.toHex(value, "")}")
+                                    popupWindow.dismiss()
+                                }
+                            })
                         }
-                    })
+                        return ret
+                    }
                 }
-                return view
+                listView.choiceMode = ListView.CHOICE_MODE_SINGLE
+                listView.setItemChecked(mViewModel2.mode.ordinal, true)
+                return listView
             }
+
         }
             .setOutSideDismiss(true)
             .setPopupGravity(Gravity.TOP)
