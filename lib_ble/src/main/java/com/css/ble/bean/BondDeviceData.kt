@@ -119,10 +119,11 @@ class BondDeviceData private constructor() : BaseData() {
             }
         }
 
-        fun getDeviceStateLiveData(): MutableLiveData<Pair<String, String>> {
-            return LiveDataBus.get().with("DeviceState")
+        fun getDeviceConnectStateLiveData(): MutableLiveData<Pair<String, String>> {
+            return LiveDataBus.get().with("DeviceConnectState")
         }
 
+        //这种方式有延迟
         fun getDeviceLiveDataMerge(vararg keys: CacheKey = WonderCoreCache.deviceCacheKeys): LiveData<Pair<CacheKey, BondDeviceData?>> {
             return WonderCoreCache.getLiveDataMerge<BondDeviceData, Pair<CacheKey, BondDeviceData?>>(
                 { k, v -> Pair(k, v) },

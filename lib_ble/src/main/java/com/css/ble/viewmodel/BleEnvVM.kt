@@ -17,7 +17,7 @@ object BleEnvVM : BaseViewModel() {
         set(v) {
             bleInitMap["bleEnabled"] = v
             if (bleInitMap.size == 3 && !isBleEnvironmentInit.value!!) isBleEnvironmentInit.value = true
-            (bleObsrv as MutableLiveData).value = v
+            if (bleObsrv.value != v) (bleObsrv as MutableLiveData).value = v
         }
     var locationPermission: Boolean
         get() = bleInitMap["locationPermission"] ?: false

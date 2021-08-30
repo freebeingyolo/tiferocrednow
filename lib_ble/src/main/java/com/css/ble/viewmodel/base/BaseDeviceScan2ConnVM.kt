@@ -44,12 +44,12 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         disconnected,
         timeOut,
         scanStart,
+        found,
         connecting,
         reconnecting,
         connected,
         discovering,
         discovered,
-        found,
         exercise
     }
 
@@ -81,7 +81,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     var state: State
         set(value) {
             (stateObsrv as MutableLiveData).value = value
-            BondDeviceData.getDeviceStateLiveData().value = Pair(deviceType.alias, connectStateTxt(value))
+            BondDeviceData.getDeviceConnectStateLiveData().value = Pair(deviceType.alias, connectStateTxt(value))
         }
         get() = stateObsrv.value!!
 
@@ -248,7 +248,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
             ConnectionState.SERVICE_DISCOVERED -> {
                 state = State.discovered
                 if (workMode == WorkMode.BOND) {
-                    if(foundMethod == FoundWay.UUID){
+                    if (foundMethod == FoundWay.UUID) {
                         val services: List<BluetoothGattService> = connection!!.gatt!!.services
                         loop@ for (service in services) {
                             if (filterUUID(service.uuid)) {
@@ -308,7 +308,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         if (state != State.disconnected) {
             LogUtils.d("disconnect", 5)
             connection?.disconnect()
-            state = State.disconnected
+            //state = State.disconnected
         }
     }
 
@@ -317,7 +317,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         if (connection != null) {
             LogUtils.d("release", 5)
             connection?.release()
-            state = State.disconnected
+            //state = State.disconnected
             connection = null
         }
     }
@@ -337,7 +337,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
                 withContext(Dispatchers.IO) {
                     val ret = DeviceRepository.bindDevice(d.buidUploadParams())
                     if (ret.isSuccess) {
-                        val d = BondDeviceData(ret.data!!).apply { this.deviceConnect = connectStateTxt(state) }
+                        val d = BondDeviceData(ret.data!!).apply { this.deviceConnect = connectStateTxt() }
                         BondDeviceData.setDevice(deviceType, d)
                     }
                     ret

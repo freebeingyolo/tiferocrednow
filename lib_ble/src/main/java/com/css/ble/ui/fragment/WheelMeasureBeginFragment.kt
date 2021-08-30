@@ -40,6 +40,7 @@ import kotlinx.coroutines.launch
  * @date 2021-05-17
  */
 class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbrollerBinding>(DeviceType.WHEEL) {
+    private var alertDialog: CommonAlertDialog? = null
 
     private val lowPowerAlert: View by lazy {
         val view = LayoutInflater.from(requireContext()).inflate(R.layout.layout_network_error, null)
@@ -71,9 +72,8 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
         mViewBinding!!.lifecycleOwner = viewLifecycleOwner
 
         mViewModel.stateObsrv.observe(viewLifecycleOwner) {
-            refreshBottom(it)
             when (it) {
-                State.timeOut -> {
+                State.disconnected -> {
                     showReconnectDialog()
                 }
             }
@@ -92,57 +92,24 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
     }
 
     private fun showReconnectDialog() {
-        CommonAlertDialog(requireContext()).apply {
-            type = CommonAlertDialog.DialogType.Tip
-            gravity = Gravity.BOTTOM
-            listener = object : DialogClickListener.DefaultLisener() {
-                override fun onRightBtnClick(view: View) {
-                    //TODO 重新连接
-                    startConnect()
+        if (alertDialog == null) {
+            alertDialog = CommonAlertDialog(requireContext()).apply {
+                type = CommonAlertDialog.DialogType.Tip
+                gravity = Gravity.BOTTOM
+                outSideDismiss = false
+                listener = object : DialogClickListener.DefaultLisener() {
+                    override fun onRightBtnClick(view: View) {
+                        //TODO 重新连接
+                        startConnect()
+                    }
                 }
             }
-        }.show()
+        }
+        alertDialog?.show()
     }
 
     fun jumpToStatistic() {
         DataStatisticsActivity.starActivity(requireContext(), Bundle().apply { putString("deviceType", deviceType.alias) })
-    }
-
-    private fun refreshBottom(s: State) {
-        mViewBinding?.apply {
-            when (s) {
-                State.exercise_start,
-                State.exercise_pause,
-                -> {
-                    right.visibility = View.VISIBLE
-                    when (s) {
-                        State.exercise_start -> {
-                            left.text = "暂停训练"
-                            right.text = "结束训练"
-                        }
-                        State.exercise_pause -> {
-                            left.text = "继续训练"
-                            right.text = "结束训练"
-                        }
-                    }
-                }
-                else -> {
-                    right.visibility = View.GONE
-                    when (s) {
-                        State.disconnected -> {
-                            left.text = "连接设备"
-                        }
-                        State.connecting -> {
-                            left.text = "取消连接"
-                        }
-                        State.discovered -> {
-                            left.text = "开始训练"
-                        }
-                    }
-                }
-            }
-
-        }
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -241,9 +208,7 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
                 }
             } else {
                 //BleErrorFragment.Builder.errorType(BleEnvVM.bleErrType).leftTitle(BondDeviceData.displayName(deviceType)).create()
-                showToast(BleEnvVM.bleErrType.content) {
-                    showReconnectDialog()
-                }
+                showToast(BleEnvVM.bleErrType.content)
             }
         }
     }

@@ -38,7 +38,7 @@ import kotlinx.coroutines.launch
  */
 abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, val vm: BaseDeviceScan2ConnVM) :
     BaseDeviceFragment<BaseDeviceScan2ConnVM, VB>(d) {
-
+    private var alertDialog: CommonAlertDialog? = null
     override fun initViewModel(): BaseDeviceScan2ConnVM = vm
     override val vmCls: Class<BaseDeviceScan2ConnVM> get() = BaseDeviceScan2ConnVM::class.java
     private val lowPowerAlert: View by lazy {
@@ -80,7 +80,7 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
         }
         mViewModel.stateObsrv.observe(viewLifecycleOwner) {
             when (it) {
-                State.timeOut -> {
+                State.disconnected -> {
                     showReconnectDialog()
                 }
             }
@@ -88,16 +88,20 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
     }
 
     private fun showReconnectDialog() {
-        CommonAlertDialog(requireContext()).apply {
-            type = CommonAlertDialog.DialogType.Tip
-            gravity = Gravity.BOTTOM
-            listener = object : DialogClickListener.DefaultLisener() {
-                override fun onRightBtnClick(view: View) {
-                    //TODO 重新连接
-                    startConnect()
+        if (alertDialog == null) {
+            alertDialog = CommonAlertDialog(requireContext()).apply {
+                type = CommonAlertDialog.DialogType.Tip
+                gravity = Gravity.BOTTOM
+                outSideDismiss = false
+                listener = object : DialogClickListener.DefaultLisener() {
+                    override fun onRightBtnClick(view: View) {
+                        //TODO 重新连接
+                        startConnect()
+                    }
                 }
             }
-        }.show()
+        }
+        alertDialog?.show()
     }
 
     val recommendationAdapter = object : BaseBindingAdapter<CourseData, LayoutPlayRecommendItemBinding>() {
@@ -162,9 +166,8 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
                     mViewModel.connect()
                 }
             } else {
-                showToast(BleEnvVM.bleErrType.content) {
-                    showReconnectDialog()
-                }
+                showToast(BleEnvVM.bleErrType.content)
+                mViewModel.disconnect()
                 //BleErrorFragment.Builder.errorType(BleEnvVM.bleErrType).leftTitle(BondDeviceData.displayName(deviceType)).create()
             }
         }
