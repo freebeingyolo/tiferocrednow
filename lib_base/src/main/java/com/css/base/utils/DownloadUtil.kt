@@ -38,7 +38,7 @@ object  DownloadUtil {
                 try {
                     inputStream = response.body?.byteStream()
                     val total: Long = response.body?.contentLength()!!
-                    var downloadPath = File(AppConfig().DEFAULT_SAVE_APK_PATH,"apk/")
+                    var downloadPath = File(AppConfig().DEFAULT_SAVE_APK_PATH)
                     if (!downloadPath.mkdirs()) {
                         downloadPath.createNewFile()
                     }
@@ -70,7 +70,7 @@ object  DownloadUtil {
     }
 
     class AppConfig {
-        var DEFAULT_SAVE_APK_PATH = "/sdcard/Download/"
+        var DEFAULT_SAVE_APK_PATH = "${context?.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}/".trim()
         var DEFAULT_APK_NAME = "Wondercare.apk"
     }
 

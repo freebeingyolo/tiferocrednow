@@ -1,27 +1,20 @@
 package com.css.wondercorefit.ui.activity.setting
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.Settings
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.Nullable
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.NetworkUtils
@@ -31,17 +24,18 @@ import com.css.base.uibase.BaseActivity
 import com.css.base.utils.DownloadUtil
 import com.css.base.view.ToolBarView
 import com.css.ble.R
-import com.css.service.data.UpGradeData
-import com.css.service.router.ARouterConst
 import com.css.wondercorefit.databinding.ActivityAboutUsBinding
 import com.css.wondercorefit.viewmodel.AboutUsViewModel
 import razerdp.basepopup.BasePopupWindow
 import java.io.File
+import java.util.concurrent.Executor
 
 @Suppress("DEPRECATION")
 open class AboutUsActivity : BaseActivity<AboutUsViewModel, ActivityAboutUsBinding>(),
     View.OnClickListener {
     private val INSTALL_PERMISS_CODE: Int = 0
+//    private val callbackMap: ConcurrentHashMap<DownloadInfo, DownloadCallback> =
+//        ConcurrentHashMap<DownloadInfo, DownloadCallback>(5)
 
     companion object {
         fun starActivity(context: Context) {
@@ -66,7 +60,9 @@ open class AboutUsActivity : BaseActivity<AboutUsViewModel, ActivityAboutUsBindi
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
         mViewModel.upGradeData.observe(this, Observer {
-            if (!AppUtils.getAppVersionName().equals(it.version)) {
+            var version = it.version
+            var packVersion = AppUtils.getAppVersionName()
+            if (packVersion != version) {
                 CommonAlertDialog(this).apply {
                     gravity = Gravity.BOTTOM
                     type = CommonAlertDialog.DialogType.Confirm
@@ -77,102 +73,65 @@ open class AboutUsActivity : BaseActivity<AboutUsViewModel, ActivityAboutUsBindi
                     listener = object : DialogClickListener.DefaultLisener() {
                         override fun onRightBtnClick(view: View) {
                             super.onRightBtnClick(view)
-                            val upgradeUrl = it.upgradePackage
-                            startUpgrade(it)
-
+                            getFileFromServer(it.upgradePackage)
                         }
-                    }
-                }.show()
-            }
-        })
-
-    }
-
-    private fun startUpgrade(it: UpGradeData) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val hasInstallPermission: Boolean = isHasInstallPermissionWithO(this)
-            if (!hasInstallPermission) {
-                Log.d("555", "enter hasInstallPermission   false")
-                //弹框提示用户手动打开
-                CommonAlertDialog(this).apply {
-                    gravity = Gravity.CENTER
-                    type = CommonAlertDialog.DialogType.Confirm
-                    title = "安装权限"
-                    content = "需要打开允许来自此来源，请去设置中开启此权限"
-                    rightBtnText = "确认"
-                    leftBtnText = "取消"
-                    listener = object : DialogClickListener.DefaultLisener() {
-                        override fun onRightBtnClick(view: View) {
-                            super.onRightBtnClick(view)
-                            toInstallPermissionSettingIntent()
-                        }
-
                         override fun onLeftBtnClick(view: View) {
                             super.onLeftBtnClick(view)
-                            return
+                            if (it.mandatoryUpgrade == "是") {
+                                ActivityUtils.finishAllActivities()
+                            }
                         }
                     }
                 }.show()
             } else {
-                getFileFromServer(it.upgradePackage)
+                Toast.makeText(this, "当前为最新版本，不需要更新", Toast.LENGTH_SHORT).show()
             }
-        }
+        })
+
     }
 
-    fun getFileFromServer(downUrl: String?) {
+    private fun getFileFromServer(downUrl: String?) {
         DownloadUtil.download(this, downUrl, object : DownloadUtil.OnDownloadListener {
             override fun onDownloadSuccess(file: File) {
-                Log.d("555", "onDownload   success ")
-                installApk(file)
+                startInstallApk(file)
             }
 
             override fun onDownloading(progress: Int) {
-                Log.d("555", "onDownloading$progress")
             }
 
             override fun onDownloadFailed() {
-                Log.d("555", "onDownloadFailed")
+                Toast.makeText(this@AboutUsActivity, "更新下载失败，请稍后再试", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
-    private fun installApk(apkFile: File) {
-        Log.d("555", "installApk   $apkFile    ")
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Log.d("555", "enter   installApk ")
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            val contentUri = FileProvider.getUriForFile(this, "$packageName.FileProvider", apkFile)
-            intent.setDataAndType(contentUri, "application/vnd.android.package-archive")
+    // 下载成功，开始安装,兼容8.0安装位置来源的权限
+    private fun startInstallApk(apkFile: File) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //是否有安装位置来源的权限
+            val hasInstallPermission: Boolean = isHasInstallPermissionWithO(this)
+            if (hasInstallPermission) {
+                // "8.0手机已经拥有安装未知来源应用的权限，直接安装！"
+                AppUtils.installApp(apkFile)
+            } else {
+                toInstallPermissionSettingIntent()
+            }
         } else {
-            Log.d("555", "enter   installApk  and sdk < N")
-            intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive")
+            AppUtils.installApp(apkFile)
         }
-        Log.d("555", "enter   installApk and start activity")
-        startActivity(intent)
     }
 
     private fun toInstallPermissionSettingIntent() {
-
-        Log.d("555", "enter toInstallPermissionSettingIntent")
         val packageURI = Uri.parse("package:$packageName")
-        val intent =
-            Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, packageURI)
-
-        Log.d("555", "start settings" + " toInstallPermissionSettingIntent")
+        val intent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, packageURI)
         startActivityForResult(intent, INSTALL_PERMISS_CODE)
     }
 
-    override fun onActivityResult(
-        requestCode: Int,
-        resultCode: Int,
-        data: Intent?
-    ) {
+    override fun onActivityResult( requestCode: Int, resultCode: Int, data: Intent? ) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == INSTALL_PERMISS_CODE) {
-
-            Toast.makeText(this, "安装权限已开启，请重新点击检查更新", Toast.LENGTH_SHORT).show()
+        if (requestCode == INSTALL_PERMISS_CODE) {
+            val successDownloadApkPath = "${getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}/".trim()+"Wondercare.apk"
+            AppUtils.installApp(successDownloadApkPath)
         }
     }
 

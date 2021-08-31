@@ -58,14 +58,14 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
             }
             .callback(object : PermissionUtils.FullCallback {
                 override fun onGranted(permissionsGranted: List<String>) {
-                    checkLocationPermission()
+                    checkBodySensorPermission()
                 }
 
                 override fun onDenied(
                     permissionsDeniedForever: List<String>,
                     permissionsDenied: List<String>
                 ) {
-                    checkLocationPermission()
+                    checkBodySensorPermission()
                 }
             })
             .request()
@@ -106,14 +106,14 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
             }
             .callback(object : PermissionUtils.FullCallback {
                 override fun onGranted(permissionsGranted: List<String>) {
-                    checkBodySensorPermission()
+                    checkStoragePermission()
                 }
 
                 override fun onDenied(
                     permissionsDeniedForever: List<String>,
                     permissionsDenied: List<String>
                 ) {
-                    checkBodySensorPermission()
+                    checkStoragePermission()
                 }
             })
             .request()

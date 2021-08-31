@@ -5,8 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.Settings
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -15,14 +15,13 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.AppUtils
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseActivity
-import com.css.base.uibase.viewmodel.DefaultViewModel
 import com.css.base.utils.DownloadUtil
 import com.css.service.BuildConfig
-import com.css.service.data.UpGradeData
 import com.css.service.inner.BaseInner
 import com.css.service.router.ARouterConst
 import com.css.wondercorefit.R
@@ -33,7 +32,6 @@ import com.css.wondercorefit.ui.fragment.MallFragment
 import com.css.wondercorefit.ui.fragment.SettingFragment
 import com.css.wondercorefit.viewmodel.MainActivityViewModel
 import com.tencent.bugly.Bugly
-import com.tencent.bugly.beta.Beta.installApk
 import java.io.File
 
 @Route(path = ARouterConst.PATH_APP_MAIN)
@@ -69,7 +67,9 @@ class MainActivity : BaseActivity<MainActivityViewModel, ActivityMainBinding>() 
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
         mViewModel.upGradeData.observe(this, {
-            if (!AppUtils.getAppVersionName().equals(it.version)) {
+            var version = it.version
+            var packVersion = AppUtils.getAppVersionName()
+            if (packVersion != version) {
                 CommonAlertDialog(this).apply {
                     gravity = Gravity.BOTTOM
                     type = CommonAlertDialog.DialogType.Confirm
@@ -81,7 +81,13 @@ class MainActivity : BaseActivity<MainActivityViewModel, ActivityMainBinding>() 
                         override fun onRightBtnClick(view: View) {
                             super.onRightBtnClick(view)
                             //更新操作
-                            startUpgrade(it)
+                            getFileFromServer(it.upgradePackage)
+                        }
+                        override fun onLeftBtnClick(view: View) {
+                            super.onLeftBtnClick(view)
+                            if (it.mandatoryUpgrade == "是") {
+                                ActivityUtils.finishAllActivities()
+                            }
                         }
                     }
                 }.show()
@@ -89,57 +95,47 @@ class MainActivity : BaseActivity<MainActivityViewModel, ActivityMainBinding>() 
         })
     }
 
-    private fun startUpgrade(it: UpGradeData) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val hasInstallPermission: Boolean = isHasInstallPermissionWithO(this)
-            if (!hasInstallPermission) {
-                Log.d("555", "enter hasInstallPermission   false")
-                //弹框提示用户手动打开
-                CommonAlertDialog(this).apply {
-                    gravity = Gravity.CENTER
-                    type = CommonAlertDialog.DialogType.Confirm
-                    title = "安装权限"
-                    content = "需要打开允许来自此来源，请去设置中开启此权限"
-                    rightBtnText = "确认"
-                    leftBtnText = "取消"
-                    listener = object : DialogClickListener.DefaultLisener() {
-                        override fun onRightBtnClick(view: View) {
-                            super.onRightBtnClick(view)
-                            toInstallPermissionSettingIntent()
-                        }
-
-                        override fun onLeftBtnClick(view: View) {
-                            super.onLeftBtnClick(view)
-                            return
-                        }
-                    }
-                }.show()
-            } else {
-                getFileFromServer(it.upgradePackage)
-            }
-        }
-    }
-
-    fun getFileFromServer(downUrl: String?) {
+    private fun getFileFromServer(downUrl: String?) {
         DownloadUtil.download(this, downUrl, object : DownloadUtil.OnDownloadListener {
             override fun onDownloadSuccess(file: File) {
-                Log.d("555", "onDownload   success ")
-                installApk(file)
+                startInstallApk(file)
             }
 
             override fun onDownloading(progress: Int) {
-                Log.d("555", "onDownloading$progress")
             }
 
             override fun onDownloadFailed() {
-                Log.d("555", "onDownloadFailed")
             }
         })
+    }
+
+    // 下载成功，开始安装,兼容8.0安装位置来源的权限
+    private fun startInstallApk(apkFile: File) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //是否有安装位置来源的权限
+            val hasInstallPermission: Boolean = isHasInstallPermissionWithO(this)
+            if (hasInstallPermission) {
+                // "8.0手机已经拥有安装未知来源应用的权限，直接安装！"
+                AppUtils.installApp(apkFile)
+            } else {
+                toInstallPermissionSettingIntent()
+            }
+        } else {
+            AppUtils.installApp(apkFile)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun isHasInstallPermissionWithO(context: Context?): Boolean {
         return context?.packageManager?.canRequestPackageInstalls() ?: false
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == INSTALL_PERMISS_CODE) {
+            val successDownloadApkPath = "${getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}/".trim()+"Wondercare.apk"
+            AppUtils.installApp(successDownloadApkPath)
+        }
     }
 
     private fun toInstallPermissionSettingIntent() {
