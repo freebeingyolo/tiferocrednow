@@ -122,7 +122,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
         netLaunch(
             {
                 withContext(Dispatchers.IO) {
-                    val ret = CourseRepository.queryVideo("教程", "健腹轮")
+                    val ret = CourseRepository.queryVideo("教学视频", "健腹轮")
                     ret
                 }
             },

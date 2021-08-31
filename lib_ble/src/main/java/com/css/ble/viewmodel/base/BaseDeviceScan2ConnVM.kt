@@ -361,7 +361,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         netLaunch(
             {
                 withContext(Dispatchers.IO) {
-                    val ret = CourseRepository.queryVideo("教程", deviceType.alias)
+                    val ret = CourseRepository.queryVideo("教学视频", deviceType.alias)
                     ret
                 }
             },
