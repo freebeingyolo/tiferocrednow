@@ -3,7 +3,6 @@ package com.css.wondercorefit.ui.activity.setting
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +15,6 @@ import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseActivity
 import com.css.base.view.ToolBarView
 import com.css.service.data.DeviceData
-import com.css.wondercorefit.R
 import com.css.wondercorefit.adapter.MyDeviceRecycleAdapter
 import com.css.wondercorefit.databinding.ActivityMyDeviceBinding
 import com.css.wondercorefit.viewmodel.MyDeviceViewModel
@@ -56,7 +54,22 @@ class MyDeviceActivity : BaseActivity<MyDeviceViewModel, ActivityMyDeviceBinding
             mData.addAll(it)
             mAdapter.setItems(mData)
         })
+        mViewModel.unBindDevice.observe(this, Observer {
+            mData.remove(it)
+            mAdapter.setItems(mData)
+            CommonAlertDialog(baseContext).apply {
+                type = CommonAlertDialog.DialogType.Image
+                imageResources = com.css.ble.R.mipmap.icon_tick
+                content = context.getString(com.css.ble.R.string.unbond_ok)
+                onDismissListener = object : BasePopupWindow.OnDismissListener() {
+                    override fun onDismiss() {
+                        finish()
+                    }
+                }
+            }.show()
+        })
     }
+
     private fun initRecycle() {
         mViewModel.loadDevice()
     }
@@ -72,18 +85,7 @@ class MyDeviceActivity : BaseActivity<MyDeviceViewModel, ActivityMyDeviceBinding
             listener = object : DialogClickListener.DefaultLisener() {
                 override fun onRightBtnClick(view: View) {
                     super.onRightBtnClick(view)
-                    CommonAlertDialog(context).apply {
-                        type = CommonAlertDialog.DialogType.Image
-                        imageResources = com.css.ble.R.mipmap.icon_tick
-                        content = context.getString(com.css.ble.R.string.unbond_ok)
-                        onDismissListener = object : BasePopupWindow.OnDismissListener() {
-                            override fun onDismiss() {
-                                finish()
-                            }
-                        }
-                    }.show()
-                    mViewModel.unBindDevice(it.id , it.deviceCategory)
-                    mViewBinding.deviceRecycle.invalidate()
+                    mViewModel.unBindDevice(it.id, it.deviceCategory,it)
                 }
             }
         }.show()
@@ -93,8 +95,12 @@ class MyDeviceActivity : BaseActivity<MyDeviceViewModel, ActivityMyDeviceBinding
         return true
     }
 
-    override fun initViewModel(): MyDeviceViewModel = ViewModelProvider(this).get(MyDeviceViewModel::class.java)
+    override fun initViewModel(): MyDeviceViewModel =
+        ViewModelProvider(this).get(MyDeviceViewModel::class.java)
 
-    override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): ActivityMyDeviceBinding =
-            ActivityMyDeviceBinding.inflate(inflater, parent, false)
+    override fun initViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?
+    ): ActivityMyDeviceBinding =
+        ActivityMyDeviceBinding.inflate(inflater, parent, false)
 }

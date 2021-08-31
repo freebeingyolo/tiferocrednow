@@ -19,6 +19,7 @@ import kotlinx.coroutines.withContext
 class MyDeviceViewModel : BaseViewModel() {
     private val _deviceInfos by lazy { MutableLiveData<List<DeviceData>>() }
     val deviceInfo: LiveData<List<DeviceData>> get() = _deviceInfos
+    var unBindDevice = MutableLiveData<DeviceData>()
 
     //加载设备
     fun loadDevice() {
@@ -33,18 +34,26 @@ class MyDeviceViewModel : BaseViewModel() {
 
     //解绑
     fun unBindDevice(
-        id: Int, category: String
+        id: Int, category: String,deviceInfo:DeviceData
     ) {
         netLaunch(
             {
                 withContext(Dispatchers.IO) {
                     val ret = DeviceRepository.unbindDevice(id, category)
-                    takeIf { ret.isSuccess }.apply { BondDeviceData.setDevice(DeviceType.findByAlias(category), null) }
+                    takeIf { ret.isSuccess }.apply {
+                        BondDeviceData.setDevice(
+                            DeviceType.findByAlias(
+                                category
+                            ), null
+                        )
+                    }
                     ret
                 }
             },
             { msg, data ->
-                _deviceInfos.value = _deviceInfos.value //just for refresh
+                unBindDevice.value = deviceInfo
+//                _deviceInfos.value = _deviceInfos.value
+                //just for refresh
                 //WonderCoreCache.saveData(CacheKey.BOND_WEIGHT_INFO,null) //下一步用WonderCoreCache解耦BondDeviceData
             },
             { code, msg, data ->
