@@ -69,7 +69,6 @@ class TodayStepService : Service(), Handler.Callback {
 
     private var receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            Log.d("9999","action：" + intent!!.action)
             when (intent!!.action) {
                 "android.intent.action.OPEN_NOTIFICATION" -> {
                     notificationIsOpen = true

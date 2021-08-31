@@ -48,7 +48,6 @@ class MyDeviceActivity : BaseActivity<MyDeviceViewModel, ActivityMyDeviceBinding
 //        mAdapter.setOnItemClickListener {
 //        }
         mAdapter.setOnDeleteDeviceClickListener {
-            Log.d("888" , " setOnDeleteDeviceClickListener    :   "  + mAdapter.getPosition())
             deleteDevice(it)
         }
         initRecycle()
