@@ -26,7 +26,6 @@ class MyDeviceActivity : BaseActivity<MyDeviceViewModel, ActivityMyDeviceBinding
 
     var mData = ArrayList<DeviceData>()
     lateinit var mAdapter: MyDeviceRecycleAdapter
-    private var opened  = false
 
     companion object {
         fun starActivity(context: Context) {
@@ -45,17 +44,10 @@ class MyDeviceActivity : BaseActivity<MyDeviceViewModel, ActivityMyDeviceBinding
         mAdapter = MyDeviceRecycleAdapter(mData)
         mViewBinding?.deviceRecycle?.layoutManager = LinearLayoutManager(this)
         mViewBinding?.deviceRecycle?.adapter = mAdapter
-//        mAdapter.setOnItemClickListener {
-//        }
         mAdapter.setOnDeleteDeviceClickListener {
             deleteDevice(it)
         }
         initRecycle()
-    }
-
-
-    override fun initData() {
-        super.initData()
     }
 
     override fun registorUIChangeLiveDataCallBack() {
@@ -91,6 +83,7 @@ class MyDeviceActivity : BaseActivity<MyDeviceViewModel, ActivityMyDeviceBinding
                         }
                     }.show()
                     mViewModel.unBindDevice(it.id , it.deviceCategory)
+                    mViewBinding.deviceRecycle.invalidate()
                 }
             }
         }.show()
