@@ -15,6 +15,7 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.blankj.utilcode.util.AppUtils
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseActivity
@@ -64,28 +65,31 @@ class MainActivity : BaseActivity<MainActivityViewModel, ActivityMainBinding>() 
         mViewModel.getUpGrade()
         mViewModel.fetchRemoteWeight()
     }
+
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
         mViewModel.upGradeData.observe(this, {
-            CommonAlertDialog(this).apply {
-                gravity = Gravity.BOTTOM
-                type = CommonAlertDialog.DialogType.Confirm
-                title = "检测更新"
-                content = "检测到新版本${it.version}\n更新内容：\n${it.updateContent}"
-                leftBtnText = "暂不更新"
-                rightBtnText = "立即更新"
-                listener = object : DialogClickListener.DefaultLisener() {
-                    override fun onRightBtnClick(view: View) {
-                        super.onRightBtnClick(view)
-                        //更新操作
-                        startUpgrade(it)
+            if (!AppUtils.getAppVersionName().equals(it.version)) {
+                CommonAlertDialog(this).apply {
+                    gravity = Gravity.BOTTOM
+                    type = CommonAlertDialog.DialogType.Confirm
+                    title = "检测更新"
+                    content = "检测到新版本${it.version}\n更新内容：\n${it.updateContent}"
+                    leftBtnText = "暂不更新"
+                    rightBtnText = "立即更新"
+                    listener = object : DialogClickListener.DefaultLisener() {
+                        override fun onRightBtnClick(view: View) {
+                            super.onRightBtnClick(view)
+                            //更新操作
+                            startUpgrade(it)
+                        }
                     }
-                }
-            }.show()
+                }.show()
+            }
         })
     }
 
-    private fun startUpgrade( it: UpGradeData) {
+    private fun startUpgrade(it: UpGradeData) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val hasInstallPermission: Boolean = isHasInstallPermissionWithO(this)
             if (!hasInstallPermission) {

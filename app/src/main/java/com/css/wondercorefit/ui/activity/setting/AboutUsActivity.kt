@@ -66,27 +66,29 @@ open class AboutUsActivity : BaseActivity<AboutUsViewModel, ActivityAboutUsBindi
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
         mViewModel.upGradeData.observe(this, Observer {
-                    CommonAlertDialog(this).apply {
-                        gravity = Gravity.BOTTOM
-                        type = CommonAlertDialog.DialogType.Confirm
-                        title = "检测更新"
-                        content = "检测到新版本${it.version}\n更新内容：\n${it.updateContent}"
-                        leftBtnText = "暂不更新"
-                        rightBtnText = "立即更新"
-                        listener = object : DialogClickListener.DefaultLisener() {
-                            override fun onRightBtnClick(view: View) {
-                                super.onRightBtnClick(view)
-                                val upgradeUrl = it.upgradePackage
-                                startUpgrade(it)
+            if (!AppUtils.getAppVersionName().equals(it.version)) {
+                CommonAlertDialog(this).apply {
+                    gravity = Gravity.BOTTOM
+                    type = CommonAlertDialog.DialogType.Confirm
+                    title = "检测更新"
+                    content = "检测到新版本${it.version}\n更新内容：\n${it.updateContent}"
+                    leftBtnText = "暂不更新"
+                    rightBtnText = "立即更新"
+                    listener = object : DialogClickListener.DefaultLisener() {
+                        override fun onRightBtnClick(view: View) {
+                            super.onRightBtnClick(view)
+                            val upgradeUrl = it.upgradePackage
+                            startUpgrade(it)
 
-                            }
                         }
-                    }.show()
+                    }
+                }.show()
+            }
         })
 
     }
 
-    private fun startUpgrade( it: UpGradeData) {
+    private fun startUpgrade(it: UpGradeData) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val hasInstallPermission: Boolean = isHasInstallPermissionWithO(this)
             if (!hasInstallPermission) {
