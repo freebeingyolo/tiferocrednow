@@ -96,6 +96,7 @@
                 android:visibility="@{model.isConnecting ? View.VISIBLE :View.GONE,default=gone}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                tools:visibility="visible"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.css.base.view.ElectricityView

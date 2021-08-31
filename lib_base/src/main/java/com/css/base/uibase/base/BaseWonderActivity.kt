@@ -2,8 +2,6 @@ package com.css.base.uibase.base
 
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.TextUtils
 import android.view.*
 import android.widget.FrameLayout
@@ -12,6 +10,7 @@ import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.contains
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.util.BarUtils
 import com.blankj.utilcode.util.KeyboardUtils
@@ -27,6 +26,8 @@ import com.css.base.utils.FragmentStarter
 import com.css.base.utils.OSUtils
 import com.css.base.view.ToolBarView
 import com.css.service.bus.LiveDataBus
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import razerdp.basepopup.BasePopupWindow
 
 abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompatActivity(),
@@ -233,7 +234,10 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
                     Toast.makeText(applicationContext, closeWarningHint, Toast.LENGTH_SHORT)
                 closeToast!!.show()
                 mCloseWarned = true
-                Handler().postDelayed({ mCloseWarned = false }, 1500)
+                lifecycleScope.launch {
+                    delay(1500)
+                    mCloseWarned = false
+                }
             } else {
                 if (closeToast != null) {
                     closeToast!!.cancel()
@@ -265,7 +269,10 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
             ToastUtils.setGravity(-1, -1, -1)
             ToastUtils.showShort(it)
             onDismiss?.let {
-                Handler(Looper.getMainLooper()).postDelayed({ it() }, 2000)
+                lifecycleScope.launch {
+                    delay(2000)
+                    it()
+                }
             }
         }
     }
@@ -275,7 +282,10 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
             ToastUtils.setGravity(-1, -1, -1)
             ToastUtils.showLong(it)
             onDismiss?.let {
-                Handler(Looper.getMainLooper()).postDelayed({ it() }, 3500)
+                lifecycleScope.launch {
+                    delay(3500)
+                    it()
+                }
             }
         }
     }
@@ -284,7 +294,10 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
         ToastUtils.setGravity(-1, -1, -1)
         ToastUtils.showShort(resId)
         onDismiss?.let {
-            Handler(Looper.getMainLooper()).postDelayed({ it() }, 2000)
+            lifecycleScope.launch {
+                delay(2000)
+                it()
+            }
         }
     }
 
@@ -292,7 +305,10 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
         ToastUtils.setGravity(-1, -1, -1)
         ToastUtils.showLong(resId)
         onDismiss?.let {
-            Handler(Looper.getMainLooper()).postDelayed({ it() }, 3500)
+            lifecycleScope.launch {
+                delay(3500)
+                it()
+            }
         }
     }
 
@@ -301,7 +317,10 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
             ToastUtils.setGravity(Gravity.CENTER, 0, 0)
             ToastUtils.showShort(msg)
             onDismiss?.let {
-                Handler(Looper.getMainLooper()).postDelayed({ it() }, 2000)
+                lifecycleScope.launch {
+                    delay(2000)
+                    it()
+                }
             }
         }
     }
@@ -311,7 +330,10 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
             ToastUtils.setGravity(Gravity.CENTER, 0, 0)
             ToastUtils.showLong(msg)
             onDismiss?.let {
-                Handler(Looper.getMainLooper()).postDelayed({ it() }, 3500)
+                lifecycleScope.launch {
+                    delay(3500)
+                    it()
+                }
             }
         }
     }
@@ -320,7 +342,10 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
         ToastUtils.setGravity(Gravity.CENTER, 0, 0)
         ToastUtils.showShort(resId)
         onDismiss?.let {
-            Handler(Looper.getMainLooper()).postDelayed({ it() }, 2000)
+            lifecycleScope.launch {
+                delay(2000)
+                it()
+            }
         }
     }
 
@@ -328,7 +353,10 @@ abstract class BaseWonderActivity<VM : BaseViewModel, VB : ViewBinding> : AppCom
         ToastUtils.setGravity(Gravity.CENTER, 0, 0)
         ToastUtils.showLong(resId)
         onDismiss?.let {
-            Handler(Looper.getMainLooper()).postDelayed({ it() }, 3500)
+            lifecycleScope.launch {
+                delay(3500)
+                it()
+            }
         }
     }
 

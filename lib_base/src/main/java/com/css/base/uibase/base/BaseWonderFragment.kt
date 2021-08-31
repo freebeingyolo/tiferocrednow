@@ -7,13 +7,12 @@ import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.*
 import android.widget.FrameLayout
 import androidx.core.view.contains
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.util.ToastUtils
 import com.css.base.R
@@ -25,6 +24,8 @@ import com.css.base.uibase.inner.OnToolBarClickListener
 import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.base.utils.FragmentStarter
 import com.css.base.view.ToolBarView
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import razerdp.basepopup.BasePopupWindow
 import java.lang.ref.Reference
 import java.lang.ref.WeakReference
@@ -487,7 +488,10 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
             ToastUtils.setGravity(-1, -1, -1)
             ToastUtils.showShort(it)
             onDismiss?.let {
-                Handler(Looper.getMainLooper()).postDelayed({ it() }, 2000)
+                lifecycleScope.launch {
+                    delay(2000)
+                    it()
+                }
             }
         }
     }
@@ -497,7 +501,10 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
             ToastUtils.setGravity(-1, -1, -1)
             ToastUtils.showLong(it)
             onDismiss?.let {
-                Handler(Looper.getMainLooper()).postDelayed({it()},3500)
+                lifecycleScope.launch {
+                    delay(3500)
+                    it()
+                }
             }
         }
     }
@@ -506,7 +513,10 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
         ToastUtils.setGravity(-1, -1, -1)
         ToastUtils.showShort(resId)
         onDismiss?.let {
-            Handler(Looper.getMainLooper()).postDelayed({ it() }, 2000)
+            lifecycleScope.launch {
+                delay(2000)
+                it()
+            }
         }
     }
 
@@ -514,7 +524,10 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
         ToastUtils.setGravity(-1, -1, -1)
         ToastUtils.showLong(resId)
         onDismiss?.let {
-            Handler(Looper.getMainLooper()).postDelayed({it()},3500)
+            lifecycleScope.launch {
+                delay(3500)
+                it()
+            }
         }
     }
 
@@ -523,7 +536,10 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
             ToastUtils.setGravity(Gravity.CENTER, 0, 0)
             ToastUtils.showShort(msg)
             onDismiss?.let {
-                Handler(Looper.getMainLooper()).postDelayed({ it() }, 2000)
+                lifecycleScope.launch {
+                    delay(2000)
+                    it()
+                }
             }
         }
     }
@@ -533,7 +549,10 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
             ToastUtils.setGravity(Gravity.CENTER, 0, 0)
             ToastUtils.showLong(msg)
             onDismiss?.let {
-                Handler(Looper.getMainLooper()).postDelayed({it()},3500)
+                lifecycleScope.launch {
+                    delay(3500)
+                    it()
+                }
             }
         }
     }
@@ -542,7 +561,10 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
         ToastUtils.setGravity(Gravity.CENTER, 0, 0)
         ToastUtils.showShort(resId)
         onDismiss?.let {
-            Handler(Looper.getMainLooper()).postDelayed({it()},2000)
+            lifecycleScope.launch {
+                delay(2000)
+                it()
+            }
         }
     }
 
@@ -550,7 +572,10 @@ abstract class BaseWonderFragment<VM : BaseViewModel, VB : ViewBinding> : Fragme
         ToastUtils.setGravity(Gravity.CENTER, 0, 0)
         ToastUtils.showLong(resId)
         onDismiss?.let {
-            Handler(Looper.getMainLooper()).postDelayed({it()},3500)
+            lifecycleScope.launch {
+                delay(3500)
+                it()
+            }
         }
 
     }

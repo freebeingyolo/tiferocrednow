@@ -14,13 +14,13 @@ object CourseRepository {
 
     suspend fun queryVideo(): CommonResponse<List<CourseData>> {
         val param = RequestBodyBuilder()
-                .addParams("applicationScenes", "教程")
-                .build()
+            .addParams("applicationScenes", "教程")
+            .build()
         return otherApi.queryVideo(param)
     }
 
     //健腹轮中的玩法推荐：scene:玩法推荐,deviceCategoryName:健腹轮
-    suspend fun queryVideo(scene:String,deviceCategoryName:String): CommonResponse<List<CourseData>> {
+    suspend fun queryVideo(scene: String, deviceCategoryName: String): CommonResponse<List<CourseData>> {
         val param = RequestBodyBuilder()
             .addParams("applicationScenes", scene)
             .addParams("deviceCategoryName", deviceCategoryName)

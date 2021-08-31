@@ -180,7 +180,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             }
             mMainDeviceAdapter.setItems(mData)
         }
-        BondDeviceData.getDeviceStateLiveData().observe(this) {
+        BondDeviceData.getDeviceConnectStateLiveData().observe(viewLifecycleOwner) {
             LogUtils.d("it--->$it")
             for (item in mData) {
                 if (item.deviceCategory == it.first) {

@@ -3,6 +3,7 @@ package com.css.ble.viewmodel
 import LogUtils
 import android.bluetooth.BluetoothGattService
 import android.os.Looper
+import android.view.View
 import androidx.annotation.NonNull
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -18,15 +19,14 @@ import cn.wandersnail.commons.poster.Tag
 import cn.wandersnail.commons.poster.ThreadMode
 import cn.wandersnail.commons.util.StringUtils
 import cn.wandersnail.commons.util.ToastUtils
-import com.blankj.utilcode.util.ActivityUtils
 import com.css.base.net.api.repository.CourseRepository
 import com.css.base.net.api.repository.DeviceRepository
 import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.utils.DataUtils
-import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
 import com.css.ble.viewmodel.base.BaseWheelVM
+import com.css.service.bus.LiveDataBus
 import com.css.service.data.CourseData
 import kotlinx.coroutines.*
 import java.text.DecimalFormat
@@ -42,7 +42,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
     //测量
     private val connectTimeout = 5 * 1000L
     private var exerciseDurationJob: Job? = null
-    val stateObsrv: LiveData<State> by lazy { MutableLiveData(State.disconnected) }
+    val stateObsrv: LiveData<State> by lazy { LiveDataBus.BusMutableLiveData(State.disconnected) }
     val batteryLevel: LiveData<Int> by lazy { MutableLiveData(-1) }
     val exerciseCount: LiveData<Int> by lazy { MutableLiveData(-1) } //锻炼个数
     val exerciseDuration: LiveData<Long> by lazy { MutableLiveData(-1) }
@@ -55,6 +55,21 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
     }
     val connectStateTxt = Transformations.map(stateObsrv) {
         connectStateTxt(it)
+    }
+
+    val leftButtonTxt = Transformations.map(stateObsrv) {
+        when (it) {
+            State.exercise_start -> getString(R.string.pause_exercise)
+            State.exercise_pause -> getString(R.string.resume_exercise)
+            State.disconnected -> getString(R.string.connect_device)
+            State.connecting -> getString(R.string.cancel_connect)
+            State.discovered -> getString(R.string.start_exercise)
+            else -> getString(R.string.connect_device)
+        }
+    }
+
+    val rightButtonVisibility = Transformations.map(stateObsrv) {
+        if (it >= State.exercise_start) View.VISIBLE else View.GONE
     }
 
     private fun connectStateTxt(it: State) = if (it >= State.discovered) {
@@ -90,11 +105,11 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
         disconnected,
         scanStart,
         timeOut,
+        found,
         connecting,
         reconnecting,
         connected,
         discovering,
-        found,
         discovered,
 
         //训练
@@ -107,7 +122,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
         netLaunch(
             {
                 withContext(Dispatchers.IO) {
-                    val ret = CourseRepository.queryVideo("教程", "健腹轮")
+                    val ret = CourseRepository.queryVideo("教学视频", "健腹轮")
                     ret
                 }
             },
@@ -172,13 +187,13 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
                 EasyBLE.getInstance().stopScanQuietly()
                 if (fondMethod == FoundByName) {
                     foundDevice(device)
+                } else {
+                    val config = ConnectionConfiguration()
+                    config.setRequestTimeoutMillis(5000)
+                    config.setDiscoverServicesDelayMillis(300)
+                    config.setAutoReconnect(false)
+                    connection = EasyBLE.getInstance().connect(device, config, this@WheelMeasureVM)!!
                 }
-                //连接配置，举个例随意配置两项
-                val config = ConnectionConfiguration()
-                config.setRequestTimeoutMillis(5000)
-                config.setDiscoverServicesDelayMillis(300)
-                config.setAutoReconnect(false)
-                connection = EasyBLE.getInstance().connect(device, config, this@WheelMeasureVM)!!
             }
         }
 
@@ -218,15 +233,17 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
                 withContext(Dispatchers.IO) {
                     val ret = DeviceRepository.bindDevice(d.buidUploadParams())
                     if (ret.isSuccess) {
-                        BondDeviceData.setDevice(DeviceType.WHEEL, BondDeviceData(ret.data!!))
+                        val data1 = BondDeviceData(ret.data!!).apply { deviceConnect = connectStateTxt() }
+                        BondDeviceData.setDevice(DeviceType.WHEEL, data1)
                     }
                     ret
                 }
             },
-            { msg, _ ->
+            { msg, data ->
                 //val bondRst = EasyBLE.getInstance().createBond(it.address)
                 //LogUtils.d("bondRst:$bondRst")
                 success(msg, d)
+                connect()
                 avaliableDevice = null
             },
             { code, msg, d ->
@@ -239,6 +256,8 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
 
 
     override fun connect() {
+        LogUtils.d("connect#connectionState:${connection?.connectionState}")
+        if (connection != null && connection!!.connectionState != ConnectionState.DISCONNECTED) return
         //连接配置，举个例随意配置两项
         if (connection == null) {
             val config = ConnectionConfiguration()
@@ -264,7 +283,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
             LogUtils.d("disconnect", 7)
             connection?.disconnect()
             connection = null
-            state = State.disconnected
+            //state = State.disconnected
         }
     }
 
@@ -280,7 +299,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
     var state: State
         set(value) {
             (stateObsrv as MutableLiveData).value = value
-            BondDeviceData.getDeviceStateLiveData().value = Pair(deviceType.alias, connectStateTxt(value))
+            BondDeviceData.getDeviceConnectStateLiveData().value = Pair(deviceType.alias, connectStateTxt(value))
             if (value == State.disconnected) stopExercise()
         }
         get() = stateObsrv.value!!
@@ -487,7 +506,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
             (batteryLevel as MutableLiveData).value = (1f / value[value.size - 1] * 100).toInt()
             when (value[0]) {
                 0x54.toByte() -> { //查询当前健腹轮个数
-                    ActivityUtils.getTopActivity().runOnUiThread {
+                    viewModelScope.launch(Dispatchers.Main) {
                         val count = DataUtils.bytes2IntBig(value[2], value[3], value[4])
                         exerciseLiveCount = count
                         if (state == State.exercise_start) {

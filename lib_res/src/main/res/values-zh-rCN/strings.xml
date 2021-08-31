@@ -91,4 +91,9 @@
     <string name="statistics_title">数据统计</string>
     <string name="statistics_historyData">历史次数</string>
     <string name="lowpower_error">设备电量已低于%d%%，请及时更换电池</string>
+    <string name="pause_exercise">暂停训练</string>
+    <string name="resume_exercise">继续训练</string>
+    <string name="connect_device">连接设备</string>
+    <string name="cancel_connect">取消连接</string>
+    <string name="start_exercise">开始训练</string>
 </resources>

@@ -1,8 +1,6 @@
 package com.css.ble.ui.fragment
 
 import android.content.ActivityNotFoundException
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -13,6 +11,7 @@ import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.android.arouter.launcher.ARouter
+import com.blankj.utilcode.util.NetworkUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
@@ -41,6 +40,7 @@ import kotlinx.coroutines.launch
  * @date 2021-05-17
  */
 class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbrollerBinding>(DeviceType.WHEEL) {
+    private var alertDialog: CommonAlertDialog? = null
 
     private val lowPowerAlert: View by lazy {
         val view = LayoutInflater.from(requireContext()).inflate(R.layout.layout_network_error, null)
@@ -72,19 +72,9 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
         mViewBinding!!.lifecycleOwner = viewLifecycleOwner
 
         mViewModel.stateObsrv.observe(viewLifecycleOwner) {
-            refreshBottom(it)
             when (it) {
-                State.timeOut -> {
-                    CommonAlertDialog(requireContext()).apply {
-                        type = CommonAlertDialog.DialogType.Tip
-                        gravity = Gravity.BOTTOM
-                        listener = object : DialogClickListener.DefaultLisener() {
-                            override fun onRightBtnClick(view: View) {
-                                //TODO 重新连接
-                                mViewModel.connect()
-                            }
-                        }
-                    }.show()
+                State.disconnected -> {
+                    showReconnectDialog()
                 }
             }
         }
@@ -101,45 +91,25 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
         }
     }
 
-    fun jumpToStatistic() {
-        DataStatisticsActivity.starActivity(requireContext(), Bundle().apply { putString("deviceType", deviceType.alias) })
-    }
-
-    private fun refreshBottom(s: State) {
-        mViewBinding?.apply {
-            when (s) {
-                State.exercise_start,
-                State.exercise_pause,
-                -> {
-                    right.visibility = View.VISIBLE
-                    when (s) {
-                        State.exercise_start -> {
-                            left.text = "暂停训练"
-                            right.text = "结束训练"
-                        }
-                        State.exercise_pause -> {
-                            left.text = "继续训练"
-                            right.text = "结束训练"
-                        }
-                    }
-                }
-                else -> {
-                    right.visibility = View.GONE
-                    when (s) {
-                        State.disconnected -> {
-                            left.text = "连接设备"
-                        }
-                        State.connecting -> {
-                            left.text = "取消连接"
-                        }
-                        State.discovered -> {
-                            left.text = "开始训练"
-                        }
+    private fun showReconnectDialog() {
+        if (alertDialog == null) {
+            alertDialog = CommonAlertDialog(requireContext()).apply {
+                type = CommonAlertDialog.DialogType.Tip
+                gravity = Gravity.BOTTOM
+                outSideDismiss = false
+                listener = object : DialogClickListener.DefaultLisener() {
+                    override fun onRightBtnClick(view: View) {
+                        //TODO 重新连接
+                        startConnect()
                     }
                 }
             }
-
         }
+        alertDialog?.show()
+    }
+
+    fun jumpToStatistic() {
+        DataStatisticsActivity.starActivity(requireContext(), Bundle().apply { putString("deviceType", deviceType.alias) })
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -199,22 +169,24 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
         override fun onBindItem(binding: LayoutPlayRecommendItemBinding, item: CourseData, position: Int) {
             binding.courseData = item
             binding.itemContainer.setOnClickListener {
-                //val url = "https://www.baidu.com"
-                val url = item.videoLink
-                try {
-                    startIntent(url)
-                } catch (e: ActivityNotFoundException) {
-                    ToastUtils.showShort("链接无效:${url}")
-                }
+                playCourseVideo(item.videoLink)
             }
             binding.executePendingBindings()
         }
 
-        private fun startIntent(videoLink: String) {
-            ARouter.getInstance()
-                .build(ARouterConst.PATH_APP_MAIN_COURSE)
-                .with(Bundle().apply { putString("videoLink", videoLink) })
-                .navigation()
+        private fun playCourseVideo(videoLink: String) {
+            try {
+                if (NetworkUtils.isConnected()) {
+                    ARouter.getInstance()
+                        .build(ARouterConst.PATH_APP_MAIN_COURSE)
+                        .with(Bundle().apply { putString("videoLink", videoLink) })
+                        .navigation()
+                } else {
+                    showNetworkErrorDialog();
+                }
+            } catch (e: ActivityNotFoundException) {
+                ToastUtils.showShort("链接无效:${videoLink}")
+            }
         }
     }
 
@@ -235,7 +207,8 @@ class WheelMeasureBeginFragment : BaseDeviceFragment<WheelMeasureVM, ActivityAbr
                     mViewModel.connect()
                 }
             } else {
-                BleErrorFragment.Builder.errorType(BleEnvVM.bleErrType).leftTitle(BondDeviceData.displayName(deviceType)).create()
+                //BleErrorFragment.Builder.errorType(BleEnvVM.bleErrType).leftTitle(BondDeviceData.displayName(deviceType)).create()
+                showToast(BleEnvVM.bleErrType.content)
             }
         }
     }

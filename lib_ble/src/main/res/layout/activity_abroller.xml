@@ -307,9 +307,10 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="暂停运动"
+                android:text="@{model.leftButtonTxt}"
                 android:textColor="#F2682A"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                tools:text="开始训练" />
 
             <TextView
                 android:id="@+id/right"
@@ -317,9 +318,10 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="开始运动"
+                android:text="结束训练"
                 android:textColor="#F2682A"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:visibility="@{model.rightButtonVisibility}" />
         </LinearLayout>
     </LinearLayout>
 
