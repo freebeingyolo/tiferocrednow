@@ -158,12 +158,13 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
 
         override fun onScanStop() {
             LogUtils.d("onScanStop")
+            EasyBLE.getInstance().removeScanListener(this)
         }
 
         override fun onScanResult(device: Device, isConnectedBySys: Boolean) {
             if (filterName(device.name)) {
                 LogUtils.d("device:$device")
-                EasyBLE.getInstance().stopScanQuietly()
+                EasyBLE.getInstance().stopScan()
                 if (foundMethod == FoundWay.NAME) {
                     foundDevice(device)
                 }
@@ -194,6 +195,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
 
     override fun startScanBle() {
         if (EasyBLE.getInstance().isScanning) return
+        LogUtils.d("startScanBle,state:${state},isScanning:${EasyBLE.getInstance().isScanning}")
         EasyBLE.getInstance().scanConfiguration.isOnlyAcceptBleDevice = true
         EasyBLE.getInstance().scanConfiguration.rssiLowLimit = -100
         EasyBLE.getInstance().scanConfiguration.scanPeriodMillis = bondTimeout.toInt()
@@ -207,6 +209,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         LogUtils.d("stopScan,isScanning:${EasyBLE.getInstance().isScanning}")
         if (EasyBLE.getInstance().isScanning) {
             EasyBLE.getInstance().stopScan()
+            cancelTimeOutTimer()
             this.state = State.disconnected
         }
     }
@@ -306,9 +309,8 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     override fun disconnect() {
         cancelTimeOutTimer()
         if (state != State.disconnected) {
-            LogUtils.d("disconnect", 5)
-            connection?.disconnect()
-            //state = State.disconnected
+            LogUtils.d("disconnect,${state},${connection==null}", 5)
+            connection?.disconnect() ?: let { state = State.disconnected }
         }
     }
 

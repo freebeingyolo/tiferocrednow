@@ -103,8 +103,8 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
     enum class WorkMode { BOND, MEASURE }
     enum class State {
         disconnected,
-        scanStart,
         timeOut,
+        scanStart,
         found,
         connecting,
         reconnecting,
@@ -165,6 +165,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
 
     fun stopScanBle() {
         LogUtils.d("stopScan,isScanning:${EasyBLE.getInstance().isScanning}")
+        EasyBLE.getInstance().removeScanListener(scanListener)
         if (EasyBLE.getInstance().isScanning) {
             EasyBLE.getInstance().stopScan()
             state = State.disconnected
@@ -179,12 +180,13 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
 
         override fun onScanStop() {
             LogUtils.d("onScanStop")
+            EasyBLE.getInstance().removeScanListener(this)
         }
 
         override fun onScanResult(device: Device, isConnectedBySys: Boolean) {
             if (device.name.startsWith("AbRoller")) {
                 LogUtils.d("device:$device}")
-                EasyBLE.getInstance().stopScanQuietly()
+                EasyBLE.getInstance().stopScan()
                 if (fondMethod == FoundByName) {
                     foundDevice(device)
                 } else {
@@ -280,10 +282,9 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
     override fun disconnect() {
         cancelTimeOutTimer()
         if (state > State.disconnected) {
-            LogUtils.d("disconnect", 7)
-            connection?.disconnect()
+            LogUtils.d("disconnect,${state},${connection==null}", 7)
+            connection?.disconnect() ?: let { state = State.disconnected }
             connection = null
-            //state = State.disconnected
         }
     }
 
