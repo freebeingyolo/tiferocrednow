@@ -96,3 +96,4 @@ apk/
 /build
 /debug/output.json
 /.idea
+/multiple-channels.gradle

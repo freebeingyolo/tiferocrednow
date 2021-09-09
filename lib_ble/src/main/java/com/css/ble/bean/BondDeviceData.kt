@@ -62,15 +62,15 @@ class BondDeviceData private constructor() : BaseData() {
     var deviceConnect: String? = "未连接"
     var productType: String? = null //设备型号
     var moduleVersion: String? = "1.0" //固件版本
+    var moduleType: String? = ""
 
-
-    constructor(mac: String, manufacturerDataHex: String, productType: String?, deviceType: DeviceType) : this() {
+    constructor(mac: String, manufacturerDataHex: String, moduleType: String?, deviceType: DeviceType) : this() {
         this.mac = mac
         this.manufacturerDataHex = manufacturerDataHex
         this.deviceType = deviceType
         this.deviceCategory = deviceType.alias
         this.alias = deviceType.alias
-        this.productType = productType
+        this.moduleType = moduleType
     }
 
 
@@ -78,6 +78,7 @@ class BondDeviceData private constructor() : BaseData() {
         this.id = d.id
         this.alias = d.deviceName
         this.deviceCategory = d.deviceCategory
+        this.moduleType = d.moduleType
         this.moduleVersion = d.moduleVersion
     }
 
@@ -93,6 +94,7 @@ class BondDeviceData private constructor() : BaseData() {
             "deviceCategory" to deviceCategory,
             "deviceName" to displayName,
             "bluetoothAddress" to mac,
+            "moduleType" to moduleType,
             "moduleVersion" to moduleVersion
         )
     }
@@ -146,7 +148,7 @@ class BondDeviceData private constructor() : BaseData() {
         } else alias!!
 
     override fun toString(): String {
-        return "BondDeviceData(mac='$mac', manufacturerDataHex='$manufacturerDataHex', alias=$alias, id=$id, deviceCategory='$deviceCategory', deviceConnect=$deviceConnect, moduleType='$productType', moduleVersion='$moduleVersion')"
+        return "BondDeviceData(mac='$mac', manufacturerDataHex='$manufacturerDataHex', alias=$alias, id=$id, deviceCategory='$deviceCategory', deviceConnect=$deviceConnect, productType='$productType', moduleVersion='$moduleVersion')"
     }
 
 }

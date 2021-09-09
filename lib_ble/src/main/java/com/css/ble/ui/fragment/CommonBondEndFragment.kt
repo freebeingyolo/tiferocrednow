@@ -35,7 +35,7 @@ class CommonBondEndFragment(d: DeviceType, val model: BaseDeviceScan2ConnVM) : B
         for (i in 1 until activities.size - 1) {//后加的activity在队首
             ActivityUtils.finishActivity(activities[i])
         }
-        super.onBackPressed()
+        //super.onBackPressed()
     }
 
     override fun initData() {
