@@ -57,18 +57,23 @@ class DeviceInfoActivity : BaseActivity<DeviceInfoVM, FragmentDeviceInfoBinding>
         super.initView(savedInstanceState)
         key = intent.getStringExtra("DeviceKey")!!
         data = BondDeviceData.getDevice(DeviceType.valueOf(key))!!
-        mViewBinding.model = data
-        mViewBinding.apply {
-            tvDeviceName.text = data.displayName
-            tvMacAddress.text = data.mac
-        }
+        mViewModel.getDeviceInfo(data.id,
+            { _,_ ->
+                data = BondDeviceData.getDevice(DeviceType.valueOf(key))!!
+                mViewBinding.model = data
+                mViewBinding.lifecycleOwner = this
+            },
+            { _, msg, _ ->
+                showToast(msg) {
+                    onBackPressed()
+                }
+            }
+        )
         setToolBarLeftText(data.displayName)
         mViewBinding.rlDeleteDevice.setOnClickListener {
             BondDeviceData.setDevice(data.deviceType, null)
         }
-
         mViewBinding.apply {
-            tvDeviceName.text = data.displayName
             rlDeviceName.setOnClickListener {
                 CommonAlertDialog(baseContext).apply {
                     type = CommonAlertDialog.DialogType.Edit
@@ -80,10 +85,10 @@ class DeviceInfoActivity : BaseActivity<DeviceInfoVM, FragmentDeviceInfoBinding>
                     listener = object : DialogClickListener.DefaultLisener() {
 
                         override fun onRightEditBtnClick(view: View, content: String?) {
-                            //                            val contentLength =
-                            //                                StringUtils.getCharacterNum(content) + StringUtils.getChineseNum(
-                            //                                    content!!
-                            //                                )
+                            //val contentLength =
+                            //    StringUtils.getCharacterNum(content) + StringUtils.getChineseNum(
+                            //        content!!
+                            //    )
                             if (StringUtils.getCheckSymbol(content.toString())) {
                                 showCenterToast("设备名称只可为10个汉字或英文字母，包含其他字符将无法保存")
                             } else {
@@ -129,11 +134,14 @@ class DeviceInfoActivity : BaseActivity<DeviceInfoVM, FragmentDeviceInfoBinding>
                                         type = CommonAlertDialog.DialogType.Image
                                         imageResources = R.mipmap.icon_tick
                                         content = context.getString(R.string.unbond_ok)
-                                        onDismissListener = object : BasePopupWindow.OnDismissListener() {
-                                            override fun onDismiss() {
-                                                ARouter.getInstance().build(ARouterConst.PATH_APP_MAIN).navigation()
+                                        onDismissListener =
+                                            object : BasePopupWindow.OnDismissListener() {
+                                                override fun onDismiss() {
+                                                    ARouter.getInstance()
+                                                        .build(ARouterConst.PATH_APP_MAIN)
+                                                        .navigation()
+                                                }
                                             }
-                                        }
                                     }.show()
                                 }, { _, msg, _ ->
                                     showCenterToast(msg)

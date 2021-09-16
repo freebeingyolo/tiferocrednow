@@ -64,13 +64,13 @@ class BondDeviceData private constructor() : BaseData() {
     var moduleVersion: String? = "1.0" //固件版本
     var moduleType: String? = ""
 
-    constructor(mac: String, manufacturerDataHex: String, moduleType: String?, deviceType: DeviceType) : this() {
+    constructor(mac: String, manufacturerDataHex: String, productType: String?, deviceType: DeviceType) : this() {
         this.mac = mac
         this.manufacturerDataHex = manufacturerDataHex
         this.deviceType = deviceType
         this.deviceCategory = deviceType.alias
         this.alias = deviceType.alias
-        this.moduleType = moduleType
+        this.productType = productType
     }
 
 

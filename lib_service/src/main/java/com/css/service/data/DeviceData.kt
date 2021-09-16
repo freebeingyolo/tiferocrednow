@@ -15,6 +15,7 @@ data class DeviceData(
     val moduleVersion: String,
     val productType: String?,
     val status: Any,
+    //customise
     var connect: String = "未连接",
     var deviceImg: Int
 ) {
@@ -22,7 +23,7 @@ data class DeviceData(
         @BindingAdapter("android:src")
         @JvmStatic
         fun setImageViewResource(imageView: AppCompatImageView, resource: Int) {
-//            Glide.with(imageView.context).load(resource).into(imageView)
+            // Glide.with(imageView.context).load(resource).into(imageView)
             imageView.setImageResource(resource);
         }
     }

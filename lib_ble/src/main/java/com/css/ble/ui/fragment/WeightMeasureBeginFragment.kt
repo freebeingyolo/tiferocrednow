@@ -3,7 +3,6 @@ package com.css.ble.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
 import com.css.base.view.ToolBarView
 import com.css.ble.bean.WeightBondData
 import com.css.ble.databinding.ActivityWeightMeasureBeginBinding

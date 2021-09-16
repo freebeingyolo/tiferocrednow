@@ -97,3 +97,5 @@ apk/
 /debug/output.json
 /.idea
 /multiple-channels.gradle
+/keystore.properties
+/app/build.gradle.bak

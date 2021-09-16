@@ -5,19 +5,13 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
-import com.alibaba.android.arouter.launcher.ARouter
-import com.blankj.utilcode.constant.PermissionConstants
 import com.blankj.utilcode.util.PermissionUtils
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseFragment
-import com.css.base.uibase.base.BaseWonderFragment
 import com.css.base.uibase.inner.OnToolBarClickListener
 import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.base.view.ToolBarView
@@ -28,13 +22,7 @@ import com.css.ble.ui.DeviceInfoActivity
 import com.css.ble.utils.BleUtils
 import com.css.ble.utils.QuickTransUtils
 import com.css.ble.viewmodel.BleEnvVM
-import com.css.service.router.ARouterConst
-import com.css.service.utils.CacheKey
 import com.css.service.utils.ImageUtils
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import okhttp3.internal.wait
-import razerdp.basepopup.BasePopupWindow
 
 /**
  * @author yuedong

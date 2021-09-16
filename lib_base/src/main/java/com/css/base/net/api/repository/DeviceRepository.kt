@@ -19,6 +19,11 @@ object DeviceRepository {
         NetManager.create(WonderCoreApi.Device::class.java)
     }
 
+
+    suspend fun queryDeviceListDetails(id: Int): CommonResponse<List<DeviceData>> {
+        return api.queryDeviceListDetails(mapOf("id" to id.toString()))
+    }
+
     //查询绑定的设备
     suspend fun queryBindDevice(userId: String): CommonResponse<List<DeviceData>> {
         return api.queryBindDevice(mapOf("userId" to userId))
@@ -55,12 +60,22 @@ object DeviceRepository {
     }
 
     //上传健腹轮的运动数据
-    suspend fun addAbroller(time: Int, num: Int, calory: Float, deviceType: String): CommonResponse<PullUpData> {
+    suspend fun addAbroller(
+        time: Int,
+        num: Int,
+        calory: Float,
+        deviceType: String
+    ): CommonResponse<PullUpData> {
         return addPushUps(time, num, calory, deviceType)
     }
 
     //上传单杠的运动数据
-    suspend fun addPushUps(time: Int, num: Int, calory: Float, deviceType: String): CommonResponse<PullUpData> {
+    suspend fun addPushUps(
+        time: Int,
+        num: Int,
+        calory: Float,
+        deviceType: String
+    ): CommonResponse<PullUpData> {
         return api.addPushUps(
             RequestBodyBuilder()
                 .addParams("exerciseTime", time)
@@ -71,7 +86,11 @@ object DeviceRepository {
         )
     }
 
-    suspend fun queryAbroller(deviceType: String, startDate: String, endDate: String): CommonResponse<List<PullUpData>> {
+    suspend fun queryAbroller(
+        deviceType: String,
+        startDate: String,
+        endDate: String
+    ): CommonResponse<List<PullUpData>> {
         return queryPushUps(deviceType, startDate, endDate)
     }
 
@@ -79,7 +98,11 @@ object DeviceRepository {
     * 查询期间内的单杠数据
     * eg:http://192.168.65.156:8081/wondercore/appHistory/queryPushUps?deviceType=健腹轮&startDate=2021-07-25&endDate=2021-07-28
     */
-    suspend fun queryPushUps(deviceType: String, startDate: String, endDate: String): CommonResponse<List<PullUpData>> {
+    suspend fun queryPushUps(
+        deviceType: String,
+        startDate: String,
+        endDate: String
+    ): CommonResponse<List<PullUpData>> {
         return api.queryPushUps(
             mapOf(
                 "deviceType" to deviceType,

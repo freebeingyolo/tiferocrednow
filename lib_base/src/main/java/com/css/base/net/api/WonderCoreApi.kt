@@ -98,6 +98,9 @@ internal interface WonderCoreApi {
         @GET("appDevice/queryBindDevice")
         suspend fun queryBindDevice(@QueryMap map: Map<String,String>): CommonResponse<List<DeviceData>>
 
+        @GET("appDevice/queryDetails")
+        suspend fun queryDeviceListDetails(@QueryMap map: Map<String,String>): CommonResponse<List<DeviceData>>
+
         @POST("appDevice/bind")
         suspend fun bindDevice(@Body requestBody: RequestBody): CommonResponse<DeviceData>
 
