@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.css.base.net.api.repository.HistoryRepository
 import com.css.ble.bean.BondDeviceData
-import com.css.ble.bean.DeviceType
 import com.css.ble.bean.WeightBondData
 import com.css.ble.viewmodel.base.BaseWeightVM
 import com.css.service.utils.CacheKey
@@ -21,7 +20,6 @@ class WeightMeasureVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPars
     private val _state: MutableLiveData<State> by lazy { MutableLiveData<State>(State.begin) }
     val state: MutableLiveData<State> get() = _state
     override val timeOut = 10 * 1000L
-    private val weigthDataTemp: WeightBondData by lazy { WeightBondData() }
     private val mBroadcastDataParsing by lazy { BroadcastDataParsing(this) }
     val bondData: MutableLiveData<WeightBondData> by lazy { MutableLiveData<WeightBondData>() }
 
@@ -70,12 +68,12 @@ class WeightMeasureVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPars
         tempNegative: Int,
         temp: Int
     ) {
-        weigthDataTemp.apply {
+        WeightBondData().apply {
             setValue(
                 status, tempUnit, weightUnit, weightDecimal,
                 weightStatus, weightNegative, weight, adc, algorithmId, tempNegative, temp
             )
-            Log.d(TAG, "getWeightData:$weigthDataTemp")
+            //Log.d(TAG, "getWeightData:$this")
             if (status == 0x00 && state.value != State.receiving) {
                 _state.value = State.receiving
                 //cancelTimeOutTimer()
@@ -88,9 +86,9 @@ class WeightMeasureVM : BaseWeightVM(), BroadcastDataParsing.OnBroadcastDataPars
                     bondData.value = this
                     _state.value = State.done
                     if (WonderCoreCache.getData(CacheKey.FIRST_WEIGHT_INFO, WeightBondData::class.java) == null) {
-                        WonderCoreCache.saveData(CacheKey.FIRST_WEIGHT_INFO, bondData.value)
+                        WonderCoreCache.saveData(CacheKey.FIRST_WEIGHT_INFO, this)
                     }
-                    WonderCoreCache.saveData(CacheKey.LAST_WEIGHT_INFO, bondData.value)
+                    WonderCoreCache.saveData(CacheKey.LAST_WEIGHT_INFO, this)
                     stopScanBle()
                 }
             }
