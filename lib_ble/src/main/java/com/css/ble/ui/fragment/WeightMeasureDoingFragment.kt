@@ -43,7 +43,7 @@ class WeightMeasureDoingFragment : BaseWeightFragment<WeightMeasureVM, ActivityW
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        setUpJumpToDeviceInfo()
+        //setUpJumpToDeviceInfo()
     }
 
     override fun initData() {

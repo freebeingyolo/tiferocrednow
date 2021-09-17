@@ -25,17 +25,12 @@ class CommonBondEndFragment(d: DeviceType, val model: BaseDeviceScan2ConnVM) : B
     override fun initViewModel(): BaseDeviceScan2ConnVM = model
 
     var backListener = View.OnClickListener {
-        onBackPressed()
-    }
-
-    override fun onBackPressed() {
         mViewModel.workMode = BaseDeviceScan2ConnVM.WorkMode.MEASURE
         //只保留本Activity和首页Activity
         val activities = ActivityUtils.getActivityList()
         for (i in 1 until activities.size - 1) {//后加的activity在队首
             ActivityUtils.finishActivity(activities[i])
         }
-        //super.onBackPressed()
     }
 
     override fun initData() {

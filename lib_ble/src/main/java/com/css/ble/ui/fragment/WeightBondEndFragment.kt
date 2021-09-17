@@ -34,24 +34,20 @@ class WeightBondEndFragment : BaseWeightFragment<WeightBondVM, LayoutWeightBondB
         return LayoutWeightBondBondedBinding.inflate(inflater, parent, false).apply {
             //返回主页
             back.setOnClickListener {
-                onBackPressed()
+                ARouter.getInstance() //测量首页
+                    .build(ARouterConst.PATH_APP_BLE_WEIGHTMEASURE)
+                    .navigation(requireContext(), object : NavCallback() {
+                        override fun onArrival(postcard: Postcard?) {
+                            //Log.d("MainActivity" , "onArrival : " + postcard?.getPath());
+                            val activities = ActivityUtils.getActivityList()
+                            for (i in 0 until activities.size - 1) {//后加的activity在队首
+                                ActivityUtils.finishActivity(activities[i])
+                            }
+                        }
+                    })
+                selfDestroyJob?.cancel()
             }
         }
-    }
-
-    override fun onBackPressed() {
-        ARouter.getInstance() //测量首页
-            .build(ARouterConst.PATH_APP_BLE_WEIGHTMEASURE)
-            .navigation(requireContext(), object : NavCallback() {
-                override fun onArrival(postcard: Postcard?) {
-                    //Log.d("MainActivity" , "onArrival : " + postcard?.getPath());
-                    val activities = ActivityUtils.getActivityList()
-                    for (i in 0 until activities.size - 1) {//后加的activity在队首
-                        ActivityUtils.finishActivity(activities[i])
-                    }
-                }
-            })
-        selfDestroyJob?.cancel()
     }
 
     override fun initViewModel(): WeightBondVM {

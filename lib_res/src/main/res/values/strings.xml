@@ -37,8 +37,8 @@
     <string name="research">重新搜索</string>
     <string name="confirm_bond">确认绑定</string>
     <string name="weight_bonded_tip">体脂秤已连接成功，开启你的健康之旅吧！</string>
-    <string name="backnow">立即返回</string>
-    <string name="count_down_tips">秒后返回设备首页</string>
+    <string name="backnow">立即跳转</string>
+    <string name="count_down_tips">秒后自动跳转到设备首页</string>
     <string name="tv_current_weight_init_msg">您尚未测量过身体数据，点此测量，了解下自己的身体情况吧！</string>
     <string name="measure_first_tips">您尚未测量过体重哦，点此立即测量！</string>
     <string name="error_ble_off">手机蓝牙未打开!</string>

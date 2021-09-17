@@ -13,6 +13,7 @@ import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseActivity
 import com.css.ble.R
+import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.FragmentDeviceListBinding
 import com.css.ble.databinding.LayoutDeviceItemBinding
@@ -56,8 +57,10 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
                     val d = deviceInfo.getBondDeviceData()
                     if (d == null) {
                         when (deviceInfo.deviceType) {
-                            DeviceType.WEIGHT -> ARouter.getInstance().build(ARouterConst.PATH_APP_BLE_WEIGHTBOND).navigation()
-                            DeviceType.WHEEL -> ARouter.getInstance().build(ARouterConst.PATH_APP_BLE_WHEELBOND).navigation()
+                            DeviceType.WEIGHT -> ARouter.getInstance()
+                                .build(ARouterConst.PATH_APP_BLE_WEIGHTBOND).navigation()
+                            DeviceType.WHEEL -> ARouter.getInstance()
+                                .build(ARouterConst.PATH_APP_BLE_WHEELBOND).navigation()
                             DeviceType.HORIZONTAL_BAR,
                             DeviceType.PUSH_UP,
                             DeviceType.COUNTER,
@@ -84,11 +87,14 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
                                                 type = CommonAlertDialog.DialogType.Image
                                                 imageResources = R.mipmap.icon_tick
                                                 content = context.getString(R.string.unbond_ok)
-                                                onDismissListener = object : BasePopupWindow.OnDismissListener() {
-                                                    override fun onDismiss() {
-                                                        ARouter.getInstance().build(ARouterConst.PATH_APP_MAIN).navigation()
+                                                onDismissListener =
+                                                    object : BasePopupWindow.OnDismissListener() {
+                                                        override fun onDismiss() {
+                                                            ARouter.getInstance()
+                                                                .build(ARouterConst.PATH_APP_MAIN)
+                                                                .navigation()
+                                                        }
                                                     }
-                                                }
                                             }.show()
                                         }, { _, msg, _ ->
                                             showCenterToast(msg)
@@ -114,6 +120,15 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
             mAdapter.mList = it
             mAdapter.notifyDataSetChanged()
         })
+        BondDeviceData.getDeviceLiveDataMerge().observe(this) { pair ->
+            mAdapter.mList?.let { list ->
+                list.indexOfFirst { it.deviceType.cacheKey == pair.first }
+                    .takeIf { it != -1 }
+                    ?.let {
+                        mAdapter.notifyItemChanged(it)
+                    }
+            }
+        }
     }
 
     override fun initData() {
@@ -129,7 +144,8 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
         var mList: List<DeviceListVM.DeviceInfo>? = null
         var itemClickListener: onItemClickListener? = null
 
-        class MyViewHolder(itemView: View, val binding: LayoutDeviceItemBinding) : RecyclerView.ViewHolder(itemView)
+        class MyViewHolder(itemView: View, val binding: LayoutDeviceItemBinding) :
+            RecyclerView.ViewHolder(itemView)
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
             val binding = LayoutDeviceItemBinding.inflate(
@@ -148,8 +164,10 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
                 binding.container.setOnClickListener {
                     itemClickListener?.onItemClick(holder, position, mList!![position])
                 }
-                binding.masked.visibility = if (it[position].getBondDeviceData() == null) View.VISIBLE else View.GONE
-                binding.masked2.visibility = if (it[position].getBondDeviceData() != null) View.VISIBLE else View.GONE
+                binding.masked.visibility =
+                    if (it[position].getBondDeviceData() == null) View.VISIBLE else View.GONE
+                binding.masked2.visibility =
+                    if (it[position].getBondDeviceData() != null) View.VISIBLE else View.GONE
             }
         }
 

@@ -56,7 +56,7 @@ class WeightMeasureDoneFragment : BaseWeightFragment<WeightMeasureVM, ActivityWe
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        setUpJumpToDeviceInfo()
+        //setUpJumpToDeviceInfo()
     }
 
 }

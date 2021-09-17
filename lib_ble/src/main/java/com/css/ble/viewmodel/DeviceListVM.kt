@@ -80,7 +80,6 @@ class DeviceListVM : BaseViewModel() {
     ) {
 
         fun getBondDeviceData(): BondDeviceData? {
-
             return BondDeviceData.getDevice(deviceType)
         }
     }

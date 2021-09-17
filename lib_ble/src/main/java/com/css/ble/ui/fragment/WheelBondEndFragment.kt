@@ -35,28 +35,24 @@ class WheelBondEndFragment : BaseDeviceFragment<WheelMeasureVM, LayoutWeightBond
         selfDestroyJob = startSelfDestroy()
     }
 
-    override fun onBackPressed() {
-        ARouter.getInstance() //测量首页
-            .build(ARouterConst.PATH_APP_BLE_WHEELMEASURE)
-            .withBoolean("autoConnect", true)
-            .navigation(requireContext(), object : NavCallback() {
-                override fun onArrival(postcard: Postcard?) {
-                    //Log.d("MainActivity" , "onArrival : " + postcard?.getPath());
-                    val activities = ActivityUtils.getActivityList()
-                    for (i in 0 until activities.size - 1) {//后加的activity在队首
-                        ActivityUtils.finishActivity(activities[i])
-                    }
-                }
-            })
-        selfDestroyJob?.cancel()
-        super.onBackPressed()
-    }
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         //返回主页
         mViewBinding!!.back.setOnClickListener {
-            onBackPressed()
+            ARouter.getInstance() //测量首页
+                .build(ARouterConst.PATH_APP_BLE_WHEELMEASURE)
+                .withBoolean("autoConnect", true)
+                .navigation(requireContext(), object : NavCallback() {
+                    override fun onArrival(postcard: Postcard?) {
+                        //Log.d("MainActivity" , "onArrival : " + postcard?.getPath());
+                        val activities = ActivityUtils.getActivityList()
+                        for (i in 0 until activities.size - 1) {//后加的activity在队首
+                            ActivityUtils.finishActivity(activities[i])
+                        }
+                    }
+                })
+            selfDestroyJob?.cancel()
         }
         mViewBinding!!.tv1.text = getString(R.string.wheel_bonded_tip)
     }

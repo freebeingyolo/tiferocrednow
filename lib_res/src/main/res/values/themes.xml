@@ -34,7 +34,7 @@
     </style>
 
     <style name="WonderTheme.NoExitEnterAnimation" parent="Wonder.Base">
-        <item name="android:windowAnimationStyle">@style/notAnimation</item>
+       <!-- <item name="android:windowAnimationStyle">@style/notAnimation</item>-->
     </style>
 
     <style name="notAnimation">
