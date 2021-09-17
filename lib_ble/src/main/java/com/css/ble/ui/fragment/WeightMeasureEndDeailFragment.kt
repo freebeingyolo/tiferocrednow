@@ -20,7 +20,7 @@ import com.css.ble.viewmodel.WeightMeasureVM
  */
 class WeightMeasureEndDeailFragment :
     BaseWeightFragment<WeightMeasureVM, ActivityWeightMeasureEndDetailBinding>() {
-    private val TAG: String = "WeightMeasureEndDeailFragment"
+    private val TAG: String = "WeightMeasureEndDeail"
     lateinit var mBodyDetailAdapter: BodyDetailAdapter
 
     override fun initViewBinding(

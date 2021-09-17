@@ -64,7 +64,7 @@ class WeightBondData() {
 
     val bodyFatData: BodyFatDataWrapper
         get() = run {
-            var userInfo = WonderCoreCache.getUserInfo()
+            val userInfo = WonderCoreCache.getUserInfo()
             val sex = userInfo.setInt
             val age = userInfo.ageInt
             val weight_kg = weightKg * 1.0

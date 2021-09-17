@@ -8,6 +8,13 @@
         <attr name="batteryColor" format="color|reference" />
     </declare-styleable>
 
+    <declare-styleable name="WeightProgressBar">
+        <attr name="progress" />
+        <attr name="max" format="integer" />
+        <attr name="backColor" format="color|reference" />
+        <attr name="frontColor" format="color|reference" />
+    </declare-styleable>
+
     <declare-styleable name="toolbarView">
         <attr name="leftImageView" format="reference" />
         <attr name="leftText" format="string|reference" />
