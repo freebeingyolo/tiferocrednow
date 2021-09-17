@@ -64,6 +64,7 @@
             android:textColor="@color/black"
             android:textSize="13sp"
             android:visibility="invisible"
+            android:text="@string/statistics_number"
             tools:text="运动次数"
             tools:visibility="visible"/>
 

@@ -263,6 +263,7 @@ class DataStatisticsFragment : BaseFragment<DataStatisticsVM, FragmentStatistics
 
         //设置默认选中柱子
         val high = Highlight(selectedX,selectedY , 0)
+        updateExerciseNumber(true,selectedY.toInt())
         mViewBinding!!.barStatistics.highlightValues(arrayOf(high))
     }
 
