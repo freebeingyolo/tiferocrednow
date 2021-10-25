@@ -1,7 +1,6 @@
 package com.css.service.utils
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.blankj.utilcode.util.SPUtils
 import com.css.service.bus.LiveDataBus
@@ -10,8 +9,6 @@ import com.css.service.data.GlobalData
 import com.css.service.data.LoginUserData
 import com.css.service.data.UserData
 import com.google.gson.Gson
-import java.lang.StringBuilder
-import kotlin.reflect.typeOf
 
 enum class CacheKey(val k: String) {
     USER_INFO("user_info"),
@@ -43,7 +40,6 @@ class WonderCoreCache { //一切围绕CacheKey
 
         //如果d为null，将会移除这个key
         fun <T> saveData(k1: CacheKey, d: T?, serialized: Boolean = true) {
-            //LogUtils.d("k1:$k1-->d:$d")
             if (d == null) {
                 removeKey(k1, true)
             } else {

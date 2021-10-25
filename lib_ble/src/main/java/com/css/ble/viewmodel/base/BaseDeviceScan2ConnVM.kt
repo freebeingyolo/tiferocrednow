@@ -112,9 +112,9 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
 
     val exerciseCount: LiveData<Int> by lazy { MutableLiveData(-1) } //锻炼个数
     val exerciseCountTxt = Transformations.map(exerciseCount) { if (it == -1) "--" else it.toString() }
-    val exerciseKcalTxt = Transformations.map(exerciseCount) {
+    open val exerciseKcalTxt = Transformations.map(exerciseCount) {
         if (it == -1) "--"
-        else DecimalFormat("##.#####").format(it * 0.00175f)
+        else DecimalFormat("##.#####").format(it * 0.0008333333f)
     }
     val exerciseDuration: LiveData<Long> by lazy { MutableLiveData(-1) }
     val exerciseDurationTxt = Transformations.map(exerciseDuration) { if (it == -1L) "--" else formatTime(it) }

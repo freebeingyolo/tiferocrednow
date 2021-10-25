@@ -9,10 +9,6 @@ import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
  *@time 2021-08-06 11:34
  *@description
  */
-class PushUpMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
-    CommonMeasureBeginFragment<LayoutHorizontalbarBinding>(d, vm) {
-
-    override val vbCls: Class<LayoutHorizontalbarBinding> get() = LayoutHorizontalbarBinding::class.java
-
+class PushUpMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : HorizontalBarMeasureBeginFragment(d, vm) {
 
 }

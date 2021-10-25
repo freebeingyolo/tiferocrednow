@@ -24,7 +24,7 @@ import razerdp.basepopup.BasePopupWindow
  *@time 2021-08-06 11:34
  *@description 单杠开始测量
  */
-class HorizontalBarMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
+open class HorizontalBarMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
     CommonMeasureBeginFragment<LayoutHorizontalbarBinding>(d, vm) {
     private val mViewModel2: HorizontalBarVM get() = mViewModel as HorizontalBarVM
     override val vbCls: Class<LayoutHorizontalbarBinding> get() = LayoutHorizontalbarBinding::class.java

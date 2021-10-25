@@ -1,7 +1,6 @@
 package com.css.ble.bean
 
 import cn.net.aicare.algorithmutil.AlgorithmUtil
-import com.css.service.utils.CacheKey
 import com.css.service.data.HistoryWeight
 import com.css.service.utils.WonderCoreCache
 import java.util.*
@@ -65,7 +64,7 @@ class WeightBondData() {
     val bodyFatData: BodyFatDataWrapper
         get() = run {
             val userInfo = WonderCoreCache.getUserInfo()
-            val sex = userInfo.setInt
+            val sex = userInfo.sexInt
             val age = userInfo.ageInt
             val weight_kg = weightKg * 1.0
             val height_cm = userInfo.height.toInt()

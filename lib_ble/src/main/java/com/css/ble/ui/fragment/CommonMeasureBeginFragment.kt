@@ -63,8 +63,8 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
 
             return when (t) {
                 DeviceType.HORIZONTAL_BAR -> HorizontalBarMeasureBeginFragment(t, vm)
-                DeviceType.PUSH_UP -> HorizontalBarMeasureBeginFragment(t, vm)
-                DeviceType.COUNTER -> HorizontalBarMeasureBeginFragment(t, vm)
+                DeviceType.PUSH_UP -> PushUpMeasureBeginFragment(t, vm)
+                DeviceType.COUNTER -> CounterMeasureBeginFragment(t, vm)
                 else -> throw IllegalAccessException("illegal call,t:$t")
             }
 

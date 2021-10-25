@@ -1,11 +1,15 @@
 package com.css.ble.viewmodel
 
 import androidx.annotation.NonNull
+import androidx.lifecycle.Transformations
 import cn.wandersnail.ble.Device
 import cn.wandersnail.ble.Request
 import cn.wandersnail.commons.observer.Observe
 import com.css.ble.bean.DeviceType
-import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
+import com.css.ble.bean.WeightBondData
+import com.css.service.utils.CacheKey
+import com.css.service.utils.WonderCoreCache
+import java.text.DecimalFormat
 import java.util.*
 
 /**
@@ -36,6 +40,16 @@ class PushUpVM : HorizontalBarVM() {
         super.discovered(d)
     }
 
+    override val exerciseKcalTxt = Transformations.map(exerciseCount) {
+        if (it == -1) "--"
+        else {
+            val weightData = WonderCoreCache.getLiveData<WeightBondData>(CacheKey.LAST_WEIGHT_INFO).value
+            val userInfo = WonderCoreCache.getUserInfo()
+            val weightKg = weightData?.weightKg ?: userInfo.targetWeightFloat
+            DecimalFormat("##.#####").format(weightKg * it * 0.0007f)
+        }
+    }
+
     @Observe
     override fun onConnectionStateChanged(@NonNull device: Device) {
         super.onConnectionStateChanged(device)
@@ -45,7 +59,7 @@ class PushUpVM : HorizontalBarVM() {
     override fun onNotificationChanged(@NonNull request: Request, isEnabled: Boolean) {
         super.onNotificationChanged(request, isEnabled)
     }
-    
+
     @Observe
     override fun onCharacteristicChanged(device: Device, service: UUID, characteristic: UUID, value: ByteArray) {
         super.onCharacteristicChanged(device, service, characteristic, value)

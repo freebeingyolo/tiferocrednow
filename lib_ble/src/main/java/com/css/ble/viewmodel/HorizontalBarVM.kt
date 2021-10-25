@@ -11,8 +11,12 @@ import cn.wandersnail.commons.observer.Observe
 import cn.wandersnail.commons.util.StringUtils
 import com.css.ble.R
 import com.css.ble.bean.DeviceType
+import com.css.ble.bean.WeightBondData
 import com.css.ble.utils.DataUtils
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
+import com.css.service.utils.CacheKey
+import com.css.service.utils.WonderCoreCache
+import java.text.DecimalFormat
 import java.util.*
 
 /**
@@ -55,6 +59,15 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
         byTime90
     }
 
+    override val exerciseKcalTxt = Transformations.map(exerciseCount) {
+        if (it == -1) "--"
+        else {
+            val weightData = WonderCoreCache.getLiveData<WeightBondData>(CacheKey.LAST_WEIGHT_INFO).value
+            val weightKg = weightData?.weightKg ?: WonderCoreCache.getUserInfo().targetWeightFloat
+            DecimalFormat("##.#####").format(weightKg * 0.0008333333f)
+        }
+    }
+
     override fun filterName(name: String): Boolean {
         return name.startsWith("Hi-DG")
     }
@@ -77,6 +90,31 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
     override fun discovered(d: Device) {
         //开启通知
         sendNotification(UUID.fromString(UUID_SRVC), UUID.fromString(UUID_NOTIFY), true, null)
+        writeWeight()
+    }
+
+    fun writeWeight(cb: WriteCharacteristicCallback? = null) {
+        val weightData = WonderCoreCache.getLiveData<WeightBondData>(CacheKey.LAST_WEIGHT_INFO).value
+        val weightKg = weightData?.weightKg ?: WonderCoreCache.getUserInfo().targetWeightFloat
+        val weightKgx10 = (weightKg * 10).toInt().toShort()
+        val data: ByteArray = StringUtils.toByteArray("F55F060902", "")
+        val data2 = DataUtils.shortToByteBig(weightKgx10)
+        val data3 = ((data + data2).sum() and 0xff).toByte()
+        val data4 = data + data2 + data3
+        LogUtils.d("writeWeight:data4:" + StringUtils.toHex(data4, ""))
+        writeCharacter(
+            UUID.fromString(UUID_SRVC),
+            UUID.fromString(UUID_WRITE),
+            data4,
+            object : WriteCharacteristicCallback {
+                override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
+                    cb?.onRequestFailed(request, failType, value)
+                }
+
+                override fun onCharacteristicWrite(request: Request, value: ByteArray) {
+                    cb?.onCharacteristicWrite(request, value)
+                }
+            })
     }
 
     fun switchMode(m: Mode, cb: WriteCharacteristicCallback? = null) {
@@ -84,34 +122,43 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
         val data2 = DataUtils.shortToByteBig(m.ordinal.toShort())
         val data3 = ((data + data2).sum() and 0xff).toByte()
         val data4 = data + data2 + data3
-        LogUtils.d("switchMode:data4:"+StringUtils.toHex(data4,""))
-        writeCharacter(UUID.fromString(UUID_SRVC), UUID.fromString(UUID_WRITE), data4, object : WriteCharacteristicCallback {
-            override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
-                cb?.onRequestFailed(request, failType, value)
-            }
+        LogUtils.d("switchMode:data4:" + StringUtils.toHex(data4, ""))
+        writeCharacter(
+            UUID.fromString(UUID_SRVC),
+            UUID.fromString(UUID_WRITE),
+            data4,
+            object : WriteCharacteristicCallback {
+                override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
+                    cb?.onRequestFailed(request, failType, value)
+                }
 
-            override fun onCharacteristicWrite(request: Request, value: ByteArray) {
-                cb?.onCharacteristicWrite(request, value)
-                mode = m
-            }
-        })
+                override fun onCharacteristicWrite(request: Request, value: ByteArray) {
+                    cb?.onCharacteristicWrite(request, value)
+                    mode = m
+                }
+            })
     }
 
-    fun reset(cb: WriteCharacteristicCallback? = null) {
+    open fun reset(cb: WriteCharacteristicCallback? = null) {
         val data: ByteArray = StringUtils.toByteArray("F55F060502", "")
         val data2 = DataUtils.shortToByteBig(0x0001)
         val data3 = ((data + data2).sum() and 0xff).toByte()
         val data4 = data + data2 + data3
-        writeCharacter(UUID.fromString(UUID_SRVC), UUID.fromString(UUID_WRITE), data4, object : WriteCharacteristicCallback {
-            override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
-                cb?.onRequestFailed(request, failType, value)
-            }
+        writeCharacter(
+            UUID.fromString(UUID_SRVC),
+            UUID.fromString(UUID_WRITE),
+            data4,
+            object : WriteCharacteristicCallback {
+                override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
+                    cb?.onRequestFailed(request, failType, value)
+                }
 
-            override fun onCharacteristicWrite(request: Request, value: ByteArray) {
-                cb?.onCharacteristicWrite(request, value)
-            }
-        })
+                override fun onCharacteristicWrite(request: Request, value: ByteArray) {
+                    cb?.onCharacteristicWrite(request, value)
+                }
+            })
     }
+
     //这个是必须的，由于EasyBle的框架bug，必须声明才能反射调用到
     @Observe
     override fun onConnectionStateChanged(@NonNull device: Device) {

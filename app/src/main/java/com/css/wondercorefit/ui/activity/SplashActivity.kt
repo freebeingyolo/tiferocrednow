@@ -38,7 +38,6 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
         })
     }
 
-
     private fun gotoActMain() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)

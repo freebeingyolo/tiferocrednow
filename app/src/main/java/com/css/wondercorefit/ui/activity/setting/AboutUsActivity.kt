@@ -59,9 +59,9 @@ open class AboutUsActivity : BaseActivity<AboutUsViewModel, ActivityAboutUsBindi
 
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
-        mViewModel.upGradeData.observe(this, Observer {
-            var version = it.version
-            var packVersion = AppUtils.getAppVersionName()
+        mViewModel.upGradeData.observe(this, {
+            val version = it.version
+            val packVersion = AppUtils.getAppVersionName()
             if (packVersion != version) {
                 CommonAlertDialog(this).apply {
                     gravity = Gravity.BOTTOM

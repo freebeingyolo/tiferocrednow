@@ -110,7 +110,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/batteryLevel"
                 app:layout_constraintTop_toTopOf="parent"
-                app:lowPowerColor="@color/bg_gray"
                 app:progress="@{model.batteryLevel}" />
 
             <TextView

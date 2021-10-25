@@ -158,7 +158,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     private fun showDevice() {
         BondDeviceData.getDeviceLiveDataMerge().observe(viewLifecycleOwner) {
             //it为map，值为null表示删除，key为设备类型
-            LogUtils.d("it-->" + it)
+            LogUtils.d("it-->$it")
             val devices = BondDeviceData.getDevices()
             mData.clear()
             mViewBinding?.llCurrentWeight?.visibility = View.GONE

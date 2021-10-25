@@ -25,16 +25,15 @@ class DeviceInfoVM : BaseViewModel() {
                 showLoading()
                 withContext(Dispatchers.IO) {
                     val ret = DeviceRepository.queryDeviceListDetails(id)
-                    if (ret.isSuccess) {
-                        for (d in DeviceType.values()) {
-                            val data = ret.data?.find { it.deviceCategory == d.alias }
-                            val data2 = data?.let {
+                    if (ret.isSuccess && ret.data != null && ret.data!!.isNotEmpty()) {
+                        for (data in ret.data!!) {
+                            val data2 = data.let {
                                 val ret = BondDeviceData(it)
                                 val vm = DeviceVMFactory.getViewModel<BaseDeviceVM>(ret.deviceType)
                                 ret.deviceConnect = vm.connectStateTxt()
                                 ret
                             }
-                            BondDeviceData.setDevice(d, data2)//本地与云端不一致同步云端的
+                            BondDeviceData.setDevice(data2.deviceType, data2) //云端可能改变了设备信息，需要同步一下最新
                         }
                     }
                     ret

@@ -20,7 +20,7 @@ data class UserData(
     var targetWeightLocation: Int = 90,
     var targetStepLocation: Int = 92,
 ) {
-    val setInt: Int get() = if (sex == "男") 0 else 1
+    val sexInt: Int get() = if (sex == "男") 0 else 1
     val ageInt: Int get() = age.toInt()
     val statureFloat: Float get() = height.toFloat()
     val targetWeightFloat get() = goalBodyWeight.toFloat()

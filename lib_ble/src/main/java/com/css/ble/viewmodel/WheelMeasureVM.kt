@@ -24,10 +24,13 @@ import com.css.base.net.api.repository.DeviceRepository
 import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
+import com.css.ble.bean.WeightBondData
 import com.css.ble.utils.DataUtils
 import com.css.ble.viewmodel.base.BaseWheelVM
 import com.css.service.bus.LiveDataBus
 import com.css.service.data.CourseData
+import com.css.service.utils.CacheKey
+import com.css.service.utils.WonderCoreCache
 import kotlinx.coroutines.*
 import java.text.DecimalFormat
 import java.util.*
@@ -87,7 +90,11 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
     val exerciseCountTxt = Transformations.map(exerciseCount) { if (it == -1) "--" else it.toString() }
     val exerciseKcalTxt = Transformations.map(exerciseCount) {
         if (it == -1) "--"
-        else DecimalFormat("##.#####").format(it * 0.00175f)
+        else {
+            val weightData = WonderCoreCache.getLiveData<WeightBondData>(CacheKey.LAST_WEIGHT_INFO).value
+            val weightKg = weightData?.weightKg ?: WonderCoreCache.getUserInfo().targetWeightFloat
+            DecimalFormat("##.#####").format(weightKg*it * 3.9)
+        }
     }
 
     //玩法推荐
@@ -282,7 +289,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
     override fun disconnect() {
         cancelTimeOutTimer()
         if (state > State.disconnected) {
-            LogUtils.d("disconnect,${state},${connection==null}", 7)
+            LogUtils.d("disconnect,${state},${connection == null}", 7)
             connection?.disconnect() ?: let { state = State.disconnected }
             connection = null
         }
@@ -336,7 +343,8 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
                 state = State.discovered
                 if (workMode == WorkMode.BOND) {
                     if (fondMethod == FoundByUuid) {
-                        val services: List<BluetoothGattService> = EasyBLE.getInstance().getConnection(device)!!.gatt!!.services
+                        val services: List<BluetoothGattService> =
+                            EasyBLE.getInstance().getConnection(device)!!.gatt!!.services
                         for (service in services) {
                             if (service.uuid == UUID.fromString(UUID_SRVC)) {
                                 foundDevice(device)
@@ -502,7 +510,12 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
 
     override fun onCharacteristicChanged(device: Device, service: UUID, characteristic: UUID, value: ByteArray) {
         super.onCharacteristicChanged(device, service, characteristic, value)
-        LogUtils.d("onCharacteristicChanged：" + StringUtils.toHex(value, " ") + (Looper.myLooper() == Looper.getMainLooper()))
+        LogUtils.d(
+            "onCharacteristicChanged：" + StringUtils.toHex(
+                value,
+                " "
+            ) + (Looper.myLooper() == Looper.getMainLooper())
+        )
         if (value.size > 3) {
             (batteryLevel as MutableLiveData).value = (1f / value[value.size - 1] * 100).toInt()
             when (value[0]) {
@@ -560,7 +573,12 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
         })
     }
 
-    private fun sendNotification(serviceUUID: UUID, characterUUID: UUID, isEnabled: Boolean, cb: NotificationChangeCallback) {
+    private fun sendNotification(
+        serviceUUID: UUID,
+        characterUUID: UUID,
+        isEnabled: Boolean,
+        cb: NotificationChangeCallback
+    ) {
         //开启通知
         if (connection?.connectionState != ConnectionState.SERVICE_DISCOVERED) return
         val builder = RequestBuilderFactory().getSetNotificationBuilder(serviceUUID, characterUUID, isEnabled)

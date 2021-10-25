@@ -49,6 +49,7 @@ object SettingRepository {
     ): CommonResponse<UpGradeData> {
         val map: MutableMap<String, String> = HashMap()
         map["version"] = version
+        map["OSType"] = "Android"
         return settingApi.upGrade(map)
     }
 }

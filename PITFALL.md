@@ -12,6 +12,29 @@
 
    - 自定义属性需要解析多个，比如color既支持"#ff0000"又支持"@color/red"呢？
         直接使用ta.getColor(id, 0),可以兼容两种方式
+   
+2. http请求加密
+
+   ```
+   http请求中的mNonce,mTimestamp,mMethod
+   
+   var nonce += Random().nextInt(99999)										//随机数
+   var timestamp = System.currentTimeMillis() + Random().nextInt(9999)+1000 	//当前时间+谁技术
+   var method = request.method.toLowerCase(Locale.getDefault())				//转测小写
+   var MD5 = 						//post:将nonce,timestamp,clientSecret拼接后md5；get:对请求参数拆分倒序向前拼接method再md5
+   		"post" -->															
+   			val clientSecret = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCVRiDk"
+   			val signatureStr =
+   					"nonce=${mNonce}&timestamp=${mTimestamp}\$${clientSecret}"
+   			EncryptUtils.encryptMD5ToString(signatureStr)						
+   		"get" -->
+   			val query: List<String> = ArrayList(request.url.query!!.split("&"))		
+   			//倒序后重新拼接
+   			merge = "method=${sortStr}&${signatureStr}"
+   			val md5 = EncryptUtils.encryptMD5ToString(merge)	
+   ```
+
+   
 
 # 注意点
 
