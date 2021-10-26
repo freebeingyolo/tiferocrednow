@@ -91,7 +91,7 @@ open class AboutUsActivity : BaseActivity<AboutUsViewModel, ActivityAboutUsBindi
     }
 
     private fun getFileFromServer(downUrl: String?) {
-        DownloadUtil.download(this, downUrl, object : DownloadUtil.OnDownloadListener {
+        DownloadUtil.download(downUrl, object : DownloadUtil.OnDownloadListener {
             override fun onDownloadSuccess(file: File) {
                 startInstallApk(file)
             }
