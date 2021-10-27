@@ -23,3 +23,10 @@
 -dontwarn com.tencent.bugly.**
 -keep public class com.tencent.bugly.**{*;}
 -keep class android.support.**{*;}
+
+# Arouter
+-keep class * implements com.alibaba.android.arouter.facade.template.IProvider{*;}
+-keep class * implements com.alibaba.android.arouter.facade.template.IProvider{*;}
+-keep public class com.alibaba.android.arouter.routes.**{*;}
+-keep public class com.alibaba.android.arouter.facade.**{*;}
+-keep class * implements com.alibaba.android.arouter.facade.template.ISyringe{*;}

@@ -1,17 +1,16 @@
 package com.css.login.model
 
 import androidx.lifecycle.MutableLiveData
-import com.blankj.utilcode.util.CollectionUtils
 import com.blankj.utilcode.util.RegexUtils
+import com.css.base.net.HttpNetCode
 import com.css.base.net.api.repository.UserRepository
 import com.css.base.uibase.viewmodel.BaseViewModel
-import com.css.service.data.LoginUserData
 import com.css.service.utils.WonderCoreCache
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class LoginViewModel : BaseViewModel() {
-//    val loginData = MutableLiveData<LoginUserData>()
+    //    val loginData = MutableLiveData<LoginUserData>()
     val loginFailureData = MutableLiveData<String>()
 
     fun login(
@@ -26,12 +25,16 @@ class LoginViewModel : BaseViewModel() {
                 }
             }, { msg, d ->
                 hideLoading()
-//                loginData.value = d
+                //loginData.value = d
                 WonderCoreCache.saveLoginInfo(d)
-            }, { _, msg, _ ->
+            }, { code, msg, _ ->
                 hideLoading()
-                loginFailureData.value = msg
-//                showCenterToast(msg)
+                when (code) {
+                    HttpNetCode.NET_TIMEOUT -> showCenterToast("网络请求超时")
+                    HttpNetCode.NET_CONNECT_ERROR -> showCenterToast("网络连接错误")
+                    else -> loginFailureData.value = msg
+                }
+                // showCenterToast(msg)
             }
         )
     }
