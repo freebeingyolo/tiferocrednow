@@ -30,6 +30,7 @@ enum class DeviceType(
     HORIZONTAL_BAR("单杠", R.string.device_horizontalbar, R.mipmap.icon_product_1, R.mipmap.icon_product_1, CacheKey.BOND_HORIZONTALBAR_INFO),
     PUSH_UP("俯卧撑板", R.string.device_pushup, R.mipmap.icon_product_2, R.mipmap.icon_product_2, CacheKey.BOND_PUSHUP_INFO),
     COUNTER("计数器", R.string.device_counter, R.mipmap.icon_product_4, R.mipmap.icon_product_4, CacheKey.BOND_COUNTER_INFO),
+    ROPE("跳绳", R.string.rope_skipper, R.mipmap.icon_product_4,R.mipmap.icon_product_4, CacheKey.BOND_ROPE_INFO),
     ;
 
     companion object {

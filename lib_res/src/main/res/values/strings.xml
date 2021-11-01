@@ -75,6 +75,8 @@
     <string name="device_horizontalbar">单杠</string>
     <string name="device_pushup">俯卧撑板</string>
     <string name="device_counter">计数器</string>
+    <string name="rope_skipper">跳绳器</string>
+
 
     <string name="feedback">意见和反馈</string>
     <string name="feedback_errorTime">问题出现时间</string>

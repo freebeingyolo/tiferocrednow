@@ -64,6 +64,7 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
                             DeviceType.HORIZONTAL_BAR,
                             DeviceType.PUSH_UP,
                             DeviceType.COUNTER,
+                            DeviceType.ROPE,
                             -> {
                                 ARouter.getInstance().build(ARouterConst.PATH_APP_BLE_COMMON)
                                     .withInt("mode", BaseDeviceScan2ConnVM.WorkMode.BOND.ordinal)

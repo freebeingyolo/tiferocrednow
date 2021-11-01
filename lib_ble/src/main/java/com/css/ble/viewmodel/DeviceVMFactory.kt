@@ -22,6 +22,7 @@ object DeviceVMFactory {
                 DeviceType.HORIZONTAL_BAR -> HorizontalBarVM()
                 DeviceType.PUSH_UP -> PushUpVM()
                 DeviceType.COUNTER -> CounterVM()
+                DeviceType.ROPE -> RopeVM()
                 else -> throw IllegalStateException("")
             }
             pool[d] = t
