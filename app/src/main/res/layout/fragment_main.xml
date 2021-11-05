@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_gray"
+    android:background="@color/white"
     android:orientation="vertical"
     tools:context=".ui.fragment.MainFragment">
 
@@ -27,28 +27,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
-
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:background="@color/white"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/add_ble_device"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:drawableStart="@mipmap/icon_add_device"
-                android:drawablePadding="6dp"
-                android:gravity="center"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp"
-                android:text="添加设备"
-                android:textColor="@color/black"
-                android:textSize="13sp" />
-        </LinearLayout>
-
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -59,216 +37,200 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/ll_device"
+                
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:background="@drawable/bg_while_radius4"
-                    android:orientation="vertical"
-                    android:paddingBottom="10dp"
-                    android:visibility="gone"
-                    tools:visibility="visible">
+                    android:layout_height="200dp">
 
-                    <TextView
-                        android:id="@+id/device_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="我的设备"
-                        android:textColor="@color/text_color"
-                        android:textSize="12sp" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:background="@color/color_34394d"/>
 
                     <LinearLayout
+                        android:id="@+id/layout_user"
                         android:layout_width="match_parent"
-                        android:layout_height="61dp"
-                        android:layout_marginTop="6dp"
-                        android:orientation="horizontal">
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginEnd="15dp">
 
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/device_list"
+                        <ImageView
+                            android:layout_width="42dp"
+                            android:layout_height="42dp"
+                            android:layout_gravity="center_vertical"
+                            android:src="@mipmap/icon_avatar"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginStart="10dp"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:text="万达康"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_below="@id/layout_user"
+                        android:layout_width="match_parent"
+                        android:layout_height="116dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:background="@drawable/bg_f66e00_radius5"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="20dp"
+                                android:textColor="@color/white"
+                                android:textSize="14sp"
+                                android:text="体重管理"/>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginEnd="20dp"
+                                android:gravity="right"
+                                android:textColor="@color/white"
+                                android:textSize="10sp"
+                                android:text="单位：公斤"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:paddingStart="5dp"
-                            android:paddingEnd="5dp" />
+                            android:orientation="horizontal">
 
-                        <!--                    <RelativeLayout-->
-                        <!--                        android:id="@+id/device_weight"-->
-                        <!--                        android:layout_width="0dp"-->
-                        <!--                        android:layout_height="match_parent"-->
-                        <!--                        android:layout_marginStart="10dp"-->
-                        <!--                        android:layout_marginEnd="5dp"-->
-                        <!--                        android:layout_weight="1"-->
-                        <!--                        android:background="@drawable/bg_main_device"-->
-                        <!--                        android:visibility="gone"-->
-                        <!--                        tools:visibility="gone">-->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical">
 
-                        <!--                        <TextView-->
-                        <!--                            android:id="@+id/weight_device_name"-->
-                        <!--                            android:layout_width="wrap_content"-->
-                        <!--                            android:layout_height="wrap_content"-->
-                        <!--                            android:layout_marginLeft="10dp"-->
-                        <!--                            android:layout_marginTop="12dp"-->
-                        <!--                            android:ellipsize="end"-->
-                        <!--                            android:maxEms="6"-->
-                        <!--                            android:maxLines="1"-->
-                        <!--                            android:text="@string/device_weight"-->
-                        <!--                            android:textColor="@color/text_color"-->
-                        <!--                            android:textSize="13sp" />-->
+                                <TextView
+                                    android:id="@+id/tv_current_weight"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/white"
+                                    android:textSize="22sp"
+                                    android:text="--"/>
 
-                        <!--                        <TextView-->
-                        <!--                            android:id="@+id/weight_device_state"-->
-                        <!--                            android:layout_width="wrap_content"-->
-                        <!--                            android:layout_height="wrap_content"-->
-                        <!--                            android:layout_marginLeft="10dp"-->
-                        <!--                            android:layout_marginTop="30dp"-->
-                        <!--                            android:text="未连接"-->
-                        <!--                            android:textColor="@color/text_color"-->
-                        <!--                            android:textSize="12sp" />-->
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:textColor="@color/white"
+                                    android:textSize="15sp"
+                                    android:text="当前"/>
 
-                        <!--                        <ImageView-->
-                        <!--                            android:layout_width="50dp"-->
-                        <!--                            android:layout_height="50dp"-->
-                        <!--                            android:layout_alignParentEnd="true"-->
-                        <!--                            android:layout_centerVertical="true"-->
-                        <!--                            android:layout_marginEnd="15dp"-->
-                        <!--                            android:src="@mipmap/card_weight" />-->
-                        <!--                    </RelativeLayout>-->
+                            </LinearLayout>
 
-                        <!--                    <RelativeLayout-->
-                        <!--                        android:id="@+id/device_wheel"-->
-                        <!--                        android:layout_width="0dp"-->
-                        <!--                        android:layout_height="match_parent"-->
-                        <!--                        android:layout_marginStart="5dp"-->
-                        <!--                        android:layout_marginEnd="10dp"-->
-                        <!--                        android:layout_weight="1"-->
-                        <!--                        android:background="@drawable/bg_main_device"-->
-                        <!--                        android:visibility="invisible"-->
-                        <!--                        tools:visibility="gone">-->
+                            <RelativeLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
 
-                        <!--                        <TextView-->
-                        <!--                            android:id="@+id/wheel_device_name"-->
-                        <!--                            android:layout_width="wrap_content"-->
-                        <!--                            android:layout_height="wrap_content"-->
-                        <!--                            android:layout_marginStart="10dp"-->
-                        <!--                            android:layout_marginTop="12dp"-->
-                        <!--                            android:text="蓝牙健腹轮"-->
-                        <!--                            android:textColor="@color/text_color"-->
-                        <!--                            android:textSize="13sp" />-->
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:gravity="center"
+                                    android:orientation="vertical">
 
-                        <!--                        <TextView-->
-                        <!--                            android:id="@+id/wheel_device_state"-->
-                        <!--                            android:layout_width="wrap_content"-->
-                        <!--                            android:layout_height="wrap_content"-->
-                        <!--                            android:layout_marginStart="10dp"-->
-                        <!--                            android:layout_marginTop="30dp"-->
-                        <!--                            android:text="未连接"-->
-                        <!--                            android:textColor="@color/text_color"-->
-                        <!--                            android:textSize="12sp" />-->
+                                    <TextView
+                                        android:id="@+id/tv_subtracted_weight"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textColor="@color/white"
+                                        android:textSize="22sp"
+                                        android:text="--"/>
 
-                        <!--                        <ImageView-->
-                        <!--                            android:layout_width="50dp"-->
-                        <!--                            android:layout_height="50dp"-->
-                        <!--                            android:layout_alignParentEnd="true"-->
-                        <!--                            android:layout_centerVertical="true"-->
-                        <!--                            android:layout_marginEnd="10dp"-->
-                        <!--                            android:src="@mipmap/card_wheel" />-->
-                        <!--                    </RelativeLayout>-->
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="5dp"
+                                        android:textColor="@color/white"
+                                        android:textSize="15sp"
+                                        android:text="已减去"/>
 
-                        <!--                    <Space-->
-                        <!--                        android:id="@+id/device_space"-->
-                        <!--                        android:layout_width="0dp"-->
-                        <!--                        android:layout_height="match_parent"-->
-                        <!--                        android:layout_marginStart="10dp"-->
-                        <!--                        android:layout_marginEnd="5dp"-->
-                        <!--                        android:layout_weight="1"-->
-                        <!--                        android:visibility="gone" />-->
+                                </LinearLayout>
+
+                                <com.css.wondercorefit.widget.ProgressRing
+                                    android:id="@+id/progress_ring"
+                                    android:layout_width="100dp"
+                                    android:layout_height="100dp"
+                                    android:layout_centerHorizontal="true"
+                                    app:pr_bg_end_color="@color/color_c85a00"
+                                    app:pr_bg_mid_color="@color/color_c85a00"
+                                    app:pr_bg_start_color="@color/color_c85a00"
+                                    app:pr_start_angle="-180"
+                                    app:pr_sweep_angle="180"
+                                    app:pr_show_anim="true"
+                                    app:pr_progress_end_color="@color/color_ff9742"
+                                    app:pr_progress_start_color="@color/color_ff9742"
+                                    app:pr_progress_width="8dp"/>
+
+                            </RelativeLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tv_target_weight_num2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/white"
+                                    android:textSize="22sp"
+                                    android:text="--"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:textColor="@color/white"
+                                    android:textSize="15sp"
+                                    android:text="目标"/>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
                     </LinearLayout>
-                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                </RelativeLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cl_exercise"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
                     android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="17dp"
                     android:background="@drawable/bg_while_radius4"
                     android:padding="15dp">
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        android:id="@+id/ll_current_weight"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:visibility="gone"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/current_weight"
-                            android:textColor="@color/text_666666"
-                            android:textSize="10dp" />
-
-                        <TextView
-                            android:id="@+id/tv_current_weight"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
-                            android:layout_marginEnd="5dp"
-                            android:text="@string/value_default"
-                            android:textColor="@color/black"
-                            android:textSize="25sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/kg"
-                            android:textColor="@color/text_666666"
-                            android:textSize="12sp" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <TextView
-                        android:id="@+id/tv_none_weight"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="您尚未测量过身体数据，点此测量，\n了解下自己的身体情况吧！"
-                        android:textColor="#ACACAC"
-                        android:textSize="10dp"
-                        android:visibility="visible"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/goto_measure"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_to_measure_btn"
-                        android:paddingStart="13dp"
-                        android:paddingTop="5dp"
-                        android:paddingEnd="13dp"
-                        android:paddingBottom="5dp"
-                        android:text="去测量"
-                        android:textColor="#F2682A"
-                        android:textSize="10dp"
-                        android:visibility="visible"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
 
                     <com.css.base.view.ProgressView
                         android:id="@+id/pb_step"
                         android:layout_width="220dp"
                         android:layout_height="200dp"
-                        android:layout_marginTop="82dp"
+                        android:layout_marginTop="20dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -572,6 +534,349 @@
                     </LinearLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="25dp"
+                        android:layout_marginStart="15dp"
+                        android:background="@color/color_f66e00"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_gravity="bottom"
+                        android:textStyle="bold"
+                        android:textColor="@color/color_121212"
+                        android:textSize="14sp"
+                        android:text="我的设备"/>
+
+                </LinearLayout>
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tab_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    app:tabMode="scrollable"
+                    app:tabGravity="center"
+                    app:tabPaddingStart="10dp"
+                    app:tabPaddingEnd="10dp"
+                    app:tabIndicatorHeight="2dp"
+                    app:tabIndicatorColor="@color/color_f66e00"
+                    app:tabBackground="@color/transparent"
+                    app:tabRippleColor="@color/transparent"/>
+
+                <LinearLayout
+                    android:id="@+id/device_recent"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:background="@drawable/bg_f8f8f8_radius5"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:id="@+id/recent_device"
+                        android:visibility="gone"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/bg_while_radius4">
+
+                        <TextView
+                            android:id="@+id/recent_device_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="10dp"
+                            android:ellipsize="end"
+                            android:maxEms="10"
+                            android:maxLines="1"
+                            android:textColor="@color/black"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/recent_device_state"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:textColor="@color/black"
+                            android:textSize="12sp" />
+
+                        <ImageView
+                            android:id="@+id/recent_device_img"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginStart="5dp"/>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/add_ble_device"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/bg_while_radius4">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:src="@mipmap/icon_add_device_gray"/>
+
+                    </RelativeLayout>
+
+                    <View
+                        android:id="@+id/blank"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"/>
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/device_list"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:minHeight="120dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:background="@drawable/bg_f8f8f8_radius5"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="25dp"
+                        android:layout_marginStart="15dp"
+                        android:background="@color/color_f66e00"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_gravity="bottom"
+                        android:textStyle="bold"
+                        android:textColor="@color/color_121212"
+                        android:textSize="14sp"
+                        android:text="运动推荐"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="100dp"
+                            android:layout_weight="1">
+
+                            <com.css.wondercorefit.widget.GeneralRoundImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="fitXY"
+                                android:src="@mipmap/rec_item1"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentBottom="true"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginStart="10dp"
+                                android:textColor="@color/white"
+                                android:textSize="6sp"
+                                android:text="11分钟，消耗500kcal"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentBottom="true"
+                                android:layout_marginBottom="15dp"
+                                android:layout_marginStart="10dp"
+                                android:textColor="@color/white"
+                                android:textSize="8sp"
+                                android:text="肩肌训练法"/>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="100dp"
+                            android:layout_weight="1"
+                            android:layout_marginStart="5dp">
+
+                            <com.css.wondercorefit.widget.GeneralRoundImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="fitXY"
+                                android:src="@mipmap/rec_item2"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginBottom="15dp"
+                                android:textColor="@color/black"
+                                android:textSize="8sp"
+                                android:text="核心训练法"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginTop="20dp"
+                                android:layout_marginStart="10dp"
+                                android:textColor="@color/black"
+                                android:textSize="6sp"
+                                android:text="11分钟，消耗500kcal"/>
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="100dp"
+                            android:layout_weight="1">
+
+                            <com.css.wondercorefit.widget.GeneralRoundImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="fitXY"
+                                android:src="@mipmap/rec_item3"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginEnd="10dp"
+                                android:layout_marginBottom="15dp"
+                                android:textColor="@color/black"
+                                android:textSize="8sp"
+                                android:text="放松训练法"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginTop="20dp"
+                                android:layout_marginEnd="10dp"
+                                android:textColor="@color/black"
+                                android:textSize="6sp"
+                                android:text="11分钟，消耗500kcal"/>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="100dp"
+                            android:layout_weight="1"
+                            android:layout_marginStart="5dp">
+
+                            <com.css.wondercorefit.widget.GeneralRoundImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="fitXY"
+                                android:src="@mipmap/rec_item4"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentBottom="true"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginEnd="5dp"
+                                android:textColor="@color/black"
+                                android:textSize="6sp"
+                                android:text="6分钟，消耗500kcal"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentBottom="true"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginBottom="15dp"
+                                android:layout_marginEnd="5dp"
+                                android:textColor="@color/black"
+                                android:textSize="8sp"
+                                android:text="引体向上法"/>
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:textColor="@color/color_7b7b7b"
+                        android:textSize="8sp"
+                        android:text="合理安排饮食和运动时间。正餐后2个小时后再运动，运动结束1小时后才可以吃东西。"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginBottom="20dp"
+                        android:textColor="@color/color_7b7b7b"
+                        android:textSize="8sp"
+                        android:text="如遇生理期，建立停止剧烈运动，以散步或快走来代替。"/>
+
+                </LinearLayout>
 
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.core.widget.NestedScrollView>

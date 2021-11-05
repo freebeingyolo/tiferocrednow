@@ -196,7 +196,7 @@ class XTabLayout @JvmOverloads constructor(
         name.visibility = View.VISIBLE
         icon.setImageResource(iconRes)
         name.setText(text)
-        name.setTextColor(ContextCompat.getColor(context, R.color.tab_textcolor_unfocus))
+        name.setTextColor(ContextCompat.getColor(context, R.color.color_606060))
     }
 
     private fun localClickConfig(
@@ -207,7 +207,7 @@ class XTabLayout @JvmOverloads constructor(
     ) {
         doApngAnim(icon, iconRes)
         name.setText(text)
-        name.setTextColor(ContextCompat.getColor(context, R.color.tab_textcolor_focus))
+        name.setTextColor(ContextCompat.getColor(context, R.color.color_f66e00))
     }
 
     private fun doApngAnim(icon: AppCompatImageView, iconRes: Int) {

@@ -11,44 +11,48 @@
 
     <RelativeLayout
         android:id="@+id/device_weight"
-        android:layout_width="wrap_content"
-        android:layout_height="61dp"
-        android:layout_marginStart="5dp"
-        android:background="@drawable/bg_main_device"
-        >
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/bg_while_radius4">
 
         <TextView
             android:id="@+id/weight_device_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="10dp"
             android:ellipsize="end"
-            android:maxEms="6"
+            android:maxEms="10"
             android:maxLines="1"
-            android:minWidth="65dp"
             android:text="@{data.alias}"
-            android:textColor="@color/text_color"
-            android:textSize="13sp" />
+            android:textColor="@color/black"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/weight_device_state"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="30dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="10dp"
             android:text="@{data.deviceConnect}"
-            android:textColor="@color/text_color"
+            android:textColor="@color/black"
             android:textSize="12sp" />
 
         <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
-            android:layout_toEndOf="@+id/weight_device_name"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="5dp"
+            android:layout_marginStart="5dp"
             android:src="@{data.deviceImg}"
             app:imageResource="@{data.deviceImg}" />
+
     </RelativeLayout>
+
 </layout>

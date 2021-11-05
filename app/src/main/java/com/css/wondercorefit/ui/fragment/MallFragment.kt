@@ -7,51 +7,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.NetworkUtils
 import com.css.base.uibase.BaseFragment
 import com.css.service.data.MallData
 import com.css.service.utils.SystemBarHelper
 import com.css.wondercorefit.R
-import com.css.wondercorefit.adapter.MallProductAdapter
-import com.css.wondercorefit.adapter.MallStoreAdapter
 import com.css.wondercorefit.databinding.FragmentMallBinding
 import com.css.wondercorefit.viewmodel.MallViewModel
 
-class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(),
+class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(), View.OnClickListener,
     NetworkUtils.OnNetworkStatusChangedListener {
     var mData = ArrayList<MallData>()
     var mStoreData = ArrayList<MallData>()
-    lateinit var mAdapter: MallProductAdapter
-    lateinit var mStoreAdapter: MallStoreAdapter
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         SystemBarHelper.immersiveStatusBar(activity, 0f)
         SystemBarHelper.setHeightAndPadding(activity, mViewBinding?.topView)
-        mAdapter = MallProductAdapter(mData)
-        mStoreAdapter = MallStoreAdapter(mStoreData)
-        mViewBinding?.productList?.layoutManager = GridLayoutManager(activity, 3)
-        mViewBinding?.productList?.adapter = mAdapter
-        var linearLayoutManager = LinearLayoutManager(activity)
-        linearLayoutManager.isAutoMeasureEnabled = true;
-        mViewBinding?.storeList?.layoutManager = LinearLayoutManager(activity)
-        mViewBinding?.storeList?.adapter = mStoreAdapter
-        mAdapter.setOnItemClickListener {
-            try {
-                openUrl(it.mallLink)
-            } catch (e: Throwable) {
-                showCenterToast("暂无连接")
-            }
-
-        }
-        mStoreAdapter.setOnItemClickListener {
-            try {
-                openUrl(it.mallLink)
-            } catch (e: Throwable) {
-                showCenterToast("暂无连接")
-            }
-        }
+        initClickListenr()
         if (NetworkUtils.isConnected()) {
             mViewBinding?.networkError?.visibility = View.GONE
             mViewBinding?.mainLayout?.visibility = View.VISIBLE
@@ -81,13 +53,6 @@ class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(),
                 }
 
             }
-            if (mStoreData.size==0){
-                mViewBinding?.storeLayout?.visibility = View.GONE
-            }else{
-                mViewBinding?.storeLayout?.visibility = View.VISIBLE
-            }
-            mAdapter.setItems(mData)
-            mStoreAdapter.setItems(mStoreData)
         })
     }
 
@@ -98,6 +63,62 @@ class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(),
         inflater: LayoutInflater,
         viewGroup: ViewGroup?
     ): FragmentMallBinding = FragmentMallBinding.inflate(inflater, viewGroup, false)
+
+    private fun initClickListenr() {
+        mViewBinding!!.ivProduct1.setOnClickListener(this)
+        mViewBinding!!.ivProduct2.setOnClickListener(this)
+        mViewBinding!!.ivProduct3.setOnClickListener(this)
+        mViewBinding!!.ivProduct4.setOnClickListener(this)
+        mViewBinding!!.ivProduct5.setOnClickListener(this)
+        mViewBinding!!.ivProduct6.setOnClickListener(this)
+        mViewBinding!!.ivProduct7.setOnClickListener(this)
+        mViewBinding!!.ivProduct8.setOnClickListener(this)
+        mViewBinding!!.ivProduct9.setOnClickListener(this)
+        mViewBinding!!.ivProduct10.setOnClickListener(this)
+        mViewBinding!!.ivProduct11.setOnClickListener(this)
+        mViewBinding!!.ivProduct12.setOnClickListener(this)
+    }
+
+    override fun onClick(v: View) {
+        when (v.id) {
+            R.id.iv_product1 -> {
+                openUrl("https://item.jd.com/100016327406.html")
+            }
+            R.id.iv_product2 -> {
+                openUrl("https://item.jd.com/100021255872.html")
+            }
+            R.id.iv_product3 -> {
+                openUrl("https://item.jd.com/100020670306.html")
+            }
+            R.id.iv_product4 -> {
+                openUrl("https://item.jd.com/100009543563.html")
+            }
+            R.id.iv_product5 -> {
+                openUrl("https://item.jd.com/100007794845.html")
+            }
+            R.id.iv_product6 -> {
+                openUrl("https://item.jd.com/100019547802.html")
+            }
+            R.id.iv_product7 -> {
+                openUrl("https://item.jd.com/100021255850.html")
+            }
+            R.id.iv_product8 -> {
+                openUrl("https://item.jd.com/100016414388.html")
+            }
+            R.id.iv_product9 -> {
+                openUrl("https://item.jd.com/100020401214.html")
+            }
+            R.id.iv_product10 -> {
+                openUrl("https://item.jd.com/100012143757.html")
+            }
+            R.id.iv_product11 -> {
+                openUrl("https://item.jd.com/100020882540.html")
+            }
+            R.id.iv_product12 -> {
+                openUrl("https://item.jd.com/100009271611.html")
+            }
+        }
+    }
 
 
     private fun openUrl(url: String) {
