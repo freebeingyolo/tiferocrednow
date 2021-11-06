@@ -27,40 +27,40 @@
         <activity
             android:name=".ui.TestActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
+
             android:theme="@style/WonderTheme.NoExitEnterAnimation" />
 
 
         <activity
             android:name=".ui.CommonDeviceActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
+
             android:theme="@style/WonderTheme.NoExitEnterAnimation" />
 
         <activity
             android:name=".ui.WeightMeasureActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
+
             android:theme="@style/WonderTheme.NoExitEnterAnimation" />
         <activity
             android:name=".ui.WeightBondActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
+
             android:theme="@style/WonderTheme.NoExitEnterAnimation" />
         <activity
             android:name=".ui.WheelBondActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
+
             android:theme="@style/WonderTheme.NoExitEnterAnimation" />
         <activity
             android:name=".ui.WheelMeasureActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
+
             android:theme="@style/WonderTheme.NoExitEnterAnimation" />
         <activity
             android:name=".ui.DeviceListActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
+
             android:theme="@style/WonderTheme.NoExitEnterAnimation" />
         <activity
             android:name=".ui.DeviceInfoActivity"
@@ -68,7 +68,7 @@
         <activity
             android:name=".ui.DataStatisticsActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
+             />
     </application>
 
 </manifest>

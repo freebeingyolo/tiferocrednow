@@ -64,7 +64,7 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
         else {
             val weightData = WonderCoreCache.getLiveData<WeightBondData>(CacheKey.LAST_WEIGHT_INFO).value
             val weightKg = weightData?.weightKg ?: WonderCoreCache.getUserInfo().targetWeightFloat
-            DecimalFormat("##.#####").format(weightKg * 0.0008333333f)
+            DecimalFormat("0.0000").format(it * weightKg * 1f * 25 / 30000)
         }
     }
 
@@ -192,6 +192,8 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
                 val v = DataUtils.bytes2IntBig(value[5], value[6])
                 val m = Mode.values()[v]
                 (modeObsvr as MutableLiveData).value = m
+
+                clearAllExerciseData() //本地清零
             }
             hexData.startsWith("F55F0705") -> {//重置切换
 
@@ -205,8 +207,6 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
             }
             hexData.startsWith("F55F0708") -> {//提醒上传数据：【切换模式，双击power,时间超出范围，计数超过范围】
                 finishExercise()
-                //本地清零
-                clearAllExerciseData()
             }
         }
     }

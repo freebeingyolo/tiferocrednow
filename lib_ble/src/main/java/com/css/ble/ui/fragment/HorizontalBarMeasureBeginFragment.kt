@@ -14,9 +14,12 @@ import cn.wandersnail.commons.util.StringUtils
 import cn.wandersnail.commons.util.ToastUtils
 import com.css.ble.R
 import com.css.ble.bean.DeviceType
+import com.css.ble.bean.WeightBondData
 import com.css.ble.databinding.LayoutHorizontalbarBinding
 import com.css.ble.viewmodel.HorizontalBarVM
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
+import com.css.service.utils.CacheKey
+import com.css.service.utils.WonderCoreCache
 import razerdp.basepopup.BasePopupWindow
 
 /**
@@ -42,49 +45,55 @@ open class HorizontalBarMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2C
         super.initView(savedInstanceState)
         lifecycleScope.launchWhenResumed {
             startConnect()
+            //体重信息变化，重新发送数据给对方
+            WonderCoreCache.getLiveData<WeightBondData>(CacheKey.LAST_WEIGHT_INFO).observe(viewLifecycleOwner) { it2 ->
+                mViewModel2.writeWeight()
+            }
         }
     }
 
     fun openSwitchSpinner(v: View) {
         val anchorView = mViewBinding!!.modeContainer
-        val popUpWindow = object : BasePopupWindow(requireContext(), anchorView.width, AbsListView.LayoutParams.WRAP_CONTENT) {
-            override fun onCreateContentView(): View {
-                val listView = ListView(requireContext())
-                listView.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_while_radius4)
-                listView.divider = null
-                val datas = mViewModel2.getModels()
-                listView.adapter = object : ArrayAdapter<String>(requireContext(), R.layout.layout_device_mode_switch_item, datas) {
+        val popUpWindow =
+            object : BasePopupWindow(requireContext(), anchorView.width, AbsListView.LayoutParams.WRAP_CONTENT) {
+                override fun onCreateContentView(): View {
+                    val listView = ListView(requireContext())
+                    listView.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_while_radius4)
+                    listView.divider = null
+                    val datas = mViewModel2.getModels()
+                    listView.adapter = object :
+                        ArrayAdapter<String>(requireContext(), R.layout.layout_device_mode_switch_item, datas) {
 
-                    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                        val ret = super.getView(position, convertView, parent)
-                        ret.setOnClickListener {
-                            val modes = HorizontalBarVM.Mode.values()
-                            mViewModel2.switchMode(modes[position], object : WriteCharacteristicCallback {
-                                override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
-                                    ToastUtils.showShort("切换模式失败")
-                                    popupWindow.dismiss()
-                                }
+                        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                            val ret = super.getView(position, convertView, parent)
+                            ret.setOnClickListener {
+                                val modes = HorizontalBarVM.Mode.values()
+                                mViewModel2.switchMode(modes[position], object : WriteCharacteristicCallback {
+                                    override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
+                                        ToastUtils.showShort("切换模式失败")
+                                        popupWindow.dismiss()
+                                    }
 
-                                override fun onCharacteristicWrite(request: Request, value: ByteArray) {
-                                    LogUtils.d("切换模式成功:${StringUtils.toHex(value, "")}")
-                                    popupWindow.dismiss()
-                                }
-                            })
+                                    override fun onCharacteristicWrite(request: Request, value: ByteArray) {
+                                        LogUtils.d("切换模式成功:${StringUtils.toHex(value, "")}")
+                                        popupWindow.dismiss()
+                                    }
+                                })
+                            }
+                            return ret
                         }
-                        return ret
                     }
+                    listView.choiceMode = ListView.CHOICE_MODE_SINGLE
+                    listView.setItemChecked(mViewModel2.mode.ordinal, true)
+                    return listView
                 }
-                listView.choiceMode = ListView.CHOICE_MODE_SINGLE
-                listView.setItemChecked(mViewModel2.mode.ordinal, true)
-                return listView
-            }
 
-        }
-            .setOutSideDismiss(true)
-            .setPopupGravity(Gravity.TOP)
-            .setBackground(null)
-            .setOffsetY(-10)
-            .setBackPressEnable(false)
+            }
+                .setOutSideDismiss(true)
+                .setPopupGravity(Gravity.TOP)
+                .setBackground(null)
+                .setOffsetY(-10)
+                .setBackPressEnable(false)
 
         popUpWindow.showPopupWindow(anchorView)
     }

@@ -114,7 +114,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     val exerciseCountTxt = Transformations.map(exerciseCount) { if (it == -1) "--" else it.toString() }
     open val exerciseKcalTxt = Transformations.map(exerciseCount) {
         if (it == -1) "--"
-        else DecimalFormat("##.#####").format(it * 0.0008333333f)
+        else DecimalFormat("0.00000").format(it * 25 / 30000)
     }
     val exerciseDuration: LiveData<Long> by lazy { MutableLiveData(-1) }
     val exerciseDurationTxt = Transformations.map(exerciseDuration) { if (it == -1L) "--" else formatTime(it) }
@@ -309,7 +309,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     override fun disconnect() {
         cancelTimeOutTimer()
         if (state != State.disconnected) {
-            LogUtils.d("disconnect,${state},${connection==null}", 5)
+            LogUtils.d("disconnect,${state},${connection == null}", 5)
             connection?.disconnect() ?: let { state = State.disconnected }
         }
     }
@@ -418,6 +418,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         success: ((String?, Any?) -> Unit)? = null,
         failed: ((Int, String?, Any?) -> Unit)? = null
     ) {
+        if (exerciseCount.value!! <= 0) return
         val time = (exerciseDuration.value!! / 1000).toInt()
         val num = exerciseCountTxt.value!!.toInt()
         val calory = (exerciseKcalTxt.value!!).toFloat()

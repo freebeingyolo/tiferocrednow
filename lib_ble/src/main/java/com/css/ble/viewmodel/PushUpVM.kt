@@ -46,7 +46,7 @@ class PushUpVM : HorizontalBarVM() {
             val weightData = WonderCoreCache.getLiveData<WeightBondData>(CacheKey.LAST_WEIGHT_INFO).value
             val userInfo = WonderCoreCache.getUserInfo()
             val weightKg = weightData?.weightKg ?: userInfo.targetWeightFloat
-            DecimalFormat("##.#####").format(weightKg * it * 0.0007f)
+            DecimalFormat("0.00000").format(weightKg * it * 0.0007f)
         }
     }
 

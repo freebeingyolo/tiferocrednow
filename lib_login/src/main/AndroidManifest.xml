@@ -6,12 +6,15 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <application>
         <activity
+
             android:name=".ui.ResetPasswordActivity"
             android:launchMode="singleTask" />
         <activity
+
             android:name=".ui.RegisterActivity"
             android:launchMode="singleTask" />
         <activity
+
             android:name=".ui.LoginActivity"
             android:launchMode="singleTask" />
     </application>

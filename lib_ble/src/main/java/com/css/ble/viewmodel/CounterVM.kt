@@ -28,7 +28,7 @@ class CounterVM : HorizontalBarVM() {
 
     override val exerciseKcalTxt = Transformations.map(exerciseCount) {
         if (it == -1) "--"
-        else DecimalFormat("##.#####").format(it * 0.0008333333f)
+        else DecimalFormat("0.00000").format(it * 1f*25/30000)
     }
 
     override fun filterName(name: String): Boolean {

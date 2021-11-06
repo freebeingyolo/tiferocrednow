@@ -93,7 +93,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
         else {
             val weightData = WonderCoreCache.getLiveData<WeightBondData>(CacheKey.LAST_WEIGHT_INFO).value
             val weightKg = weightData?.weightKg ?: WonderCoreCache.getUserInfo().targetWeightFloat
-            DecimalFormat("##.#####").format(weightKg*it * 3.9)
+            DecimalFormat("0.00000").format(weightKg*it * 3.9)
         }
     }
 
