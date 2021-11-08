@@ -31,7 +31,7 @@ android {
                 '"http://112.95.225.82:9055/wondercore/"'
         ]
         debug {
-            buildConfigField "String", "REQUEST_URL", URLS[0]
+            buildConfigField "String", "REQUEST_URL", URLS[2]
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
