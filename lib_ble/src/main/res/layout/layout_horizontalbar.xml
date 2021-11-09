@@ -96,8 +96,8 @@
                 android:visibility="@{model.isConnecting ? View.VISIBLE :View.GONE,default=gone}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                tools:visibility="visible"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible" />
 
             <com.css.base.view.ElectricityView
                 android:id="@+id/electricity_view"
@@ -337,19 +337,52 @@
             android:background="@drawable/bg_while_radius4"
             android:orientation="vertical">
 
-            <TextView
+            <!--   <TextView
+                   android:id="@+id/courseTitle"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginStart="10dp"
+                   android:layout_marginTop="11dp"
+                   android:gravity="center_vertical"
+                   android:text="教学视频"
+                   android:textColor="@color/black"
+                   android:textSize="10sp"
+                   android:textStyle="bold"
+                   app:layout_constraintStart_toStartOf="parent"
+                   app:layout_constraintTop_toTopOf="parent" />-->
+            <com.google.android.material.tabs.TabLayout
                 android:id="@+id/courseTitle"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="11dp"
-                android:gravity="center_vertical"
-                android:text="教学视频"
-                android:textColor="@color/black"
-                android:textSize="10sp"
-                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="教学视频"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="健身音乐"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+            </com.google.android.material.tabs.TabLayout>
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewpager2"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/courseTitle">
+
+            </androidx.viewpager2.widget.ViewPager2>
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_play_recommend"

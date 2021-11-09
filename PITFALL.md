@@ -34,6 +34,38 @@
    			val md5 = EncryptUtils.encryptMD5ToString(merge)	
    ```
 
+3. 方法中不能再notifyDataChanged()方法中不能再调用类notifyDataChanged()，否则会引起isComputing异常  
+[log](zbugs/RecycleView%20is%20computing引起bug.txt)  
+原因：
+```
+mAdapter.notifyDataSetChanged() 
+-> RecycleViewAdapter.onBindViewHolder() 
+-> BondDeviceData.getDevice() -> WonderCoreCache.getData()
+-> BondDeviceData.getDeviceLiveDataMerge().observe(this) {}
+-> LiveDataBus.get().with<T>(k).value = it 
+-> mAdapter.notifyItemChanged()
+```
+解决方案：
+在BondDeviceData.getDeviceLiveDataMerge().observe(this)中判断是否正在isComputing,是则不调用notifyItemChanged()
+```
+BondDeviceData.getDeviceLiveDataMerge().observe(this) { pair ->
+    if (mViewBinding.lv.isComputingLayout) return@observe
+    mAdapter.notifyItemChanged()
+}
+```
+
+注：notifyDataChanged的几个类似方法
+```
+notifyItemChanged()
+notifyItemChanged()
+notifyDataSetChanged()
+notifyItemRangeChanged()
+notifyItemInserted()
+notifyItemMoved()
+notifyItemRangeInserted()
+notifyItemRemoved()
+notifyItemRangeRemoved()
+```
    
 
 # 注意点

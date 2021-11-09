@@ -57,6 +57,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     abstract fun filterName(name: String): Boolean
     abstract fun filterUUID(uuid: UUID): Boolean
     abstract fun discovered(d: Device)
+    open fun onDisconnected(d: Device){}
     /*** abstractable start ****/
 
     /*** overridable start ****/
@@ -234,6 +235,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
                 state = State.disconnected
                 cancelTimeOutTimer()
                 avaliableDevice = null
+                onDisconnected(device)
                 resetData()
             }
             ConnectionState.CONNECTING -> {
@@ -418,13 +420,12 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         success: ((String?, Any?) -> Unit)? = null,
         failed: ((Int, String?, Any?) -> Unit)? = null
     ) {
-        if (exerciseCount.value!! <= 0) return
         val time = (exerciseDuration.value!! / 1000).toInt()
         val num = exerciseCountTxt.value!!.toInt()
         val calory = (exerciseKcalTxt.value!!).toFloat()
         val d = deviceType.alias
-        if (time == 0 && num == 0) {
-            return LogUtils.d("the time and the num is zero,ignore this uploading")
+        if (time == 0 || num <= 0) {
+            return LogUtils.d("the time is ${time}} the num is ${num},ignore this uploading")
         }
         netLaunch({
             withContext(Dispatchers.IO) {

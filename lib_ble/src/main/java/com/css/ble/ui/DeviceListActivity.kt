@@ -122,6 +122,7 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
             mAdapter.notifyDataSetChanged()
         })
         BondDeviceData.getDeviceLiveDataMerge().observe(this) { pair ->
+            if (mViewBinding.lv.isComputingLayout) return@observe
             mAdapter.mList?.let { list ->
                 list.indexOfFirst { it.deviceType.cacheKey == pair.first }
                     .takeIf { it != -1 }

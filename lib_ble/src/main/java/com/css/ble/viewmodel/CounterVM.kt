@@ -28,7 +28,7 @@ class CounterVM : HorizontalBarVM() {
 
     override val exerciseKcalTxt = Transformations.map(exerciseCount) {
         if (it == -1) "--"
-        else DecimalFormat("0.00000").format(it * 1f*25/30000)
+        else DecimalFormat("0.00000").format(it * 1f * 25 / 30000)
     }
 
     override fun filterName(name: String): Boolean {
@@ -45,6 +45,12 @@ class CounterVM : HorizontalBarVM() {
     @Observe
     override fun discovered(d: Device) {
         sendNotification(UUID.fromString(Companion.UUID_SRVC), UUID.fromString(Companion.UUID_NOTIFY), true, null)
+        fetchAllState()
+    }
+
+    override fun onDisconnected(d: Device) {
+        super.onDisconnected(d)
+        finishExercise()
     }
 
     @Observe
@@ -61,22 +67,25 @@ class CounterVM : HorizontalBarVM() {
     override fun onCharacteristicChanged(device: Device, service: UUID, characteristic: UUID, value: ByteArray) {
         val hexData = StringUtils.toHex(value, "")
         LogUtils.d("onCharacteristicChanged#$hexData")
-        (batteryLevel as MutableLiveData).value = 1
         when {
             hexData.startsWith("F55F0701") -> {//次数
                 val v = DataUtils.bytes2IntBig(value[5], value[6])
+                if (v == 0 && exerciseCount.value!! > 0) finishExercise()//固件sb,非得让次数清零指令在清零指令之前发送
                 (exerciseCount as MutableLiveData).value = v
             }
             hexData.startsWith("F55F0703") -> {//电量
-                val v = value[5].toInt()
+                val v = value[5].toInt() * 100 //固件sb,不用百分比表示电量而用1表示充满电，0表示没电
                 (batteryLevel as MutableLiveData).value = v
+            }
+            hexData.startsWith("F55F0702") -> {//清零
+                finishExercise()
             }
             hexData.startsWith("F55F0704") -> {//计时
                 val v = DataUtils.bytes2IntBig(value[5], value[6])
                 (exerciseDuration as MutableLiveData).value = v * 1000L
             }
-            hexData.startsWith("F55F0705") -> {//电量
-                LogUtils.d("onCharacteristicChanged#F55F0705#$hexData")
+            hexData.startsWith("F55F0705") -> {//运动状态
+                //LogUtils.d("onCharacteristicChanged#F55F0705#$hexData")
                 val v = DataUtils.bytes2IntBig(value[5])
                 if (motionState == 0x00 && v == 0x01) {
                     onMotionStart()
@@ -94,8 +103,22 @@ class CounterVM : HorizontalBarVM() {
 
     private fun onMotionEnd() {
         LogUtils.d("onMotionEnd")
-        finishExercise()
-        reset()
+    }
+
+    private fun fetchAllState() {
+        val data: ByteArray = StringUtils.toByteArray("F55F07060100", "")
+        val data2 = ((data).sum() and 0xff).toByte()
+        val data3 = data + data2
+        writeCharacter(UUID.fromString(Companion.UUID_SRVC), UUID.fromString(Companion.UUID_WRITE), data3, object :
+            WriteCharacteristicCallback {
+            override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
+                LogUtils.d("fetchAllState-failed->" + StringUtils.toHex(data3, ""))
+            }
+
+            override fun onCharacteristicWrite(request: Request, value: ByteArray) {
+                LogUtils.d("fetchAllState-ok->" + StringUtils.toHex(data3, ""))
+            }
+        })
     }
 
     override fun reset(cb: WriteCharacteristicCallback?) {

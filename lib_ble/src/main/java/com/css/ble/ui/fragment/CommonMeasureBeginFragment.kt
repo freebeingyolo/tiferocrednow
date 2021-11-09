@@ -12,6 +12,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.NetworkUtils
 import com.blankj.utilcode.util.ToastUtils
@@ -24,6 +25,7 @@ import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.LayoutPlayRecommendItemBinding
 import com.css.ble.ui.DataStatisticsActivity
 import com.css.ble.ui.view.BaseBindingAdapter
+import com.css.ble.ui.view.BaseRecyclerViewAdapter
 import com.css.ble.viewmodel.BleEnvVM
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM.State
@@ -146,6 +148,22 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
                 lowPowerAlert.visibility = View.VISIBLE
             } else {
                 lowPowerAlert.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun setCourseView(){
+        mViewBinding!!.root.findViewById<ViewPager2>(R.id.viewpager2).apply {
+            val adapter = object :BaseRecyclerViewAdapter<CourseData>(){
+
+                override fun onCreateView(parent: ViewGroup, viewType: Int): View {
+                    TODO()
+                }
+
+                override fun onBindItem(itemView: View, item: CourseData, position: Int) {
+
+                }
+
             }
         }
     }

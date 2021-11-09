@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.css.qrscan">
-
     <!--相机权限-->
     <uses-permission android:name="android.permission.CAMERA" />
     <!--读文件权限-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
-
     <application android:theme="@style/Wonder.Base">
-
         <activity
             android:name="com.css.qrscan.QrScanActivity"
             >
@@ -24,7 +20,5 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
     </application>
-
 </manifest>

@@ -6,7 +6,6 @@ import com.css.base.net.RequestBodyBuilder
 import com.css.base.net.api.WonderCoreApi
 import com.css.service.data.DeviceData
 import com.css.service.data.PullUpData
-import retrofit2.http.QueryMap
 
 /**
  *@author baoyuedong
@@ -15,7 +14,7 @@ import retrofit2.http.QueryMap
  */
 object DeviceRepository {
 
-    private val api: WonderCoreApi.Device by lazy {
+    private val api by lazy {
         NetManager.create(WonderCoreApi.Device::class.java)
     }
 

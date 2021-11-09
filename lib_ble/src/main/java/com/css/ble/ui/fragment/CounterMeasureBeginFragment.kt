@@ -3,7 +3,6 @@ package com.css.ble.ui.fragment
 import android.os.Bundle
 import android.view.View
 import com.css.ble.bean.DeviceType
-import com.css.ble.databinding.LayoutHorizontalbarBinding
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
 
 /**

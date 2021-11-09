@@ -9,6 +9,7 @@ import com.css.service.data.GlobalData
 import com.css.service.data.LoginUserData
 import com.css.service.data.UserData
 import com.google.gson.Gson
+import com.tencent.bugly.proguard.r
 
 enum class CacheKey(val k: String) {
     USER_INFO("user_info"),
