@@ -57,6 +57,7 @@ dependencies {
     implementation project(':lib_base')
     implementation 'com.google.android.material:material:1.2.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    api project(path: ':pickerview')
     kapt dep.arouter_compiler
 
     api(name: "bluetoothlib_ts_1.0.3", ext: "aar")

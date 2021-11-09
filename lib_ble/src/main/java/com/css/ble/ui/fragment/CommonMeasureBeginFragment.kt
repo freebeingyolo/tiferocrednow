@@ -41,6 +41,7 @@ import kotlinx.coroutines.launch
 abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, val vm: BaseDeviceScan2ConnVM) :
     BaseDeviceFragment<BaseDeviceScan2ConnVM, VB>(d) {
     private var alertDialog: CommonAlertDialog? = null
+    private var active: Boolean = false
     override fun initViewModel(): BaseDeviceScan2ConnVM = vm
     override val vmCls: Class<BaseDeviceScan2ConnVM> get() = BaseDeviceScan2ConnVM::class.java
     private val lowPowerAlert: View by lazy {
@@ -84,7 +85,10 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
         mViewModel.stateObsrv.observe(viewLifecycleOwner) {
             when (it) {
                 State.disconnected -> {
-                    showReconnectDialog()
+                    if (!active) {
+                        showReconnectDialog()
+                        active = false
+                    }
                 }
             }
         }
@@ -128,7 +132,7 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
                         .with(Bundle().apply { putString("videoLink", videoLink) })
                         .navigation()
                 } else {
-                    showNetworkErrorDialog();
+                    showNetworkErrorDialog()
                 }
             } catch (e: ActivityNotFoundException) {
                 ToastUtils.showShort("链接无效:${videoLink}")
@@ -190,6 +194,11 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
                 //BleErrorFragment.Builder.errorType(BleEnvVM.bleErrType).leftTitle(BondDeviceData.displayName(deviceType)).create()
             }
         }
+    }
+    fun disconnect() {
+        mViewModel.disconnect()
+        active = true
+
     }
 
     fun jumpToStatistic() {
