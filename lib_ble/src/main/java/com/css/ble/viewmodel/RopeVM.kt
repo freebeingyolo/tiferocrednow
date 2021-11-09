@@ -59,7 +59,7 @@ class RopeVM : BaseDeviceScan2ConnVM() {
         else {
             val weightData = WonderCoreCache.getLiveData<WeightBondData>(CacheKey.LAST_WEIGHT_INFO).value
             val weightKg = weightData?.weightKg ?: WonderCoreCache.getUserInfo().targetWeightFloat
-            DecimalFormat("0.00000").format(weightKg * 1f*25/30000)
+            DecimalFormat("0.00000").format(it * weightKg * 1f*25/30000)
         }
     }
 
@@ -196,24 +196,19 @@ class RopeVM : BaseDeviceScan2ConnVM() {
                     // 运动次数
                     val r = DataUtils.bytes2IntBig(value[8], value[9])
                     (exerciseCount as MutableLiveData).value = r
-                    Log.d("444","tiaoshengshu    :  $r")
-                    Log.d("444","tiaoshengshijian    :  $v * 1000L")
                 }
                 hexData.startsWith("F55F0704") -> {// 当前模式
                     val v = DataUtils.bytes2IntBig(value[18], value[18])
                     val m = Mode.values()[v]
                     (modeObsvr as MutableLiveData).value = m
-                    Log.d("444","mode moshi    :  $m")
                 }
                 hexData.startsWith("F55F0702") -> {//电池电量
                     val v = DataUtils.bytes2IntBig(value[5], value[5])
-                    (batteryLevel as MutableLiveData).value = v
-                    Log.d("444","dianchidianliang    :  $v")
+                    (batteryLevel as MutableLiveData).value = v % 100
                 }
                 hexData.startsWith("F55F0B02") -> {//进低功耗模式
                     val v = DataUtils.bytes2IntBig(value[5], value[6])
                     (batteryLevel as MutableLiveData).value = v
-                    Log.d("444","digonghaomoshi    :  $v")
 
                 }
             }

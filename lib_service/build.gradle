@@ -26,12 +26,12 @@ android {
     buildTypes {
         def URLS = [
                 //'"http://192.168.65.156:8081/wondercore/"',
-                '"http://112.95.225.82:9055/wondercore/"',
+                '"http://10.55.20.48:9055/wondercore/"',
                 '"http://192.168.65.156:8082/wondercore/"',
-                '"http://112.95.225.82:9055/wondercore/"'
+                '"http://112.95.160.227:9055/wondercore/"'
         ]
         debug {
-            buildConfigField "String", "REQUEST_URL", URLS[2]
+            buildConfigField "String", "REQUEST_URL", URLS[0]
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

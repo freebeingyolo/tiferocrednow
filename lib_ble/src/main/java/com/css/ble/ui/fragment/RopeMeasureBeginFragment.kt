@@ -141,14 +141,6 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Commo
                                     activity
                                 ) { options1, options2, options3, v ->
                                     mCountTime = mCountTimeList[options1]
-                                    var intCountTime = Integer.parseInt(mCountTime)
-                                    if (intCountTime >= 10) {
-                                        mViewBinding?.exerciseDuration?.text = "00:$mCountTime:00"
-                                    } else {
-                                        mViewBinding?.exerciseDuration?.text = "00:0$mCountTime:00"
-                                    }
-
-
                                 }.setLayoutRes(
                                     R.layout.dialog_rope_count_time
                                 ) { v ->
@@ -229,6 +221,18 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Commo
                                     }
                                 }.show()
 
+                            } else {
+                                mViewModel2.switchMode(modes[position], object : WriteCharacteristicCallback {
+                                    override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
+                                        ToastUtils.showShort("切换模式失败")
+                                        popupWindow.dismiss()
+                                    }
+
+                                    override fun onCharacteristicWrite(request: Request, value: ByteArray) {
+                                        LogUtils.d("切换模式成功:${StringUtils.toHex(value, "")}")
+                                        popupWindow.dismiss()
+                                    }
+                                })
                             }
                         }
                         return ret
@@ -259,42 +263,42 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Commo
         }
     }
     fun startExercise () {
-        mViewModel2.setIsStart(true)
-        mViewBinding?.modeSwitch?.setTextColor(Color.GRAY)
-        mViewBinding?.modeSwitch2?.setTextColor(resources.getColor(R.color.color_F8B698))
-        mViewBinding?.modeSwitch3?.setImageResource(R.mipmap.icon_rope_mode_gray)
-        mViewBinding?.modeContainer?.isEnabled = false
         mViewModel2.reset()
-        if (mCountTime.isNotEmpty()) {
-            var intCountTime = Integer.parseInt(mCountTime)
-            if (intCountTime >= 10) {
-                mViewBinding?.exerciseDuration?.text = "00:$mCountTime:00"
-            } else {
-                mViewBinding?.exerciseDuration?.text = "00:0$mCountTime:00"
-            }
-        }
-
+        mViewModel2.setIsStart(true)
         when (mViewModel2.mode.name) {
             "byFree" -> {
                 mViewModel2.doWriteCharacteristic("f55f060403010000")
             }
             "byCountTime" -> {
-                var hexTime = StringUtils.toHex(Integer.parseInt(mCountTime))
-                var data = StringUtils.fillZero(hexTime,4,true)
-                mViewModel2.doWriteCharacteristic("f55f06040302$data")
+                if (mCountTime.isEmpty()) {
+                    ToastUtils.showShort("请先选择运动模式")
+                    return
+                } else {
+                    var hexTime = StringUtils.toHex(Integer.parseInt(mCountTime) * 60)
+                    var data = StringUtils.fillZero(hexTime,4,true)
+                    mViewModel2.doWriteCharacteristic("f55f06040302$data")
+                }
             }
             "byCountNumber" -> {
-                var hexTime2 = StringUtils.toHex(Integer.parseInt(mCountNumber))
-                var data2 = StringUtils.fillZero(hexTime2,4,true)
-                mViewModel2.doWriteCharacteristic("f55f06040302$data2")
+                if (mCountTime.isEmpty()) {
+                    ToastUtils.showShort("请先选择运动模式")
+                    return
+                } else {
+                    var hexTime2 = StringUtils.toHex(Integer.parseInt(mCountNumber))
+                    var data2 = StringUtils.fillZero(hexTime2,4,true)
+                    mViewModel2.doWriteCharacteristic("f55f06040303$data2")
+                }
             }
         }
+        mViewBinding?.modeSwitch?.setTextColor(Color.GRAY)
+        mViewBinding?.modeSwitch2?.setTextColor(resources.getColor(R.color.color_F8B698))
+        mViewBinding?.modeSwitch3?.setImageResource(R.mipmap.icon_rope_mode_gray)
+        mViewBinding?.modeContainer?.isEnabled = false
         mViewBinding?.startExercised?.visibility = View.VISIBLE
         mViewBinding?.startExercise1?.visibility = View.GONE
     }
 
     fun stopExercise () {
-        mViewModel2.setIsStart(false)
         CommonAlertDialog(applicationContext).apply {
             type = CommonAlertDialog.DialogType.Confirm
             gravity = Gravity.BOTTOM
@@ -306,6 +310,8 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Commo
                 override fun onRightBtnClick(view: View) {
                     super.onRightBtnClick(view)
                     mViewModel2.changeExercise("06")
+                    mViewModel2.setIsStart(false)
+                    mViewModel2.finishExercise()
                     mViewBinding?.modeSwitch?.setTextColor(Color.BLACK)
                     mViewBinding?.modeSwitch2?.setTextColor(resources.getColor(R.color.colorAccent))
                     mViewBinding?.modeSwitch3?.setImageResource(R.mipmap.icon_rope_mode)
