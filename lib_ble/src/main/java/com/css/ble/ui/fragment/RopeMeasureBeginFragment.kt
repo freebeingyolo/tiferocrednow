@@ -106,6 +106,8 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Commo
     }
 
     fun disconnectBLE () {
+        mViewBinding?.connectControl?.visibility = View.VISIBLE
+        mViewBinding?.startExercise?.visibility = View.GONE
         mViewBinding?.connectControl?.text = "连接设备"
         mViewModel2.doWriteCharacteristic("f55f10030100000")
         mViewBinding?.tv?.setTextColor(Color.GRAY)
@@ -187,6 +189,7 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Commo
                                     type = CommonAlertDialog.DialogType.Edit
                                     title = "设置倒计数数量"
                                     hint = "请输入数量"
+                                    content = ""
                                     leftBtnText = "取消"
                                     rightBtnText = "确定"
                                     listener = object : DialogClickListener.DefaultLisener() {
@@ -280,7 +283,7 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Commo
                 }
             }
             "byCountNumber" -> {
-                if (mCountTime.isEmpty()) {
+                if (mCountNumber.isEmpty()) {
                     ToastUtils.showShort("请先选择运动模式")
                     return
                 } else {
@@ -311,7 +314,6 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Commo
                     super.onRightBtnClick(view)
                     mViewModel2.changeExercise("06")
                     mViewModel2.setIsStart(false)
-                    mViewModel2.finishExercise()
                     mViewBinding?.modeSwitch?.setTextColor(Color.BLACK)
                     mViewBinding?.modeSwitch2?.setTextColor(resources.getColor(R.color.colorAccent))
                     mViewBinding?.modeSwitch3?.setImageResource(R.mipmap.icon_rope_mode)

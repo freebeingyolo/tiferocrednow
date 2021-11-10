@@ -111,6 +111,7 @@ class RopeVM : BaseDeviceScan2ConnVM() {
                     mode = m
                 }
             })
+        clearAllExerciseData()
     }
 
     fun changeExercise(str :String, cb: WriteCharacteristicCallback? = null) {
@@ -131,6 +132,9 @@ class RopeVM : BaseDeviceScan2ConnVM() {
                     cb?.onCharacteristicWrite(request, value)
                 }
             })
+        if ("06" == str) {
+            finishExercise()
+        }
     }
 
     open fun doWriteCharacteristic(str: String, cb: WriteCharacteristicCallback? = null) {
