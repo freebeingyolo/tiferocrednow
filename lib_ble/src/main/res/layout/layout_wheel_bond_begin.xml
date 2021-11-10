@@ -1,4 +1,5 @@
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
 
     <data>
 
@@ -11,7 +12,7 @@
             type="com.css.ble.viewmodel.WheelMeasureVM" />
     </data>
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white">
@@ -31,14 +32,27 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/anim_weight_guide"
+                <RelativeLayout
                     android:layout_width="225dp"
                     android:layout_height="225dp"
-                    android:layout_centerHorizontal="true"
                     android:layout_marginTop="30dp"
-                    android:layout_marginBottom="20dp"
-                    android:src="@mipmap/icon_ble" />
+                    android:layout_marginBottom="20dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:src="@mipmap/bg_product"/>
+
+                    <ImageView
+                        android:id="@+id/anim_weight_guide"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@{model.deviceType.icon}"
+                        app:imageResource="@{model.deviceType.icon}" />
+
+                </RelativeLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -46,7 +60,7 @@
                     android:layout_marginTop="22dp"
                     android:gravity="center"
                     android:text="请先打开手机蓝牙功能"
-                    android:textColor="#ff333333"
+                    android:textColor="@color/color_8f8f8f"
                     android:textSize="13sp" />
 
                 <TextView
@@ -55,34 +69,16 @@
                     android:layout_marginTop="19dp"
                     android:gravity="center"
                     android:text="健腹轮开启连接模式，等待显示蓝牙图标即可进行连接配对."
-                    android:textColor="#ff000000"
+                    android:textColor="@color/color_8f8f8f"
                     android:textSize="13sp"
                     android:textStyle="bold" />
 
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_marginTop="22dp"
-                    android:background="@drawable/ble_weight_measure_prgrssbar_frame"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:visibility="@{model.stateObsrv != State.disconnected ? View.VISIBLE:View.GONE}">
-
-                    <pl.droidsonroids.gif.GifImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/loading_git" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="70dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:gravity="center"
-                        android:text="配对中"
-                        android:textColor="@color/black"
-                        android:textSize="10dp" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
+                <pl.droidsonroids.gif.GifImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="30dp"
+                    android:src="@drawable/loading_git"
+                    android:visibility="@{model.stateObsrv != State.disconnected ? View.VISIBLE:View.GONE}" />
 
 
             </androidx.appcompat.widget.LinearLayoutCompat>

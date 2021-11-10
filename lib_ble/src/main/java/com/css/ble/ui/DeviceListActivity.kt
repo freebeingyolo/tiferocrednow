@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
@@ -17,7 +17,6 @@ import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.FragmentDeviceListBinding
 import com.css.ble.databinding.LayoutDeviceItemBinding
-import com.css.ble.ui.view.SpaceItemDecoration
 import com.css.ble.viewmodel.DeviceListVM
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
 import com.css.service.router.ARouterConst
@@ -107,8 +106,7 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
                     }
                 }
             }
-            addItemDecoration(SpaceItemDecoration(30))
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = GridLayoutManager(context, 2)
             adapter = mAdapter
             //addItemDecoration(DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL))
         }
@@ -118,6 +116,7 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
         super.registorUIChangeLiveDataCallBack()
         mViewModel.deviceInfos.observe(this, {
             //Log.d(TAG, "mViewModel._deviceInfos：$it")
+            mViewBinding?.tip.text = "已经为您选择" + it.size + "款运动设备。请打开设备进行连接。"
             mAdapter.mList = it
             mAdapter.notifyDataSetChanged()
         })
@@ -162,6 +161,7 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
             mList?.let {
                 val binding = holder.binding
                 binding.name.text = it[position].name
+                binding.state.text = it[position].getBondDeviceData()?.deviceConnect ?:"点击绑定"
                 binding.icon.setImageResource(it[position].icon)
                 binding.container.setOnClickListener {
                     itemClickListener?.onItemClick(holder, position, mList!![position])

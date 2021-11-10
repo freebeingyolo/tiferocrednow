@@ -14,9 +14,9 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_marginTop="10dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/bg_while_radius4">
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/bg_while_radius5">
 
         <TextView
             android:id="@+id/weight_device_name"
@@ -48,8 +48,8 @@
             android:layout_height="60dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
-            android:layout_marginBottom="5dp"
-            android:layout_marginStart="5dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="10dp"
             android:src="@{data.deviceImg}"
             app:imageResource="@{data.deviceImg}" />
 

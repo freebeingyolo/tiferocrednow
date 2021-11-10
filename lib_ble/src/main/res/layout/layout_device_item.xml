@@ -5,95 +5,90 @@
 
     </data>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:paddingBottom="37dp">
+        android:layout_height="120dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/bg_while_radius5">
 
         <TextView
             android:id="@+id/name"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:text="@string/device_weight"
-            android:textSize="13sp" />
-
-
-        <FrameLayout
-            android:layout_width="198dp"
-            android:layout_height="154dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:background="@drawable/ble_device_icon_frame">
+            android:ellipsize="end"
+            android:maxEms="10"
+            android:maxLines="1"
+            android:text="@string/device_weight"
+            android:textColor="@color/color_0d0d0d"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/name"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="2dp"
+            android:text="@string/device_disconnected"
+            android:textColor="@color/color_0d0d0d"
+            android:textSize="10sp" />
+
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="10dp"
+            android:src="@mipmap/icon_weight" />
+
+        <View
+            android:id="@+id/masked"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/ble_device_icon_frame2"/>
+
+        <LinearLayout
+            android:id="@+id/masked2"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/ble_device_icon_frame3"
+            android:gravity="center_vertical">
+
+            <Space
+                android:layout_width="10dp"
+                android:layout_height="1dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:text="已有设备，如需更换绑定设备 点此解绑"
+                android:textColor="@color/white"
+                android:textSize="10sp" />
 
             <ImageView
-                android:id="@+id/icon"
-                android:layout_width="139dp"
-                android:layout_height="139dp"
-                android:layout_gravity="center"
-                android:src="@mipmap/icon_weight" />
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@mipmap/bond_device_pin" />
 
-            <LinearLayout
-                android:id="@+id/masked"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/ble_device_icon_frame2"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:visibility="gone">
+            <Space
+                android:layout_width="10dp"
+                android:layout_height="1dp" />
+        </LinearLayout>
 
-                <ImageView
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:layout_marginTop="67dp"
-                    android:src="@mipmap/bond_device_add" />
+    </RelativeLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="点击绑定"
-                    android:textColor="#ffffff"
-                    android:textSize="10sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/masked2"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_gravity="bottom"
-                android:background="@drawable/ble_device_icon_frame3"
-                android:gravity="center_vertical">
-
-                <Space
-                    android:layout_width="10dp"
-                    android:layout_height="1dp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="已有设备，如需更换绑定设备 点此解绑"
-                    android:textColor="#ffffff"
-                    android:textSize="10sp" />
-
-                <Space
-                    android:layout_width="10dp"
-                    android:layout_height="1dp" />
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center_vertical"
-                    android:background="@mipmap/bond_device_pin" />
-
-                <Space
-                    android:layout_width="10dp"
-                    android:layout_height="1dp" />
-            </LinearLayout>
-        </FrameLayout>
-    </LinearLayout>
 </layout>
