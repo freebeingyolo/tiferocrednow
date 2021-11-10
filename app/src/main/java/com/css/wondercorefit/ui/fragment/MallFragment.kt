@@ -65,6 +65,8 @@ class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(), View.On
     ): FragmentMallBinding = FragmentMallBinding.inflate(inflater, viewGroup, false)
 
     private fun initClickListenr() {
+        mViewBinding!!.layoutStore.setOnClickListener(this)
+        mViewBinding!!.ivBanner.setOnClickListener(this)
         mViewBinding!!.ivProduct1.setOnClickListener(this)
         mViewBinding!!.ivProduct2.setOnClickListener(this)
         mViewBinding!!.ivProduct3.setOnClickListener(this)
@@ -81,6 +83,12 @@ class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(), View.On
 
     override fun onClick(v: View) {
         when (v.id) {
+            R.id.layout_store -> {
+                openUrl("https://mall.jd.com/index-1000096602.html")
+            }
+            R.id.iv_banner -> {
+                openUrl("https://mall.jd.com/index-1000096602.html")
+            }
             R.id.iv_product1 -> {
                 openUrl("https://item.jd.com/100016327406.html")
             }

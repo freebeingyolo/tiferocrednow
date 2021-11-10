@@ -593,8 +593,8 @@
                         android:layout_weight="1"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
                         android:background="@drawable/bg_while_radius4">
 
                         <TextView
@@ -626,8 +626,8 @@
                             android:layout_height="60dp"
                             android:layout_alignParentBottom="true"
                             android:layout_alignParentLeft="true"
-                            android:layout_marginBottom="5dp"
-                            android:layout_marginStart="5dp"/>
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginStart="10dp"/>
 
                     </RelativeLayout>
 
@@ -638,8 +638,8 @@
                         android:layout_weight="1"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
                         android:background="@drawable/bg_while_radius4">
 
                         <ImageView
@@ -670,6 +670,7 @@
                     android:layout_marginBottom="20dp"
                     android:layout_marginStart="15dp"
                     android:layout_marginEnd="15dp"
+                    android:paddingBottom="10dp"
                     android:background="@drawable/bg_f8f8f8_radius5"/>
 
                 <LinearLayout
