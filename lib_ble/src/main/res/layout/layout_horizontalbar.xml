@@ -24,21 +24,37 @@
         android:id="@+id/ll_parent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bg_gray"
+        android:background="@color/color_f7f7f7"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         tools:context=".ui.WeightMeasureActivity">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="173dp"
-            android:layout_height="173dp"
-            android:layout_marginTop="3dp"
-            android:onClick="@{v->model.easterEggs.click()}"
-            android:src="@{model.deviceType.icon}" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:background="@color/white">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="20dp"
+                android:layout_centerHorizontal="true"
+                android:src="@mipmap/bg_product"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="173dp"
+                android:layout_height="173dp"
+                android:layout_centerHorizontal="true"
+                android:onClick="@{v->model.easterEggs.click()}"
+                android:src="@{model.deviceType.icon}" />
+
+        </RelativeLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="65dp"
+            android:layout_marginTop="20dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:background="@drawable/bg_while_radius4">
@@ -176,7 +192,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="运动次数"
-                    android:textColor="#666666"
+                    android:textColor="@color/color_616161"
                     android:textSize="12sp" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -223,7 +239,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="消耗热量"
-                    android:textColor="#666666"
+                    android:textColor="@color/color_616161"
                     android:textSize="12sp" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -231,7 +247,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="65dp"
+            android:layout_height="50dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
@@ -252,17 +268,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="数据统计"
+                    android:text="历史记录"
                     android:textColor="@color/black"
                     android:textSize="15sp" />
 
                 <ImageView
-                    android:layout_width="27dp"
-                    android:layout_height="27dp"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
 
-                    android:src="@mipmap/icon_statistics" />
+                    android:src="@mipmap/icon_history" />
             </RelativeLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -294,7 +310,7 @@
                     android:id="@+id/mode_switch2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="2dp"
                     android:text="@{model.modeObsvrStr,default=`计时模式`}"
                     android:textColor="@color/colorAccent"
                     android:textSize="10sp"
