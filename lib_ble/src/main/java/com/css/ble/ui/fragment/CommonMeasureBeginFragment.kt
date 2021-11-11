@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.databinding.ViewDataBinding
-import com.google.android.material.tabs.TabLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,6 +30,7 @@ import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM.State
 import com.css.service.data.CourseData
 import com.css.service.router.ARouterConst
+import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -81,11 +81,6 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
 
     override fun initData() {
         super.initData()
-        mViewModel.fetchRecommentation()
-        mViewModel.recommentationData.observe(viewLifecycleOwner) {
-            recommendationAdapter.setItems(it)
-            recommendationAdapter.notifyDataSetChanged()
-        }
         mViewModel.stateObsrv.observe(viewLifecycleOwner) {
             when (it) {
                 State.disconnected -> {
@@ -115,7 +110,7 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
         alertDialog?.show()
     }
 
-    val recommendationAdapter = object : BaseBindingAdapter<CourseData, LayoutPlayRecommendItemBinding>() {
+    fun recommendationAdapter() = object : BaseBindingAdapter<CourseData, LayoutPlayRecommendItemBinding>() {
         override fun getLayoutResId(viewType: Int): Int {
             return R.layout.layout_play_recommend_item
         }
@@ -147,13 +142,6 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         setUpJumpToDeviceInfo()
-        mViewBinding!!.root.findViewById<RecyclerView>(R.id.rv_play_recommend)?.let {
-            it.adapter = recommendationAdapter
-            it.layoutManager = LinearLayoutManager(requireContext())
-        }
-        mViewBinding!!.root.findViewById<TabLayout>(R.id.courseTitle)?.let {
-
-        }
         mViewModel.batteryLevel.observe(viewLifecycleOwner) {
             if (it < 10 && it != -1) {
                 lowPowerAlert.visibility = View.VISIBLE
@@ -161,21 +149,73 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
                 lowPowerAlert.visibility = View.GONE
             }
         }
+        setCourseView()
     }
 
     private fun setCourseView() {
-        mViewBinding!!.root.findViewById<ViewPager2>(R.id.viewpager2).apply {
-            val adapter = object : BaseRecyclerViewAdapter<CourseData>() {
+        val viewPager2 = mViewBinding!!.root.findViewById<ViewPager2>(R.id.viewpager2)
+        val courseTitle = mViewBinding!!.root.findViewById<TabLayout>(R.id.courseTitle)
+        courseTitle?.apply {
+            val it = mViewModel.recommentationMap.entries.iterator()
+            while (it.hasNext()) {
+                addTab(newTab().apply {
+                    val next = it.next()
+                    val tabView = TextView(requireContext())
+                    tabView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                    tabView.text = next.key
+                    tabView.textSize = 12F
+                    text = next.key
+                    customView = tabView
+                })
+            }
+            addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab) {
+                    viewPager2?.currentItem = tab.position
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab) {}
+                override fun onTabReselected(tab: TabLayout.Tab) {}
+            })
+        }
+        viewPager2?.apply {
+            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    courseTitle?.getTabAt(position)?.select()
+                }
+            })
+            val items = mutableListOf<List<CourseData>>().apply {
+                for (i in 0 until mViewModel.recommentationMap.size) add(mutableListOf())
+            }
+            val viewPager2Adapter = object : BaseRecyclerViewAdapter<List<CourseData>>(items) {
 
                 override fun onCreateView(parent: ViewGroup, viewType: Int): View {
-                    TODO()
+                    val view = RecyclerView(parent.context).apply {
+                        layoutParams = ViewGroup.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT
+                        )
+                    }
+                    return view
                 }
 
-                override fun onBindItem(itemView: View, item: CourseData, position: Int) {
-
+                override fun onBindItem(itemView: View, item: List<CourseData>, position: Int) {
+                    val recyclerView = itemView as RecyclerView
+                    var adapter = recyclerView.adapter as BaseBindingAdapter<CourseData, *>?
+                    if (adapter == null) {
+                        adapter = recommendationAdapter()
+                        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+                        recyclerView.adapter = adapter
+                        val scene = courseTitle.getTabAt(position)!!.text.toString()
+                        mViewModel.fetchRecommentation(scene)
+                        mViewModel.recommentationMap[scene]?.observe(viewLifecycleOwner) {
+                            adapter!!.setItems(it)
+                        }
+                    } else {
+                        adapter!!.setItems(item)
+                    }
                 }
-
             }
+            adapter = viewPager2Adapter
         }
     }
 
@@ -214,4 +254,5 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
             requireContext(),
             Bundle().apply { putString("deviceType", deviceType.alias) })
     }
+
 }

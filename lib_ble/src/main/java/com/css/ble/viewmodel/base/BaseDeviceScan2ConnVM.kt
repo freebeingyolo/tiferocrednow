@@ -23,7 +23,6 @@ import com.css.ble.viewmodel.IBleScan
 import com.css.res.R
 import com.css.service.bus.LiveDataBus.BusMutableLiveData
 import com.css.service.data.CourseData
-import com.tencent.bugly.proguard.r
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -88,8 +87,12 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         }
         get() = stateObsrv.value!!
 
-    private val _recommentationData by lazy { BusMutableLiveData<List<CourseData>>() }
-    val recommentationData: LiveData<List<CourseData>> get() = _recommentationData
+    val recommentationMap by lazy {
+        HashMap<String, MutableLiveData<List<CourseData>>>().apply {
+            put("教学视频", BusMutableLiveData())
+            put("健身音乐", BusMutableLiveData())
+        }
+    }
 
     //Transformations
     val isConnecting = Transformations.map(stateObsrv) {
@@ -381,16 +384,16 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         )
     }
 
-    fun fetchRecommentation() {
+    fun fetchRecommentation(scene: String = "教学视频") {
         netLaunch(
             {
                 withContext(Dispatchers.IO) {
-                    val ret = CourseRepository.queryVideo("教学视频", deviceType.alias)
+                    val ret = CourseRepository.queryVideo(scene, deviceType.alias)//"教学视频"
                     ret
                 }
             },
             { msg, d ->
-                _recommentationData.value = d
+                recommentationMap[scene]!!.value = d
             },
             { code, msg, d ->
 
