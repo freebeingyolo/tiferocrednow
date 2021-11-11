@@ -7,6 +7,7 @@ import com.css.base.net.URLConfig
 import com.css.base.net.interceptor.HeaderInterceptor
 import com.css.base.net.interceptor.LoginInterceptor
 import com.css.base.uibase.BaseApplication
+import com.css.wondercorefit.utils.SharedPreferencesUtils
 import com.css.wondercorefit.utils.VideoCacheHelper
 import com.tencent.bugly.Bugly
 import okhttp3.logging.HttpLoggingInterceptor
@@ -16,6 +17,7 @@ class WonderApplication : BaseApplication() {
     override fun onCreate() {
         super.onCreate()
         MultiDex.install(this)
+        SharedPreferencesUtils.init(this)
         VideoCacheHelper.init(this)
         configNet()
     }
