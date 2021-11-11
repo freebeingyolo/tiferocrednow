@@ -11,6 +11,7 @@ import android.view.Gravity
 import android.view.View
 import com.css.base.dialog.inner.DialogClickListener
 import com.yxsh.uibase.dialog.ConfirmDialog
+import com.yxsh.uibase.dialog.ScrollDialog
 import com.yxsh.uibase.dialog.SingleDialog
 import razerdp.basepopup.BasePopupWindow
 
@@ -74,7 +75,8 @@ class CommonAlertDialog : BasePopupWindow.OnDismissListener {
         Edit,//从上往下显示: 标题、编辑框、两个操作按钮
         Image,//图片 文字
         Tip,//从上往下显示: 标题、编辑框、两个操作按钮
-        Center//从上往下显示: 内容、两个操作按钮
+        Center,//从上往下显示: 内容、两个操作按钮
+        Scroll//滚动文字
     }
 
     fun show() {
@@ -101,6 +103,9 @@ class CommonAlertDialog : BasePopupWindow.OnDismissListener {
                 DialogType.Center -> {
                     dialog = CenterCommonAlertDialog(context)
                 }
+                DialogType.Scroll -> {
+                    dialog = ScrollDialog(context)
+                }
             }
         } else {
             when (type) {
@@ -121,6 +126,9 @@ class CommonAlertDialog : BasePopupWindow.OnDismissListener {
                 }
                 DialogType.Center -> {
                     dialog = CenterCommonAlertDialog(context)
+                }
+                DialogType.Scroll -> {
+                    dialog = ScrollDialog(context)
                 }
             }
         }
@@ -321,6 +329,16 @@ class CommonAlertDialog : BasePopupWindow.OnDismissListener {
                 }
 
                 centerCommonAlertDialog.setListener(listener)
+            }
+            is ScrollDialog -> {
+                val scrollDialog = dialog as ScrollDialog
+
+                title?.let { scrollDialog.setTitle(it) }
+                content?.let { scrollDialog.setContent(it) }
+                leftBtnText?.let { scrollDialog.setTopBtn(it) }
+                rightBtnText?.let { scrollDialog.setBottomBtn(it) }
+
+                scrollDialog.setListener(listener)
             }
         }
         dialog!!.onDismissListener = this

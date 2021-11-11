@@ -25,6 +25,7 @@ class TermsActivity : BaseActivity<DefaultViewModel, ActivityTermsBinding>() {
         fun starActivity(context: Context, type: Int) {
             CURRENT = type
             val intent = Intent(context, TermsActivity::class.java)
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
         }
     }
