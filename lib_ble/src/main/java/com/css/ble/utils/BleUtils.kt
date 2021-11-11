@@ -12,9 +12,16 @@ import com.blankj.utilcode.constant.PermissionConstants
 import com.blankj.utilcode.util.PermissionUtils
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
+import java.util.regex.Pattern
 
 
 object BleUtils {
+
+    //检查mac地址是否合法
+    fun verifyMacValid(content: String) = run {
+        val pattern = "^([A-Fa-f0-9]{2}[-,:]){5}[A-Fa-f0-9]{2}\$"
+        Pattern.matches(pattern, content)
+    }
 
     //绑定
     fun createBond(bleDevice: BluetoothDevice): Boolean? {

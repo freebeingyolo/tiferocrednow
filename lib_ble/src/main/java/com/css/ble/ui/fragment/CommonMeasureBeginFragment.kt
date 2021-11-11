@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.databinding.ViewDataBinding
+import com.google.android.material.tabs.TabLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,9 +21,7 @@ import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.view.ToolBarView
 import com.css.ble.R
-import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
-import com.css.ble.bean.WeightBondData
 import com.css.ble.databinding.LayoutPlayRecommendItemBinding
 import com.css.ble.ui.DataStatisticsActivity
 import com.css.ble.ui.view.BaseBindingAdapter
@@ -31,10 +30,7 @@ import com.css.ble.viewmodel.BleEnvVM
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM.State
 import com.css.service.data.CourseData
-import com.css.service.data.UserData
 import com.css.service.router.ARouterConst
-import com.css.service.utils.CacheKey
-import com.css.service.utils.WonderCoreCache
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -151,9 +147,12 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         setUpJumpToDeviceInfo()
-        mViewBinding!!.root.findViewById<RecyclerView>(R.id.rv_play_recommend).let {
+        mViewBinding!!.root.findViewById<RecyclerView>(R.id.rv_play_recommend)?.let {
             it.adapter = recommendationAdapter
             it.layoutManager = LinearLayoutManager(requireContext())
+        }
+        mViewBinding!!.root.findViewById<TabLayout>(R.id.courseTitle)?.let {
+
         }
         mViewModel.batteryLevel.observe(viewLifecycleOwner) {
             if (it < 10 && it != -1) {

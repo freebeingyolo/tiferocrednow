@@ -17,11 +17,13 @@ import cn.wandersnail.commons.util.StringUtils
 import com.css.base.net.api.repository.CourseRepository
 import com.css.base.net.api.repository.DeviceRepository
 import com.css.ble.bean.BondDeviceData
+import com.css.ble.utils.BleUtils
 import com.css.ble.viewmodel.IBleConnect
 import com.css.ble.viewmodel.IBleScan
 import com.css.res.R
 import com.css.service.bus.LiveDataBus.BusMutableLiveData
 import com.css.service.data.CourseData
+import com.tencent.bugly.proguard.r
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -291,7 +293,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     }
 
     override fun onCharacteristicChanged(device: Device, service: UUID, characteristic: UUID, value: ByteArray) {
-        LogUtils.d("onCharacteristicChanged：" + StringUtils.toHex(value, ""))
+        LogUtils.d("onCharacteristicChanged:" + StringUtils.toHex(value, ""))
     }
 
     @Observe
@@ -309,6 +311,10 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
             config.setDiscoverServicesDelayMillis(300)
             config.setAutoReconnect(false)
             val mac = BondDeviceData.getDevice(deviceType)!!.mac
+            if (!BleUtils.verifyMacValid(mac)) {
+                showToast("非法mac地址，请重新绑定设备，mac:${mac}")
+                return
+            }
             connection = EasyBLE.getInstance().connect(mac, config, this@BaseDeviceScan2ConnVM)
         } else {
             connection?.reconnect()

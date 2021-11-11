@@ -24,13 +24,11 @@ import com.css.base.net.api.repository.DeviceRepository
 import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
-import com.css.ble.bean.WeightBondData
+import com.css.ble.utils.BleUtils
 import com.css.ble.utils.DataUtils
 import com.css.ble.viewmodel.base.BaseWheelVM
 import com.css.service.bus.LiveDataBus
 import com.css.service.data.CourseData
-import com.css.service.utils.CacheKey
-import com.css.service.utils.WonderCoreCache
 import kotlinx.coroutines.*
 import java.text.DecimalFormat
 import java.util.*
@@ -282,6 +280,10 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
             config.setDiscoverServicesDelayMillis(300)
             config.setAutoReconnect(false)
             val mac = BondDeviceData.getDevice(deviceType)!!.mac
+            if (!BleUtils.verifyMacValid(mac)) {
+                showToast("非法mac地址，请重新绑定设备，mac:${mac}")
+                return
+            }
             connection = EasyBLE.getInstance().connect(mac, config, this@WheelMeasureVM)!!
         } else {
             connection!!.reconnect()

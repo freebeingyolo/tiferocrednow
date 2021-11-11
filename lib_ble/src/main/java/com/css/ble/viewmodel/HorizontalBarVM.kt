@@ -36,26 +36,24 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
     val modeObsvrStr: LiveData<String> = Transformations.map(modeObsvr) {
         when (it) {
             Mode.byCount -> getString(R.string.byCount)
-            Mode.byTime30 -> String.format(getString(R.string.byTime), 30)
-            Mode.byTime60 -> String.format(getString(R.string.byTime), 60)
-            Mode.byTime90 -> String.format(getString(R.string.byTime), 90)
+            else -> String.format(getString(R.string.byTime), it.time)
         }
     }
+
     //transformations
-
-
     var mode: Mode
         set(value) {
             (modeObsvr as MutableLiveData).value = value
         }
         get() = modeObsvr.value!!
 
-    enum class Mode {
-        byCount,
-        byTime30,
-        byTime60,
-        byTime90
+    enum class Mode(val time: Int) {
+        byCount(0),
+        byTime30(30),
+        byTime60(60),
+        byTime90(90)
     }
+
 
     override val exerciseKcalTxt = Transformations.map(exerciseCount) {
         if (it == -1) "--"
@@ -204,6 +202,21 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
                 finishExercise()
             }
         }
+    }
+
+    override fun finishExercise(
+        success: ((String?, Any?) -> Unit)?,
+        failed: ((Int, String?, Any?) -> Unit)?
+    ) {
+        //计数模式：exerciseDuration；倒计时模式：mode.time-exerciseDuration
+        finishExercise(
+            time = (exerciseDuration.value!! / 1000).toInt().let { if (mode == Mode.byCount) it else mode.time - it },
+            num = exerciseCountTxt.value!!.toInt(),
+            calory = (exerciseKcalTxt.value!!).toFloat(),
+            d = deviceType.alias,
+            success,
+            failed
+        )
     }
 
     fun jumpToStatistic() {
