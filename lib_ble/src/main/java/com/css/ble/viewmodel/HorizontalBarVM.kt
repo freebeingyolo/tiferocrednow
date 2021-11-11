@@ -1,5 +1,6 @@
 package com.css.ble.viewmodel
 
+import LogUtils
 import androidx.annotation.NonNull
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,11 +12,8 @@ import cn.wandersnail.commons.observer.Observe
 import cn.wandersnail.commons.util.StringUtils
 import com.css.ble.R
 import com.css.ble.bean.DeviceType
-import com.css.ble.bean.WeightBondData
 import com.css.ble.utils.DataUtils
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
-import com.css.service.utils.CacheKey
-import com.css.service.utils.WonderCoreCache
 import java.text.DecimalFormat
 import java.util.*
 

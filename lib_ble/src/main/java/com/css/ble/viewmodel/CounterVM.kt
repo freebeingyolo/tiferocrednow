@@ -65,7 +65,7 @@ class CounterVM : HorizontalBarVM() {
         fetchAllState()
     }
 
-    override fun onDisconnected(d: Device) {
+    override fun onDisconnected(d: Device?) {
         super.onDisconnected(d)
         finishExercise()
     }

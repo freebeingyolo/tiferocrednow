@@ -35,7 +35,7 @@
    ```
 
 3. 方法中不能再notifyDataChanged()方法中不能再调用类notifyDataChanged()，否则会引起isComputing异常  
-[log](zbugs/RecycleView%20is%20computing引起bug.txt)  
+[log](RecycleView%20is%20computing引起bug.txt)  
 原因：
 ```
 mAdapter.notifyDataSetChanged() 
@@ -62,11 +62,39 @@ notifyDataSetChanged()
 notifyItemRangeChanged()
 notifyItemInserted()
 notifyItemMoved()
-notifyItemRangeInserted()
+notifyItemRangeInserted() 521
 notifyItemRemoved()
 notifyItemRangeRemoved()
 ```
-   
+4. 单杠重复绑定失败引发不会超时的bug  
+    [log](单杠重复绑定失败引发不会超时的bug.txt)
+    原因分析：
+
+  ![image-20211111152907838](./PITFALL.assets/image-20211111152907838.png)
+
+  ```
+  ==》为什么多次配对失败（已绑定或者找不到蓝牙设备）会导致单杠界面一直处于正在搜索界面，不会超时呢？
+  单杠超时是state开始置为State.TimeOut，再调用disconnect()， 在蓝牙广播的onConnectionStateChanged()方法中将state置为disconnected状态，如果先前蓝牙状态已经是disconected状态，调用disconnect（）就不会触发onConnectionStateChanged（），从而导致state仍然是timeout状态，而单杠页面只要不是disconnected就会一直处于正在搜索界面。
+  ==》超时时为什么超时时蓝牙会处于disconnected状态呢？
+  存在两处设置超时，自己设置的TimeoutTimer和Easyble中的scanPeriodMillis，Easyble会超时会把connection的connectionState设置为disconnected，上图中的②是Easyble内部超时，①是自己的TimeoutTimer,onTimerTimeout调用的同事onScanStop也调用了，此时connection的connectionState大概率为disconnected，再调用disconnect()就不会触发onConnectionStateChanged(),导致state不能被置位disconnected
+  ```
+
+  解决方案
+
+  ```
+  disconnect是判断是否已经是disconnected，若是的话手动置位disconnected
+  if (state != State.disconnected) {
+          if (connection == null || connection!!.connectionState == ConnectionState.DISCONNECTED) { //判断connection的状态是否是DISCONNECTED，是的话将state设置为State.disconnected
+              state = State.disconnected
+              onDisconnectedX(connection?.device)
+          } else {
+              connection?.disconnect()
+          }
+  ```
+
+  
+
+
 
 # 注意点
 

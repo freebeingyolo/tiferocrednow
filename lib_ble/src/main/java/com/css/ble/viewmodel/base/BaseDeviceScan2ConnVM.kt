@@ -17,14 +17,11 @@ import cn.wandersnail.commons.util.StringUtils
 import com.css.base.net.api.repository.CourseRepository
 import com.css.base.net.api.repository.DeviceRepository
 import com.css.ble.bean.BondDeviceData
-import com.css.ble.bean.WeightBondData
 import com.css.ble.viewmodel.IBleConnect
 import com.css.ble.viewmodel.IBleScan
 import com.css.res.R
 import com.css.service.bus.LiveDataBus.BusMutableLiveData
 import com.css.service.data.CourseData
-import com.css.service.utils.CacheKey
-import com.css.service.utils.WonderCoreCache
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -60,7 +57,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     abstract fun filterName(name: String): Boolean
     abstract fun filterUUID(uuid: UUID): Boolean
     abstract fun discovered(d: Device)
-    open fun onDisconnected(d: Device) {}
+    open fun onDisconnected(d: Device?) {}
     /*** abstractable start ****/
 
     /*** overridable start ****/
@@ -149,11 +146,11 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         return sb.toString()
     }
 
-    override fun onTimerTimeout() {
+    override fun onTimerTimeout() { //超时分两种，一种是扫描超时；一种是连接超时
         state = State.timeOut
-        if (EasyBLE.getInstance().isScanning) {//这是扫描的超时
+        if (EasyBLE.getInstance().isScanning) {
             stopScanBle()
-        } else {//连接的超时
+        } else {
             disconnect()
         }
     }
@@ -208,6 +205,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         LogUtils.d("startScanBle,state:${state},isScanning:${EasyBLE.getInstance().isScanning}")
         EasyBLE.getInstance().scanConfiguration.isOnlyAcceptBleDevice = true
         EasyBLE.getInstance().scanConfiguration.rssiLowLimit = -100
+        EasyBLE.getInstance().scanConfiguration.scanPeriodMillis = bondTimeout.toInt()//永不超时
         EasyBLE.getInstance().startScan()
         EasyBLE.getInstance().addScanListener(scanListener)
         startTimeoutTimer(bondTimeout)
@@ -232,6 +230,12 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         }
     }
 
+    private fun onDisconnectedX(device: Device?) {
+        cancelTimeOutTimer()
+        avaliableDevice = null
+        onDisconnected(device)
+        resetData()
+    }
 
     @Tag("onConnectionStateChanged")
     @Observe
@@ -241,10 +245,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         when (device.connectionState) {
             ConnectionState.DISCONNECTED -> {
                 state = State.disconnected
-                cancelTimeOutTimer()
-                avaliableDevice = null
-                onDisconnected(device)
-                resetData()
+                onDisconnectedX(device)
             }
             ConnectionState.CONNECTING -> {
                 state = State.connecting
@@ -319,8 +320,13 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     override fun disconnect() {
         cancelTimeOutTimer()
         if (state != State.disconnected) {
-            connection?.disconnect() ?: let { state = State.disconnected }
-            LogUtils.d("disconnect,${state},${EasyBLE.getInstance().isScanning},${connection?.connectionState}")
+            if (connection == null || connection!!.connectionState == ConnectionState.DISCONNECTED) {
+                state = State.disconnected
+                onDisconnectedX(connection?.device)
+            } else {
+                connection?.disconnect()
+            }
+            LogUtils.d("disconnect, ${state},isScanning:${EasyBLE.getInstance().isScanning} connectionState:${connection?.connectionState}")
         }
     }
 
@@ -393,9 +399,11 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         builder.setCallback(cb)
         connection?.execute(builder.build())
     }
+
     override fun notifyWeightKgChange(wKg: Float) {//通知体重变更
         (exerciseCount as MutableLiveData).value = exerciseCount.value
     }
+
     fun writeCharacter(
         serviceUUID: UUID,
         characterUUID: UUID,
