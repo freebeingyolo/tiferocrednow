@@ -1,6 +1,7 @@
 package com.css.wondercorefit.ui.fragment
 
 import LogUtils
+import android.app.Activity
 import android.content.*
 import android.graphics.Typeface
 import android.os.*
@@ -10,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.alibaba.android.arouter.launcher.ARouter
@@ -106,10 +106,10 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             WonderCoreCache.saveGlobalData(GlobalData(false))
         }
         startBootStrapService()
-        if (NetworkUtils.isConnected()){
+        if (NetworkUtils.isConnected()) {
             mViewBinding?.networkError?.visibility = View.GONE
             mViewBinding?.mainLayout?.visibility = View.VISIBLE
-        }else{
+        } else {
             mViewBinding?.networkError?.visibility = View.VISIBLE
             mViewBinding?.mainLayout?.visibility = View.GONE
         }
@@ -118,7 +118,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
 
     private fun startBootStrapService() {
         userInfo = WonderCoreCache.getUserInfo()
-        if ("关" == userInfo.notification  ) {
+        if ("关" == userInfo.notification) {
             val intentSteps = Intent(activity, BootstrapService::class.java)
             val intent = Intent()
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -226,6 +226,9 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
                 }
             }
             mMainDeviceAdapter.setItems(mData)
+            if (it.first == mViewBinding?.recentDeviceName?.text) {
+                mViewBinding?.recentDeviceState?.text = it.second
+            }
         }
         //绑定监听
         sp?.registerOnSharedPreferenceChangeListener(spLis)
@@ -272,7 +275,8 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             mViewBinding?.tabLayout?.newTab()?.let { mViewBinding?.tabLayout?.addTab(it) }
             mViewBinding?.tabLayout?.getTabAt(index)?.apply {
                 val tabView = TextView(this@MainFragment.requireContext())
-                tabView.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                tabView.layoutParams =
+                    LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 tabView.text = tabTitle[index]
                 tabView.textSize = 12F
                 tabView.setTextColor(resources.getColor(R.color.color_7b7b7b))
@@ -341,7 +345,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             }
 
             override fun onServiceDisconnected(name: ComponentName) {}
-        }, AppCompatActivity.BIND_AUTO_CREATE)
+        }, Activity.BIND_AUTO_CREATE)
     }
 
     private fun updataValues(stepArray: Int) {

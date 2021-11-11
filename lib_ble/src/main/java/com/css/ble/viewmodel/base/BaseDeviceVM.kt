@@ -5,6 +5,9 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.ble.bean.DeviceType
+import com.css.ble.bean.WeightBondData
+import com.css.service.utils.CacheKey
+import com.css.service.utils.WonderCoreCache
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -32,8 +35,13 @@ abstract class BaseDeviceVM : BaseViewModel() {
         }
     }
 
+    val weightKg get() = run {
+        val weightData = WonderCoreCache.getLiveData<WeightBondData>(CacheKey.LAST_WEIGHT_INFO).value
+        weightData?.weightKg ?: 60f
+    }
+    open fun notifyWeightKgChange(wKg: Float){}
 
-    private var timeOutJob: Job? = null
+    protected var timeOutJob: Job? = null
 
     protected open fun startTimeoutTimer(timeOut: Long) {
         if (timeOut == TIMEOUT_NEVER) return
@@ -41,17 +49,18 @@ abstract class BaseDeviceVM : BaseViewModel() {
             cancelTimeOutTimer()
             LogUtils.e(TAG, "timeOutJob not null,call cancelTimeOutTimer first", 3)
         }
-        Log.d(TAG, "startTimeoutTimer")
         timeOutJob = viewModelScope.launch {
             delay(timeOut)
+            LogUtils.d("onTimerTimeout#${timeOutJob?.hashCode()}")
             timeOutJob = null
             onTimerTimeout()
         }
+        Log.d(TAG, "startTimeoutTimer#${timeOutJob.hashCode()}")
     }
 
     protected open fun cancelTimeOutTimer() {
         if (timeOutJob != null) {
-            LogUtils.d(TAG, "cancelTimeOutTimer")
+            LogUtils.d(TAG, "cancelTimeOutTimer#${timeOutJob.hashCode()}")
             timeOutJob!!.cancel()
             timeOutJob = null
             onTimerCancel()

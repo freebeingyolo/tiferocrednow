@@ -2,15 +2,16 @@ package com.css.ble.viewmodel
 
 import androidx.annotation.NonNull
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import cn.wandersnail.ble.Device
 import cn.wandersnail.ble.Request
 import cn.wandersnail.ble.callback.WriteCharacteristicCallback
 import cn.wandersnail.commons.observer.Observe
 import cn.wandersnail.commons.util.StringUtils
 import com.css.ble.bean.DeviceType
+import com.css.ble.bean.WeightBondData
 import com.css.ble.utils.DataUtils
-import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
+import com.css.service.utils.CacheKey
+import com.css.service.utils.WonderCoreCache
 import java.text.DecimalFormat
 import java.util.*
 
@@ -25,11 +26,27 @@ class CounterVM : HorizontalBarVM() {
     val UUID_NOTIFY = "0000ffb2-0000-1000-8000-00805f9b34fb"
     private var motionState = 0x00
     override val deviceType: DeviceType = DeviceType.COUNTER
+    private var initExerciseCount = -1
+    private var initExerciseDuration = -1L
 
-    override val exerciseKcalTxt = Transformations.map(exerciseCount) {
-        if (it == -1) "--"
-        else DecimalFormat("0.00000").format(it * 1f * 25 / 30000)
-    }
+    val exerciseCountDelta
+        get() = run { //锻炼增量
+            val it = exerciseCount.value!!
+            if (initExerciseCount < 0) 0 else (it - initExerciseCount)
+        }
+    val exerciseKcalTxtDelta
+        get() = run {
+            val it = exerciseCountDelta
+            if (it == -1) "--"
+            else {
+                DecimalFormat("0.00000").format(1f * weightKg * it * 25 / 30000)
+            }
+        }
+    val exerciseDurationDelta
+        get() = run {
+            val it = exerciseDuration.value!!
+            if (it == -1L) 0 else it - initExerciseDuration
+        }
 
     override fun filterName(name: String): Boolean {
         return name.startsWith("Hi-SWF")
@@ -70,8 +87,11 @@ class CounterVM : HorizontalBarVM() {
         when {
             hexData.startsWith("F55F0701") -> {//次数
                 val v = DataUtils.bytes2IntBig(value[5], value[6])
-                if (v == 0 && exerciseCount.value!! > 0) finishExercise()//固件sb,非得让次数清零指令在清零指令之前发送
+                if (v == 0 && exerciseCountDelta > 0) { //固件sb,非得让次数清零指令在清零指令之前发送
+                    finishExercise()
+                }
                 (exerciseCount as MutableLiveData).value = v
+                if (initExerciseCount == -1) initExerciseCount = v
             }
             hexData.startsWith("F55F0703") -> {//电量
                 val v = value[5].toInt() * 100 //固件sb,不用百分比表示电量而用1表示充满电，0表示没电
@@ -79,10 +99,13 @@ class CounterVM : HorizontalBarVM() {
             }
             hexData.startsWith("F55F0702") -> {//清零
                 finishExercise()
+                initExerciseCount = 0
+                initExerciseDuration = 0
             }
             hexData.startsWith("F55F0704") -> {//计时
                 val v = DataUtils.bytes2IntBig(value[5], value[6])
                 (exerciseDuration as MutableLiveData).value = v * 1000L
+                if (initExerciseDuration == -1L) initExerciseDuration = v * 1000L
             }
             hexData.startsWith("F55F0705") -> {//运动状态
                 //LogUtils.d("onCharacteristicChanged#F55F0705#$hexData")
@@ -97,12 +120,27 @@ class CounterVM : HorizontalBarVM() {
         }
     }
 
+    override fun finishExercise(success: ((String?, Any?) -> Unit)?, failed: ((Int, String?, Any?) -> Unit)?) {
+        super.finishExercise(
+            time = (exerciseDurationDelta / 1000).toInt(),
+            num = exerciseCountDelta,
+            calory = (exerciseKcalTxtDelta).toFloat(),
+            d = deviceType.alias,
+            { _, _ ->
+                initExerciseCount = exerciseCount.value!!
+                initExerciseDuration = exerciseDuration.value!!
+            },
+            null
+        )
+    }
+
     private fun onMotionStart() {
         LogUtils.d("onMotionStart")
     }
 
     private fun onMotionEnd() {
         LogUtils.d("onMotionEnd")
+        //finishExercise()
     }
 
     private fun fetchAllState() {
@@ -137,5 +175,11 @@ class CounterVM : HorizontalBarVM() {
                 cb?.onCharacteristicWrite(request, value)
             }
         })
+    }
+
+    override fun resetData() {
+        super.resetData()
+        initExerciseCount = -1
+        initExerciseDuration = -1
     }
 }

@@ -57,8 +57,6 @@ class RopeVM : BaseDeviceScan2ConnVM() {
     override val exerciseKcalTxt = Transformations.map(exerciseCount) {
         if (it == -1) "--"
         else {
-            val weightData = WonderCoreCache.getLiveData<WeightBondData>(CacheKey.LAST_WEIGHT_INFO).value
-            val weightKg = weightData?.weightKg ?: WonderCoreCache.getUserInfo().targetWeightFloat
             DecimalFormat("0.00000").format(it * weightKg * 1f*25/30000)
         }
     }

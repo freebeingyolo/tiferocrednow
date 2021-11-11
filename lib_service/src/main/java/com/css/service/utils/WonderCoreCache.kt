@@ -43,6 +43,7 @@ class WonderCoreCache { //一切围绕CacheKey
         //如果d为null，将会移除这个key
         fun <T> saveData(k1: CacheKey, d: T?, serialized: Boolean = true) {
             if (d == null) {
+                if (!containsKey(k1)) return
                 removeKey(k1, true)
             } else {
                 val k = k1.k
@@ -86,7 +87,10 @@ class WonderCoreCache { //一切围绕CacheKey
         }
 
         //多个LiveData的合并,适用于监听多个LiveData
-        fun <From, To> getLiveDataMerge(transformer: (k: CacheKey, t: From?) -> To?, vararg keys: CacheKey): LiveData<To> {
+        fun <From, To> getLiveDataMerge(
+            transformer: (k: CacheKey, t: From?) -> To?,
+            vararg keys: CacheKey
+        ): LiveData<To> {
             /*
             val kk = StringBuilder().run {
                 keys.forEach { this.append(it.k).append("|") }
@@ -121,7 +125,7 @@ class WonderCoreCache { //一切围绕CacheKey
         }
 
         fun getUserInfo(): UserData {
-            var ret = getData(CacheKey.USER_INFO, UserData::class.java)
+            val ret = getData(CacheKey.USER_INFO, UserData::class.java)
             return ret ?: UserData()
         }
 

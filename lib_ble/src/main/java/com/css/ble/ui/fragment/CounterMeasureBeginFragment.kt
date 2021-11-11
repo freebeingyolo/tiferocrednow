@@ -16,4 +16,10 @@ class CounterMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Ho
         super.initView(savedInstanceState)
         mViewBinding?.modeContainer?.visibility = View.GONE
     }
+
+    override fun onStop() {
+        super.onStop()
+        //退出页面进行数据上传
+        mViewModel.finishExercise()
+    }
 }

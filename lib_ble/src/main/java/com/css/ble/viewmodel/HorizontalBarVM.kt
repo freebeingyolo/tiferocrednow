@@ -62,14 +62,12 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
     override val exerciseKcalTxt = Transformations.map(exerciseCount) {
         if (it == -1) "--"
         else {
-            val weightData = WonderCoreCache.getLiveData<WeightBondData>(CacheKey.LAST_WEIGHT_INFO).value
-            val weightKg = weightData?.weightKg ?: WonderCoreCache.getUserInfo().targetWeightFloat
-            DecimalFormat("0.0000").format(it * weightKg * 1f * 25 / 30000)
+            DecimalFormat("0.0000").format(it * weightKg!! * 25 / 30000f)
         }
     }
 
     override fun filterName(name: String): Boolean {
-        return name.startsWith("Hi-DG")
+        return name.startsWith("Hi-LYDG")
     }
 
     override fun filterUUID(uuid: UUID): Boolean {
@@ -94,8 +92,6 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
     }
 
     fun writeWeight(cb: WriteCharacteristicCallback? = null) {
-        val weightData = WonderCoreCache.getLiveData<WeightBondData>(CacheKey.LAST_WEIGHT_INFO).value
-        val weightKg = weightData?.weightKg ?: WonderCoreCache.getUserInfo().targetWeightFloat
         val weightKgx10 = (weightKg * 10).toInt().toShort()
         val data: ByteArray = StringUtils.toByteArray("F55F060902", "")
         val data2 = DataUtils.shortToByteBig(weightKgx10)
@@ -115,6 +111,7 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
                     cb?.onCharacteristicWrite(request, value)
                 }
             })
+        notifyWeightKgChange(weightKg)
     }
 
     fun switchMode(m: Mode, cb: WriteCharacteristicCallback? = null) {

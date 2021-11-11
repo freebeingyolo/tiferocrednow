@@ -91,9 +91,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
     val exerciseKcalTxt = Transformations.map(exerciseCount) {
         if (it == -1) "--"
         else {
-            val weightData = WonderCoreCache.getLiveData<WeightBondData>(CacheKey.LAST_WEIGHT_INFO).value
-            val weightKg = weightData?.weightKg ?: WonderCoreCache.getUserInfo().targetWeightFloat
-            DecimalFormat("0.00000").format(weightKg*it * 3.9)
+            DecimalFormat("0.00000").format(1f * weightKg * it * 3.9)
         }
     }
 
@@ -163,7 +161,6 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
     fun startScanBle() {
         if (EasyBLE.getInstance().isScanning) return
         EasyBLE.getInstance().scanConfiguration.isOnlyAcceptBleDevice = true
-        EasyBLE.getInstance().scanConfiguration.scanPeriodMillis = bondTimeout.toInt()
         EasyBLE.getInstance().startScan()
         EasyBLE.getInstance().addScanListener(scanListener)
         startTimeoutTimer(bondTimeout)
@@ -172,7 +169,6 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
 
     fun stopScanBle() {
         LogUtils.d("stopScan,isScanning:${EasyBLE.getInstance().isScanning}")
-        EasyBLE.getInstance().removeScanListener(scanListener)
         if (EasyBLE.getInstance().isScanning) {
             EasyBLE.getInstance().stopScan()
             state = State.disconnected
@@ -187,6 +183,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
 
         override fun onScanStop() {
             LogUtils.d("onScanStop")
+            cancelTimeOutTimer()
             EasyBLE.getInstance().removeScanListener(this)
         }
 

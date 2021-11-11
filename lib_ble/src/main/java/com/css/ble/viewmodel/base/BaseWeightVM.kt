@@ -28,7 +28,6 @@ abstract class BaseWeightVM : BaseDeviceVM() {
     override val deviceType: DeviceType = DeviceType.WEIGHT
     val TAG: String = javaClass.simpleName
     protected var decryptKey: IntArray = TianShengKey
-    protected var timeOutJob: Job? = null;
     protected var mBluetoothService: ELinkBleServer?
         get() = mBluetoothServiceObsvr.value
         set(v) {
@@ -94,8 +93,6 @@ abstract class BaseWeightVM : BaseDeviceVM() {
     open fun onScanFilter(bleValueBean: BleValueBean): Boolean = true
     open fun onBroadCastData(mac: String, dataHexStr: String, data: ByteArray, isAilink: Boolean,bean:BleValueBean) {}
     open fun onScanStart() {}
-    override fun onTimerTimeout() {}
-    override fun onTimerCancel() {}
     open fun onScanStop() {}
     open fun onConnecting(mac: String?) {}
     protected open val timeOut = 5 * 1000L
@@ -124,19 +121,9 @@ abstract class BaseWeightVM : BaseDeviceVM() {
     protected open val mOnCallbackBle: OnCallbackBle = object : OnCallbackBle {
         override fun onScanTimeOut() {
             super.onScanTimeOut()
-            this@BaseWeightVM.onTimerTimeout()
+            onTimerTimeout()
         }
-
         override fun onConnecting(mac: String?) = this@BaseWeightVM.onConnecting(mac)
-    }
-
-    override fun cancelTimeOutTimer() {
-        if (timeOutJob != null) {
-            LogUtils.d(TAG, "cancelTimeOutTimer")
-            timeOutJob!!.cancel()
-            timeOutJob = null
-            this@BaseWeightVM.onTimerCancel()
-        }
     }
 
     override fun startTimeoutTimer(timeOut: Long) {
@@ -145,13 +132,13 @@ abstract class BaseWeightVM : BaseDeviceVM() {
             cancelTimeOutTimer()
             LogUtils.e(TAG, "timeOutJob not null,call cancelTimeOutTimer first", 3)
         }
-        Log.d(TAG, "startTimeoutTimer")
         timeOutJob = viewModelScope.launch {
             delay(timeOut)
             mOnCallbackBle.onScanTimeOut()
             timeOutJob = null
             stopScanBle() //这里只会执行stopScan，不会执行cancelTimOutTimer
         }
+        Log.d(TAG, "startTimeoutTimer#${timeOutJob.hashCode()}")
     }
 
     fun startScanBle(vararg scanUUID: UUID) {

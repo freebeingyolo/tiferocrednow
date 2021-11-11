@@ -22,6 +22,7 @@ import com.css.base.view.ToolBarView
 import com.css.ble.R
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
+import com.css.ble.bean.WeightBondData
 import com.css.ble.databinding.LayoutPlayRecommendItemBinding
 import com.css.ble.ui.DataStatisticsActivity
 import com.css.ble.ui.view.BaseBindingAdapter
@@ -30,7 +31,10 @@ import com.css.ble.viewmodel.BleEnvVM
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM.State
 import com.css.service.data.CourseData
+import com.css.service.data.UserData
 import com.css.service.router.ARouterConst
+import com.css.service.utils.CacheKey
+import com.css.service.utils.WonderCoreCache
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -51,7 +55,8 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
             val location = IntArray(2)
             val anchor = mViewBinding!!.root.findViewById<View>(R.id.ll_parent)
             anchor.getLocationOnScreen(location)
-            val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
+            val lp =
+                FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
             lp.topMargin = location[1]
             view.layoutParams = lp
         }
@@ -62,7 +67,10 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
 
     companion object {
 
-        fun getExplicitFragment(vm: BaseDeviceScan2ConnVM, t: DeviceType): CommonMeasureBeginFragment<out ViewDataBinding> {
+        fun getExplicitFragment(
+            vm: BaseDeviceScan2ConnVM,
+            t: DeviceType
+        ): CommonMeasureBeginFragment<out ViewDataBinding> {
 
             return when (t) {
                 DeviceType.HORIZONTAL_BAR -> HorizontalBarMeasureBeginFragment(t, vm)
@@ -156,9 +164,9 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
         }
     }
 
-    private fun setCourseView(){
+    private fun setCourseView() {
         mViewBinding!!.root.findViewById<ViewPager2>(R.id.viewpager2).apply {
-            val adapter = object :BaseRecyclerViewAdapter<CourseData>(){
+            val adapter = object : BaseRecyclerViewAdapter<CourseData>() {
 
                 override fun onCreateView(parent: ViewGroup, viewType: Int): View {
                     TODO()
@@ -195,6 +203,7 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
             }
         }
     }
+
     fun disconnect() {
         mViewModel.disconnect()
         active = true
@@ -202,6 +211,8 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
     }
 
     fun jumpToStatistic() {
-        DataStatisticsActivity.starActivity(requireContext(), Bundle().apply { putString("deviceType", deviceType.alias) })
+        DataStatisticsActivity.starActivity(
+            requireContext(),
+            Bundle().apply { putString("deviceType", deviceType.alias) })
     }
 }

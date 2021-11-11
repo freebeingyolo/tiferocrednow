@@ -43,10 +43,7 @@ class PushUpVM : HorizontalBarVM() {
     override val exerciseKcalTxt = Transformations.map(exerciseCount) {
         if (it == -1) "--"
         else {
-            val weightData = WonderCoreCache.getLiveData<WeightBondData>(CacheKey.LAST_WEIGHT_INFO).value
-            val userInfo = WonderCoreCache.getUserInfo()
-            val weightKg = weightData?.weightKg ?: userInfo.targetWeightFloat
-            DecimalFormat("0.00000").format(weightKg * it * 0.0007f)
+            DecimalFormat("0.00000").format(1f * weightKg * it * 0.0007f)
         }
     }
 

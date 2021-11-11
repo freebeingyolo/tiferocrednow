@@ -29,7 +29,7 @@ class WeightBondDoingFragment : BaseWeightFragment<WeightBondVM, LayoutWeightBon
                     { _, _ ->
                     },
                     { _, msg, _ ->
-                        showCenterToast("$msg")
+                        showCenterToast("$msg,mac:${mViewModel.filterDevice?.mac}")
                         //showNetworkErrorDialog(msg)
                     })
             }

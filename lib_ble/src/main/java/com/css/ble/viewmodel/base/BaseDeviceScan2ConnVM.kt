@@ -17,11 +17,14 @@ import cn.wandersnail.commons.util.StringUtils
 import com.css.base.net.api.repository.CourseRepository
 import com.css.base.net.api.repository.DeviceRepository
 import com.css.ble.bean.BondDeviceData
+import com.css.ble.bean.WeightBondData
 import com.css.ble.viewmodel.IBleConnect
 import com.css.ble.viewmodel.IBleScan
 import com.css.res.R
 import com.css.service.bus.LiveDataBus.BusMutableLiveData
 import com.css.service.data.CourseData
+import com.css.service.utils.CacheKey
+import com.css.service.utils.WonderCoreCache
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -57,7 +60,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     abstract fun filterName(name: String): Boolean
     abstract fun filterUUID(uuid: UUID): Boolean
     abstract fun discovered(d: Device)
-    open fun onDisconnected(d: Device){}
+    open fun onDisconnected(d: Device) {}
     /*** abstractable start ****/
 
     /*** overridable start ****/
@@ -115,8 +118,11 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     val exerciseCountTxt = Transformations.map(exerciseCount) { if (it == -1) "--" else it.toString() }
     open val exerciseKcalTxt = Transformations.map(exerciseCount) {
         if (it == -1) "--"
-        else DecimalFormat("0.00000").format(it * 25 / 30000)
+        else {
+            DecimalFormat("0.00000").format(1f * weightKg * it * 25 / 30000)
+        }
     }
+
     val exerciseDuration: LiveData<Long> by lazy { MutableLiveData(-1) }
     val exerciseDurationTxt = Transformations.map(exerciseDuration) { if (it == -1L) "--" else formatTime(it) }
     val batteryLevel: LiveData<Int> by lazy { MutableLiveData(-1) }
@@ -145,12 +151,14 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
 
     override fun onTimerTimeout() {
         state = State.timeOut
-        disconnect()
+        if (EasyBLE.getInstance().isScanning) {//这是扫描的超时
+            stopScanBle()
+        } else {//连接的超时
+            disconnect()
+        }
     }
 
-    override fun onTimerCancel() {
-
-    }
+    override fun onTimerCancel() {}
 
     private val scanListener = object : ScanListener {
         override fun onScanStart() {
@@ -159,6 +167,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
 
         override fun onScanStop() {
             LogUtils.d("onScanStop")
+            cancelTimeOutTimer()
             EasyBLE.getInstance().removeScanListener(this)
         }
 
@@ -199,7 +208,6 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         LogUtils.d("startScanBle,state:${state},isScanning:${EasyBLE.getInstance().isScanning}")
         EasyBLE.getInstance().scanConfiguration.isOnlyAcceptBleDevice = true
         EasyBLE.getInstance().scanConfiguration.rssiLowLimit = -100
-        EasyBLE.getInstance().scanConfiguration.scanPeriodMillis = bondTimeout.toInt()
         EasyBLE.getInstance().startScan()
         EasyBLE.getInstance().addScanListener(scanListener)
         startTimeoutTimer(bondTimeout)
@@ -311,8 +319,8 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     override fun disconnect() {
         cancelTimeOutTimer()
         if (state != State.disconnected) {
-            LogUtils.d("disconnect,${state},${connection == null}", 5)
             connection?.disconnect() ?: let { state = State.disconnected }
+            LogUtils.d("disconnect,${state},${EasyBLE.getInstance().isScanning},${connection?.connectionState}")
         }
     }
 
@@ -385,7 +393,9 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         builder.setCallback(cb)
         connection?.execute(builder.build())
     }
-
+    override fun notifyWeightKgChange(wKg: Float) {//通知体重变更
+        (exerciseCount as MutableLiveData).value = exerciseCount.value
+    }
     fun writeCharacter(
         serviceUUID: UUID,
         characterUUID: UUID,
@@ -416,15 +426,26 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     }
 
 
-    fun finishExercise(
+    open fun finishExercise(
         success: ((String?, Any?) -> Unit)? = null,
         failed: ((Int, String?, Any?) -> Unit)? = null
     ) {
-        val time = (exerciseDuration.value!! / 1000).toInt()
-        val num = exerciseCountTxt.value!!.toInt()
-        val calory = (exerciseKcalTxt.value!!).toFloat()
-        val d = deviceType.alias
-        if (time == 0 || num <= 0) {
+        finishExercise(
+            time = (exerciseDuration.value!! / 1000).toInt(),
+            num = exerciseCountTxt.value!!.toInt(),
+            calory = (exerciseKcalTxt.value!!).toFloat(),
+            d = deviceType.alias,
+            success,
+            failed
+        )
+    }
+
+    fun finishExercise(
+        time: Int, num: Int, calory: Float, d: String,
+        success: ((String?, Any?) -> Unit)? = null,
+        failed: ((Int, String?, Any?) -> Unit)? = null
+    ) {
+        if (time <= 0 || num <= 0) {
             return LogUtils.d("the time is ${time}} the num is ${num},ignore this uploading")
         }
         netLaunch({
@@ -449,6 +470,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
             }
         )
     }
+
 
     /****/
     val easterEggs: EasterEggs by lazy { EasterEggs() }
@@ -476,7 +498,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         (exerciseDuration as MutableLiveData).value = 0
     }
 
-    fun resetData() {
+    open fun resetData() {
         (exerciseCount as MutableLiveData).value = -1
         (exerciseDuration as MutableLiveData).value = -1
         (batteryLevel as MutableLiveData).value = -1

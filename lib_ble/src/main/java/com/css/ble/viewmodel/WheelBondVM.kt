@@ -84,7 +84,6 @@ class WheelBondVM : BaseWheelVM(), EventObserver {
     fun startScanBle() {
         if (EasyBLE.getInstance().isScanning) return
         EasyBLE.getInstance().scanConfiguration.isOnlyAcceptBleDevice = true
-        EasyBLE.getInstance().scanConfiguration.scanPeriodMillis = Int.MAX_VALUE
         EasyBLE.getInstance().startScan()
         EasyBLE.getInstance().addScanListener(scanListener)
         startTimeoutTimer(timeOut)
