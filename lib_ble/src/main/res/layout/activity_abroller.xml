@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -20,28 +22,41 @@
             type="com.css.ble.viewmodel.WheelMeasureVM" />
     </data>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:id="@+id/ll_parent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bg_gray"
+        android:background="@color/color_f7f7f7"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         tools:context=".ui.WeightMeasureActivity">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:background="@color/white">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="173dp"
-            android:layout_height="173dp"
-            android:layout_marginTop="3dp"
-            android:onClick="@{v->model.easterEggs.click()}"
-            android:src="@mipmap/icon_abroller" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="20dp"
+                android:layout_centerHorizontal="true"
+                android:src="@mipmap/bg_product"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="173dp"
+                android:layout_height="173dp"
+                android:layout_centerHorizontal="true"
+                android:onClick="@{v->model.easterEggs.click()}"
+                android:src="@mipmap/icon_abroller" />
+
+        </RelativeLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="65dp"
+            android:layout_marginTop="20dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:background="@drawable/bg_while_radius4">
@@ -177,7 +192,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="本次训练个数"
-                    android:textColor="#666666"
+                    android:textColor="@color/color_616161"
                     android:textSize="12sp" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -224,7 +239,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="本次消耗热量"
-                    android:textColor="#666666"
+                    android:textColor="@color/color_616161"
                     android:textSize="12sp" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -233,7 +248,7 @@
         <RelativeLayout
             android:id="@+id/statisticGroup"
             android:layout_width="match_parent"
-            android:layout_height="65dp"
+            android:layout_height="50dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
@@ -248,17 +263,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:text="数据统计"
+                android:text="历史记录"
                 android:textColor="@color/black"
                 android:textSize="15sp" />
 
             <ImageView
-                android:layout_width="27dp"
-                android:layout_height="27dp"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
 
-                android:src="@mipmap/icon_statistics" />
+                android:src="@mipmap/icon_history" />
         </RelativeLayout>
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -277,10 +292,9 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="11dp"
                 android:gravity="center_vertical"
-                android:text="教学视频"
+                android:text="玩法推荐"
                 android:textColor="@color/black"
-                android:textSize="10sp"
-                android:textStyle="bold" />
+                android:textSize="12sp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_play_recommend"
@@ -291,35 +305,40 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:background="@color/white"
-            android:divider="#848484"
-            android:dividerPadding="20dp"
+            android:layout_marginBottom="20dp"
             android:orientation="horizontal"
             android:showDividers="middle">
 
             <TextView
                 android:id="@+id/left"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:background="@{model.leftButtonBackground}"
                 android:text="@{model.leftButtonTxt}"
-                android:textColor="#F2682A"
-                android:textSize="14sp"
+                android:textColor="@color/white"
+                android:textSize="16sp"
                 tools:text="开始训练" />
 
             <TextView
                 android:id="@+id/right"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:background="@drawable/bg_f66e00_radius45"
                 android:text="结束训练"
-                android:textColor="#F2682A"
-                android:textSize="14sp"
+                android:textColor="@color/white"
+                android:textSize="16sp"
                 android:visibility="@{model.rightButtonVisibility}" />
         </LinearLayout>
     </LinearLayout>
