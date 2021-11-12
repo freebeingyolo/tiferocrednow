@@ -129,9 +129,10 @@ class RopeVM : BaseDeviceScan2ConnVM() {
                     cb?.onCharacteristicWrite(request, value)
                 }
             })
-        if ("06" == str) {
-            finishExercise()
-        }
+                if ("06" == str && !"--".equals(exerciseCountTxt)) {
+                    finishExercise()
+                }
+
     }
 
     open fun doWriteCharacteristic(str: String, cb: WriteCharacteristicCallback? = null) {
