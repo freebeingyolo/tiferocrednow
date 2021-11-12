@@ -338,19 +338,26 @@
             android:background="@drawable/bg_while_radius4"
             android:orientation="vertical">
 
-            <TextView
+           <com.google.android.material.tabs.TabLayout
                 android:id="@+id/courseTitle"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="11dp"
-                android:gravity="center_vertical"
-                android:text="教学视频"
-                android:textColor="@color/black"
-                android:textSize="10sp"
-                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+            </com.google.android.material.tabs.TabLayout>
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewpager2"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/courseTitle">
+
+            </androidx.viewpager2.widget.ViewPager2>
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_play_recommend"
