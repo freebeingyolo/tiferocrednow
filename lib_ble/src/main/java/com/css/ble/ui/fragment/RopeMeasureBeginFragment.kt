@@ -189,16 +189,13 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Commo
                                     type = CommonAlertDialog.DialogType.Edit
                                     title = "设置倒计数数量"
                                     hint = "请输入数量"
-                                    content = ""
+                                    content = "0"
                                     leftBtnText = "取消"
                                     rightBtnText = "确定"
                                     listener = object : DialogClickListener.DefaultLisener() {
 
                                         override fun onRightEditBtnClick(view: View, content: String?) {
                                             var p: Pattern = Pattern.compile("[0-9]*")
-                                            if (content == null) {
-                                                showCenterToast("您还未输入倒计数个数")
-                                            }
                                             var m: Matcher = p.matcher(content)
                                             if(m.matches() ) {
                                                 var countNumber = Integer.parseInt(content.toString())
