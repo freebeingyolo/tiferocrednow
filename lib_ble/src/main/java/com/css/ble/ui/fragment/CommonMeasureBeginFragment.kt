@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.alibaba.android.arouter.launcher.ARouter
+import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.NetworkUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.css.base.dialog.CommonAlertDialog
@@ -160,12 +161,11 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
             while (it.hasNext()) {
                 addTab(newTab().apply {
                     val next = it.next()
-                    val tabView = TextView(requireContext())
-                    tabView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                    tabView.text = next.key
-                    tabView.textSize = 12F
                     text = next.key
-                    customView = tabView
+                    val tabLayoutCls = courseTitle::class.java
+                    val tabTextSizeField = tabLayoutCls.getDeclaredField("tabTextSize")
+                    tabTextSizeField.isAccessible = true
+                    tabTextSizeField.setInt(courseTitle, ConvertUtils.sp2px(12f))
                 })
             }
             addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {

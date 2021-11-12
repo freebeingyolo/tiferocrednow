@@ -58,7 +58,7 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
     override val exerciseKcalTxt = Transformations.map(exerciseCount) {
         if (it == -1) "--"
         else {
-            DecimalFormat("0.0000").format(it * weightKg!! * 25 / 30000f)
+            DecimalFormat("0.0000").format(it * weightKg * 25 / 30000f)
         }
     }
 

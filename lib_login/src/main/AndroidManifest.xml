@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.css.login">
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application>
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.ResetPasswordActivity"
             android:launchMode="singleTask" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.RegisterActivity"
             android:launchMode="singleTask" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.LoginActivity"
             android:launchMode="singleTask" />
     </application>

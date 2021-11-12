@@ -3,7 +3,7 @@
 1. 自定义属性	
 
    - 如何自定义属性
-     attrs.xml  --> 自定义View中解析（Typed）
+     attrs.xml  --> 自定义View中解析（TypedArray）
      fraction：百分数
 
      属性定义时可以指定多种类型值

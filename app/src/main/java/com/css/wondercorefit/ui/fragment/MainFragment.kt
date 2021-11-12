@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.alibaba.android.arouter.launcher.ARouter
@@ -38,8 +39,6 @@ import com.css.wondercorefit.databinding.FragmentMainBinding
 import com.css.wondercorefit.ui.activity.setting.PersonInformationActivity
 import com.css.wondercorefit.viewmodel.MainViewModel
 import com.google.android.material.tabs.TabLayout
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.OnClickListener,
@@ -274,14 +273,16 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         tabTitle.forEachIndexed { index, s ->
             mViewBinding?.tabLayout?.newTab()?.let { mViewBinding?.tabLayout?.addTab(it) }
             mViewBinding?.tabLayout?.getTabAt(index)?.apply {
-                val tabView = TextView(this@MainFragment.requireContext())
+                val tabView = TextView(requireContext())
                 tabView.layoutParams =
                     LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 tabView.text = tabTitle[index]
                 tabView.textSize = 12F
-                tabView.setTextColor(resources.getColor(R.color.color_7b7b7b))
+                //tabView.setTextColor(resources.getColor(R.color.color_7b7b7b))
+                tabView.setTextColor(ContextCompat.getColorStateList(requireContext(), R.color.mtrl_tabs_legacy_text_color_selector))
                 tabView.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
                 customView = tabView
+                /*text = tabTitle[index]*/
                 tag = index
             }
             mViewBinding?.tabLayout?.getTabAt(0)?.select()

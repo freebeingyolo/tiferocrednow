@@ -96,8 +96,8 @@
                 android:visibility="@{model.isConnecting ? View.VISIBLE :View.GONE,default=gone}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                tools:visibility="visible"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible" />
 
             <com.css.base.view.ElectricityView
                 android:id="@+id/electricity_view"
@@ -338,7 +338,7 @@
             android:background="@drawable/bg_while_radius4"
             android:orientation="vertical">
 
-           <com.google.android.material.tabs.TabLayout
+            <com.google.android.material.tabs.TabLayout
                 android:id="@+id/courseTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -369,75 +369,75 @@
                 tools:itemCount="3"
                 tools:listitem="@layout/layout_play_recommend_item" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="match_parent"
-        android:layout_height="65dp"
-        android:background="@drawable/bg_while_radius4"
-        android:orientation="horizontal"
-        >
+
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/startExercise1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            >
-        <TextView
-            android:id="@+id/connectControl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="连接设备"
-            android:textSize="15sp"
-            android:textColor="#F2682A"
-            android:onClick="@{v->view.connectChange()}"
-            />
-            <TextView
-                android:id="@+id/startExercise"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="开始训练"
-                android:visibility="gone"
-                android:textSize="15sp"
-                android:textColor="#F2682A"
-                android:onClick="@{v->view.startExercise()}"
-                />
-        </androidx.appcompat.widget.LinearLayoutCompat>
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/startExercised"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            >
-            <TextView
-                android:layout_weight="1"
-                android:id="@+id/pauseExercise"
+            android:layout_height="65dp"
+            android:background="@drawable/bg_while_radius4"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/startExercise1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="暂停训练"
-                android:gravity="center"
-                android:textSize="15sp"
-                android:textColor="#F2682A"
-                android:onClick="@{v->view.startExercise2()}"
-                />
-            <View
-                android:layout_width="2dp"
-                android:layout_height="20dp"
-                android:background="#333333"
-                />
-            <TextView
-                android:layout_weight="1"
-                android:id="@+id/startExercise2"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/connectControl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{v->view.connectChange()}"
+                    android:text="连接设备"
+                    android:textColor="#F2682A"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/startExercise"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{v->view.startExercise()}"
+                    android:text="开始训练"
+                    android:textColor="#F2682A"
+                    android:textSize="15sp"
+                    android:visibility="gone" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/startExercised"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="结束训练"
                 android:gravity="center"
-                android:textSize="15sp"
-                android:textColor="#F2682A"
-                android:onClick="@{v->view.stopExercise()}"
-                />
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/pauseExercise"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:onClick="@{v->view.startExercise2()}"
+                    android:text="暂停训练"
+                    android:textColor="#F2682A"
+                    android:textSize="15sp" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="20dp"
+                    android:background="#333333" />
+
+                <TextView
+                    android:id="@+id/startExercise2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:onClick="@{v->view.stopExercise()}"
+                    android:text="结束训练"
+                    android:textColor="#F2682A"
+                    android:textSize="15sp" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>
-    </androidx.appcompat.widget.LinearLayoutCompat>
     </LinearLayout>
 
 </layout>

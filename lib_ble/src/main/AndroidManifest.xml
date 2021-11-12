@@ -23,38 +23,47 @@
             android:exported="false" />
 
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.TestActivity"
             android:launchMode="singleTask"
             android:theme="@style/WonderTheme.NoExitEnterAnimation" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.CommonDeviceActivity"
             android:launchMode="singleTask"
             android:theme="@style/WonderTheme.NoExitEnterAnimation" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.WeightMeasureActivity"
             android:launchMode="singleTask"
             android:theme="@style/WonderTheme.NoExitEnterAnimation" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.WeightBondActivity"
             android:launchMode="singleTask"
             android:theme="@style/WonderTheme.NoExitEnterAnimation" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.WheelBondActivity"
             android:launchMode="singleTask"
             android:theme="@style/WonderTheme.NoExitEnterAnimation" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.WheelMeasureActivity"
             android:launchMode="singleTask"
             android:theme="@style/WonderTheme.NoExitEnterAnimation" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.DeviceListActivity"
             android:launchMode="singleTask"
             android:theme="@style/WonderTheme.NoExitEnterAnimation">
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.DeviceInfoActivity"
             android:theme="@style/WonderTheme.NoExitEnterAnimation" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.DataStatisticsActivity"
             android:launchMode="singleTask" />
     </application>
