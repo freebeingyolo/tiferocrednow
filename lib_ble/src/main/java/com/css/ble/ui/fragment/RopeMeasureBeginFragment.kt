@@ -106,8 +106,10 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Commo
     }
 
     fun disconnectBLE () {
-        mViewBinding?.connectControl?.visibility = View.VISIBLE
         mViewBinding?.startExercise?.visibility = View.GONE
+        mViewBinding?.startExercised?.visibility = View.GONE
+        mViewBinding?.startExercise1?.visibility = View.VISIBLE
+        mViewBinding?.connectControl?.visibility = View.VISIBLE
         mViewBinding?.connectControl?.text = "连接设备"
         mViewModel2.doWriteCharacteristic("f55f10030100000")
         mViewBinding?.tv?.setTextColor(Color.GRAY)
@@ -189,12 +191,15 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Commo
                                     type = CommonAlertDialog.DialogType.Edit
                                     title = "设置倒计数数量"
                                     hint = "请输入数量"
-                                    content = "0"
                                     leftBtnText = "取消"
                                     rightBtnText = "确定"
                                     listener = object : DialogClickListener.DefaultLisener() {
 
                                         override fun onRightEditBtnClick(view: View, content: String?) {
+                                            if (content == "") {
+                                                showCenterToast("您还未输入倒计数个数")
+                                                return
+                                            }
                                             var p: Pattern = Pattern.compile("[0-9]*")
                                             var m: Matcher = p.matcher(content)
                                             if(m.matches() ) {
