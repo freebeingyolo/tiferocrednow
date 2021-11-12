@@ -196,6 +196,9 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Commo
 
                                         override fun onRightEditBtnClick(view: View, content: String?) {
                                             var p: Pattern = Pattern.compile("[0-9]*")
+                                            if (content == null) {
+                                                showCenterToast("您还未输入倒计数个数")
+                                            }
                                             var m: Matcher = p.matcher(content)
                                             if(m.matches() ) {
                                                 var countNumber = Integer.parseInt(content.toString())

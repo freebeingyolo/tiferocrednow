@@ -109,7 +109,6 @@ class RopeVM : BaseDeviceScan2ConnVM() {
                     mode = m
                 }
             })
-        clearAllExerciseData()
     }
 
     fun changeExercise(str :String, cb: WriteCharacteristicCallback? = null) {
@@ -172,6 +171,7 @@ class RopeVM : BaseDeviceScan2ConnVM() {
                     cb?.onCharacteristicWrite(request, value)
                 }
             })
+        clearAllExerciseData()
     }
 
     //这个是必须的，由于EasyBle的框架bug，必须声明才能反射调用到
