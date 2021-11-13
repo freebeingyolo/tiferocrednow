@@ -62,6 +62,9 @@ class CourseFragment : BaseFragment<CourseViewModel, FragmentCourseBinding>(), V
         ViewModelProvider(this).get(CourseViewModel::class.java)
 
     private fun initClickListenr() {
+        mViewBinding!!.ivBanner1.setOnClickListener(this)
+        mViewBinding!!.ivBanner2.setOnClickListener(this)
+        mViewBinding!!.ivBanner3.setOnClickListener(this)
         mViewBinding!!.ivVideo1.setOnClickListener(this)
         mViewBinding!!.ivVideo2.setOnClickListener(this)
         mViewBinding!!.ivVideo3.setOnClickListener(this)
@@ -78,41 +81,50 @@ class CourseFragment : BaseFragment<CourseViewModel, FragmentCourseBinding>(), V
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.iv_video1 -> {
+            R.id.iv_banner1 -> {
                 playCourseVideo("https://csqncdn.maxleap.cn/NWY2MmY1YzNhNTc5ZjEwMDAxZjIyMzA5/qn-4d20d503-b830-4567-b7f9-975957d322c9.mp4")
             }
+            R.id.iv_banner2 -> {
+                playCourseVideo("https://csqncdn.maxleap.cn/NWY2MmY1YzNhNTc5ZjEwMDAxZjIyMzA5/qn-52faf301-1575-4f8a-a3d9-c31cb5658515.mp4")
+            }
+            R.id.iv_banner3 -> {
+                playCourseVideo("https://csqncdn.maxleap.cn/NWY2MmY1YzNhNTc5ZjEwMDAxZjIyMzA5/qn-016e0e6f-eb12-469a-8364-ea962d2b54c8.mp4")
+            }
+            R.id.iv_video1 -> {
+                playCourseVideo("https://csqncdn.maxleap.cn/NWY2MmY1YzNhNTc5ZjEwMDAxZjIyMzA5/qn-adc4b5ee-44b8-4314-843b-530100b99ca2.mp4")
+            }
             R.id.iv_video2 -> {
-                playCourseVideo("")
+                playCourseVideo("https://csqncdn.maxleap.cn/NWY2MmY1YzNhNTc5ZjEwMDAxZjIyMzA5/qn-9bda6e85-625e-4a25-a8a5-bf591e2ad7ec.mp4")
             }
             R.id.iv_video3 -> {
-                playCourseVideo("")
+                playCourseVideo("https://csqncdn.maxleap.cn/NWY2MmY1YzNhNTc5ZjEwMDAxZjIyMzA5/qn-eabe395c-9770-4636-afb6-8ce53df6b80c.mp4")
             }
             R.id.iv_video4 -> {
-                playCourseVideo("")
+                playCourseVideo("https://csqncdn.maxleap.cn/NWY2MmY1YzNhNTc5ZjEwMDAxZjIyMzA5/qn-e9c5cd86-f42a-4042-8c9f-833bc6177bf5.mp4")
             }
             R.id.iv_video5 -> {
-                playCourseVideo("")
+                playCourseVideo("https://csqncdn.maxleap.cn/NWY2MmY1YzNhNTc5ZjEwMDAxZjIyMzA5/qn-b9e7edce-34ce-4f4c-8c6c-fcb95fa0a05e.mp4")
             }
             R.id.iv_video6 -> {
-                playCourseVideo("")
+                playCourseVideo("https://csqncdn.maxleap.cn/NWY2MmY1YzNhNTc5ZjEwMDAxZjIyMzA5/qn-a13c9004-d4a9-4d13-b8eb-c6b24bfa72f8.mp4")
             }
             R.id.iv_video7 -> {
-                playCourseVideo("")
+                playCourseVideo("https://csqncdn.maxleap.cn/NWY2MmY1YzNhNTc5ZjEwMDAxZjIyMzA5/qn-52faf301-1575-4f8a-a3d9-c31cb5658515.mp4")
             }
             R.id.iv_video8 -> {
-                playCourseVideo("")
+                playCourseVideo("https://csqncdn.maxleap.cn/NWY2MmY1YzNhNTc5ZjEwMDAxZjIyMzA5/qn-52faf301-1575-4f8a-a3d9-c31cb5658515.mp4")
             }
             R.id.iv_video9 -> {
-                playCourseVideo("")
+                playCourseVideo("https://csqncdn.maxleap.cn/NWY2MmY1YzNhNTc5ZjEwMDAxZjIyMzA5/qn-187d5ceb-8de0-4e1c-9715-bdb6fdc91b76.mp4")
             }
             R.id.iv_video10 -> {
-                playCourseVideo("")
+                playCourseVideo("https://csqncdn.maxleap.cn/NWY2MmY1YzNhNTc5ZjEwMDAxZjIyMzA5/qn-c627bc81-9310-462e-a2b1-d2d2e02977c2.mp4")
             }
             R.id.iv_video11 -> {
-                playCourseVideo("")
+                playCourseVideo("https://csqncdn.maxleap.cn/NWY2MmY1YzNhNTc5ZjEwMDAxZjIyMzA5/qn-86d18c21-ca08-496d-b695-7a578818aba4.mp4")
             }
             R.id.iv_video12 -> {
-                playCourseVideo("")
+                playCourseVideo("https://csqncdn.maxleap.cn/NWY2MmY1YzNhNTc5ZjEwMDAxZjIyMzA5/qn-a2fb479c-becf-492b-a6bf-497e70167c21.mp4")
             }
         }
     }

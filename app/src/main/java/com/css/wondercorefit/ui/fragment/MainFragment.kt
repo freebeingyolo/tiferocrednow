@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.NetworkUtils
+import com.blankj.utilcode.util.ToastUtils
 import com.css.base.uibase.BaseFragment
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
@@ -267,6 +268,10 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         mViewBinding!!.addBleDevice.setOnClickListener(this)
         mViewBinding!!.layoutUser.setOnClickListener(this)
         mViewBinding!!.recentDevice.setOnClickListener(this)
+        mViewBinding!!.ivRec1.setOnClickListener(this)
+        mViewBinding!!.ivRec2.setOnClickListener(this)
+        mViewBinding!!.ivRec3.setOnClickListener(this)
+        mViewBinding!!.ivRec4.setOnClickListener(this)
     }
 
     private fun initTabLayout() {
@@ -433,6 +438,18 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
                             .navigation()
                 }
             }
+            R.id.iv_rec1 -> {
+                playCourseVideo("https://csqncdn.maxleap.cn/NWY2MmY1YzNhNTc5ZjEwMDAxZjIyMzA5/qn-adc4b5ee-44b8-4314-843b-530100b99ca2.mp4")
+            }
+            R.id.iv_rec2 -> {
+                playCourseVideo("https://csqncdn.maxleap.cn/NWY2MmY1YzNhNTc5ZjEwMDAxZjIyMzA5/qn-e708aa50-8bba-443d-88d9-711c1531224a.mp4")
+            }
+            R.id.iv_rec3 -> {
+                playCourseVideo("https://csqncdn.maxleap.cn/NWY2MmY1YzNhNTc5ZjEwMDAxZjIyMzA5/qn-d50d9e2b-114d-443b-b6a1-4a82a1cf4fdd.mp4")
+            }
+            R.id.iv_rec4 -> {
+                playCourseVideo("https://csqncdn.maxleap.cn/NWY2MmY1YzNhNTc5ZjEwMDAxZjIyMzA5/qn-52faf301-1575-4f8a-a3d9-c31cb5658515.mp4")
+            }
         }
     }
 
@@ -469,6 +486,21 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
                 TIME_INTERVAL_REFRESH
             )
             pauseResume = false
+        }
+    }
+
+    private fun playCourseVideo(videoLink: String) {
+        try {
+            if (NetworkUtils.isConnected()) {
+                ARouter.getInstance()
+                    .build(ARouterConst.PATH_APP_MAIN_COURSE)
+                    .with(Bundle().apply { putString("videoLink", videoLink) })
+                    .navigation()
+            } else {
+                showNetworkErrorDialog();
+            }
+        } catch (e: ActivityNotFoundException) {
+            ToastUtils.showShort("链接无效:${videoLink}")
         }
     }
 

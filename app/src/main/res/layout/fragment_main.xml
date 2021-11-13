@@ -716,6 +716,7 @@
                             android:layout_weight="1">
 
                             <com.css.wondercorefit.widget.GeneralRoundImageView
+                                android:id="@+id/iv_rec1"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:scaleType="fitXY"
@@ -727,9 +728,9 @@
                                 android:layout_alignParentBottom="true"
                                 android:layout_marginBottom="5dp"
                                 android:layout_marginStart="10dp"
-                                android:textColor="@color/white"
+                                android:textColor="@color/black"
                                 android:textSize="6sp"
-                                android:text="11分钟，消耗500kcal"/>
+                                android:text="15分钟"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -737,9 +738,9 @@
                                 android:layout_alignParentBottom="true"
                                 android:layout_marginBottom="15dp"
                                 android:layout_marginStart="10dp"
-                                android:textColor="@color/white"
+                                android:textColor="@color/black"
                                 android:textSize="8sp"
-                                android:text="肩肌训练法"/>
+                                android:text="跳绳训练"/>
 
                         </RelativeLayout>
 
@@ -750,6 +751,7 @@
                             android:layout_marginStart="5dp">
 
                             <com.css.wondercorefit.widget.GeneralRoundImageView
+                                android:id="@+id/iv_rec2"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:scaleType="fitXY"
@@ -764,7 +766,7 @@
                                 android:layout_marginBottom="15dp"
                                 android:textColor="@color/black"
                                 android:textSize="8sp"
-                                android:text="核心训练法"/>
+                                android:text="全身训练"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -774,7 +776,7 @@
                                 android:layout_marginStart="10dp"
                                 android:textColor="@color/black"
                                 android:textSize="6sp"
-                                android:text="11分钟，消耗500kcal"/>
+                                android:text="15分钟"/>
 
                         </RelativeLayout>
 
@@ -792,6 +794,7 @@
                             android:layout_weight="1">
 
                             <com.css.wondercorefit.widget.GeneralRoundImageView
+                                android:id="@+id/iv_rec3"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:scaleType="fitXY"
@@ -807,7 +810,7 @@
                                 android:layout_marginBottom="15dp"
                                 android:textColor="@color/black"
                                 android:textSize="8sp"
-                                android:text="放松训练法"/>
+                                android:text="放松训练"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -818,7 +821,7 @@
                                 android:layout_marginEnd="10dp"
                                 android:textColor="@color/black"
                                 android:textSize="6sp"
-                                android:text="11分钟，消耗500kcal"/>
+                                android:text="10分钟"/>
 
                         </RelativeLayout>
 
@@ -829,6 +832,7 @@
                             android:layout_marginStart="5dp">
 
                             <com.css.wondercorefit.widget.GeneralRoundImageView
+                                android:id="@+id/iv_rec4"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:scaleType="fitXY"
@@ -841,9 +845,9 @@
                                 android:layout_alignParentRight="true"
                                 android:layout_marginBottom="5dp"
                                 android:layout_marginEnd="5dp"
-                                android:textColor="@color/black"
+                                android:textColor="@color/white"
                                 android:textSize="6sp"
-                                android:text="6分钟，消耗500kcal"/>
+                                android:text="30分钟"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -852,9 +856,9 @@
                                 android:layout_alignParentRight="true"
                                 android:layout_marginBottom="15dp"
                                 android:layout_marginEnd="5dp"
-                                android:textColor="@color/black"
+                                android:textColor="@color/white"
                                 android:textSize="8sp"
-                                android:text="引体向上法"/>
+                                android:text="瑜伽训练"/>
 
                         </RelativeLayout>
 
