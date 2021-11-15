@@ -135,7 +135,7 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Commo
                         val ret = super.getView(position, convertView, parent)
                         ret.setOnClickListener {
                             val modes = RopeVM.Mode.values()
-                            if ("byCountTime" == modes[position].name) {
+                            if ("byCountTime" == modes[position].name) {//倒计时长
                                 if (mCountTimeDialog == null) {
                                     for (index in 30 downTo 1) {
                                         mCountTimeList.add(index.toString())
@@ -172,15 +172,14 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Commo
                                     }
                                 }.setLabels("分钟", "", "")
                                     .isCenterLabel(true)
-                                    .setSelectOptions(WonderCoreCache.getUserInfo().ageLocation)
+                                    .setSelectOptions(mCountTimeList.indexOf(mCountTime))
                                     .setLineSpacingMultiplier(3.0F)
                                     .setTextColorCenter(Color.parseColor("#F2682A"))
                                     .setOutSideCancelable(true)//点击外部dismiss default true
                                     .isDialog(true)//是否显示为对话框样式
                                     .build()
                                 mCountTimeDialog?.setPicker(mCountTimeList)
-                                val lp: FrameLayout.LayoutParams =
-                                    mCountTimeDialog!!.dialogContainerLayout.layoutParams as FrameLayout.LayoutParams
+                                val lp: FrameLayout.LayoutParams = mCountTimeDialog!!.dialogContainerLayout.layoutParams as FrameLayout.LayoutParams
                                 lp.leftMargin = 0
                                 lp.rightMargin = 0
                                 mCountTimeDialog!!.dialog.window?.setGravity(Gravity.BOTTOM)

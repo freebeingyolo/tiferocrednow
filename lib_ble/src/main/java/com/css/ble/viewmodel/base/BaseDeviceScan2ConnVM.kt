@@ -23,6 +23,7 @@ import com.css.ble.viewmodel.IBleScan
 import com.css.res.R
 import com.css.service.bus.LiveDataBus.BusMutableLiveData
 import com.css.service.data.CourseData
+import com.css.service.data.DeviceData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -350,10 +351,10 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     }
 
     fun bindDevice(
-        success: ((String?, Any?) -> Unit)?,
-        failed: ((Int, String?, d: Any?) -> Unit)?
+        success: ((String?, DeviceData?) -> Unit)?,
+        failed: ((Int, String?, d:  DeviceData?) -> Unit)?
     ) {
-        val d = BondDeviceData(
+        val device = BondDeviceData(
             avaliableDevice!!.address,
             "",
             avaliableDevice!!.name,
@@ -362,7 +363,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         netLaunch(
             {
                 withContext(Dispatchers.IO) {
-                    val ret = DeviceRepository.bindDevice(d.buidUploadParams())
+                    val ret = DeviceRepository.bindDevice(device.buidUploadParams())
                     if (ret.isSuccess) {
                         val d = BondDeviceData(ret.data!!).apply { this.deviceConnect = connectStateTxt() }
                         BondDeviceData.setDevice(deviceType, d)
@@ -370,7 +371,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
                     ret
                 }
             },
-            { msg, _ ->
+            { msg, d ->
                 //val bondRst = EasyBLE.getInstance().createBond(it.address)
                 //LogUtils.d("bondRst:$bondRst")
                 success?.invoke(msg, d)

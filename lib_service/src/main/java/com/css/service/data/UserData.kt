@@ -1,7 +1,5 @@
 package com.css.service.data
 
-import android.app.Notification
-
 data class UserData(
     var sex: String = "男",
     var age: String = "30",
@@ -14,11 +12,6 @@ data class UserData(
     var pushSet: String = "开",
     var notification: String = "开",
     var isDel: String = "0",
-    var sexLocation: Int = 0,
-    var ageLocation: Int = 70,
-    var statureLocation: Int = 75,
-    var targetWeightLocation: Int = 90,
-    var targetStepLocation: Int = 92,
 ) {
     val sexInt: Int get() = if (sex == "男") 0 else 1
     val ageInt: Int get() = age.toInt()

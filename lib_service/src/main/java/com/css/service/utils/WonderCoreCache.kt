@@ -23,7 +23,8 @@ enum class CacheKey(val k: String) {
     FIRST_WEIGHT_INFO("FIRST_WEIGHT_INFO"),//第一次体脂秤数据
     LAST_WEIGHT_INFO("LAST_WEIGHT_INFO"),//上次体脂秤数据
     LOGIN_DATA("LOGIN_USER_DATA"),//上次体脂秤数据
-    STEP_DATA("stepdata")
+    STEP_DATA("stepdata"),
+    RECENT_DEVICE("RECENT_DEVICE")//最近使用的device
 }
 
 class WonderCoreCache { //一切围绕CacheKey

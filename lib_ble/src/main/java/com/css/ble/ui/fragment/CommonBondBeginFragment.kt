@@ -64,8 +64,8 @@ class CommonBondBeginFragment(d: DeviceType, val model: BaseDeviceScan2ConnVM) :
                                 { CommonBondEndFragment(deviceType, mViewModel) }
                             )
                         },
-                        { _, msg, _ ->
-                            showCenterToast(msg)
+                        { _, msg, d->
+                            showCenterToast("$msg,mac:${d?.bluetoothAddress}")
                             //showNetworkErrorDialog(msg)
                         })
                 }

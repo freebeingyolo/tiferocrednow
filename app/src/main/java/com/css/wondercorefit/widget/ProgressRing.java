@@ -124,7 +124,12 @@ public class ProgressRing extends View {
                     progressPaint);
         }
     }
-
+    public void setPr_progress(@IntRange(from = 0, to = 100) int progress){
+        setProgress(progress);
+    }
+    public int getPr_progress(){
+        return getProgress();
+    }
     public void setProgress(@IntRange(from = 0, to = 100) int progress) {
         this.curProgress = 0;
         this.progress = progress;

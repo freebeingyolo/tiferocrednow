@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -13,33 +12,30 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
-import com.blankj.utilcode.util.NetworkUtils
-import com.css.base.dialog.CommonAlertDialog
 import com.css.base.uibase.BaseActivity
 import com.css.pickerview.builder.OptionsPickerBuilder
 import com.css.pickerview.listener.CustomListener
 import com.css.pickerview.view.OptionsPickerView
 import com.css.service.data.UserData
+import com.css.service.utils.CacheKey
 import com.css.service.utils.WonderCoreCache
 import com.css.wondercorefit.R
 import com.css.wondercorefit.databinding.ActivityPersonInformationBinding
 import com.css.wondercorefit.viewmodel.PersonInformationViewModel
-import razerdp.basepopup.BasePopupWindow
 
-class PersonInformationActivity :
-    BaseActivity<PersonInformationViewModel, ActivityPersonInformationBinding>(),
+class PersonInformationActivity : BaseActivity<PersonInformationViewModel, ActivityPersonInformationBinding>(),
     View.OnClickListener {
     var mSexPickerDialog: OptionsPickerView<String>? = null
     var mAgePickerDialog: OptionsPickerView<String>? = null
     var mStaturePickerDialog: OptionsPickerView<String>? = null
     var mTargetWeightPickerDialog: OptionsPickerView<String>? = null
     var mTargetStepPickerDialog: OptionsPickerView<String>? = null
-    var mSexList = ArrayList<String>()
-    var mAgeList = ArrayList<String>()
-    var mStatureList = ArrayList<String>()
-    var mTargetWeightList = ArrayList<String>()
-    var mTargetStepList = ArrayList<String>()
-    lateinit var mUserData: UserData
+    val mSexList by lazy { arrayOf("男", "女").toList() }
+    val mAgeList by lazy { (100 downTo 1).map { it.toString() } }
+    val mStatureList by lazy { (250 downTo 100).map { it.toString() } }
+    val mTargetWeightList by lazy { (150 downTo 30).map { it.toString() } }
+    val mTargetStepList by lazy { (100000 downTo 1000 step 1000).map { it.toString() } }
+
 
     companion object {
         fun starActivity(context: Context) {
@@ -54,21 +50,18 @@ class PersonInformationActivity :
 
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
-        mViewModel.personInfoData.observe(this, {
+        WonderCoreCache.getLiveData<UserData>(CacheKey.USER_INFO).observe(this) {
             hideLoading()
-            var userData = it[0]
+            val userData = it
             mViewBinding.tvTargetWeight.text = "${userData.goalBodyWeight}kg"
             mViewBinding.tvTargetStep.text = "${userData.goalStepCount}步"
             mViewBinding.tvStature.text = "${userData.height}cm"
             mViewBinding.tvAge.text = "${userData.age}岁"
             mViewBinding.tvSex.text = userData.sex
-        })
+        }
         mViewModel.upPersonInfoData.observe(this, {
             hideLoading()
             showCenterToast(it)
-        })
-        mViewModel.nonePersonInfoData.observe(this, {
-            hideLoading()
         })
     }
 
@@ -85,14 +78,7 @@ class PersonInformationActivity :
     @SuppressLint("SetTextI18n")
     override fun initData() {
         super.initData()
-//        mUserData = WonderCoreCache.getUserInfo()
-//        mViewBinding.tvTargetWeight.text = mUserData.targetWeight + "kg"
-//        mViewBinding.tvTargetStep.text = mUserData.targetStep + "步"
-//        mViewBinding.tvStature.text = mUserData.stature + "cm"
-//        mViewBinding.tvAge.text = mUserData.age + "岁"
-//        mViewBinding.tvSex.text = mUserData.sex
         mViewModel.getPersonInfo()
-
     }
 
     override fun initViewModel(): PersonInformationViewModel =
@@ -115,19 +101,15 @@ class PersonInformationActivity :
     }
 
     private fun showSexDialog() {
-        if (mSexPickerDialog == null) {
-            mSexList.add("男")
-            mSexList.add("女")
-        }
         mSexPickerDialog = OptionsPickerBuilder(
             this
         ) { options1, options2, options3, v ->
             var str = mSexList[options1]
             mViewBinding.tvSex.text = str
-            mUserData = WonderCoreCache.getUserInfo()
+            val mUserData = WonderCoreCache.getUserInfo()
             mUserData.sex = str
             WonderCoreCache.saveUserInfo(mUserData)
-            mViewModel.upDataPersonInfo(str, "", "", "", "")
+            mViewModel.upDataPersonInfo(sex = str)
 
         }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
             override fun customLayout(v: View?) {
@@ -145,7 +127,7 @@ class PersonInformationActivity :
             }
 
         })
-            .setSelectOptions(WonderCoreCache.getUserInfo().sexLocation)  //设置默认选中项
+            .setSelectOptions(mSexList.indexOf(WonderCoreCache.getUserInfo().sex))  //设置默认选中项
             .setOutSideCancelable(true)//点击外部dismiss default true
             .setTextColorCenter(Color.parseColor("#F2682A"))
             .isDialog(true)//是否显示为对话框样式
@@ -162,21 +144,15 @@ class PersonInformationActivity :
     }
 
     private fun showAgeDialog() {
-        if (mAgePickerDialog == null) {
-            for (index in 100 downTo 1) {
-                mAgeList.add(index.toString())
-            }
-        }
         mAgePickerDialog = OptionsPickerBuilder(
             this
         ) { options1, options2, options3, v ->
-            var str = mAgeList[options1]
+            val str = mAgeList[options1]
             mViewBinding.tvAge.text = str + "岁"
-            mUserData = WonderCoreCache.getUserInfo()
+            val mUserData = WonderCoreCache.getUserInfo()
             mUserData.age = str
-            mUserData.ageLocation = options1
             WonderCoreCache.saveUserInfo(mUserData)
-            mViewModel.upDataPersonInfo("", str, "", "", "")
+            mViewModel.upDataPersonInfo(age = str)
 
         }.setLayoutRes(
             R.layout.dialog_person_info_setting
@@ -194,7 +170,7 @@ class PersonInformationActivity :
             }
         }.setLabels("岁", "", "")
             .isCenterLabel(true)
-            .setSelectOptions(WonderCoreCache.getUserInfo().ageLocation)
+            .setSelectOptions(mAgeList.indexOf(WonderCoreCache.getUserInfo().age))
             .setLineSpacingMultiplier(3.0F)
             .setTextColorCenter(Color.parseColor("#F2682A"))
             .setOutSideCancelable(true)//点击外部dismiss default true
@@ -212,21 +188,15 @@ class PersonInformationActivity :
     }
 
     private fun showStatureDialog() {
-        if (mStaturePickerDialog == null) {
-            for (index in 250 downTo 100) {
-                mStatureList.add(index.toString())
-            }
-        }
         mStaturePickerDialog = OptionsPickerBuilder(
             this
         ) { options1, options2, options3, v ->
             var str = mStatureList[options1]
             mViewBinding.tvStature.text = str + "cm"
-            mUserData = WonderCoreCache.getUserInfo()
+            val mUserData = WonderCoreCache.getUserInfo()
             mUserData.height = str
-            mUserData.statureLocation = options1
             WonderCoreCache.saveUserInfo(mUserData)
-            mViewModel.upDataPersonInfo("", "", str, "", "")
+            mViewModel.upDataPersonInfo(height = str)
 
         }.setLayoutRes(
             R.layout.dialog_person_info_setting
@@ -244,7 +214,7 @@ class PersonInformationActivity :
             }
         }.setLabels("cm", "", "")
             .isCenterLabel(true)
-            .setSelectOptions(WonderCoreCache.getUserInfo().statureLocation)
+            .setSelectOptions(mStatureList.indexOf(WonderCoreCache.getUserInfo().height))
             .setLineSpacingMultiplier(3.0F)
             .setTextColorCenter(Color.parseColor("#F2682A"))
             .setOutSideCancelable(true)//点击外部dismiss default true
@@ -262,21 +232,15 @@ class PersonInformationActivity :
     }
 
     private fun showTargetWeightDialog() {
-        if (mTargetWeightPickerDialog == null) {
-            for (index in 150 downTo 30) {
-                mTargetWeightList.add(index.toString())
-            }
-        }
         mTargetWeightPickerDialog = OptionsPickerBuilder(
             this
         ) { options1, options2, options3, v ->
             var str = mTargetWeightList[options1]
             mViewBinding.tvTargetWeight.text = str + "kg"
-            mUserData = WonderCoreCache.getUserInfo()
+            val mUserData = WonderCoreCache.getUserInfo()
             mUserData.goalBodyWeight = str
-            mUserData.targetWeightLocation = options1
             WonderCoreCache.saveUserInfo(mUserData)
-            mViewModel.upDataPersonInfo("", "", "", str, "")
+            mViewModel.upDataPersonInfo(goalBodyWeight = str)
         }.setLayoutRes(
             R.layout.dialog_person_info_setting
         ) { v ->
@@ -293,7 +257,7 @@ class PersonInformationActivity :
             }
         }.setLabels("kg", "", "")
             .isCenterLabel(true)
-            .setSelectOptions(WonderCoreCache.getUserInfo().targetWeightLocation)
+            .setSelectOptions(mTargetWeightList.indexOf(WonderCoreCache.getUserInfo().goalBodyWeight))
             .setLineSpacingMultiplier(3.0F)
             .setTextColorCenter(Color.parseColor("#F2682A"))
             .setOutSideCancelable(true)//点击外部dismiss default true
@@ -311,23 +275,15 @@ class PersonInformationActivity :
     }
 
     private fun showTargetStepDialog() {
-        if (mTargetStepPickerDialog == null) {
-            for (index in 100000 downTo 1000) {
-                if (index % 1000 == 0) {
-                    mTargetStepList.add(index.toString())
-                }
-            }
-        }
         mTargetStepPickerDialog = OptionsPickerBuilder(
             this
         ) { options1, options2, options3, v ->
             var str = mTargetStepList[options1]
             mViewBinding.tvTargetStep.text = str + "步"
-            mUserData = WonderCoreCache.getUserInfo()
+            val mUserData = WonderCoreCache.getUserInfo()
             mUserData.goalStepCount = str
-            mUserData.targetStepLocation = options1
             WonderCoreCache.saveUserInfo(mUserData)
-            mViewModel.upDataPersonInfo("", "", "", "", str)
+            mViewModel.upDataPersonInfo(goalStepCount = str)
         }.setLayoutRes(R.layout.dialog_person_info_setting, object : CustomListener {
             override fun customLayout(v: View?) {
                 var title = v?.findViewById<TextView>(R.id.tv_title)
@@ -345,7 +301,7 @@ class PersonInformationActivity :
 
         }).setLabels("步", "", "")
             .isCenterLabel(true)
-            .setSelectOptions(WonderCoreCache.getUserInfo().targetStepLocation)
+            .setSelectOptions(mTargetStepList.indexOf(WonderCoreCache.getUserInfo().goalStepCount))
             .setLineSpacingMultiplier(3.0F)
             .setTextColorCenter(Color.parseColor("#F2682A"))
             .setOutSideCancelable(true)//点击外部dismiss default true

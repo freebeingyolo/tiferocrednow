@@ -1,6 +1,6 @@
 package com.css.ble.viewmodel
 
-import android.util.Log
+import LogUtils
 import androidx.annotation.NonNull
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,11 +12,8 @@ import cn.wandersnail.commons.observer.Observe
 import cn.wandersnail.commons.util.StringUtils
 import com.css.ble.R
 import com.css.ble.bean.DeviceType
-import com.css.ble.bean.WeightBondData
 import com.css.ble.utils.DataUtils
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
-import com.css.service.utils.CacheKey
-import com.css.service.utils.WonderCoreCache
 import java.text.DecimalFormat
 import java.util.*
 
@@ -33,11 +30,7 @@ class RopeVM : BaseDeviceScan2ConnVM() {
     var isStart = false
     val modeObsvr: LiveData<Mode> by lazy { MutableLiveData(Mode.byFree) }
     val modeObsvrStr: LiveData<String> = Transformations.map(modeObsvr) {
-        when (it) {
-            Mode.byFree -> getString(R.string.byFree)
-            Mode.byCountTime -> getString(R.string.byCountTime)
-            Mode.byCountNumber -> getString(R.string.byCountNumber)
-        }
+        getString(it.msgId)
     }
     //transformations
 
@@ -48,37 +41,35 @@ class RopeVM : BaseDeviceScan2ConnVM() {
         }
         get() = modeObsvr.value!!
 
-    enum class Mode {
-        byFree,
-        byCountTime,
-        byCountNumber
+    enum class Mode(val msgId: Int) {
+        byFree(R.string.byFree),
+        byCountTime(R.string.byCountTime),
+        byCountNumber(R.string.byCountNumber)
     }
 
     override val exerciseKcalTxt = Transformations.map(exerciseCount) {
         if (it == -1) "--"
         else {
-            DecimalFormat("0.00000").format(it * weightKg * 1f*25/30000)
+            DecimalFormat("0.00000").format(it * weightKg * 1f * 25 / 30000)
         }
     }
 
     override fun filterName(name: String): Boolean {
-        return name.startsWith("Hi-LYTS")
+        //val names = arrayOf("Hi-RDTS", "Hi-BBTTS")
+        val names = arrayOf("Hi-LYTS")
+        return names.find { name.startsWith(it) } != null
     }
 
     override fun filterUUID(uuid: UUID): Boolean {
         return uuid.toString() == UUID_SRVC
     }
 
-    fun setIsStart (iS : Boolean) {
+    fun setIsStart(iS: Boolean) {
         isStart = iS
     }
 
     fun getModels(): List<String> {
-        return listOf(
-            getString(R.string.byFree),
-            getString(R.string.byCountTime),
-            getString(R.string.byCountNumber)
-        )
+        return Mode.values().map { getString(it.msgId) }
     }
 
     override val bonded_tip: String get() = "跳绳器已连接成功，开启你的挑战之旅吧！"
@@ -86,7 +77,6 @@ class RopeVM : BaseDeviceScan2ConnVM() {
     override fun discovered(d: Device) {
         //开启通知
         sendNotification(UUID.fromString(UUID_SRVC), UUID.fromString(UUID_NOTIFY), true, null)
-//        writeWeight()
     }
 
     fun switchMode(m: Mode, cb: WriteCharacteristicCallback? = null) {
@@ -111,7 +101,7 @@ class RopeVM : BaseDeviceScan2ConnVM() {
             })
     }
 
-    fun changeExercise(str :String, cb: WriteCharacteristicCallback? = null) {
+    fun changeExercise(str: String, cb: WriteCharacteristicCallback? = null) {
         val data: ByteArray = StringUtils.toByteArray("F55F060203", "")
         val data2 = StringUtils.toByteArray(str, "")
         val data3 = ((data + data2).sum() and 0xff).toByte()
@@ -129,9 +119,9 @@ class RopeVM : BaseDeviceScan2ConnVM() {
                     cb?.onCharacteristicWrite(request, value)
                 }
             })
-                if ("06" == str && !"--".equals(exerciseCountTxt)) {
-                    finishExercise()
-                }
+        if ("06" == str && !"--".equals(exerciseCountTxt)) {
+            finishExercise()
+        }
 
     }
 

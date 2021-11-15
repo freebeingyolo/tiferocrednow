@@ -20,11 +20,9 @@ import com.blankj.utilcode.util.ToastUtils
 import com.css.base.uibase.BaseFragment
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
-import com.css.ble.bean.WeightBondData
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
 import com.css.service.data.GlobalData
 import com.css.service.data.StepData
-import com.css.service.data.UserData
 import com.css.service.router.ARouterConst
 import com.css.service.utils.CacheKey
 import com.css.service.utils.SystemBarHelper
@@ -46,7 +44,6 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     NetworkUtils.OnNetworkStatusChangedListener {
     private val TAG = "MainFragment"
 
-    lateinit var userInfo: UserData
     private var iSportStepInterface: ISportStepInterface? = null
     private var stepArray: Int = 0
     private val mDelayHandler = Handler(TodayStepCounterCall())
@@ -56,16 +53,11 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     private var currentStep: Int = 0
     private var result: Float = 0.0f
     private lateinit var stepData: StepData
-    private lateinit var mUserData: UserData
     private var needNotify: Boolean = false
     private var pauseResume: Boolean = false
     private lateinit var mMainDeviceAdapter: MainDeviceAdapter
     var mData = ArrayList<BondDeviceData>()
     private val tabTitle = arrayListOf("最近使用", "全部")
-    private var initialWeight: Float = -1f
-    private var currentWeight: Float = -1f
-    private var goalWeight: Float = -1f
-    private lateinit var device: BondDeviceData
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
@@ -75,6 +67,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         mMainDeviceAdapter = MainDeviceAdapter(mData)
         mViewBinding?.deviceList?.adapter = mMainDeviceAdapter
         mMainDeviceAdapter.setOnItemClickListener {
+            WonderCoreCache.saveData(CacheKey.RECENT_DEVICE, it)
             when (it.deviceType) {
                 DeviceType.WEIGHT -> {
                     ARouter.getInstance()
@@ -117,7 +110,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     }
 
     private fun startBootStrapService() {
-        userInfo = WonderCoreCache.getUserInfo()
+        val userInfo = WonderCoreCache.getUserInfo()
         if ("关" == userInfo.notification) {
             val intentSteps = Intent(activity, BootstrapService::class.java)
             val intent = Intent()
@@ -139,81 +132,17 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
 
     override fun initData() {
         super.initData()
-        mViewBinding?.tvTargetWeightNum?.text = WonderCoreCache.getUserInfo().goalBodyWeight
-        mViewBinding?.tvTargetWeightNum2?.text = WonderCoreCache.getUserInfo().goalBodyWeight
-        goalWeight = WonderCoreCache.getUserInfo().goalBodyWeight.toFloat()
-        mViewModel.loadDevice()
-
-        WonderCoreCache.getLiveData<WeightBondData>(CacheKey.FIRST_WEIGHT_INFO).let {
-            it.observe(this) { it2 ->
-                if (it2 != null) {
-                    mViewBinding?.tvInitialWeightNum?.text = it2.weightKgFmt
-                    initialWeight = it2.weightKg
-                } else {
-                    mViewBinding?.tvInitialWeightNum?.text = "--"
-                    initialWeight = -1f
-                }
-                mViewBinding?.tvSubtractedWeight?.text = getSubtractedWeight()
-                mViewBinding?.progressRing?.progress = getSubtractedWeightPer()
-            }
-        }
-
-        WonderCoreCache.getLiveData<WeightBondData>(CacheKey.LAST_WEIGHT_INFO)
-            .observe(this) { it2 ->
-                if (it2 != null) {
-                    mViewBinding?.tvCurrentWeight?.text = it2.weightKgFmt("%.1f")
-                    mViewBinding?.llBmi?.visibility = View.VISIBLE
-                    mViewBinding?.tvBmi?.text = "BMI${it2?.bodyFatData.bmi}"
-                    mViewBinding?.tvBodyType?.text = it2.bodyFatData.bmiJudge
-                    currentWeight = it2.weightKg
-                } else {
-                    mViewBinding?.llBmi?.visibility = View.GONE
-                    mViewBinding?.tvCurrentWeight?.text = "--"
-                    currentWeight = -1f
-                }
-                mViewBinding?.tvSubtractedWeight?.text = getSubtractedWeight()
-                mViewBinding?.progressRing?.progress = getSubtractedWeightPer()
-            }
+        mViewModel.loadData(true)
+        mViewBinding?.model = mViewModel
+        mViewBinding?.lifecycleOwner = viewLifecycleOwner
     }
 
-    // 已减去体重
-    private fun getSubtractedWeight(): String {
-        if (-1f != initialWeight && -1f != currentWeight) {
-            return String.format("%.1f", initialWeight - currentWeight)
-        }
-        return "--"
-    }
-
-    // 已减去体重百分比
-    private fun getSubtractedWeightPer(): Int {
-        if (-1f != initialWeight && -1f != currentWeight && -1f != goalWeight) {
-            val sub = initialWeight - currentWeight
-            val goal = initialWeight - goalWeight
-            if (0f >= sub || 0f >= goal) {
-                return 0
-            } else if (sub >= goal) {
-                return 100
-            }
-            return (sub / goal * 100).toInt()
-        }
-        return 0
-    }
 
     private fun showDevice() {
         BondDeviceData.getDeviceLiveDataMerge().observe(viewLifecycleOwner) {
             //it为map，值为null表示删除，key为设备类型
             LogUtils.d("it-->$it")
             val devices = BondDeviceData.getDevices()
-            mViewBinding?.recentDevice?.visibility = View.GONE
-            mViewBinding?.blank?.visibility = View.VISIBLE
-            if (devices.isNotEmpty()) {
-                device = devices.first()
-                mViewBinding?.recentDevice?.visibility = View.VISIBLE
-                mViewBinding?.blank?.visibility = View.GONE
-                mViewBinding?.recentDeviceName?.text = device.alias
-                mViewBinding?.recentDeviceState?.text = device.deviceConnect
-                mViewBinding?.recentDeviceImg?.setImageResource(device.deviceImg)
-            }
             mData.clear()
             mData.addAll(devices)
             mMainDeviceAdapter.setItems(mData)
@@ -239,12 +168,11 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         SharedPreferences.OnSharedPreferenceChangeListener { sp, key ->
             when (key) {
                 CacheKey.USER_INFO.k -> {
-                    mUserData = WonderCoreCache.getUserInfo()
+                    val mUserData = WonderCoreCache.getUserInfo()
                     mViewBinding?.tvTargetWeightNum?.text = mUserData.goalBodyWeight
                     mViewBinding?.tvTargetWeightNum2?.text = mUserData.goalBodyWeight
                     mViewBinding?.tvTodayStepTarget?.text = "目标 ${mUserData.goalStepCount}"
                 }
-
             }
         }
     }
@@ -255,7 +183,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     }
 
     private fun initProgressRate() {
-        mUserData = WonderCoreCache.getUserInfo()
+        val mUserData = WonderCoreCache.getUserInfo()
         targetStep = mUserData.goalStepCount
         stepData = WonderCoreCache.getData(CacheKey.STEP_DATA, StepData::class.java) ?: StepData()
         currentStep = stepData.todaySteps
@@ -284,7 +212,12 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
                 tabView.text = tabTitle[index]
                 tabView.textSize = 12F
                 //tabView.setTextColor(resources.getColor(R.color.color_7b7b7b))
-                tabView.setTextColor(ContextCompat.getColorStateList(requireContext(), R.color.mtrl_tabs_legacy_text_color_selector))
+                tabView.setTextColor(
+                    ContextCompat.getColorStateList(
+                        requireContext(),
+                        R.color.mtrl_tabs_legacy_text_color_selector
+                    )
+                )
                 tabView.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
                 customView = tabView
                 /*text = tabTitle[index]*/
@@ -420,6 +353,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
                 activity?.let { PersonInformationActivity.starActivity(it) }
             }
             R.id.recent_device -> {
+                val device = mViewModel.recentDevice.value!!
                 when (device.deviceType) {
                     DeviceType.WEIGHT -> {
                         ARouter.getInstance()
@@ -512,6 +446,6 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     override fun onConnected(networkType: NetworkUtils.NetworkType?) {
         mViewBinding?.networkError?.visibility = View.GONE
         mViewBinding?.mainLayout?.visibility = View.VISIBLE
-        mViewModel.loadDevice()
+        mViewModel.loadData()
     }
 }

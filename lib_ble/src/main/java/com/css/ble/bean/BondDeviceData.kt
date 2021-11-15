@@ -2,9 +2,12 @@ package com.css.ble.bean
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.Utils
+import com.bumptech.glide.Glide
 import com.css.ble.R
 import com.css.service.bus.LiveDataBus
 import com.css.service.data.BaseData
@@ -27,10 +30,28 @@ enum class DeviceType(
     WHEEL("健腹轮", R.string.device_wheel, R.mipmap.icon_abroller, R.mipmap.icon_abroller, CacheKey.BOND_WHEEL_INFO),
 
     //HORIZONTAL_BAR("单杠");
-    HORIZONTAL_BAR("单杠", R.string.device_horizontalbar, R.mipmap.icon_product_1, R.mipmap.icon_product_1, CacheKey.BOND_HORIZONTALBAR_INFO),
-    PUSH_UP("俯卧撑板", R.string.device_pushup, R.mipmap.icon_product_2, R.mipmap.icon_product_2, CacheKey.BOND_PUSHUP_INFO),
-    COUNTER("计数器", R.string.device_counter, R.mipmap.icon_product_4, R.mipmap.icon_product_4, CacheKey.BOND_COUNTER_INFO),
-    ROPE("跳绳", R.string.rope_skipper, R.mipmap.icon_product_4,R.mipmap.icon_product_4, CacheKey.BOND_ROPE_INFO),
+    HORIZONTAL_BAR(
+        "单杠",
+        R.string.device_horizontalbar,
+        R.mipmap.icon_product_1,
+        R.mipmap.icon_product_1,
+        CacheKey.BOND_HORIZONTALBAR_INFO
+    ),
+    PUSH_UP(
+        "俯卧撑板",
+        R.string.device_pushup,
+        R.mipmap.icon_product_2,
+        R.mipmap.icon_product_2,
+        CacheKey.BOND_PUSHUP_INFO
+    ),
+    COUNTER(
+        "计数器",
+        R.string.device_counter,
+        R.mipmap.icon_product_4,
+        R.mipmap.icon_product_4,
+        CacheKey.BOND_COUNTER_INFO
+    ),
+    ROPE("跳绳", R.string.rope_skipper, R.mipmap.icon_product_4, R.mipmap.icon_product_4, CacheKey.BOND_ROPE_INFO),
     ;
 
     companion object {
@@ -101,6 +122,12 @@ class BondDeviceData private constructor() : BaseData() {
     }
 
     companion object {
+
+        @BindingAdapter("android:src")
+        @JvmStatic
+        fun setImageViewResource(imageView: AppCompatImageView, resource: String) {
+            Glide.with(imageView.context).load(resource).into(imageView)
+        }
 
         fun displayName(type: DeviceType): String {
             val data = getDevice(type)
