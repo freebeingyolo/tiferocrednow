@@ -103,7 +103,7 @@ class WheelBondVM : BaseWheelVM(), EventObserver {
     }
 
     override fun connectStateTxt(): String {
-        TODO("Not yet implemented")
+       return "Not yet implemented"
     }
 
     override fun onTimerTimeout() {

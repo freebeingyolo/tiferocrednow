@@ -71,11 +71,9 @@ class CounterVM : HorizontalBarVM() {
     }
 
     override fun onBondedOk(d: BondDeviceData) {
-        TODO("Not yet implemented")
     }
 
     override fun onBondedFailed(d: BondDeviceData) {
-        TODO("Not yet implemented")
     }
 
     @Observe

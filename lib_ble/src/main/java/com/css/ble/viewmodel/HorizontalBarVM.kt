@@ -90,19 +90,15 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
     }
 
     override fun onFoundDevice(d: Device) {
-        TODO("Not yet implemented")
     }
 
     override fun onDisconnected(d: Device?) {
-        TODO("Not yet implemented")
     }
 
     override fun onBondedOk(d: BondDeviceData) {
-        TODO("Not yet implemented")
     }
 
     override fun onBondedFailed(d: BondDeviceData) {
-        TODO("Not yet implemented")
     }
 
     fun writeWeight(cb: WriteCharacteristicCallback? = null) {

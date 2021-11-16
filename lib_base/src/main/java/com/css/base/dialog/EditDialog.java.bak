@@ -1,0 +1,195 @@
+package com.css.base.dialog;
+
+import android.app.Dialog;
+import android.content.Context;
+import android.graphics.Typeface;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.LinearLayout;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.content.ContextCompat;
+
+import com.blankj.utilcode.util.SizeUtils;
+import com.css.base.R;
+import com.css.base.R.layout;
+import com.css.base.dialog.inner.DialogClickListener;
+import com.css.service.utils.DoubleClickUtils;
+
+import org.jetbrains.annotations.NotNull;
+
+import kotlin.jvm.internal.Intrinsics;
+import razerdp.basepopup.BasePopupWindow;
+
+
+public final class EditDialog extends BasePopupWindow implements OnClickListener {
+    private DialogClickListener listener;
+    private AppCompatTextView tvTitle;
+    private AppCompatEditText etContent;
+    private AppCompatTextView tvLeft;
+    private AppCompatTextView tvRight;
+    private AppCompatTextView tvHint;
+    private AppCompatImageView ivClean;
+
+    @NotNull
+    public View onCreateContentView() {
+        View var10000 = this.createPopupById(layout.popup_common_edit);
+        Intrinsics.checkNotNullExpressionValue(var10000, "createPopupById(R.layout.popup_common_edit)");
+        return var10000;
+    }
+
+    public final void setListener(@Nullable DialogClickListener listener) {
+        this.listener = listener;
+    }
+
+    public final void setTitleVisibility(int visibility) {
+        this.tvTitle.setVisibility(visibility);
+    }
+
+    public final void setTitle(Integer titleResId) {
+        this.tvTitle.setText(titleResId);
+    }
+
+    public final void setTitle(@Nullable CharSequence title) {
+        this.tvTitle.setText(title);
+    }
+
+    public final void setContentColor(int color) {
+        this.etContent.setTextColor(color);
+    }
+
+    public final void setContentGravity(int var1) {
+        this.etContent.setGravity(var1);
+    }
+
+    public final void setContentStyle(@Nullable Typeface tf) {
+        this.etContent.setTypeface(tf);
+    }
+
+    public final void setContentMarginTop(int dpTop) {
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) this.etContent.getLayoutParams();
+        params.setMargins(params.leftMargin, SizeUtils.dp2px((float) dpTop), params.rightMargin, params.bottomMargin);
+        this.etContent.setLayoutParams((LayoutParams) params);
+
+    }
+
+    public final void setContent(@Nullable CharSequence content) {
+        this.etContent.setText(content);
+    }
+
+    public final void setContent(Integer content) {
+        this.etContent.setText(content);
+    }
+
+    public final void setHint(@Nullable CharSequence hint) {
+        this.etContent.setHint(hint);
+    }
+
+    public final void setHint(@Nullable Integer hint) {
+        this.etContent.setHint(hint);
+
+    }
+
+    public final void setInputType(int v) {
+        this.etContent.setInputType(v);
+    }
+
+    public final void setLeftBtn(@Nullable CharSequence left) {
+        this.tvLeft.setText(left);
+    }
+
+    public final void setLeftBtn(@Nullable Integer left) {
+        this.tvLeft.setText(left);
+
+    }
+
+    public final void setLeftBtnColor(@ColorRes @Nullable Integer color) {
+        this.setLeftBtnColorInt(ContextCompat.getColor((Context) this.getContext(), color));
+    }
+
+    public final void setLeftBtnColorInt(@ColorInt @Nullable Integer color) {
+        this.tvLeft.setTextColor(color);
+
+    }
+
+    public final void setRightBtn(@Nullable CharSequence right) {
+        this.tvRight.setText(right);
+    }
+
+    public final void setRightBtn(@Nullable Integer right) {
+        this.tvRight.setText(right);
+    }
+
+    public final void setRightBtnColor(@ColorRes @Nullable Integer color) {
+        this.setRightBtnColorInt(ContextCompat.getColor((Context) this.getContext(), color));
+    }
+
+    public final void setRightBtnColorInt(@ColorInt @Nullable Integer color) {
+        this.tvRight.setTextColor(color);
+    }
+
+    public void onClick(@NotNull View v) {
+        if (DoubleClickUtils.Companion.getInstance().isInvalidClick()) return;
+        int id = v.getId();
+        if (id == R.id.tv_left) {
+            dismiss();
+            if (listener != null) {
+                listener.onLeftBtnClick(v);
+            }
+        } else if (id == R.id.tv_right) {
+            if (listener != null) {
+                listener.onRightEditBtnClick(v, etContent.getText().toString().trim());
+            }
+        } else if (id == R.id.iv_clean) {
+            etContent.setText("");
+        }
+
+    }
+
+    public EditDialog(@NotNull Context context) {
+        super(context);
+        init();
+    }
+
+    public EditDialog(@NotNull Dialog dialog) {
+        super(dialog);
+        init();
+    }
+
+    private void init() {
+        this.setAdjustInputMethod(true);
+        this.tvTitle = this.findViewById(R.id.tv_title);
+        this.etContent = this.findViewById(R.id.et_content);
+        this.tvLeft = this.findViewById(R.id.tv_left);
+        this.tvRight = this.findViewById(R.id.tv_right);
+        this.ivClean = this.findViewById(R.id.iv_clean);
+        this.tvHint = this.findViewById(R.id.tv_hint);
+        this.tvLeft.setOnClickListener((OnClickListener) this);
+        this.ivClean.setOnClickListener((OnClickListener) this);
+        this.tvRight.setOnClickListener((OnClickListener) this);
+        this.etContent.addTextChangedListener((TextWatcher) (new TextWatcher() {
+            public void beforeTextChanged(@Nullable CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(@Nullable CharSequence s, int start, int before, int count) {
+            }
+
+            public void afterTextChanged(@Nullable Editable s) {
+                CharSequence var2 = (CharSequence) etContent.getText();
+                if (var2 == null || var2.length() == 0) {
+                    EditDialog.this.ivClean.setVisibility(View.GONE);
+                } else {
+                    EditDialog.this.ivClean.setVisibility(View.VISIBLE);
+                }
+            }
+        }));
+    }
+}

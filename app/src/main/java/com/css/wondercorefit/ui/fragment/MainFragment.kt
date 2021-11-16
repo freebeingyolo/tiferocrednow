@@ -2,6 +2,7 @@ package com.css.wondercorefit.ui.fragment
 
 import LogUtils
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.*
 import android.graphics.Typeface
 import android.os.*
@@ -146,6 +147,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             mData.clear()
             mData.addAll(devices)
             mMainDeviceAdapter.setItems(mData)
+            WonderCoreCache.saveData(CacheKey.RECENT_DEVICE,it.second)
         }
         BondDeviceData.getDeviceConnectStateLiveData().observe(viewLifecycleOwner) {
             LogUtils.d("it--->$it")

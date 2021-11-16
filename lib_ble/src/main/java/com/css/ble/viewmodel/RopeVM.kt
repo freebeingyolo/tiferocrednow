@@ -75,13 +75,13 @@ class RopeVM : BaseDeviceScan2ConnVM() {
 
     override val bonded_tip: String get() = "跳绳器已连接成功，开启你的挑战之旅吧！"
 
-    override fun onDiscovered(d: Device,isBonding:Boolean) {
+    override fun onDiscovered(d: Device, isBonding: Boolean) {
         //开启通知
         sendNotification(UUID.fromString(UUID_SRVC), UUID.fromString(UUID_NOTIFY), true, null)
+        getBatteryInfo()
     }
 
     override fun onDisconnected(d: Device?) {
-        TODO("Not yet implemented")
     }
 
     override fun onBondedOk(d: BondDeviceData) {//绑定成功后进行断开
@@ -89,10 +89,27 @@ class RopeVM : BaseDeviceScan2ConnVM() {
     }
 
     override fun onBondedFailed(d: BondDeviceData) {
-        TODO("Not yet implemented")
+
     }
+
     override fun onFoundDevice(d: Device) {
-        TODO("Not yet implemented")
+
+    }
+
+    private fun getBatteryInfo() {
+        writeCharacter(
+            UUID.fromString(UUID_SRVC),
+            UUID.fromString(UUID_WRITE),
+            StringUtils.toByteArray("F55F060202005E", ""),
+            object : WriteCharacteristicCallback {
+                override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
+                    LogUtils.d("getBatteryInfo#onRequestFailed:${failType},${value}")
+                }
+                override fun onCharacteristicWrite(request: Request, value: ByteArray) {
+                    LogUtils.d("getBatteryInfo#onRequestSuccess:${StringUtils.toHex(value)}")
+                }
+            }
+        )
     }
 
     fun switchMode(m: Mode, cb: WriteCharacteristicCallback? = null) {
@@ -141,7 +158,7 @@ class RopeVM : BaseDeviceScan2ConnVM() {
 
     }
 
-    open fun doWriteCharacteristic(str: String, cb: WriteCharacteristicCallback? = null) {
+    fun doWriteCharacteristic(str: String, cb: WriteCharacteristicCallback? = null) {
         val data: ByteArray = StringUtils.toByteArray(str, "")
         val data3 = (data.sum() and 0xff).toByte()
         val data4 = data + data3
@@ -160,7 +177,7 @@ class RopeVM : BaseDeviceScan2ConnVM() {
             })
     }
 
-    open fun reset(cb: WriteCharacteristicCallback? = null) {
+    fun reset(cb: WriteCharacteristicCallback? = null) {
         val data: ByteArray = StringUtils.toByteArray("F55F0602", "")
         val data2 = DataUtils.shortToByteBig(0x1101)
         val data3 = ((data + data2).sum() and 0xff).toByte()

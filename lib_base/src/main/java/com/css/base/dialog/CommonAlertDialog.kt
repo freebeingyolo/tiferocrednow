@@ -92,7 +92,7 @@ class CommonAlertDialog : BasePopupWindow.OnDismissListener {
                     dialog = SingleDialog(context)
                 }
                 DialogType.Edit -> {
-                    dialog = EditDialog(context)
+                    dialog = EditDialog.Builder().build(context)
                 }
                 DialogType.Image -> {
                     dialog = ImageDialog(context)
@@ -116,7 +116,7 @@ class CommonAlertDialog : BasePopupWindow.OnDismissListener {
                     dialog = SingleDialog(attachDialog!!)
                 }
                 DialogType.Edit -> {
-                    dialog = EditDialog(attachDialog!!)
+                    dialog = EditDialog.Builder().build(attachDialog!!)
                 }
                 DialogType.Image -> {
                     dialog = ImageDialog(context)

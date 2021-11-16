@@ -3,6 +3,7 @@ package com.css.ble.ui.fragment
 import LogUtils
 import android.graphics.Color
 import android.os.Bundle
+import android.text.InputType
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import cn.wandersnail.ble.callback.WriteCharacteristicCallback
 import cn.wandersnail.commons.util.StringUtils
 import cn.wandersnail.commons.util.ToastUtils
 import com.css.base.dialog.CommonAlertDialog
+import com.css.base.dialog.EditDialog
 import com.css.base.dialog.inner.DialogClickListener
 import com.css.ble.R
 import com.css.ble.bean.DeviceType
@@ -33,11 +35,12 @@ import com.css.ble.viewmodel.RopeVM.Mode
  *@time 2021-11-01
  *@description 跳绳器
  */
-class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : CommonMeasureBeginFragment<LayoutRopeBinding>(d, vm)  {
+class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
+    CommonMeasureBeginFragment<LayoutRopeBinding>(d, vm) {
 
     override val vbCls: Class<LayoutRopeBinding> get() = LayoutRopeBinding::class.java
     private val mViewModel2: RopeVM get() = mViewModel as RopeVM
-    private var connectControl: Int  = 0
+    private var connectControl: Int = 0
     private var mCountTimeDialog: OptionsPickerView<String>? = null
     private var mCountTimeList = ArrayList<String>()
     private var mCountTime = ""
@@ -58,7 +61,7 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Commo
         }
     }
 
-    fun initUI () {
+    fun initUI() {
         when (mViewModel2.state) {
             BaseDeviceScan2ConnVM.State.discovered -> {
                 discoveredBLE()
@@ -70,7 +73,7 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Commo
         }
     }
 
-    fun initState () {
+    fun initState() {
         mViewModel2.stateObsrv.observe(viewLifecycleOwner) {
             when (it) {
                 BaseDeviceScan2ConnVM.State.disconnected -> {
@@ -86,7 +89,7 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Commo
         }
     }
 
-    private fun discoveredBLE () {
+    private fun discoveredBLE() {
         mViewModel2.doWriteCharacteristic("f55f06020200")
         mViewModel2.doWriteCharacteristic("f55f06021001")
         mViewModel2.doWriteCharacteristic("f55f10030100001")
@@ -104,7 +107,7 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Commo
         mViewBinding?.modeContainer?.isEnabled = true
     }
 
-    fun disconnectBLE () {
+    fun disconnectBLE() {
         mViewBinding?.startExercise?.visibility = View.GONE
         mViewBinding?.startExercised?.visibility = View.GONE
         mViewBinding?.startExercise1?.visibility = View.VISIBLE
@@ -122,144 +125,165 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Commo
 
     fun openSwitchSpinner(v: View) {
         val anchorView = mViewBinding!!.modeContainer
-        val popUpWindow = object : BasePopupWindow(requireContext(), anchorView.width, AbsListView.LayoutParams.WRAP_CONTENT) {
-            override fun onCreateContentView(): View {
-                val listView = ListView(requireContext())
-                listView.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_while_radius4)
-                listView.divider = null
-                val datas = mViewModel2.getModels()
-                listView.adapter = object : ArrayAdapter<String>(requireContext(), R.layout.layout_device_mode_switch_item, datas) {
+        val popUpWindow =
+            object : BasePopupWindow(requireContext(), anchorView.width, AbsListView.LayoutParams.WRAP_CONTENT) {
+                override fun onCreateContentView(): View {
+                    val listView = ListView(requireContext())
+                    listView.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_while_radius4)
+                    listView.divider = null
+                    val datas = mViewModel2.getModels()
+                    listView.adapter = object :
+                        ArrayAdapter<String>(requireContext(), R.layout.layout_device_mode_switch_item, datas) {
 
-                    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                        val ret = super.getView(position, convertView, parent)
-                        ret.setOnClickListener {
-                            val modes = RopeVM.Mode.values()
-                            if ("byCountTime" == modes[position].name) {//倒计时长
-                                if (mCountTimeDialog == null) {
-                                    for (index in 30 downTo 1) {
-                                        mCountTimeList.add(index.toString())
-                                    }
-                                }
-                                mCountTimeDialog = OptionsPickerBuilder(
-                                    activity
-                                ) { options1, options2, options3, v ->
-                                    mCountTime = mCountTimeList[options1]
-                                }.setLayoutRes(
-                                    R.layout.dialog_rope_count_time
-                                ) { v ->
-                                    var title = v?.findViewById<TextView>(R.id.tv_title)
-                                    var cancel = v?.findViewById<TextView>(R.id.btn_cancel)
-                                    var submit = v?.findViewById<TextView>(R.id.btn_submit)
-                                    title?.text = "设置倒计时时长"
-                                    cancel?.setOnClickListener {
-                                        mCountTimeDialog?.dismiss()
-                                    }
-                                    submit?.setOnClickListener {
-                                        mCountTimeDialog?.returnData()
-                                        mViewModel2.switchMode(modes[position], object : WriteCharacteristicCallback {
-                                            override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
-                                                ToastUtils.showShort("切换模式失败")
-                                                popupWindow.dismiss()
-                                            }
-
-                                            override fun onCharacteristicWrite(request: Request, value: ByteArray) {
-                                                LogUtils.d("切换模式成功:${StringUtils.toHex(value, "")}")
-                                                popupWindow.dismiss()
-                                            }
-                                        })
-                                        mCountTimeDialog?.dismiss()
-                                    }
-                                }.setLabels("分钟", "", "")
-                                    .isCenterLabel(true)
-                                    .setSelectOptions(mCountTimeList.indexOf(mCountTime))
-                                    .setLineSpacingMultiplier(3.0F)
-                                    .setTextColorCenter(Color.parseColor("#F2682A"))
-                                    .setOutSideCancelable(true)//点击外部dismiss default true
-                                    .isDialog(true)//是否显示为对话框样式
-                                    .build()
-                                mCountTimeDialog?.setPicker(mCountTimeList)
-                                val lp: FrameLayout.LayoutParams = mCountTimeDialog!!.dialogContainerLayout.layoutParams as FrameLayout.LayoutParams
-                                lp.leftMargin = 0
-                                lp.rightMargin = 0
-                                mCountTimeDialog!!.dialog.window?.setGravity(Gravity.BOTTOM)
-                                mCountTimeDialog!!.dialog.window?.setWindowAnimations(R.style.picker_view_slide_anim)
-                                mCountTimeDialog?.show()
-                            } else if ("byCountNumber" == modes[position].name) {
-                                CommonAlertDialog(context).apply {
-                                    type = CommonAlertDialog.DialogType.Edit
-                                    title = "设置倒计数数量"
-                                    hint = "请输入数量"
-                                    leftBtnText = "取消"
-                                    rightBtnText = "确定"
-                                    listener = object : DialogClickListener.DefaultLisener() {
-
-                                        override fun onRightEditBtnClick(view: View, content: String?) {
-                                            if (content == "") {
-                                                showCenterToast("您还未输入倒计数个数")
-                                                return
-                                            }
-                                            var p: Pattern = Pattern.compile("[0-9]*")
-                                            var m: Matcher = p.matcher(content)
-                                            if(m.matches() ) {
-                                                var countNumber = Integer.parseInt(content.toString())
-                                                if (countNumber < 1 || countNumber > 500) {
-                                                    showCenterToast("倒计数只能是1-500的整数才可开始训练")
-                                                    dialog?.dismiss()
-                                                } else {
-                                                    mCountNumber = content!!
-                                                    mViewModel2.switchMode(modes[position], object : WriteCharacteristicCallback {
-                                                        override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
-                                                            ToastUtils.showShort("切换模式失败")
-                                                            popupWindow.dismiss()
-                                                        }
-
-                                                        override fun onCharacteristicWrite(request: Request, value: ByteArray) {
-                                                            LogUtils.d("切换模式成功:${StringUtils.toHex(value, "")}")
-                                                            popupWindow.dismiss()
-                                                        }
-                                                    })
-                                                    dialog?.dismiss()
-                                                }
-                                            } else {
-                                                showCenterToast("倒计数只能是1-500的整数才可开始训练")
-                                            }
+                        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                            val ret = super.getView(position, convertView, parent)
+                            ret.setOnClickListener {
+                                val modes = RopeVM.Mode.values()
+                                if ("byCountTime" == modes[position].name) {//倒计时长
+                                    if (mCountTimeDialog == null) {
+                                        for (index in 30 downTo 1) {
+                                            mCountTimeList.add(index.toString())
                                         }
                                     }
-                                }.show()
+                                    mCountTimeDialog = OptionsPickerBuilder(
+                                        activity
+                                    ) { options1, options2, options3, v ->
+                                        mCountTime = mCountTimeList[options1]
+                                    }.setLayoutRes(
+                                        R.layout.dialog_rope_count_time
+                                    ) { v ->
+                                        val title = v?.findViewById<TextView>(R.id.tv_title)
+                                        val cancel = v?.findViewById<TextView>(R.id.btn_cancel)
+                                        val submit = v?.findViewById<TextView>(R.id.btn_submit)
+                                        title?.text = "设置倒计时时长"
+                                        cancel?.setOnClickListener {
+                                            mCountTimeDialog?.dismiss()
+                                        }
+                                        submit?.setOnClickListener {
+                                            mCountTimeDialog?.returnData()
+                                            mViewModel2.switchMode(
+                                                modes[position],
+                                                object : WriteCharacteristicCallback {
+                                                    override fun onRequestFailed(
+                                                        request: Request,
+                                                        failType: Int,
+                                                        value: Any?
+                                                    ) {
+                                                        ToastUtils.showShort("切换模式失败")
+                                                        popupWindow.dismiss()
+                                                    }
 
-                            } else {
-                                mViewModel2.switchMode(modes[position], object : WriteCharacteristicCallback {
-                                    override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
-                                        ToastUtils.showShort("切换模式失败")
-                                        popupWindow.dismiss()
-                                    }
+                                                    override fun onCharacteristicWrite(
+                                                        request: Request,
+                                                        value: ByteArray
+                                                    ) {
+                                                        LogUtils.d("切换模式成功:${StringUtils.toHex(value, "")}")
+                                                        popupWindow.dismiss()
+                                                    }
+                                                })
+                                            mCountTimeDialog?.dismiss()
+                                        }
+                                    }.setLabels("分钟", "", "")
+                                        .isCenterLabel(true)
+                                        .setSelectOptions(mCountTimeList.indexOf(mCountTime))
+                                        .setLineSpacingMultiplier(3.0F)
+                                        .setTextColorCenter(Color.parseColor("#F2682A"))
+                                        .setOutSideCancelable(true)//点击外部dismiss default true
+                                        .isDialog(true)//是否显示为对话框样式
+                                        .build()
+                                    mCountTimeDialog?.setPicker(mCountTimeList)
+                                    val lp: FrameLayout.LayoutParams =
+                                        mCountTimeDialog!!.dialogContainerLayout.layoutParams as FrameLayout.LayoutParams
+                                    lp.leftMargin = 0
+                                    lp.rightMargin = 0
+                                    mCountTimeDialog!!.dialog.window?.setGravity(Gravity.BOTTOM)
+                                    mCountTimeDialog!!.dialog.window?.setWindowAnimations(R.style.picker_view_slide_anim)
+                                    mCountTimeDialog?.show()
+                                } else if ("byCountNumber" == modes[position].name) {
+                                    EditDialog.Builder().apply {
+                                        title = "设置倒计数数量"
+                                        hint = "请输入数量"
+                                        leftBtnText = "取消"
+                                        rightBtnText = "确定"
+                                        inputType = InputType.TYPE_CLASS_NUMBER
+                                        listener = object : DialogClickListener.DefaultLisener() {
 
-                                    override fun onCharacteristicWrite(request: Request, value: ByteArray) {
-                                        LogUtils.d("切换模式成功:${StringUtils.toHex(value, "")}")
-                                        popupWindow.dismiss()
-                                    }
-                                })
+                                            override fun onRightEditBtnClick(view: View, content: String?) {
+                                                if (content == "") {
+                                                    showCenterToast("您还未输入倒计数个数")
+                                                    return
+                                                }
+                                                val p: Pattern = Pattern.compile("[0-9]*")
+                                                val m: Matcher = p.matcher(content)
+                                                if (m.matches()) {
+                                                    val countNumber = Integer.parseInt(content.toString())
+                                                    if (countNumber < 1 || countNumber > 500) {
+                                                        showCenterToast("倒计数只能是1-500的整数才可开始训练")
+                                                        dismiss()
+                                                    } else {
+                                                        mCountNumber = content!!
+                                                        mViewModel2.switchMode(
+                                                            modes[position],
+                                                            object : WriteCharacteristicCallback {
+                                                                override fun onRequestFailed(
+                                                                    request: Request,
+                                                                    failType: Int,
+                                                                    value: Any?
+                                                                ) {
+                                                                    ToastUtils.showShort("切换模式失败")
+                                                                    popupWindow.dismiss()
+                                                                }
+
+                                                                override fun onCharacteristicWrite(
+                                                                    request: Request,
+                                                                    value: ByteArray
+                                                                ) {
+                                                                    LogUtils.d("切换模式成功:${StringUtils.toHex(value, "")}")
+                                                                    popupWindow.dismiss()
+                                                                }
+                                                            })
+                                                        dismiss()
+                                                    }
+                                                } else {
+                                                    showCenterToast("倒计数只能是1-500的整数才可开始训练")
+                                                }
+                                            }
+                                        }
+                                    }.build(context).show()
+
+                                } else {
+                                    mViewModel2.switchMode(modes[position], object : WriteCharacteristicCallback {
+                                        override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
+                                            ToastUtils.showShort("切换模式失败")
+                                            popupWindow.dismiss()
+                                        }
+
+                                        override fun onCharacteristicWrite(request: Request, value: ByteArray) {
+                                            LogUtils.d("切换模式成功:${StringUtils.toHex(value, "")}")
+                                            popupWindow.dismiss()
+                                        }
+                                    })
+                                }
                             }
+                            return ret
                         }
-                        return ret
                     }
+                    listView.choiceMode = ListView.CHOICE_MODE_SINGLE
+                    listView.setItemChecked(mViewModel2.mode.ordinal, true)
+                    return listView
                 }
-                listView.choiceMode = ListView.CHOICE_MODE_SINGLE
-                listView.setItemChecked(mViewModel2.mode.ordinal, true)
-                return listView
-            }
 
-        }
-            .setOutSideDismiss(true)
-            .setPopupGravity(Gravity.TOP)
-            .setBackground(null)
-            .setOffsetY(-10)
-            .setBackPressEnable(false)
+            }
+                .setOutSideDismiss(true)
+                .setPopupGravity(Gravity.TOP)
+                .setBackground(null)
+                .setOffsetY(-10)
+                .setBackPressEnable(false)
 
         popUpWindow.showPopupWindow(anchorView)
     }
 
-    fun connectChange () {
+    fun connectChange() {
         if (connectControl == 0) {
             startConnect()
             connectControl = 1
@@ -268,7 +292,8 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Commo
             connectControl = 0
         }
     }
-    fun startExercise () {
+
+    fun startExercise() {
         mViewModel2.reset()
         mViewModel2.setIsStart(true)
         when (mViewModel2.mode) {
@@ -281,7 +306,7 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Commo
                     return
                 } else {
                     val hexTime = StringUtils.toHex(Integer.parseInt(mCountTime) * 60)
-                    val data = StringUtils.fillZero(hexTime,4,true)
+                    val data = StringUtils.fillZero(hexTime, 4, true)
                     mViewModel2.doWriteCharacteristic("f55f06040302$data")
                 }
             }
@@ -291,7 +316,7 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Commo
                     return
                 } else {
                     val hexTime2 = StringUtils.toHex(Integer.parseInt(mCountNumber))
-                    val data2 = StringUtils.fillZero(hexTime2,4,true)
+                    val data2 = StringUtils.fillZero(hexTime2, 4, true)
                     mViewModel2.doWriteCharacteristic("f55f06040303$data2")
                 }
             }
@@ -304,7 +329,7 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Commo
         mViewBinding?.startExercise1?.visibility = View.GONE
     }
 
-    fun stopExercise () {
+    fun stopExercise() {
         CommonAlertDialog(applicationContext).apply {
             type = CommonAlertDialog.DialogType.Confirm
             gravity = Gravity.BOTTOM
@@ -329,7 +354,7 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Commo
         }.show()
     }
 
-    fun startExercise2 () {
+    fun startExercise2() {
         if ("暂停训练" == mViewBinding?.pauseExercise?.text) {
             mViewModel2.changeExercise("04")
             mViewBinding?.pauseExercise?.text = "开始训练"

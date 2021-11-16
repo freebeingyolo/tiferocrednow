@@ -4,10 +4,9 @@ import android.app.Dialog
 import android.content.Context
 import android.graphics.Typeface
 import android.text.Editable
-import android.text.InputFilter
 import android.text.TextWatcher
+import android.view.Gravity
 import android.view.View
-import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
@@ -18,11 +17,8 @@ import androidx.core.content.ContextCompat
 import com.blankj.utilcode.util.SizeUtils
 import com.css.base.R
 import com.css.base.dialog.inner.DialogClickListener
-import com.css.base.utils.StringUtils
 import com.css.service.utils.DoubleClickUtils
 import razerdp.basepopup.BasePopupWindow
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 
 
 /**
@@ -30,7 +26,6 @@ import java.util.regex.Pattern
  * @date 2020/1/29
  */
 class EditDialog : BasePopupWindow, View.OnClickListener {
-
     private var listener: DialogClickListener? = null
     private var tvTitle: AppCompatTextView
     private var etContent: AppCompatEditText
@@ -39,12 +34,12 @@ class EditDialog : BasePopupWindow, View.OnClickListener {
     private var tvHint: AppCompatTextView
     private var ivClean: AppCompatImageView
 
-    constructor(context: Context) : super(context)
+    private constructor(context: Context) : super(context)
 
     /**
      * 通过dialog构造的弹窗，可以显示在dialog之上
      */
-    constructor(dialog: Dialog) : super(dialog)
+    private constructor(dialog: Dialog) : super(dialog)
 
     init {
         setAdjustInputMethod(true)
@@ -157,6 +152,11 @@ class EditDialog : BasePopupWindow, View.OnClickListener {
         }
     }
 
+    fun setInputType(v: Int) {
+        var v1 = etContent.inputType
+        etContent.inputType = v
+    }
+
     fun setLeftBtn(left: CharSequence?) {
         left?.let {
             tvLeft.text = it
@@ -222,4 +222,45 @@ class EditDialog : BasePopupWindow, View.OnClickListener {
         }
     }
 
+    fun show() {
+        showPopupWindow()
+    }
+
+    class Builder {
+        var outSideDismiss = true//设置BasePopup是否允许点击外部触发Dismiss
+        var backPressEnable = true//设置BasePopup是否允许返回键dismiss
+        var gravity: Int = Gravity.CENTER
+        var title: CharSequence? = null
+        var hint: CharSequence? = null
+        var leftBtnText: CharSequence? = null
+        var rightBtnText: CharSequence? = null
+        var listener: DialogClickListener? = null
+        var inputType = 1
+
+        fun build(ctx: Context) = run {
+            val ret = EditDialog(ctx).apply {
+                setUp(this)
+            }
+            ret
+        }
+
+        fun build(dlg: Dialog) = run {
+            val ret = EditDialog(dlg).apply {
+                setUp(this)
+            }
+            ret
+        }
+
+        private fun setUp(dlg: EditDialog) {
+            dlg.setOutSideDismiss(outSideDismiss)
+            dlg.setBackPressEnable(backPressEnable)
+            dlg.popupGravity = gravity
+            dlg.setTitle(title)
+            dlg.setHint(hint)
+            dlg.setLeftBtn(leftBtnText)
+            dlg.setRightBtn(rightBtnText)
+            dlg.setListener(listener)
+            dlg.setInputType(inputType)
+        }
+    }
 }
