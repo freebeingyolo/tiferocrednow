@@ -1,8 +1,8 @@
 package com.css.ble.ui.fragment
 
+import LogUtils
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -14,19 +14,19 @@ import cn.wandersnail.commons.util.StringUtils
 import cn.wandersnail.commons.util.ToastUtils
 import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
-import com.css.pickerview.builder.OptionsPickerBuilder
-import com.css.pickerview.view.OptionsPickerView
 import com.css.ble.R
 import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.LayoutRopeBinding
 import com.css.ble.viewmodel.RopeVM
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
-import com.css.service.utils.WonderCoreCache
+import com.css.pickerview.builder.OptionsPickerBuilder
+import com.css.pickerview.view.OptionsPickerView
 import com.tencent.bugly.Bugly.applicationContext
 import razerdp.basepopup.BasePopupWindow
 import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+import com.css.ble.viewmodel.RopeVM.Mode
 
 /**
  *@author chanpal
@@ -56,7 +56,6 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Commo
             it.model = mViewModel as RopeVM
             it.lifecycleOwner = viewLifecycleOwner
         }
-        mViewModel2.fetchRecommentation()
     }
 
     fun initUI () {
@@ -272,27 +271,27 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Commo
     fun startExercise () {
         mViewModel2.reset()
         mViewModel2.setIsStart(true)
-        when (mViewModel2.mode.name) {
-            "byFree" -> {
+        when (mViewModel2.mode) {
+            Mode.byFree -> {
                 mViewModel2.doWriteCharacteristic("f55f060403010000")
             }
-            "byCountTime" -> {
+            Mode.byCountTime -> {
                 if (mCountTime.isEmpty()) {
                     ToastUtils.showShort("请先选择运动模式")
                     return
                 } else {
-                    var hexTime = StringUtils.toHex(Integer.parseInt(mCountTime) * 60)
-                    var data = StringUtils.fillZero(hexTime,4,true)
+                    val hexTime = StringUtils.toHex(Integer.parseInt(mCountTime) * 60)
+                    val data = StringUtils.fillZero(hexTime,4,true)
                     mViewModel2.doWriteCharacteristic("f55f06040302$data")
                 }
             }
-            "byCountNumber" -> {
+            Mode.byCountNumber -> {
                 if (mCountNumber.isEmpty()) {
                     ToastUtils.showShort("请先选择运动模式")
                     return
                 } else {
-                    var hexTime2 = StringUtils.toHex(Integer.parseInt(mCountNumber))
-                    var data2 = StringUtils.fillZero(hexTime2,4,true)
+                    val hexTime2 = StringUtils.toHex(Integer.parseInt(mCountNumber))
+                    val data2 = StringUtils.fillZero(hexTime2,4,true)
                     mViewModel2.doWriteCharacteristic("f55f06040303$data2")
                 }
             }

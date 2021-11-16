@@ -11,6 +11,7 @@ import cn.wandersnail.ble.callback.WriteCharacteristicCallback
 import cn.wandersnail.commons.observer.Observe
 import cn.wandersnail.commons.util.StringUtils
 import com.css.ble.R
+import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.utils.DataUtils
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
@@ -70,6 +71,7 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
         return uuid.toString() == UUID_SRVC
     }
 
+
     fun getModels(): List<String> {
         return listOf(
             getString(R.string.byCount),
@@ -81,10 +83,26 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
 
     override val bonded_tip: String get() = "单杠已连接成功，开启你的挑战之旅吧！"
 
-    override fun discovered(d: Device) {
+    override fun onDiscovered(d: Device, isBonding: Boolean) {
         //开启通知
         sendNotification(UUID.fromString(UUID_SRVC), UUID.fromString(UUID_NOTIFY), true, null)
-        writeWeight()
+        if (deviceType == DeviceType.HORIZONTAL_BAR) writeWeight()
+    }
+
+    override fun onFoundDevice(d: Device) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onDisconnected(d: Device?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onBondedOk(d: BondDeviceData) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onBondedFailed(d: BondDeviceData) {
+        TODO("Not yet implemented")
     }
 
     fun writeWeight(cb: WriteCharacteristicCallback? = null) {

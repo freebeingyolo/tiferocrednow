@@ -6,9 +6,6 @@ import cn.wandersnail.ble.Device
 import cn.wandersnail.ble.Request
 import cn.wandersnail.commons.observer.Observe
 import com.css.ble.bean.DeviceType
-import com.css.ble.bean.WeightBondData
-import com.css.service.utils.CacheKey
-import com.css.service.utils.WonderCoreCache
 import java.text.DecimalFormat
 import java.util.*
 
@@ -36,8 +33,8 @@ class PushUpVM : HorizontalBarVM() {
         get() = "俯卧撑板已连接成功，开启你的挑战之旅吧！"
 
     @Observe
-    override fun discovered(d: Device) {
-        super.discovered(d)
+    override fun onDiscovered(d: Device,isBonding:Boolean) {
+        super.onDiscovered(d,isBonding)
     }
 
     override val exerciseKcalTxt = Transformations.map(exerciseCount) {

@@ -11,6 +11,7 @@ import cn.wandersnail.ble.callback.WriteCharacteristicCallback
 import cn.wandersnail.commons.observer.Observe
 import cn.wandersnail.commons.util.StringUtils
 import com.css.ble.R
+import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.utils.DataUtils
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
@@ -74,9 +75,24 @@ class RopeVM : BaseDeviceScan2ConnVM() {
 
     override val bonded_tip: String get() = "跳绳器已连接成功，开启你的挑战之旅吧！"
 
-    override fun discovered(d: Device) {
+    override fun onDiscovered(d: Device,isBonding:Boolean) {
         //开启通知
         sendNotification(UUID.fromString(UUID_SRVC), UUID.fromString(UUID_NOTIFY), true, null)
+    }
+
+    override fun onDisconnected(d: Device?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onBondedOk(d: BondDeviceData) {//绑定成功后进行断开
+        disconnect()
+    }
+
+    override fun onBondedFailed(d: BondDeviceData) {
+        TODO("Not yet implemented")
+    }
+    override fun onFoundDevice(d: Device) {
+        TODO("Not yet implemented")
     }
 
     fun switchMode(m: Mode, cb: WriteCharacteristicCallback? = null) {

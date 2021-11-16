@@ -58,9 +58,13 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     /*** abstractable start ****/
     abstract fun filterName(name: String): Boolean
     abstract fun filterUUID(uuid: UUID): Boolean
-    abstract fun discovered(d: Device)
-    open fun onDisconnected(d: Device?) {}
-    /*** abstractable start ****/
+    abstract fun onFoundDevice(d: Device)
+    abstract fun onDiscovered(d: Device, isBonding: Boolean)
+    abstract fun onDisconnected(d: Device?)
+    abstract fun onBondedOk(d: BondDeviceData)
+    abstract fun onBondedFailed(d: BondDeviceData)
+
+    /*** abstractable end ****/
 
     /*** overridable start ****/
     abstract val bonded_tip: String
@@ -233,6 +237,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
             avaliableDevice = d
             cancelTimeOutTimer()
             state = State.found
+            onFoundDevice(d)
         }
     }
 
@@ -283,10 +288,10 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
                             }
                         }
                     }
-                    discovered(device)
+                    onDiscovered(device, true)
                 } else {
                     cancelTimeOutTimer()
-                    discovered(device)
+                    onDiscovered(device, false)
                 }
             }
             ConnectionState.RELEASED -> {
@@ -352,7 +357,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
 
     fun bindDevice(
         success: ((String?, DeviceData?) -> Unit)?,
-        failed: ((Int, String?, d:  DeviceData?) -> Unit)?
+        failed: ((Int, String?, d: DeviceData?) -> Unit)?
     ) {
         val device = BondDeviceData(
             avaliableDevice!!.address,
@@ -375,11 +380,13 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
                 //val bondRst = EasyBLE.getInstance().createBond(it.address)
                 //LogUtils.d("bondRst:$bondRst")
                 success?.invoke(msg, d)
+                onBondedOk(device)
                 avaliableDevice = null
             },
             { code, msg, d ->
                 avaliableDevice = null
                 disconnect()
+                onBondedFailed(device)
                 failed?.invoke(code, msg, d)
             }
         )

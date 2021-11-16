@@ -7,6 +7,7 @@ import cn.wandersnail.ble.Request
 import cn.wandersnail.ble.callback.WriteCharacteristicCallback
 import cn.wandersnail.commons.observer.Observe
 import cn.wandersnail.commons.util.StringUtils
+import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.bean.WeightBondData
 import com.css.ble.utils.DataUtils
@@ -60,14 +61,21 @@ class CounterVM : HorizontalBarVM() {
         get() = "计数器已连接成功，开启你的挑战之旅吧！"
 
     @Observe
-    override fun discovered(d: Device) {
+    override fun onDiscovered(d: Device,isBonding:Boolean) {
         sendNotification(UUID.fromString(Companion.UUID_SRVC), UUID.fromString(Companion.UUID_NOTIFY), true, null)
         fetchAllState()
     }
 
     override fun onDisconnected(d: Device?) {
-        super.onDisconnected(d)
         finishExercise()
+    }
+
+    override fun onBondedOk(d: BondDeviceData) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onBondedFailed(d: BondDeviceData) {
+        TODO("Not yet implemented")
     }
 
     @Observe

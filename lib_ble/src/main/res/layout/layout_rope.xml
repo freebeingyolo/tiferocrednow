@@ -376,16 +376,16 @@
             android:background="@drawable/bg_while_radius4"
             android:orientation="horizontal">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
+            <RelativeLayout
                 android:id="@+id/startExercise1"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center">
+                android:layout_height="match_parent">
 
                 <TextView
                     android:id="@+id/connectControl"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
                     android:onClick="@{v->view.connectChange()}"
                     android:text="连接设备"
                     android:textColor="#F2682A"
@@ -393,14 +393,15 @@
 
                 <TextView
                     android:id="@+id/startExercise"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:onClick="@{v->view.startExercise()}"
                     android:text="开始训练"
+                    android:gravity="center"
                     android:textColor="#F2682A"
                     android:textSize="15sp"
                     android:visibility="gone" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
+            </RelativeLayout>
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/startExercised"
