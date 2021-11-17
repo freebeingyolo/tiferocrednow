@@ -7,6 +7,7 @@ import android.text.InputType
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams
 import android.widget.*
 import androidx.core.content.ContextCompat
 import cn.wandersnail.ble.Request
@@ -20,15 +21,14 @@ import com.css.ble.R
 import com.css.ble.bean.DeviceType
 import com.css.ble.databinding.LayoutRopeBinding
 import com.css.ble.viewmodel.RopeVM
+import com.css.ble.viewmodel.RopeVM.Mode
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
 import com.css.pickerview.builder.OptionsPickerBuilder
 import com.css.pickerview.view.OptionsPickerView
 import com.tencent.bugly.Bugly.applicationContext
 import razerdp.basepopup.BasePopupWindow
-import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-import com.css.ble.viewmodel.RopeVM.Mode
 
 /**
  *@author chanpal
@@ -42,7 +42,7 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
     private val mViewModel2: RopeVM get() = mViewModel as RopeVM
     private var connectControl: Int = 0
     private var mCountTimeDialog: OptionsPickerView<String>? = null
-    private var mCountTimeList = ArrayList<String>()
+    private val mCountTimeList by lazy { (30 downTo 1).map { it.toString() } }
     private var mCountTime = ""
     private var mCountNumber = ""
 
@@ -118,29 +118,23 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
 
     fun openSwitchSpinner(v: View) {
         val anchorView = mViewBinding!!.modeContainer
-        val popUpWindow =
-            object : BasePopupWindow(requireContext(), anchorView.width, AbsListView.LayoutParams.WRAP_CONTENT) {
-                override fun onCreateContentView(): View {
-                    val listView = ListView(requireContext())
-                    listView.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_while_radius4)
-                    listView.divider = null
-                    val datas = mViewModel2.getModels()
-                    listView.adapter = object :
-                        ArrayAdapter<String>(requireContext(), R.layout.layout_device_mode_switch_item, datas) {
-
+        val popUpWindow = object : BasePopupWindow(requireContext(), anchorView.width, LayoutParams.WRAP_CONTENT) {
+            override fun onCreateContentView(): View {
+                val listView = ListView(requireContext())
+                listView.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_while_radius4)
+                listView.divider = null
+                val datas = mViewModel2.getModels()
+                listView.adapter =
+                    object : ArrayAdapter<String>(requireContext(), R.layout.layout_device_mode_switch_item, datas) {
                         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                             val ret = super.getView(position, convertView, parent)
                             ret.setOnClickListener {
-                                val modes = RopeVM.Mode.values()
-                                if ("byCountTime" == modes[position].name) {//倒计时长
-                                    if (mCountTimeDialog == null) {
-                                        for (index in 30 downTo 1) {
-                                            mCountTimeList.add(index.toString())
-                                        }
-                                    }
+                                dismiss()
+                                val modes = Mode.values()
+                                if (Mode.byCountTime == modes[position]) {//倒计时长
                                     mCountTimeDialog = OptionsPickerBuilder(
                                         activity
-                                    ) { options1, options2, options3, v ->
+                                    ) { options1, _, _, _ ->
                                         mCountTime = mCountTimeList[options1]
                                     }.setLayoutRes(
                                         R.layout.dialog_rope_count_time
@@ -149,31 +143,14 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
                                         val cancel = v?.findViewById<TextView>(R.id.btn_cancel)
                                         val submit = v?.findViewById<TextView>(R.id.btn_submit)
                                         title?.text = "设置倒计时时长"
-                                        cancel?.setOnClickListener {
-                                            mCountTimeDialog?.dismiss()
-                                        }
+                                        cancel?.setOnClickListener { mCountTimeDialog?.dismiss() }
                                         submit?.setOnClickListener {
                                             mCountTimeDialog?.returnData()
-                                            mViewModel2.switchMode(
+                                            switchMode(
                                                 modes[position],
-                                                object : WriteCharacteristicCallback {
-                                                    override fun onRequestFailed(
-                                                        request: Request,
-                                                        failType: Int,
-                                                        value: Any?
-                                                    ) {
-                                                        ToastUtils.showShort("切换模式失败")
-                                                        popupWindow.dismiss()
-                                                    }
-
-                                                    override fun onCharacteristicWrite(
-                                                        request: Request,
-                                                        value: ByteArray
-                                                    ) {
-                                                        LogUtils.d("切换模式成功:${StringUtils.toHex(value, "")}")
-                                                        popupWindow.dismiss()
-                                                    }
-                                                })
+                                                (mCountTime.toShort() * 60).toShort(),
+                                                popupWindow
+                                            )
                                             mCountTimeDialog?.dismiss()
                                         }
                                     }.setLabels("分钟", "", "")
@@ -192,15 +169,15 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
                                     mCountTimeDialog!!.dialog.window?.setGravity(Gravity.BOTTOM)
                                     mCountTimeDialog!!.dialog.window?.setWindowAnimations(R.style.picker_view_slide_anim)
                                     mCountTimeDialog?.show()
-                                } else if ("byCountNumber" == modes[position].name) {
+                                } else if (Mode.byCountNumber == modes[position]) {
                                     EditDialog.Builder().apply {
                                         title = "设置倒计数数量"
                                         hint = "请输入数量"
                                         leftBtnText = "取消"
                                         rightBtnText = "确定"
                                         inputType = InputType.TYPE_CLASS_NUMBER
-                                        listener = object : DialogClickListener.DefaultLisener() {
-
+                                    }.build(context).apply {
+                                        setListener(listener = object : DialogClickListener.DefaultLisener() {
                                             override fun onRightEditBtnClick(view: View, content: String?) {
                                                 if (content == "") {
                                                     showCenterToast("您还未输入倒计数个数")
@@ -215,65 +192,49 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
                                                         dismiss()
                                                     } else {
                                                         mCountNumber = content!!
-                                                        mViewModel2.switchMode(
-                                                            modes[position],
-                                                            object : WriteCharacteristicCallback {
-                                                                override fun onRequestFailed(
-                                                                    request: Request,
-                                                                    failType: Int,
-                                                                    value: Any?
-                                                                ) {
-                                                                    ToastUtils.showShort("切换模式失败")
-                                                                    popupWindow.dismiss()
-                                                                }
-
-                                                                override fun onCharacteristicWrite(
-                                                                    request: Request,
-                                                                    value: ByteArray
-                                                                ) {
-                                                                    LogUtils.d("切换模式成功:${StringUtils.toHex(value, "")}")
-                                                                    popupWindow.dismiss()
-                                                                }
-                                                            })
+                                                        switchMode(modes[position], countNumber.toShort(), popupWindow)
                                                         dismiss()
                                                     }
                                                 } else {
                                                     showCenterToast("倒计数只能是1-500的整数才可开始训练")
                                                 }
                                             }
-                                        }
-                                    }.build(context).show()
+                                        })
+                                    }.show()
 
                                 } else {
-                                    mViewModel2.switchMode(modes[position], object : WriteCharacteristicCallback {
-                                        override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
-                                            ToastUtils.showShort("切换模式失败")
-                                            popupWindow.dismiss()
-                                        }
-
-                                        override fun onCharacteristicWrite(request: Request, value: ByteArray) {
-                                            LogUtils.d("切换模式成功:${StringUtils.toHex(value, "")}")
-                                            popupWindow.dismiss()
-                                        }
-                                    })
+                                    switchMode(modes[position], 0, popupWindow)
                                 }
                             }
                             return ret
                         }
                     }
-                    listView.choiceMode = ListView.CHOICE_MODE_SINGLE
-                    listView.setItemChecked(mViewModel2.mode.ordinal, true)
-                    return listView
-                }
-
+                listView.choiceMode = ListView.CHOICE_MODE_SINGLE
+                listView.setItemChecked(mViewModel2.mode.ordinal, true)
+                return listView
             }
-                .setOutSideDismiss(true)
-                .setPopupGravity(Gravity.TOP)
-                .setBackground(null)
-                .setOffsetY(-10)
-                .setBackPressEnable(false)
+        }
+            .setOutSideDismiss(true)
+            .setPopupGravity(Gravity.TOP)
+            .setBackground(null)
+            .setOffsetY(-10)
+            .setBackPressEnable(false)
 
         popUpWindow.showPopupWindow(anchorView)
+    }
+
+    private fun switchMode(mode: Mode, extra: Short, popupWindow: PopupWindow) {
+        mViewModel2.switchMode(mode, extra, object : WriteCharacteristicCallback {
+            override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
+                ToastUtils.showShort("切换模式失败")
+                popupWindow.dismiss()
+            }
+
+            override fun onCharacteristicWrite(request: Request, value: ByteArray) {
+                LogUtils.d("切换模式成功:${StringUtils.toHex(value, "")}")
+                popupWindow.dismiss()
+            }
+        })
     }
 
     fun connectChange() {
@@ -291,17 +252,16 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
         mViewModel2.setIsStart(true)
         when (mViewModel2.mode) {
             Mode.byFree -> {
-                //mViewModel2.writeCharacter("f55f060403010000")
-                mViewModel2.writeCharacter(RopeVM.Command.SWITCH_MODE.code("010000"))
+                //开始时保证对端数据正确
+                mViewModel2.switchMode(mViewModel2.mode, 0)
             }
             Mode.byCountTime -> {
                 if (mCountTime.isEmpty()) {
                     ToastUtils.showShort("请先选择运动模式")
                     return
                 } else {
-                    val hexTime = StringUtils.toHex(Integer.parseInt(mCountTime) * 60)
-                    val data = StringUtils.fillZero(hexTime, 4, true)
-                    mViewModel2.writeCharacter(RopeVM.Command.SWITCH_MODE.code("02$data"))
+                    //开始时保证对端数据正确
+                    mViewModel2.switchMode(mViewModel2.mode, (mCountTime.toShort() * 60).toShort())
                 }
             }
             Mode.byCountNumber -> {
@@ -309,9 +269,8 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
                     ToastUtils.showShort("请先选择运动模式")
                     return
                 } else {
-                    val hexTime2 = StringUtils.toHex(Integer.parseInt(mCountNumber))
-                    val data2 = StringUtils.fillZero(hexTime2, 4, true)
-                    mViewModel2.writeCharacter(RopeVM.Command.SWITCH_MODE.code("03$data2"))
+                    //开始时保证对端数据正确
+                    mViewModel2.switchMode(mViewModel2.mode, mCountNumber.toShort())
                 }
             }
         }
@@ -334,7 +293,7 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
             listener = object : DialogClickListener.DefaultLisener() {
                 override fun onRightBtnClick(view: View) {
                     super.onRightBtnClick(view)
-                    mViewModel2.changeExercise("06")
+                    mViewModel2.changeExercise(RopeVM.MotionState.STOP)
                     mViewModel2.setIsStart(false)
                     mViewBinding?.modeSwitch?.setTextColor(Color.BLACK)
                     mViewBinding?.modeSwitch2?.setTextColor(resources.getColor(R.color.colorAccent))
@@ -350,10 +309,10 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
 
     fun startExercise2() {
         if ("暂停训练" == mViewBinding?.pauseExercise?.text) {
-            mViewModel2.changeExercise("04")
+            mViewModel2.changeExercise(RopeVM.MotionState.PAUSE)
             mViewBinding?.pauseExercise?.text = "开始训练"
         } else {
-            mViewModel2.changeExercise("05")
+            mViewModel2.changeExercise(RopeVM.MotionState.RESUME)
             mViewBinding?.pauseExercise?.text = "暂停训练"
         }
     }

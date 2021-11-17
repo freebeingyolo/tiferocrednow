@@ -234,7 +234,6 @@ class EditDialog : BasePopupWindow, View.OnClickListener {
         var hint: CharSequence? = null
         var leftBtnText: CharSequence? = null
         var rightBtnText: CharSequence? = null
-        var listener: DialogClickListener? = null
         var inputType = 1
 
         fun build(ctx: Context) = run {
@@ -259,7 +258,6 @@ class EditDialog : BasePopupWindow, View.OnClickListener {
             dlg.setHint(hint)
             dlg.setLeftBtn(leftBtnText)
             dlg.setRightBtn(rightBtnText)
-            dlg.setListener(listener)
             dlg.setInputType(inputType)
         }
     }

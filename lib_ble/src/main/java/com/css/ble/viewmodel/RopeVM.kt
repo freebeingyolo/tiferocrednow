@@ -42,10 +42,10 @@ class RopeVM : BaseDeviceScan2ConnVM() {
         }
         get() = modeObsvr.value!!
 
-    enum class Mode(val msgId: Int) {
-        byFree(R.string.byFree),
-        byCountTime(R.string.byCountTime),
-        byCountNumber(R.string.byCountNumber)
+    enum class Mode(val msgId: Int, val code: Byte) {
+        byFree(R.string.byFree, 0x01),
+        byCountTime(R.string.byCountTime, 0x02),
+        byCountNumber(R.string.byCountNumber, 0x03)
     }
 
     override val exerciseKcalTxt = Transformations.map(exerciseCount) {
@@ -166,21 +166,29 @@ class RopeVM : BaseDeviceScan2ConnVM() {
 
     }
 
-    fun switchMode(m: Mode, cb: WriteCharacteristicCallback? = null) {
-        writeCharacter(Command.SWITCH_MODE.codeShort(m.ordinal.toShort()), object : WriteCharacteristicCallback {
-            override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
-                cb?.onRequestFailed(request, failType, value)
-            }
+    fun switchMode(m: Mode, extra: Short, cb: WriteCharacteristicCallback? = null) {
+        writeCharacter(Command.SWITCH_MODE.code(m.code, *DataUtils.shortToByteBig(extra)),
+            object : WriteCharacteristicCallback {
+                override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
+                    cb?.onRequestFailed(request, failType, value)
+                }
 
-            override fun onCharacteristicWrite(request: Request, value: ByteArray) {
-                cb?.onCharacteristicWrite(request, value)
-                mode = m
-            }
-        })
+                override fun onCharacteristicWrite(request: Request, value: ByteArray) {
+                    cb?.onCharacteristicWrite(request, value)
+                    mode = m
+                }
+            })
     }
 
-    fun changeExercise(str: String, cb: WriteCharacteristicCallback? = null) {
-        writeCharacter(Command.CHANGE_EXERCISE.code(str), object : WriteCharacteristicCallback {
+    enum class MotionState(val str: String) {
+        PAUSE("04"),
+        RESUME("05"),
+        STOP("06"),
+    }
+
+    //str:04-暂停，05-恢复，06-停止
+    fun changeExercise(motion: MotionState, cb: WriteCharacteristicCallback? = null) {
+        writeCharacter(RopeVM.Command.CHANGE_EXERCISE.code(motion.str), object : WriteCharacteristicCallback {
             override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
                 cb?.onRequestFailed(request, failType, value)
             }
@@ -189,7 +197,7 @@ class RopeVM : BaseDeviceScan2ConnVM() {
                 cb?.onCharacteristicWrite(request, value)
             }
         })
-        if ("06" == str && exerciseCount.value!! > 0) {
+        if (MotionState.STOP == motion && exerciseCount.value!! > 0) {
             finishExercise()
         }
     }
@@ -249,7 +257,7 @@ class RopeVM : BaseDeviceScan2ConnVM() {
                 }
             }
             Command.BATTERY -> {//电池电量
-                var v = DataUtils.bytes2IntBig(value[5])
+                val v = DataUtils.bytes2IntBig(value[5])
                 (batteryLevel as MutableLiveData).value = v
             }
             Command.LOW_POWER_MODE -> {//进低功耗模式,电量为0
