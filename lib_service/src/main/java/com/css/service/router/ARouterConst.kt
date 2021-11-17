@@ -15,4 +15,6 @@ object ARouterConst {
     const val PATH_APP_REGISTER = "/lib_login/register"
     const val PATH_APP_LOGIN = "/lib_login/login"
     const val PATH_APP_RESET_PWD = "/lib_login/resetPassword"
+    const val PATH_APP_CODE_BIND = "/lib_login/codeBind"
+    const val PATH_APP_PWD_BIND = "/lib_login/pwdBind"
 }

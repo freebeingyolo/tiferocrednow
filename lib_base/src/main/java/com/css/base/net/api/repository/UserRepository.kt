@@ -95,4 +95,26 @@ object UserRepository {
         map["phone"] = phone
         return userApi.code(map)
     }
+
+    suspend fun jdLogin(code: String): CommonResponse<String> {
+        val map: MutableMap<String, String> = HashMap()
+        map["code"] = code
+        return userApi.jdLogin(map)
+    }
+
+    suspend fun codeBind(phone: String, code: String, extra: String): CommonResponse<LoginUserData> {
+        val map: MutableMap<String, String> = HashMap()
+        map["phone"] = phone
+        map["code"] = code
+        map["extra"] = extra
+        return userApi.codeBind(map)
+    }
+
+    suspend fun pwdBind(phone: String, password: String, extra: String): CommonResponse<LoginUserData> {
+        val map: MutableMap<String, String> = HashMap()
+        map["phone"] = phone
+        map["password"] = password
+        map["extra"] = extra
+        return userApi.pwdBind(map)
+    }
 }

@@ -46,6 +46,18 @@ internal interface WonderCoreApi {
         //编辑个人信息
         @POST("appSetUp/updatePersonalInformation")
         suspend fun updatePersonalInformation(@Body requestBody: RequestBody): CommonResponse<Any>
+
+        //京东登录
+        @GET("auth/jdLogin")
+        suspend fun jdLogin(@QueryMap map: Map<String, String>): CommonResponse<String>
+
+        //验证码绑定
+        @GET("app/user/codeBind")
+        suspend fun codeBind(@QueryMap map: Map<String, String>): CommonResponse<LoginUserData>
+
+        //密码绑定
+        @GET("app/user/pwdBind")
+        suspend fun pwdBind(@QueryMap map: Map<String, String>): CommonResponse<LoginUserData>
     }
 
     interface Setting {
