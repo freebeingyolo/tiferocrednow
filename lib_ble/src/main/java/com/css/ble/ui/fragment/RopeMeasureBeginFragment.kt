@@ -90,12 +90,6 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
     }
 
     private fun discoveredBLE() {
-        mViewModel2.doWriteCharacteristic("f55f06020200")
-        mViewModel2.doWriteCharacteristic("f55f06021001")
-        mViewModel2.doWriteCharacteristic("f55f10030100001")
-        val dateStr = System.currentTimeMillis() / 1000L
-        mViewModel2.doWriteCharacteristic("f55f10030100001${StringUtils.toHex(dateStr)}")
-        mViewModel2.doWriteCharacteristic("f55f10030100001")
         mViewBinding?.tv?.setTextColor(Color.BLACK)
         mViewBinding?.connectControl?.visibility = View.GONE
         mViewBinding?.startExercise?.visibility = View.VISIBLE
@@ -113,7 +107,6 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
         mViewBinding?.startExercise1?.visibility = View.VISIBLE
         mViewBinding?.connectControl?.visibility = View.VISIBLE
         mViewBinding?.connectControl?.text = "连接设备"
-        mViewModel2.doWriteCharacteristic("f55f10030100000")
         mViewBinding?.tv?.setTextColor(Color.GRAY)
         mViewBinding?.modeSwitch?.setTextColor(Color.GRAY)
         mViewBinding?.modeSwitch2?.setTextColor(resources.getColor(R.color.color_F8B698))
@@ -298,7 +291,8 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
         mViewModel2.setIsStart(true)
         when (mViewModel2.mode) {
             Mode.byFree -> {
-                mViewModel2.doWriteCharacteristic("f55f060403010000")
+                //mViewModel2.writeCharacter("f55f060403010000")
+                mViewModel2.writeCharacter(RopeVM.Command.SWITCH_MODE.code("010000"))
             }
             Mode.byCountTime -> {
                 if (mCountTime.isEmpty()) {
@@ -307,7 +301,7 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
                 } else {
                     val hexTime = StringUtils.toHex(Integer.parseInt(mCountTime) * 60)
                     val data = StringUtils.fillZero(hexTime, 4, true)
-                    mViewModel2.doWriteCharacteristic("f55f06040302$data")
+                    mViewModel2.writeCharacter(RopeVM.Command.SWITCH_MODE.code("02$data"))
                 }
             }
             Mode.byCountNumber -> {
@@ -317,7 +311,7 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
                 } else {
                     val hexTime2 = StringUtils.toHex(Integer.parseInt(mCountNumber))
                     val data2 = StringUtils.fillZero(hexTime2, 4, true)
-                    mViewModel2.doWriteCharacteristic("f55f06040303$data2")
+                    mViewModel2.writeCharacter(RopeVM.Command.SWITCH_MODE.code("03$data2"))
                 }
             }
         }

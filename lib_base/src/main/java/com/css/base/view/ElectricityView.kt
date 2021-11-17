@@ -142,12 +142,7 @@ class ElectricityView : View {
 
 
     fun setProgress(power: Int) {
-        if (power < 0) {
-            mPower = 0
-        } else if (power > 100) {
-            mPower = 100;
-        }
-        this.mPower = power
+        this.mPower = Math.max(Math.min(100,power),0)
         invalidate()
     }
 }

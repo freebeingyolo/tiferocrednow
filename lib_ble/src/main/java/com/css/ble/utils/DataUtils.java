@@ -8,12 +8,17 @@ public class DataUtils {
      * @param n int
      * @return byte[]
      */
-    public static byte[] intToByteBig(int n) {
-        byte[] b = new byte[4];
-        for (int i = 0; i < b.length; i++) {
-            b[i] = (byte) (n >> (8 * (b.length - 1 - i)) & 0xff);//&0xff表示只取一个字节
+
+    public static byte[] intToByteBig(int n, int len) {
+        byte[] bytes = new byte[Math.min(4, len)];
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = (byte) (n >> (8 * (bytes.length - 1 - i)) & 0xff);//&0xff表示只取一个字节
         }
-        return b;
+        return bytes;
+    }
+
+    public static byte[] intToByteBig(int n) {
+        return intToByteBig(n, 4);
     }
 
     /**
@@ -22,12 +27,16 @@ public class DataUtils {
      * @param n int
      * @return byte[]
      */
-    public static byte[] intToByteLittle(int n) {
-        byte[] b = new byte[4];
-        for (int i = 0; i < b.length; i++) {
-            b[i] = (byte) (n >> (8 * i) & 0xff);//&0xff表示只取一个字节
+    public static byte[] intToByteLittle(int n, int len) {
+        byte[] bytes = new byte[Math.min(len, 4)];
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = (byte) (n >> (8 * i) & 0xff);//&0xff表示只取一个字节
         }
-        return b;
+        return bytes;
+    }
+
+    public static byte[] intToByteLittle(int n) {
+        return intToByteLittle(n, 4);
     }
 
     /**
@@ -38,8 +47,7 @@ public class DataUtils {
      */
     public static int bytes2IntLittle(byte[] bytes) {
         int ret = 0;
-        int count = Math.min(4, bytes.length);
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < bytes.length; i++) {
             ret |= ((short) bytes[i] & 0xff) << (8 * i);
         }
         return ret;
@@ -56,9 +64,8 @@ public class DataUtils {
      */
     public static int bytes2IntBig(byte... bytes) {
         int ret = 0;
-        int count = Math.min(4, bytes.length);
-        for (int i = 0; i < count; i++) {
-            ret |= ((short) bytes[i] & 0xff) << (8 * (count - 1 - i));
+        for (int i = 0; i < bytes.length; i++) {
+            ret |= ((short) bytes[i] & 0xff) << (8 * (bytes.length - 1 - i));
         }
         return ret;
     }
@@ -69,12 +76,16 @@ public class DataUtils {
      * @param n short
      * @return byte[]
      */
-    public static byte[] shortToByteBig(short n) {
-        byte[] b = new byte[2];
-        for (int i = 0; i < b.length; i++) {
-            b[i] = (byte) (n >> (8 * (b.length - 1 - i)) & 0xff);//&0xff表示只取一个字节
+    public static byte[] shortToByteBig(short n, int len) {
+        byte[] bytes = new byte[Math.min(len, 2)];
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = (byte) (n >> (8 * (bytes.length - 1 - i)) & 0xff);//&0xff表示只取一个字节
         }
-        return b;
+        return bytes;
+    }
+
+    public static byte[] shortToByteBig(short n) {
+        return shortToByteBig(n, 2);
     }
 
     /**
@@ -83,12 +94,16 @@ public class DataUtils {
      * @param n short
      * @return byte[]
      */
-    public static byte[] shortToByteLittle(short n) {
-        byte[] b = new byte[2];
-        for (int i = 0; i < b.length; i++) {
-            b[i] = (byte) (n >> (8 * i) & 0xff);//&0xff表示只取一个字节
+    public static byte[] shortToByteLittle(short n, int len) {
+        byte[] bytes = new byte[Math.min(len, 2)];
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = (byte) (n >> (8 * i) & 0xff);//&0xff表示只取一个字节
         }
-        return b;
+        return bytes;
+    }
+
+    public static byte[] shortToByteLittle(short n) {
+        return shortToByteLittle(n, 2);
     }
 
     /**
@@ -99,8 +114,7 @@ public class DataUtils {
      */
     public static short byteToShortLittle(byte[] bytes) {
         short ret = 0;
-        int count = Math.min(2, bytes.length);
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < bytes.length; i++) {
             ret |= ((short) bytes[i] & 0xff) << (8 * (i));
         }
         return ret;
@@ -114,9 +128,8 @@ public class DataUtils {
      */
     public static short byteToShortBig(byte[] bytes) {
         short ret = 0;
-        int count = Math.min(2, bytes.length);
-        for (int i = 0; i < count; i++) {
-            ret |= ((short) bytes[i] & 0xff) << (8 * (count - 1 - i));
+        for (int i = 0; i < bytes.length; i++) {
+            ret |= ((short) bytes[i] & 0xff) << (8 * (bytes.length - 1 - i));
         }
         return ret;
     }
@@ -127,12 +140,16 @@ public class DataUtils {
      * @param n
      * @return
      */
-    public static byte[] longToBytesBig(long n) {
-        byte[] b = new byte[8];
-        for (int i = 0; i < 8; i++) {
-            b[i] = (byte) (n >> (8 * (8 - 1 - i)) & 0xff);
+    public static byte[] longToBytesBig(long n, int len) {
+        byte[] bytes = new byte[Math.min(8, len)];
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = (byte) (n >> (8 * (bytes.length - 1 - i)) & 0xff);
         }
-        return b;
+        return bytes;
+    }
+
+    public static byte[] longToBytesBig(long n) {
+        return longToBytesBig(n, 8);
     }
 
     /**
@@ -141,12 +158,16 @@ public class DataUtils {
      * @param n
      * @return
      */
-    public static byte[] longToBytesLittle(long n) {
-        byte[] b = new byte[8];
-        for (int i = 0; i < 8; i++) {
-            b[i] = (byte) (n >> (8 * i) & 0xff);//&0xff表示只取一个字节
+    public static byte[] longToBytesLittle(long n, int len) {
+        byte[] bytes = new byte[Math.min(len, 8)];
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = (byte) (n >> (8 * i) & 0xff);//&0xff表示只取一个字节
         }
-        return b;
+        return bytes;
+    }
+
+    public static byte[] longToBytesLittle(long n) {
+        return longToBytesLittle(n, 8);
     }
 
     /**
@@ -154,13 +175,13 @@ public class DataUtils {
      * 0x1234
      * 3412
      *
-     * @param array
+     * @param bytes
      * @return
      */
-    public static long bytesToLongLittle(byte[] array) {
+    public static long bytesToLongLittle(byte[] bytes) {
         long ret = 0;
-        for (int i = 0; i < 8; i++) {
-            ret |= ((long) array[i] & 0xff) << (8 * i);
+        for (int i = 0; i < bytes.length; i++) {
+            ret |= ((long) bytes[i] & 0xff) << (8 * i);
         }
         return ret;
     }
@@ -168,13 +189,13 @@ public class DataUtils {
     /**
      * byte[]转long类型(大端)
      *
-     * @param array
+     * @param bytes
      * @return
      */
-    public static long bytesToLongBig(byte[] array) {
+    public static long bytesToLongBig(byte[] bytes) {
         long ret = 0;
-        for (int i = 0; i < 8; i++) {
-            ret |= ((long) array[i] & 0xff) << (8 * (8 - 1 - i));
+        for (int i = 0; i < bytes.length; i++) {
+            ret |= ((long) bytes[i] & 0xff) << (8 * (bytes.length - 1 - i));
         }
         return ret;
     }

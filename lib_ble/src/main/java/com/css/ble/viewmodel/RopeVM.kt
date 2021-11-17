@@ -24,15 +24,15 @@ import java.util.*
  *@description 跳绳器
  */
 class RopeVM : BaseDeviceScan2ConnVM() {
-    val UUID_SRVC = "0000ffb0-0000-1000-8000-00805f9b34fb"
-    val UUID_WRITE = "0000ffb1-0000-1000-8000-00805f9b34fb"
-    val UUID_NOTIFY = "0000ffb2-0000-1000-8000-00805f9b34fb"
+
+
     override val deviceType: DeviceType = DeviceType.ROPE
     var isStart = false
     val modeObsvr: LiveData<Mode> by lazy { MutableLiveData(Mode.byFree) }
     val modeObsvrStr: LiveData<String> = Transformations.map(modeObsvr) {
         getString(it.msgId)
     }
+    val motionState by lazy { MutableLiveData(false) }
     //transformations
 
 
@@ -56,8 +56,8 @@ class RopeVM : BaseDeviceScan2ConnVM() {
     }
 
     override fun filterName(name: String): Boolean {
-        //val names = arrayOf("Hi-RDTS", "Hi-BBTTS")
-        val names = arrayOf("Hi-LYTS")
+        val names = arrayOf("Hi-RDTS", "Hi-BBTTS")
+        //val names = arrayOf("Hi-LYTS")
         return names.find { name.startsWith(it) } != null
     }
 
@@ -67,6 +67,7 @@ class RopeVM : BaseDeviceScan2ConnVM() {
 
     fun setIsStart(iS: Boolean) {
         isStart = iS
+        takeIf { isStart && batteryLevel.value == -1 }?.let { writeCharacter(Command.QUERY_BATTERY.code()) }
     }
 
     fun getModels(): List<String> {
@@ -77,9 +78,73 @@ class RopeVM : BaseDeviceScan2ConnVM() {
 
     override fun onDiscovered(d: Device, isBonding: Boolean) {
         //开启通知
-        sendNotification(UUID.fromString(UUID_SRVC), UUID.fromString(UUID_NOTIFY), true, null)
-        getBatteryInfo()
+        sendNotification(true)
+        //查询电量
+        writeCharacter(Command.CONNECTION_STATE.code(0x01))  //蓝牙连接状态：已连接
+        writeCharacter(Command.SET_TIME.codeInt((System.currentTimeMillis() / 1000L).toInt()))  //查询
+        writeCharacter(Command.QUERY.code())//查询
     }
+
+    /*sealed class Command2() {
+        data class QUERY(val base: String = "F55F06021001") : Command2()
+        data class QUERY_BATTERY(val base: String = "F55F06020200") : Command2()
+        data class RESET(val base: String = "F55F06021101") : Command2()
+        data class CONNECTION_STATE(val base: String = "F55F10030100") : Command2()
+        data class SET_TIME(val base: String = "F55F06060100") : Command2()
+        data class SWITCH_MODE(val base: String = "F55F060403") : Command2()
+        data class CHANGE_EXERCISE(val base: String = "F55F060203", val motionState: String) : Command2()
+        class REAL_DATA(val base: String = "F55F070F") : Command2()
+        class BATTERY(val base: String = "F55F0702") : Command2()
+        class LOW_POWER_MODE(val base: String = "F55F0B02") : Command2()
+    }*/
+
+    enum class Command(val base: String) {
+        QUERY("F55F06021001"),//查询
+        QUERY_BATTERY("F55F06020200"),//查询电量
+        RESET("F55F06021101"),//重置
+        CONNECTION_STATE("F55F10030100"),//下发连接状态,01-已连接，00-断开
+        SET_TIME("F55F06060100"), //设置时间
+        SWITCH_MODE("F55F060403"),
+        CHANGE_EXERCISE("F55F060203"),//04-暂停，05-恢复，06-停止
+        REAL_DATA("F55F070F"),
+        BATTERY("F55F0702"),
+        LOW_POWER_MODE("F55F0B02")
+        ;
+
+        companion object {
+            fun toCommand(code: String, range: IntRange? = null): Command? {
+                val code2 = (range?.let { code.substring(it) } ?: code).toUpperCase(Locale.ROOT)
+                for (v in values()) {
+                    if (v.base.startsWith(code2)) return v
+                }
+                return null
+            }
+        }
+
+        fun code(vararg extra: Byte) = run {//拼接组装
+            var data: ByteArray = StringUtils.toByteArray(base, "")
+            extra.let { data += extra }
+            val data3 = (data.sum() and 0xff).toByte()
+            val data4 = data + data3
+            data4
+        }
+
+        fun code(extra: String, separator: String = "") = run {
+            val bytes = StringUtils.toByteArray(extra, separator)
+            code(*bytes)
+        }
+
+        fun codeInt(i: Int) = run {
+            val bytes = DataUtils.intToByteBig(i)
+            code(*bytes)
+        }
+
+        fun codeShort(i: Short) = run {
+            val bytes = DataUtils.shortToByteBig(i)
+            code(*bytes)
+        }
+    }
+
 
     override fun onDisconnected(d: Device?) {
     }
@@ -92,109 +157,53 @@ class RopeVM : BaseDeviceScan2ConnVM() {
 
     }
 
+    override fun disconnect() {
+        super.disconnect()
+        writeCharacter(Command.CONNECTION_STATE.code("00"))
+    }
+
     override fun onFoundDevice(d: Device) {
 
     }
 
-    private fun getBatteryInfo() {
-        writeCharacter(
-            UUID.fromString(UUID_SRVC),
-            UUID.fromString(UUID_WRITE),
-            StringUtils.toByteArray("F55F060202005E", ""),
-            object : WriteCharacteristicCallback {
-                override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
-                    LogUtils.d("getBatteryInfo#onRequestFailed:${failType},${value}")
-                }
-                override fun onCharacteristicWrite(request: Request, value: ByteArray) {
-                    LogUtils.d("getBatteryInfo#onRequestSuccess:${StringUtils.toHex(value)}")
-                }
-            }
-        )
-    }
-
     fun switchMode(m: Mode, cb: WriteCharacteristicCallback? = null) {
-        val data: ByteArray = StringUtils.toByteArray("F55F060403", "")
-        val data2 = DataUtils.shortToByteBig(m.ordinal.toShort())
-        val data3 = ((data + data2).sum() and 0x100).toByte()
-        val data4 = data + data2 + data3
-        LogUtils.d("switchMode:data4:" + StringUtils.toHex(data4, ""))
-        writeCharacter(
-            UUID.fromString(UUID_SRVC),
-            UUID.fromString(UUID_WRITE),
-            data4,
-            object : WriteCharacteristicCallback {
-                override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
-                    cb?.onRequestFailed(request, failType, value)
-                }
+        writeCharacter(Command.SWITCH_MODE.codeShort(m.ordinal.toShort()), object : WriteCharacteristicCallback {
+            override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
+                cb?.onRequestFailed(request, failType, value)
+            }
 
-                override fun onCharacteristicWrite(request: Request, value: ByteArray) {
-                    cb?.onCharacteristicWrite(request, value)
-                    mode = m
-                }
-            })
+            override fun onCharacteristicWrite(request: Request, value: ByteArray) {
+                cb?.onCharacteristicWrite(request, value)
+                mode = m
+            }
+        })
     }
 
     fun changeExercise(str: String, cb: WriteCharacteristicCallback? = null) {
-        val data: ByteArray = StringUtils.toByteArray("F55F060203", "")
-        val data2 = StringUtils.toByteArray(str, "")
-        val data3 = ((data + data2).sum() and 0xff).toByte()
-        val data4 = data + data2 + data3
-        writeCharacter(
-            UUID.fromString(UUID_SRVC),
-            UUID.fromString(UUID_WRITE),
-            data4,
-            object : WriteCharacteristicCallback {
-                override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
-                    cb?.onRequestFailed(request, failType, value)
-                }
+        writeCharacter(Command.CHANGE_EXERCISE.code(str), object : WriteCharacteristicCallback {
+            override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
+                cb?.onRequestFailed(request, failType, value)
+            }
 
-                override fun onCharacteristicWrite(request: Request, value: ByteArray) {
-                    cb?.onCharacteristicWrite(request, value)
-                }
-            })
-        if ("06" == str && !"--".equals(exerciseCountTxt)) {
+            override fun onCharacteristicWrite(request: Request, value: ByteArray) {
+                cb?.onCharacteristicWrite(request, value)
+            }
+        })
+        if ("06" == str && exerciseCount.value!! > 0) {
             finishExercise()
         }
-
-    }
-
-    fun doWriteCharacteristic(str: String, cb: WriteCharacteristicCallback? = null) {
-        val data: ByteArray = StringUtils.toByteArray(str, "")
-        val data3 = (data.sum() and 0xff).toByte()
-        val data4 = data + data3
-        writeCharacter(
-            UUID.fromString(UUID_SRVC),
-            UUID.fromString(UUID_WRITE),
-            data4,
-            object : WriteCharacteristicCallback {
-                override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
-                    cb?.onRequestFailed(request, failType, value)
-                }
-
-                override fun onCharacteristicWrite(request: Request, value: ByteArray) {
-                    cb?.onCharacteristicWrite(request, value)
-                }
-            })
     }
 
     fun reset(cb: WriteCharacteristicCallback? = null) {
-        val data: ByteArray = StringUtils.toByteArray("F55F0602", "")
-        val data2 = DataUtils.shortToByteBig(0x1101)
-        val data3 = ((data + data2).sum() and 0xff).toByte()
-        val data4 = data + data2 + data3
-        writeCharacter(
-            UUID.fromString(UUID_SRVC),
-            UUID.fromString(UUID_WRITE),
-            data4,
-            object : WriteCharacteristicCallback {
-                override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
-                    cb?.onRequestFailed(request, failType, value)
-                }
+        writeCharacter(Command.RESET.code(), object : WriteCharacteristicCallback {
+            override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
+                cb?.onRequestFailed(request, failType, value)
+            }
 
-                override fun onCharacteristicWrite(request: Request, value: ByteArray) {
-                    cb?.onCharacteristicWrite(request, value)
-                }
-            })
+            override fun onCharacteristicWrite(request: Request, value: ByteArray) {
+                cb?.onCharacteristicWrite(request, value)
+            }
+        })
         clearAllExerciseData()
     }
 
@@ -209,37 +218,45 @@ class RopeVM : BaseDeviceScan2ConnVM() {
         LogUtils.d("onNotificationChanged#${request.type}#$isEnabled")
     }
 
-    //F5 5F 07 07 01 00 64 C8   电量
-    //F55F0701  计数模式时间
+    @Observe
     override fun onCharacteristicChanged(device: Device, service: UUID, characteristic: UUID, value: ByteArray) {
         super.onCharacteristicChanged(device, service, characteristic, value)
         val hexData = StringUtils.toHex(value, "")
-        if (isStart) {
-            when {
-                hexData.startsWith("F55F070F") -> {//运动时长
-                    val v = DataUtils.bytes2IntBig(value[6], value[7])
-                    (exerciseDuration as MutableLiveData).value = v * 1000L
-                    // 运动次数
-                    val r = DataUtils.bytes2IntBig(value[8], value[9])
-                    (exerciseCount as MutableLiveData).value = r
-                }
-                hexData.startsWith("F55F0704") -> {// 当前模式
-                    val v = DataUtils.bytes2IntBig(value[18], value[18])
-                    val m = Mode.values()[v]
-                    (modeObsvr as MutableLiveData).value = m
-                }
-                hexData.startsWith("F55F0702") -> {//电池电量
-                    val v = DataUtils.bytes2IntBig(value[5], value[5])
-                    (batteryLevel as MutableLiveData).value = v % 100
-                }
-                hexData.startsWith("F55F0B02") -> {//进低功耗模式
-                    val v = DataUtils.bytes2IntBig(value[5], value[6])
-                    (batteryLevel as MutableLiveData).value = v
-
+        val command = Command.toCommand(hexData, 0..7)
+        if (!isStart) {
+            if (command == Command.BATTERY) {
+                val v = DataUtils.bytes2IntBig(value[5])
+                (batteryLevel as MutableLiveData).value = v
+            }
+            return
+        }
+        when (command) {
+            Command.REAL_DATA -> {// 当前模式
+                //是否运动
+                motionState.value = DataUtils.bytes2IntBig(value[5]) == 1
+                //时长
+                val d = DataUtils.bytes2IntBig(value[6], value[7])
+                (exerciseDuration as MutableLiveData).value = d * 1000L
+                // 运动次数
+                val r = DataUtils.bytes2IntBig(value[8], value[9])
+                (exerciseCount as MutableLiveData).value = r
+                //运动模式
+                val v = DataUtils.bytes2IntBig(value[18])
+                if (v in 0..2) {
+                    (modeObsvr as MutableLiveData).value = Mode.values()[v]
+                } else {
+                    LogUtils.e(TAG, "found wrong data:$hexData")
                 }
             }
+            Command.BATTERY -> {//电池电量
+                var v = DataUtils.bytes2IntBig(value[5])
+                (batteryLevel as MutableLiveData).value = v
+            }
+            Command.LOW_POWER_MODE -> {//进低功耗模式,电量为0
+                val v = DataUtils.bytes2IntBig(value[5])
+                (batteryLevel as MutableLiveData).value = v
+            }
         }
-
     }
 
     fun jumpToStatistic() {

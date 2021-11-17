@@ -1,5 +1,6 @@
 package com.css.ble.viewmodel
 
+import LogUtils
 import androidx.annotation.NonNull
 import androidx.lifecycle.MutableLiveData
 import cn.wandersnail.ble.Device
@@ -9,10 +10,7 @@ import cn.wandersnail.commons.observer.Observe
 import cn.wandersnail.commons.util.StringUtils
 import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
-import com.css.ble.bean.WeightBondData
 import com.css.ble.utils.DataUtils
-import com.css.service.utils.CacheKey
-import com.css.service.utils.WonderCoreCache
 import java.text.DecimalFormat
 import java.util.*
 
@@ -22,9 +20,6 @@ import java.util.*
  *@description 计数器
  */
 class CounterVM : HorizontalBarVM() {
-    val UUID_SRVC = "0000ffb0-0000-1000-8000-00805f9b34fb"
-    val UUID_WRITE = "0000ffb1-0000-1000-8000-00805f9b34fb"
-    val UUID_NOTIFY = "0000ffb2-0000-1000-8000-00805f9b34fb"
     private var motionState = 0x00
     override val deviceType: DeviceType = DeviceType.COUNTER
     private var initExerciseCount = -1
@@ -61,8 +56,8 @@ class CounterVM : HorizontalBarVM() {
         get() = "计数器已连接成功，开启你的挑战之旅吧！"
 
     @Observe
-    override fun onDiscovered(d: Device,isBonding:Boolean) {
-        sendNotification(UUID.fromString(Companion.UUID_SRVC), UUID.fromString(Companion.UUID_NOTIFY), true, null)
+    override fun onDiscovered(d: Device, isBonding: Boolean) {
+        sendNotification(isEnabled = true)
         fetchAllState()
     }
 
@@ -153,8 +148,7 @@ class CounterVM : HorizontalBarVM() {
         val data: ByteArray = StringUtils.toByteArray("F55F07060100", "")
         val data2 = ((data).sum() and 0xff).toByte()
         val data3 = data + data2
-        writeCharacter(UUID.fromString(Companion.UUID_SRVC), UUID.fromString(Companion.UUID_WRITE), data3, object :
-            WriteCharacteristicCallback {
+        writeCharacter(data3, object : WriteCharacteristicCallback {
             override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
                 LogUtils.d("fetchAllState-failed->" + StringUtils.toHex(data3, ""))
             }
@@ -171,8 +165,7 @@ class CounterVM : HorizontalBarVM() {
         val data3 = ((data + data2).sum() and 0xff).toByte()
         val data4 = data + data2 + data3
         LogUtils.d("reset-->" + StringUtils.toHex(data4, ""))
-        writeCharacter(UUID.fromString(Companion.UUID_SRVC), UUID.fromString(Companion.UUID_WRITE), data4, object :
-            WriteCharacteristicCallback {
+        writeCharacter(data4, object : WriteCharacteristicCallback {
             override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
                 cb?.onRequestFailed(request, failType, value)
             }

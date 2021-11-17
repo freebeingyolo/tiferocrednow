@@ -21,6 +21,7 @@ class DeviceListVM : BaseViewModel() {
     ) {
         netLaunch(
             {
+                showLoading()
                 withContext(Dispatchers.IO) {
                     val userId = WonderCoreCache.getLoginInfo()!!.userId
                     val ret = DeviceRepository.queryBindDevice(userId.toString())
@@ -48,6 +49,7 @@ class DeviceListVM : BaseViewModel() {
                 }
                 _deviceInfos.value = list
                 success?.invoke(m, devices)
+                hideLoading()
             },
             { code, msg, data ->
                 hideLoading()

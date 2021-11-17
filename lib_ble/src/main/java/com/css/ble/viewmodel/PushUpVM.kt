@@ -16,10 +16,6 @@ import java.util.*
  */
 class PushUpVM : HorizontalBarVM() {
     override val deviceType: DeviceType = DeviceType.PUSH_UP
-    val UUID_SRVC = "0000ffb0-0000-1000-8000-00805f9b34fb"
-    val UUID_WRITE = "0000ffb1-0000-1000-8000-00805f9b34fb"
-    val UUID_NOTIFY = "0000ffb2-0000-1000-8000-00805f9b34fb"
-
 
     override fun filterName(name: String): Boolean {
         return name.startsWith("Hi-PUSH")

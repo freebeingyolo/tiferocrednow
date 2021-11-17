@@ -37,6 +37,10 @@ import java.util.*
  */
 abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, EventObserver {
 
+    protected open val UUID_SRVC = "0000ffb0-0000-1000-8000-00805f9b34fb"
+    protected open val UUID_WRITE = "0000ffb1-0000-1000-8000-00805f9b34fb"
+    protected open val UUID_NOTIFY = "0000ffb2-0000-1000-8000-00805f9b34fb"
+
     enum class FoundWay {
         NAME,
         UUID
@@ -169,18 +173,18 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
 
     private val scanListener = object : ScanListener {
         override fun onScanStart() {
-            LogUtils.d("onScanStart,isMain:${Looper.myLooper() == Looper.getMainLooper()}")
+            LogUtils.d(TAG, "onScanStart,isMain:${Looper.myLooper() == Looper.getMainLooper()}")
         }
 
         override fun onScanStop() {
-            LogUtils.d("onScanStop")
+            LogUtils.d(TAG, "onScanStop")
             cancelTimeOutTimer()
             EasyBLE.getInstance().removeScanListener(this)
         }
 
         override fun onScanResult(device: Device, isConnectedBySys: Boolean) {
             if (filterName(device.name)) {
-                LogUtils.d("device:$device")
+                LogUtils.d(TAG, "device:$device")
                 EasyBLE.getInstance().stopScan()
                 if (foundMethod == FoundWay.NAME) {
                     foundDevice(device)
@@ -195,7 +199,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         }
 
         override fun onScanError(errorCode: Int, errorMsg: String) {
-            LogUtils.d("onScanError:$errorCode,$errorMsg", 5)
+            LogUtils.d(TAG, "onScanError:$errorCode,$errorMsg", 5)
             when (errorCode) {
                 ScanListener.ERROR_LACK_LOCATION_PERMISSION -> {//缺少定位权限
 
@@ -212,7 +216,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
 
     override fun startScanBle() {
         if (EasyBLE.getInstance().isScanning) return
-        LogUtils.d("startScanBle,state:${state},isScanning:${EasyBLE.getInstance().isScanning}")
+        LogUtils.d(TAG, "startScanBle,state:${state},isScanning:${EasyBLE.getInstance().isScanning}")
         EasyBLE.getInstance().scanConfiguration.isOnlyAcceptBleDevice = true
         EasyBLE.getInstance().scanConfiguration.rssiLowLimit = -100
         EasyBLE.getInstance().scanConfiguration.scanPeriodMillis = bondTimeout.toInt()//永不超时
@@ -223,7 +227,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     }
 
     override fun stopScanBle() {
-        LogUtils.d("stopScan,isScanning:${EasyBLE.getInstance().isScanning}")
+        LogUtils.d(TAG, "stopScan,isScanning:${EasyBLE.getInstance().isScanning}")
         if (EasyBLE.getInstance().isScanning) {
             EasyBLE.getInstance().stopScan()
             cancelTimeOutTimer()
@@ -252,7 +256,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     @Observe
     @RunOn(ThreadMode.MAIN)
     override fun onConnectionStateChanged(@NonNull device: Device) {
-        LogUtils.d("onConnectionStateChanged:${device.connectionState},${device.name},${deviceType}")
+        LogUtils.d(TAG, "onConnectionStateChanged:${device.connectionState},${device.name},${deviceType}")
         when (device.connectionState) {
             ConnectionState.DISCONNECTED -> {
                 state = State.disconnected
@@ -302,12 +306,12 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     }
 
     override fun onCharacteristicChanged(device: Device, service: UUID, characteristic: UUID, value: ByteArray) {
-        LogUtils.d("onCharacteristicChanged:" + StringUtils.toHex(value, ""))
+        LogUtils.d(TAG, "onCharacteristicChanged:" + StringUtils.toHex(value, ""))
     }
 
     @Observe
     override fun onNotificationChanged(@NonNull request: Request, isEnabled: Boolean) {
-        LogUtils.d("onNotificationChanged#${request.type}#$isEnabled")
+        LogUtils.d(TAG, "onNotificationChanged#${request.type}#$isEnabled")
     }
 
     //连接
@@ -341,14 +345,17 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
             } else {
                 connection?.disconnect()
             }
-            LogUtils.d("disconnect, ${state},isScanning:${EasyBLE.getInstance().isScanning} connectionState:${connection?.connectionState}")
+            LogUtils.d(
+                TAG,
+                "disconnect, ${state},isScanning:${EasyBLE.getInstance().isScanning} connectionState:${connection?.connectionState}"
+            )
         }
     }
 
     override fun release() {
         cancelTimeOutTimer()
         if (connection != null) {
-            LogUtils.d("release", 5)
+            LogUtils.d(TAG, "release", 5)
             connection?.release()
             //state = State.disconnected
             connection = null
@@ -356,8 +363,8 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     }
 
     fun bindDevice(
-        success: ((String?, DeviceData?) -> Unit)?,
-        failed: ((Int, String?, d: DeviceData?) -> Unit)?
+        success: ((String?, BondDeviceData) -> Unit)?,
+        failed: ((Int, String?, d: BondDeviceData) -> Unit)?
     ) {
         val device = BondDeviceData(
             avaliableDevice!!.address,
@@ -379,7 +386,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
             { msg, d ->
                 //val bondRst = EasyBLE.getInstance().createBond(it.address)
                 //LogUtils.d("bondRst:$bondRst")
-                success?.invoke(msg, d)
+                success?.invoke(msg, device)
                 onBondedOk(device)
                 avaliableDevice = null
             },
@@ -387,7 +394,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
                 avaliableDevice = null
                 disconnect()
                 onBondedFailed(device)
-                failed?.invoke(code, msg, d)
+                failed?.invoke(code, msg, device)
             }
         )
     }
@@ -409,12 +416,18 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         )
     }
 
-    fun sendNotification(serviceUUID: UUID, characterUUID: UUID, isEnabled: Boolean, cb: NotificationChangeCallback?) {
+    fun sendNotification(
+        isEnabled: Boolean,
+        cb: NotificationChangeCallback? = null,
+        serviceUUID: UUID = UUID.fromString(UUID_SRVC),
+        characterUUID: UUID = UUID.fromString(UUID_NOTIFY),
+    ) {
         //开启通知
         if (connection?.connectionState != ConnectionState.SERVICE_DISCOVERED) return
         val builder = RequestBuilderFactory().getSetNotificationBuilder(serviceUUID, characterUUID, isEnabled)
         builder.setCallback(cb)
         connection?.execute(builder.build())
+        LogUtils.d(TAG,"sendNotification-->$isEnabled")
     }
 
     override fun notifyWeightKgChange(wKg: Float) {//通知体重变更
@@ -422,13 +435,13 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     }
 
     fun writeCharacter(
-        serviceUUID: UUID,
-        characterUUID: UUID,
         data: ByteArray,
-        cb: WriteCharacteristicCallback?,
-        tag: String? = null
+        cb: WriteCharacteristicCallback? = null,
+        tag: String? = null,
+        serviceUUID: UUID = UUID.fromString(UUID_SRVC),
+        characterUUID: UUID = UUID.fromString(UUID_WRITE),
     ) {
-
+        LogUtils.d(TAG, "writeCharacter-->${StringUtils.toHex(data, "")}")
         val builder = RequestBuilderFactory().getWriteCharacteristicBuilder(serviceUUID, characterUUID, data)
         builder.setCallback(cb)
         builder.setTag(tag)
@@ -471,7 +484,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         failed: ((Int, String?, Any?) -> Unit)? = null
     ) {
         if (time <= 0 || num <= 0) {
-            return LogUtils.d("the time is ${time}} the num is ${num},ignore this uploading")
+            return LogUtils.d(TAG, "the time is ${time}} the num is ${num},ignore this uploading")
         }
         netLaunch({
             withContext(Dispatchers.IO) {

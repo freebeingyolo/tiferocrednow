@@ -26,7 +26,6 @@ abstract class BaseWeightVM : BaseDeviceVM() {
         private val TianShengKey = intArrayOf(0x54493049, 0x4132794E, 0x53783148, 0x476c6531)
     }
     override val deviceType: DeviceType = DeviceType.WEIGHT
-    val TAG: String = javaClass.simpleName
     protected var decryptKey: IntArray = TianShengKey
     protected var mBluetoothService: ELinkBleServer?
         get() = mBluetoothServiceObsvr.value
