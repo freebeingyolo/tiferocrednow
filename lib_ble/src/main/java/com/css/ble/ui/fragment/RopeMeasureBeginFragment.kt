@@ -43,8 +43,6 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
     private var connectControl: Int = 0
     private var mCountTimeDialog: OptionsPickerView<String>? = null
     private val mCountTimeList by lazy { (30 downTo 1).map { it.toString() } }
-    private var mCountTime = ""
-    private var mCountNumber = ""
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
@@ -69,7 +67,6 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
             BaseDeviceScan2ConnVM.State.disconnected -> {
                 disconnectBLE()
             }
-
         }
     }
 
@@ -135,7 +132,8 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
                                     mCountTimeDialog = OptionsPickerBuilder(
                                         activity
                                     ) { options1, _, _, _ ->
-                                        mCountTime = mCountTimeList[options1]
+                                        //mCountTime = mCountTimeList[options1]
+                                        mViewModel2.mCountTime = mCountTimeList[options1].toInt()
                                     }.setLayoutRes(
                                         R.layout.dialog_rope_count_time
                                     ) { v ->
@@ -146,16 +144,12 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
                                         cancel?.setOnClickListener { mCountTimeDialog?.dismiss() }
                                         submit?.setOnClickListener {
                                             mCountTimeDialog?.returnData()
-                                            switchMode(
-                                                modes[position],
-                                                (mCountTime.toShort() * 60).toShort(),
-                                                popupWindow
-                                            )
+                                            switchMode(modes[position], popupWindow)
                                             mCountTimeDialog?.dismiss()
                                         }
                                     }.setLabels("分钟", "", "")
                                         .isCenterLabel(true)
-                                        .setSelectOptions(mCountTimeList.indexOf(mCountTime))
+                                        .setSelectOptions(mCountTimeList.indexOf(mViewModel2.mCountTime.toString()))
                                         .setLineSpacingMultiplier(3.0F)
                                         .setTextColorCenter(Color.parseColor("#F2682A"))
                                         .setOutSideCancelable(true)//点击外部dismiss default true
@@ -191,8 +185,8 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
                                                         showCenterToast("倒计数只能是1-500的整数才可开始训练")
                                                         dismiss()
                                                     } else {
-                                                        mCountNumber = content!!
-                                                        switchMode(modes[position], countNumber.toShort(), popupWindow)
+                                                        mViewModel2.mCountNumber = content!!.toInt()
+                                                        switchMode(modes[position], popupWindow)
                                                         dismiss()
                                                     }
                                                 } else {
@@ -203,7 +197,7 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
                                     }.show()
 
                                 } else {
-                                    switchMode(modes[position], 0, popupWindow)
+                                    switchMode(modes[position], popupWindow)
                                 }
                             }
                             return ret
@@ -223,8 +217,8 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
         popUpWindow.showPopupWindow(anchorView)
     }
 
-    private fun switchMode(mode: Mode, extra: Short, popupWindow: PopupWindow) {
-        mViewModel2.switchMode(mode, extra, object : WriteCharacteristicCallback {
+    private fun switchMode(mode: Mode, popupWindow: PopupWindow) {
+        mViewModel2.switchMode(mode, object : WriteCharacteristicCallback {
             override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
                 ToastUtils.showShort("切换模式失败")
                 popupWindow.dismiss()
@@ -232,6 +226,7 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
 
             override fun onCharacteristicWrite(request: Request, value: ByteArray) {
                 LogUtils.d("切换模式成功:${StringUtils.toHex(value, "")}")
+                ToastUtils.showShort("切换${getString(mode.msgId)}成功")
                 popupWindow.dismiss()
             }
         })
@@ -253,24 +248,24 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
         when (mViewModel2.mode) {
             Mode.byFree -> {
                 //开始时保证对端数据正确
-                mViewModel2.switchMode(mViewModel2.mode, 0)
+                mViewModel2.switchMode(mViewModel2.mode)
             }
             Mode.byCountTime -> {
-                if (mCountTime.isEmpty()) {
+                if (mViewModel2.mCountTime == -1) {
                     ToastUtils.showShort("请先选择运动模式")
                     return
                 } else {
                     //开始时保证对端数据正确
-                    mViewModel2.switchMode(mViewModel2.mode, (mCountTime.toShort() * 60).toShort())
+                    mViewModel2.switchMode(mViewModel2.mode)
                 }
             }
             Mode.byCountNumber -> {
-                if (mCountNumber.isEmpty()) {
+                if (mViewModel2.mCountNumber == -1) {
                     ToastUtils.showShort("请先选择运动模式")
                     return
                 } else {
                     //开始时保证对端数据正确
-                    mViewModel2.switchMode(mViewModel2.mode, mCountNumber.toShort())
+                    mViewModel2.switchMode(mViewModel2.mode)
                 }
             }
         }

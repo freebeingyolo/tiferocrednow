@@ -126,7 +126,7 @@ class CounterVM : HorizontalBarVM() {
             time = (exerciseDurationDelta / 1000).toInt(),
             num = exerciseCountDelta,
             calory = (exerciseKcalTxtDelta).toFloat(),
-            d = deviceType.alias,
+            type = deviceType.alias,
             { _, _ ->
                 initExerciseCount = exerciseCount.value!!
                 initExerciseDuration = exerciseDuration.value!!

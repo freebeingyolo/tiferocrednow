@@ -2,7 +2,6 @@ package com.css.ble.viewmodel
 
 import com.css.ble.bean.DeviceType
 import com.css.ble.viewmodel.base.BaseDeviceVM
-import java.lang.IllegalStateException
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -23,6 +22,7 @@ object DeviceVMFactory {
                 DeviceType.PUSH_UP -> PushUpVM()
                 DeviceType.COUNTER -> CounterVM()
                 DeviceType.ROPE -> RopeVM()
+                DeviceType.ROPE_BBT -> RopeBBTVM()
             }
             pool[d] = t
         }

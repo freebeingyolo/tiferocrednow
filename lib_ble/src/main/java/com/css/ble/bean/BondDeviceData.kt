@@ -23,35 +23,17 @@ enum class DeviceType(
     val alias: String,
     @StringRes val nameId: Int,
     @DrawableRes val icon: Int,
-    @DrawableRes val icon2: Int,
     val cacheKey: CacheKey
 ) {
-    WEIGHT("体脂秤", R.string.device_weight, R.mipmap.icon_weight, R.mipmap.icon_weight, CacheKey.BOND_WEIGHT_INFO),
-    WHEEL("健腹轮", R.string.device_wheel, R.mipmap.icon_abroller, R.mipmap.icon_abroller, CacheKey.BOND_WHEEL_INFO),
+    WEIGHT("体脂秤", R.string.device_weight, R.mipmap.icon_weight, CacheKey.BOND_WEIGHT_INFO),
+    WHEEL("健腹轮", R.string.device_wheel, R.mipmap.icon_abroller, CacheKey.BOND_WHEEL_INFO),
 
     //HORIZONTAL_BAR("单杠");
-    HORIZONTAL_BAR(
-        "单杠",
-        R.string.device_horizontalbar,
-        R.mipmap.icon_product_1,
-        R.mipmap.icon_product_1,
-        CacheKey.BOND_HORIZONTALBAR_INFO
-    ),
-    PUSH_UP(
-        "俯卧撑板",
-        R.string.device_pushup,
-        R.mipmap.icon_product_2,
-        R.mipmap.icon_product_2,
-        CacheKey.BOND_PUSHUP_INFO
-    ),
-    COUNTER(
-        "计数器",
-        R.string.device_counter,
-        R.mipmap.icon_product_4,
-        R.mipmap.icon_product_4,
-        CacheKey.BOND_COUNTER_INFO
-    ),
-    ROPE("跳绳", R.string.rope_skipper, R.mipmap.icon_product_4, R.mipmap.icon_product_4, CacheKey.BOND_ROPE_INFO),
+    HORIZONTAL_BAR("单杠", R.string.device_horizontalbar, R.mipmap.icon_product_1, CacheKey.BOND_HORIZONTALBAR_INFO),
+    PUSH_UP("俯卧撑板", R.string.device_pushup, R.mipmap.icon_product_2, CacheKey.BOND_PUSHUP_INFO),
+    COUNTER("计数器", R.string.device_counter, R.mipmap.icon_product_4, CacheKey.BOND_COUNTER_INFO),
+    ROPE("燃动跳绳", R.string.rope_skipper_rd, R.mipmap.icon_product_8, CacheKey.BOND_ROPE_INFO),
+    ROPE_BBT("棒棒糖跳绳", R.string.rope_skipper_bbt, R.mipmap.icon_product_8_1, CacheKey.BOND_ROPEBBT_INFO),
     ;
 
     companion object {
@@ -80,7 +62,7 @@ class BondDeviceData private constructor() : BaseData() {
     var alias: String? = null
     var id: Int = 0
     var deviceCategory: String = ""
-    val deviceImg: Int get() = deviceType.icon2
+    val deviceImg: Int get() = deviceType.icon
     var deviceConnect: String? = "未连接"
     var productType: String? = null //设备型号
     var moduleVersion: String? = "1.0" //固件版本

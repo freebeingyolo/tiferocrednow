@@ -51,7 +51,7 @@ abstract class BaseDeviceVM : BaseViewModel() {
         }
         timeOutJob = viewModelScope.launch {
             delay(timeOut)
-            LogUtils.d("onTimerTimeout#${timeOutJob?.hashCode()}")
+            LogUtils.d(TAG,"onTimerTimeout#${timeOutJob?.hashCode()}")
             timeOutJob = null
             onTimerTimeout()
         }

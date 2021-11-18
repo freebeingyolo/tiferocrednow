@@ -21,10 +21,11 @@ import java.util.*
 /**
  *@author chanpal
  *@time 2021-10-29
- *@description 跳绳器
+ *@description 燃动跳绳
  */
-class RopeVM : BaseDeviceScan2ConnVM() {
-
+open class RopeVM : BaseDeviceScan2ConnVM() {
+    var mCountTime: Int = -1
+    var mCountNumber: Int = -1
 
     override val deviceType: DeviceType = DeviceType.ROPE
     var isStart = false
@@ -33,8 +34,32 @@ class RopeVM : BaseDeviceScan2ConnVM() {
         getString(it.msgId)
     }
     val motionState by lazy { MutableLiveData(false) }
-    //transformations
 
+    //transformations
+  /*  val durationCaption = Transformations.map(modeObsvr){
+        if(it == Mode.byCountTime) "倒计时" else "运行时长"
+    }
+    val countCaption = Transformations.map(modeObsvr){
+        if(it == Mode.byCountNumber) "本地训练次数" else "运行时长"
+    }
+
+    override val exerciseCountTxt = Transformations.map(exerciseCount) {
+        if (it == -1) "--" else {
+            if (mode == Mode.byCountNumber) (mCountNumber - it).toString() else it.toString()
+        }
+    }*/
+
+    override val exerciseKcalTxt = Transformations.map(exerciseCount) {
+        if (it == -1) "--"
+        else {
+            DecimalFormat("0.00000").format(1f * weightKg * it * 25 / 30000)
+        }
+    }
+
+    override val exerciseDurationTxt = Transformations.map(exerciseDuration) {
+        if (it == -1L) "--" else
+            formatTime(if (mode == Mode.byCountTime) (mCountTime * 60 * 1000 - it) else it)
+    }
 
     var mode: Mode
         set(value) {
@@ -48,16 +73,8 @@ class RopeVM : BaseDeviceScan2ConnVM() {
         byCountNumber(R.string.byCountNumber, 0x03)
     }
 
-    override val exerciseKcalTxt = Transformations.map(exerciseCount) {
-        if (it == -1) "--"
-        else {
-            DecimalFormat("0.00000").format(it * weightKg * 1f * 25 / 30000)
-        }
-    }
-
     override fun filterName(name: String): Boolean {
-        val names = arrayOf("Hi-RDTS", "Hi-BBTTS")
-        //val names = arrayOf("Hi-LYTS")
+        val names = arrayOf("Hi-RDTS")
         return names.find { name.startsWith(it) } != null
     }
 
@@ -74,7 +91,7 @@ class RopeVM : BaseDeviceScan2ConnVM() {
         return Mode.values().map { getString(it.msgId) }
     }
 
-    override val bonded_tip: String get() = "跳绳器已连接成功，开启你的挑战之旅吧！"
+    override val bonded_tip: String get() = String.format("%s已连接成功，开启你的挑战之旅吧！", getString(deviceType.nameId))
 
     override fun onDiscovered(d: Device, isBonding: Boolean) {
         //开启通知
@@ -106,9 +123,9 @@ class RopeVM : BaseDeviceScan2ConnVM() {
         SET_TIME("F55F06060100"), //设置时间
         SWITCH_MODE("F55F060403"),
         CHANGE_EXERCISE("F55F060203"),//04-暂停，05-恢复，06-停止
-        REAL_DATA("F55F070F"),
-        BATTERY("F55F0702"),
-        LOW_POWER_MODE("F55F0B02")
+        REAL_DATA("F55F070F04"),
+        BATTERY("F55F070202"),
+        LOW_POWER_MODE("F55F0B0201")
         ;
 
         companion object {
@@ -159,14 +176,19 @@ class RopeVM : BaseDeviceScan2ConnVM() {
 
     override fun disconnect() {
         super.disconnect()
-        writeCharacter(Command.CONNECTION_STATE.code("00"))
+        if (state >= State.discovered) writeCharacter(Command.CONNECTION_STATE.code("00"))
     }
 
     override fun onFoundDevice(d: Device) {
 
     }
 
-    fun switchMode(m: Mode, extra: Short, cb: WriteCharacteristicCallback? = null) {
+    fun switchMode(m: Mode, cb: WriteCharacteristicCallback? = null) {
+        val extra: Short = when (m) {
+            Mode.byFree -> 0
+            Mode.byCountNumber -> mCountNumber.toShort()
+            Mode.byCountTime -> (mCountTime * 60).toShort()
+        }
         writeCharacter(Command.SWITCH_MODE.code(m.code, *DataUtils.shortToByteBig(extra)),
             object : WriteCharacteristicCallback {
                 override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
@@ -188,7 +210,7 @@ class RopeVM : BaseDeviceScan2ConnVM() {
 
     //str:04-暂停，05-恢复，06-停止
     fun changeExercise(motion: MotionState, cb: WriteCharacteristicCallback? = null) {
-        writeCharacter(RopeVM.Command.CHANGE_EXERCISE.code(motion.str), object : WriteCharacteristicCallback {
+        writeCharacter(Command.CHANGE_EXERCISE.code(motion.str), object : WriteCharacteristicCallback {
             override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
                 cb?.onRequestFailed(request, failType, value)
             }
@@ -245,6 +267,7 @@ class RopeVM : BaseDeviceScan2ConnVM() {
                 //时长
                 val d = DataUtils.bytes2IntBig(value[6], value[7])
                 (exerciseDuration as MutableLiveData).value = d * 1000L
+
                 // 运动次数
                 val r = DataUtils.bytes2IntBig(value[8], value[9])
                 (exerciseCount as MutableLiveData).value = r
@@ -264,6 +287,7 @@ class RopeVM : BaseDeviceScan2ConnVM() {
                 val v = DataUtils.bytes2IntBig(value[5])
                 (batteryLevel as MutableLiveData).value = v
             }
+            else -> {}
         }
     }
 

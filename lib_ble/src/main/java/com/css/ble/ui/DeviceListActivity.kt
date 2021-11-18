@@ -32,9 +32,9 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
 
     override fun initViewBinding(
         inflater: LayoutInflater,
-        viewGroup: ViewGroup?
+        parent: ViewGroup?
     ): FragmentDeviceListBinding {
-        return FragmentDeviceListBinding.inflate(layoutInflater, viewGroup, false)
+        return FragmentDeviceListBinding.inflate(layoutInflater, parent, false)
     }
 
     override fun initViewModel(): DeviceListVM {
@@ -60,11 +60,7 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
                                 .build(ARouterConst.PATH_APP_BLE_WEIGHTBOND).navigation()
                             DeviceType.WHEEL -> ARouter.getInstance()
                                 .build(ARouterConst.PATH_APP_BLE_WHEELBOND).navigation()
-                            DeviceType.HORIZONTAL_BAR,
-                            DeviceType.PUSH_UP,
-                            DeviceType.COUNTER,
-                            DeviceType.ROPE,
-                            -> {
+                            else -> {
                                 ARouter.getInstance().build(ARouterConst.PATH_APP_BLE_COMMON)
                                     .withInt("mode", BaseDeviceScan2ConnVM.WorkMode.BOND.ordinal)
                                     .withInt("deviceType", deviceInfo.deviceType.ordinal)
@@ -116,7 +112,7 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
         super.registorUIChangeLiveDataCallBack()
         mViewModel.deviceInfos.observe(this, {
             //Log.d(TAG, "mViewModel._deviceInfos：$it")
-            mViewBinding?.tip.text = "已经为您选择" + it.size + "款运动设备。请打开设备进行连接。"
+            mViewBinding.tip.text = "已经为您选择" + it.size + "款运动设备。请打开设备进行连接。"
             mAdapter.mList = it
             mAdapter.notifyDataSetChanged()
         })
@@ -134,7 +130,7 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
 
     override fun initData() {
         super.initData()
-        mViewModel.loadDeviceInfo(null, { code, msg, _ ->
+        mViewModel.loadDeviceInfo(null, { _, msg, _ ->
             run {
                 showCenterToast(msg) { finish() }
             }
@@ -161,15 +157,13 @@ class DeviceListActivity : BaseActivity<DeviceListVM, FragmentDeviceListBinding>
             mList?.let {
                 val binding = holder.binding
                 binding.name.text = it[position].name
-                binding.state.text = it[position].getBondDeviceData()?.deviceConnect ?:"点击绑定"
+                binding.state.text = it[position].getBondDeviceData()?.deviceConnect ?: "点击绑定"
                 binding.icon.setImageResource(it[position].icon)
                 binding.container.setOnClickListener {
                     itemClickListener?.onItemClick(holder, position, mList!![position])
                 }
-                binding.masked.visibility =
-                    if (it[position].getBondDeviceData() == null) View.VISIBLE else View.GONE
-                binding.masked2.visibility =
-                    if (it[position].getBondDeviceData() != null) View.VISIBLE else View.GONE
+                binding.masked.visibility = if (it[position].getBondDeviceData() == null) View.VISIBLE else View.GONE
+                binding.masked2.visibility = if (it[position].getBondDeviceData() != null) View.VISIBLE else View.GONE
             }
         }
 

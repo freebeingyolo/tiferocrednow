@@ -208,7 +208,7 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
             time = (exerciseDuration.value!! / 1000).toInt().let { if (mode == Mode.byCount) it else mode.time - it },
             num = exerciseCountTxt.value!!.toInt(),
             calory = (exerciseKcalTxt.value!!).toFloat(),
-            d = deviceType.alias,
+            type = deviceType.alias,
             success,
             failed
         )

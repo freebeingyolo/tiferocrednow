@@ -71,7 +71,8 @@
     <string name="device_horizontalbar">单杠</string>
     <string name="device_pushup">俯卧撑板</string>
     <string name="device_counter">计数器</string>
-    <string name="rope_skipper">跳绳器</string>
+    <string name="rope_skipper_rd">燃动跳绳</string>
+    <string name="rope_skipper_bbt">棒棒糖跳绳</string>
 
     <string name="feedback">意见和反馈</string>
     <string name="feedback_errorTime">问题出现时间</string>
@@ -101,4 +102,5 @@
     <string name="connect_device">连接设备</string>
     <string name="cancel_connect">取消连接</string>
     <string name="start_exercise">开始训练</string>
+
 </resources>

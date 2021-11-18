@@ -126,7 +126,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     }
 
     val exerciseCount: LiveData<Int> by lazy { MutableLiveData(-1) } //锻炼个数
-    val exerciseCountTxt = Transformations.map(exerciseCount) { if (it == -1) "--" else it.toString() }
+    open val exerciseCountTxt = Transformations.map(exerciseCount) { if (it == -1) "--" else it.toString() }
     open val exerciseKcalTxt = Transformations.map(exerciseCount) {
         if (it == -1) "--"
         else {
@@ -135,7 +135,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     }
 
     val exerciseDuration: LiveData<Long> by lazy { MutableLiveData(-1) }
-    val exerciseDurationTxt = Transformations.map(exerciseDuration) { if (it == -1L) "--" else formatTime(it) }
+    open val exerciseDurationTxt = Transformations.map(exerciseDuration) { if (it == -1L) "--" else formatTime(it) }
     val batteryLevel: LiveData<Int> by lazy { MutableLiveData(-1) }
 
     val batteryLevelTxt = Transformations.map(batteryLevel) {
@@ -143,7 +143,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
             String.format("%d%%", it)
     }
 
-    private fun formatTime(ms: Long): String {
+    protected fun formatTime(ms: Long): String {
         val ss = 1000
         val mi = ss * 60
         val hh = mi * 60
@@ -152,7 +152,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         val hour = (ms - day * dd) / hh
         val minute = (ms - day * dd - hour * hh) / mi
         val second = (ms - day * dd - hour * hh - minute * mi) / ss
-        val milliSecond = ms - day * dd - hour * hh - minute * mi - second * ss
+        //val milliSecond = ms - day * dd - hour * hh - minute * mi - second * ss
         val sb = StringBuffer()
         //sb.append(String.format("%02d:", hour))
         sb.append(String.format("%02d:", minute))
@@ -364,7 +364,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
 
     fun bindDevice(
         success: ((String?, BondDeviceData) -> Unit)?,
-        failed: ((Int, String?, d: BondDeviceData) -> Unit)?
+        failed: ((Int, String?, BondDeviceData) -> Unit)?
     ) {
         val device = BondDeviceData(
             avaliableDevice!!.address,
@@ -385,7 +385,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
             },
             { msg, d ->
                 //val bondRst = EasyBLE.getInstance().createBond(it.address)
-                //LogUtils.d("bondRst:$bondRst")
+                //LogUtils.d(TAG,"bondRst:$bondRst")
                 success?.invoke(msg, device)
                 onBondedOk(device)
                 avaliableDevice = null
@@ -395,6 +395,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
                 disconnect()
                 onBondedFailed(device)
                 failed?.invoke(code, msg, device)
+                LogUtils.d(TAG, "$msg,mac:${device.mac}")
             }
         )
     }
@@ -427,7 +428,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         val builder = RequestBuilderFactory().getSetNotificationBuilder(serviceUUID, characterUUID, isEnabled)
         builder.setCallback(cb)
         connection?.execute(builder.build())
-        LogUtils.d(TAG,"sendNotification-->$isEnabled")
+        LogUtils.d(TAG, "sendNotification-->$isEnabled")
     }
 
     override fun notifyWeightKgChange(wKg: Float) {//通知体重变更
@@ -441,7 +442,6 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         serviceUUID: UUID = UUID.fromString(UUID_SRVC),
         characterUUID: UUID = UUID.fromString(UUID_WRITE),
     ) {
-        LogUtils.d(TAG, "writeCharacter-->${StringUtils.toHex(data, "")}")
         val builder = RequestBuilderFactory().getWriteCharacteristicBuilder(serviceUUID, characterUUID, data)
         builder.setCallback(cb)
         builder.setTag(tag)
@@ -460,6 +460,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
             cb?.onRequestFailed(builder.build(), -1, null)
             return
         }
+        LogUtils.d(TAG, "writeCharacter-->${StringUtils.toHex(data, "")}")
         connection?.execute(builder.build())
     }
 
@@ -470,16 +471,16 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     ) {
         finishExercise(
             time = (exerciseDuration.value!! / 1000).toInt(),
-            num = exerciseCountTxt.value!!.toInt(),
+            num = exerciseCount.value!!.toInt(),
             calory = (exerciseKcalTxt.value!!).toFloat(),
-            d = deviceType.alias,
+            type = deviceType.alias,
             success,
             failed
         )
     }
 
     fun finishExercise(
-        time: Int, num: Int, calory: Float, d: String,
+        time: Int, num: Int, calory: Float, type: String,
         success: ((String?, Any?) -> Unit)? = null,
         failed: ((Int, String?, Any?) -> Unit)? = null
     ) {
@@ -488,12 +489,12 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         }
         netLaunch({
             withContext(Dispatchers.IO) {
-                var ret = DeviceRepository.addPushUps(time, num, calory, d)
+                var ret = DeviceRepository.addPushUps(time, num, calory, type)
                 var retry = 0
                 while (!ret.isSuccess) {
                     delay(100)
                     retry++
-                    ret = DeviceRepository.addPushUps(time, num, calory, d)
+                    ret = DeviceRepository.addPushUps(time, num, calory, type)
                     if (retry >= 2) break
                 }
                 ret
