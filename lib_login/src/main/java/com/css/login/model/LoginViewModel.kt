@@ -1,20 +1,16 @@
 package com.css.login.model
 
+import android.text.TextUtils
 import androidx.lifecycle.MutableLiveData
-import com.blankj.utilcode.util.GsonUtils
 import com.blankj.utilcode.util.RegexUtils
 import com.css.base.net.HttpNetCode
 import com.css.base.net.api.repository.UserRepository
 import com.css.base.uibase.viewmodel.BaseViewModel
-import com.css.service.data.LoginUserData
 import com.css.service.utils.WonderCoreCache
-import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.json.JSONObject
 
 class LoginViewModel : BaseViewModel() {
-    //    val loginData = MutableLiveData<LoginUserData>()
     val loginFailureData = MutableLiveData<String>()
     val extraData = MutableLiveData<String>()
 
@@ -69,19 +65,17 @@ class LoginViewModel : BaseViewModel() {
                 }
             }, { msg, d ->
                 hideLoading()
-                WonderCoreCache.saveLoginInfo(Gson().fromJson(d, LoginUserData::class.java));
-            }, { code, msg, d ->
+                if (!TextUtils.isEmpty(d?.extra)) {
+                    extraData.value = d?.extra
+                } else {
+                    WonderCoreCache.saveLoginInfo(d)
+                }
+            }, { code, msg, _ ->
                 hideLoading()
                 when (code) {
                     HttpNetCode.NET_TIMEOUT -> showCenterToast("网络请求超时")
                     HttpNetCode.NET_CONNECT_ERROR -> showCenterToast("网络连接错误")
-                    else -> {
-                        if ("请绑定手机号".equals(msg)) {
-                            extraData.value = d?.toString()
-                        } else {
-                            loginFailureData.value = msg
-                        }
-                    }
+                    else -> loginFailureData.value = msg
                 }
             }
         )

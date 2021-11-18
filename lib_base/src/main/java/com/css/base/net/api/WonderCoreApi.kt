@@ -49,7 +49,7 @@ internal interface WonderCoreApi {
 
         //京东登录
         @GET("auth/jdLogin")
-        suspend fun jdLogin(@QueryMap map: Map<String, String>): CommonResponse<String>
+        suspend fun jdLogin(@QueryMap map: Map<String, String>): CommonResponse<LoginUserData>
 
         //验证码绑定
         @GET("app/user/codeBind")
