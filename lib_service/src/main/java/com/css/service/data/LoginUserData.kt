@@ -20,5 +20,6 @@ data class LoginUserData(
     val token: String="",
     val userId: Int=-1,
     val userName: String="",
-    val userRegisterTime: String=""
+    val userRegisterTime: String="",
+    var extra: String=""
 )

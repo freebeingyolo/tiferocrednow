@@ -96,7 +96,7 @@ object UserRepository {
         return userApi.code(map)
     }
 
-    suspend fun jdLogin(code: String): CommonResponse<String> {
+    suspend fun jdLogin(code: String): CommonResponse<LoginUserData> {
         val map: MutableMap<String, String> = HashMap()
         map["code"] = code
         return userApi.jdLogin(map)
