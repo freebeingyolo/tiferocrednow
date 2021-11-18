@@ -18,5 +18,27 @@
             android:screenOrientation="portrait"
             android:name=".ui.LoginActivity"
             android:launchMode="singleTask" />
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".ui.CodeBindActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".ui.PwdBindActivity"
+            android:launchMode="singleTask" />
+        <activity android:name="com.jingdong.auth.login.JDAuthActivity"
+            android:theme="@android:style/Theme.NoDisplay"
+            android:exported="true"
+            android:launchMode="singleTask">
+            <intent-filter android:priority="0x7FFFFFFF">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="jd0d5b0328628f5ba2" />
+                <data android:scheme="jingdong.login.auth" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

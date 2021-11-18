@@ -20,12 +20,15 @@ import com.css.base.uibase.BaseActivity
 import com.css.login.R
 import com.css.login.databinding.ActivityLoginBinding
 import com.css.login.model.LoginViewModel
+import com.css.login.util.AuthHelper
 import com.css.service.data.LoginUserData
 import com.css.service.router.ARouterConst
 import com.css.service.router.ARouterUtil
 import com.css.service.utils.CacheKey
 import com.css.service.utils.SystemBarHelper
 import com.css.service.utils.WonderCoreCache
+import com.jingdong.auth.login.JDAuthListener
+import org.json.JSONObject
 
 import razerdp.basepopup.BasePopupWindow
 
@@ -39,6 +42,7 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>(), View
         mViewBinding.tvRegister.setOnClickListener(this)
         mViewBinding.tvLogin.setOnClickListener(this)
         mViewBinding.forgetPassword.setOnClickListener(this)
+        mViewBinding.ivJd.setOnClickListener(this)
 
         mViewBinding.etTelephone.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -80,7 +84,7 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>(), View
         }
 
         mViewModel.loginFailureData.observe(this, {
-            if (it?.contains("未注册") == true) {
+            if (it?.contains("未注册") == true || it?.contains("登录失败") == true) {
                 showToast(it)
                 return@observe
             }
@@ -102,6 +106,11 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>(), View
                     }
                 }
             }.show()
+        })
+
+        mViewModel.extraData.observe(this, {
+            CodeBindActivity.starActivity(this, it)
+            finish()
         })
     }
 
@@ -125,6 +134,20 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>(), View
             mViewBinding.forgetPassword -> {
                 ARouterUtil.openForgetPassword()
                 mViewBinding.etPassword.setText("")
+            }
+            mViewBinding.ivJd -> {
+                if (NetworkUtils.isConnected()) {
+                    AuthHelper.getAuthLogin(this).login(this, object : JDAuthListener {
+                        override fun onSuccess(p0: JSONObject?) {
+                            p0?.getString("accCode")?.let { mViewModel.jdLogin(it) }
+                        }
+                        override fun onError(p0: JSONObject?) {
+                            showCenterToast(p0?.getString("errMsg"))
+                        }
+                    });
+                } else {
+                    showNetworkErrorDialog()
+                }
             }
         }
     }

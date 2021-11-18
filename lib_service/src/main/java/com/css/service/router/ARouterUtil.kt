@@ -21,4 +21,12 @@ object ARouterUtil {
         ARouter.getInstance().build(ARouterConst.PATH_APP_RESET_PWD)
             .navigation()
     }
+    fun openCodeBind(){
+        ARouter.getInstance().build(ARouterConst.PATH_APP_CODE_BIND)
+            .navigation()
+    }
+    fun openPwdBind(){
+        ARouter.getInstance().build(ARouterConst.PATH_APP_PWD_BIND)
+            .navigation()
+    }
 }
