@@ -24,7 +24,7 @@ import java.text.ParseException
 import javax.net.ssl.SSLException
 
 abstract class BaseViewModel : ViewModel(), IBaseViewModel, INetView, IResource {
-
+    protected val TAG = javaClass.simpleName
     val showToastStrEvent = MutableLiveData<String?>()
     val showLongToastStrEvent = MutableLiveData<String?>()
     val showToastResEvent = MutableLiveData<Int>()

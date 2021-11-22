@@ -28,9 +28,9 @@ class BootstrapService : Service() {
     }
 
     private fun startForeGround (service: BootstrapService) {
-        var notificationManager: NotificationManager =
+        val notificationManager: NotificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        var mChannel: NotificationChannel?
+        val mChannel: NotificationChannel?
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mChannel = NotificationChannel(
                 ConstantData.CHANNEL_ID,
@@ -38,8 +38,7 @@ class BootstrapService : Service() {
                 NotificationManager.IMPORTANCE_HIGH
             )
             notificationManager.createNotificationChannel(mChannel)
-            var notification: Notification =
-                Notification.Builder(applicationContext, ConstantData.CHANNEL_ID).build()
+            val notification: Notification = Notification.Builder(applicationContext, ConstantData.CHANNEL_ID).build()
             startForeground(R.string.app_name, notification)
         }
     }

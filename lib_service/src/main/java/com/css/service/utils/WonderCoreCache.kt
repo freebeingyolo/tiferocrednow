@@ -45,8 +45,8 @@ class WonderCoreCache { //一切围绕CacheKey
         //如果d为null，将会移除这个key
         fun <T> saveData(k1: CacheKey, d: T?, serialized: Boolean = true) {
             if (d == null) {
-                if (!containsKey(k1)) return
-                removeKey(k1, true)
+                LiveDataBus.get().with2(k1.k).value = null
+                if (containsKey(k1)) SPUtils.getInstance().remove(k1.k, true)
             } else {
                 val k = k1.k
                 val json = mGson.toJson(d)

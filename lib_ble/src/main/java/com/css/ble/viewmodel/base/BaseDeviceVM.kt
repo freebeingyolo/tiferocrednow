@@ -17,7 +17,6 @@ import kotlinx.coroutines.launch
  * @date 2021-06-09
  */
 abstract class BaseDeviceVM : BaseViewModel() {
-    protected val TAG = javaClass.simpleName
     abstract val deviceType: DeviceType
 
     companion object {

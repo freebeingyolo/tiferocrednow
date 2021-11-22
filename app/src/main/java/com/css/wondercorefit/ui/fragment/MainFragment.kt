@@ -134,8 +134,8 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     override fun initData() {
         super.initData()
         mViewModel.loadData(true)
-        mViewBinding?.model = mViewModel
-        mViewBinding?.lifecycleOwner = viewLifecycleOwner
+        mViewBinding!!.model = mViewModel
+        mViewBinding!!.lifecycleOwner = viewLifecycleOwner
     }
 
 
@@ -147,7 +147,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
             mData.clear()
             mData.addAll(devices)
             mMainDeviceAdapter.setItems(mData)
-            WonderCoreCache.saveData(CacheKey.RECENT_DEVICE,it.second)
+            WonderCoreCache.saveData(CacheKey.RECENT_DEVICE, it.second)
         }
         BondDeviceData.getDeviceConnectStateLiveData().observe(viewLifecycleOwner) {
             LogUtils.d("it--->$it")
@@ -338,10 +338,8 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     override fun initViewModel(): MainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
 
-    override fun initViewBinding(
-        inflater: LayoutInflater,
-        parent: ViewGroup?
-    ): FragmentMainBinding = FragmentMainBinding.inflate(inflater, parent, false)
+    override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?) =
+        FragmentMainBinding.inflate(inflater, parent, false)
 
     override fun onClick(v: View) {
         when (v.id) {

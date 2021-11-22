@@ -3,9 +3,9 @@ package com.css.ble.viewmodel
 import com.css.base.net.api.repository.DeviceRepository
 import com.css.base.uibase.viewmodel.BaseViewModel
 import com.css.ble.bean.BondDeviceData
-import com.css.ble.bean.DeviceType
 import com.css.ble.viewmodel.base.BaseDeviceVM
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 /**
@@ -24,6 +24,7 @@ class DeviceInfoVM : BaseViewModel() {
             {
                 showLoading()
                 withContext(Dispatchers.IO) {
+                    val t1 = System.currentTimeMillis()
                     val ret = DeviceRepository.queryDeviceListDetails(id)
                     if (ret.isSuccess && ret.data != null && ret.data!!.isNotEmpty()) {
                         for (data in ret.data!!) {
@@ -36,6 +37,8 @@ class DeviceInfoVM : BaseViewModel() {
                             BondDeviceData.setDevice(data2.deviceType, data2) //云端可能改变了设备信息，需要同步一下最新
                         }
                     }
+                    val t2 = System.currentTimeMillis()
+                    (t2 - t1 - 200).takeIf { it > 0 }?.let { delay(it) }
                     ret
                 }
             },

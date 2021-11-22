@@ -9,7 +9,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.Transformations;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -181,7 +180,6 @@ public final class LiveDataBus {
     }
 
     public static class BusMutableLiveData<T> extends MutableLiveData<T> {
-
         private Map<Observer, Observer> observerMap = new HashMap<>();
 
         public BusMutableLiveData(T value) {
