@@ -75,7 +75,7 @@ open class HorizontalBarMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2C
                                     }
 
                                     override fun onCharacteristicWrite(request: Request, value: ByteArray) {
-                                        LogUtils.d("切换模式成功:${StringUtils.toHex(value, "")}")
+                                        LogUtils.d("切换模式成功:${StringUtils.toHex(value)}")
                                         popupWindow.dismiss()
                                     }
                                 })

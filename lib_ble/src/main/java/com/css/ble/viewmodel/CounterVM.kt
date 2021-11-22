@@ -150,11 +150,11 @@ class CounterVM : HorizontalBarVM() {
         val data3 = data + data2
         writeCharacter(data3, object : WriteCharacteristicCallback {
             override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
-                LogUtils.d("fetchAllState-failed->" + StringUtils.toHex(data3, ""))
+                LogUtils.d("fetchAllState-failed->" + StringUtils.toHex(data3))
             }
 
             override fun onCharacteristicWrite(request: Request, value: ByteArray) {
-                LogUtils.d("fetchAllState-ok->" + StringUtils.toHex(data3, ""))
+                LogUtils.d("fetchAllState-ok->" + StringUtils.toHex(data3))
             }
         })
     }
@@ -164,7 +164,7 @@ class CounterVM : HorizontalBarVM() {
         val data2 = DataUtils.shortToByteBig(0x0100)
         val data3 = ((data + data2).sum() and 0xff).toByte()
         val data4 = data + data2 + data3
-        LogUtils.d("reset-->" + StringUtils.toHex(data4, ""))
+        LogUtils.d("reset-->" + StringUtils.toHex(data4))
         writeCharacter(data4, object : WriteCharacteristicCallback {
             override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
                 cb?.onRequestFailed(request, failType, value)

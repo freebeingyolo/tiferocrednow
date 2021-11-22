@@ -100,7 +100,7 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
         val data2 = DataUtils.shortToByteBig(weightKgx10)
         val data3 = ((data + data2).sum() and 0xff).toByte()
         val data4 = data + data2 + data3
-        LogUtils.d("writeWeight:data4:" + StringUtils.toHex(data4, ""))
+        LogUtils.d("writeWeight:data4:" + StringUtils.toHex(data4))
         writeCharacter(data4, object : WriteCharacteristicCallback {
             override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
                 cb?.onRequestFailed(request, failType, value)
@@ -118,7 +118,7 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
         val data2 = DataUtils.shortToByteBig(m.ordinal.toShort())
         val data3 = ((data + data2).sum() and 0xff).toByte()
         val data4 = data + data2 + data3
-        LogUtils.d("switchMode:data4:" + StringUtils.toHex(data4, ""))
+        LogUtils.d("switchMode:data4:" + StringUtils.toHex(data4))
         writeCharacter(data4, object : WriteCharacteristicCallback {
             override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
                 cb?.onRequestFailed(request, failType, value)

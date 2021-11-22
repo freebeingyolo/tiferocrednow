@@ -108,7 +108,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         it >= State.connecting && it < State.discovered
     }
 
-    val connectStateTxt = Transformations.map(stateObsrv) {
+    open val connectStateTxt = Transformations.map(stateObsrv) {
         connectStateTxt(it)
     }
 
@@ -116,7 +116,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         return (connectStateTxt(stateObsrv.value!!))
     }
 
-    private fun connectStateTxt(it: State): String {
+    open fun connectStateTxt(it: State): String {
         return if (it >= State.discovered) {
             getString(R.string.device_connected)
         } else {
@@ -306,7 +306,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     }
 
     override fun onCharacteristicChanged(device: Device, service: UUID, characteristic: UUID, value: ByteArray) {
-        LogUtils.d(TAG, "onCharacteristicChanged:" + StringUtils.toHex(value, ""))
+        LogUtils.d(TAG, "onCharacteristicChanged:" + StringUtils.toHex(value))
     }
 
     @Observe
@@ -460,7 +460,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
             cb?.onRequestFailed(builder.build(), -1, null)
             return
         }
-        LogUtils.d(TAG, "writeCharacter-->${StringUtils.toHex(data, "")}")
+        LogUtils.d(TAG, "writeCharacter-->${StringUtils.toHex(data)}")
         connection?.execute(builder.build())
     }
 

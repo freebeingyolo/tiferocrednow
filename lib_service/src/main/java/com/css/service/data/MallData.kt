@@ -3,7 +3,6 @@ package com.css.service.data
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
-import com.css.service.R
 
 data class MallData(
     var id: Int,
@@ -18,7 +17,7 @@ data class MallData(
         @BindingAdapter("android:src")
         @JvmStatic
         fun setImageViewResource(imageView: AppCompatImageView, resource: String) {
-            Glide.with(imageView.context).load(resource).placeholder(R.drawable.wonder_logo).into(imageView)
+            Glide.with(imageView.context).load(resource).into(imageView)
         }
     }
 }

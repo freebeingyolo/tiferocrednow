@@ -17,7 +17,6 @@ import com.css.base.dialog.CommonAlertDialog
 import com.css.base.dialog.inner.DialogClickListener
 import com.css.base.uibase.BaseFragment
 import com.css.base.uibase.viewmodel.DefaultViewModel
-import com.css.ble.ui.DataStatisticsActivity
 import com.css.service.data.UserData
 import com.css.service.router.ARouterUtil
 import com.css.service.utils.CacheKey
@@ -31,10 +30,11 @@ import com.css.wondercorefit.ui.activity.setting.AboutUsActivity
 import com.css.wondercorefit.ui.activity.setting.FeedbackActivity
 import com.css.wondercorefit.ui.activity.setting.MyDeviceActivity
 import com.css.wondercorefit.ui.activity.setting.PersonInformationActivity
+import com.css.wondercorefit.viewmodel.SettingVM
 import razerdp.basepopup.BasePopupWindow
 
 
-class SettingFragment : BaseFragment<DefaultViewModel, FragmentSettingBinding>(),
+class SettingFragment : BaseFragment<SettingVM, FragmentSettingBinding>(),
     View.OnClickListener, CompoundButton.OnCheckedChangeListener {
     lateinit var userInfo: UserData
     override fun initView(savedInstanceState: Bundle?) {
@@ -51,24 +51,25 @@ class SettingFragment : BaseFragment<DefaultViewModel, FragmentSettingBinding>()
         mViewBinding?.rlFeedback?.setOnClickListener(this)
         mViewBinding?.rlCleanCache?.setOnClickListener(this)
         mViewBinding?.tvCache?.text = FileUtils.getSize(Utils.getApp().cacheDir)
+        mViewBinding!!.model = mViewModel
+        mViewBinding!!.lifecycleOwner = this
     }
 
-    override fun initViewModel(): DefaultViewModel =
-        ViewModelProvider(this).get(DefaultViewModel::class.java)
+    override fun initViewModel() = ViewModelProvider(this).get(SettingVM::class.java)
 
     override fun onClick(v: View) {
         when (v.id) {
             R.id.rl_person_info -> {
                 if (NetworkUtils.isConnected()) {
                     activity?.let { PersonInformationActivity.starActivity(it) }
-                }else{
+                } else {
                     showNetworkErrorDialog()
                 }
             }
             R.id.rl_my_device -> {
                 if (NetworkUtils.isConnected()) {
                     activity?.let { MyDeviceActivity.starActivity(it) }
-                }else{
+                } else {
                     showNetworkErrorDialog()
                 }
             }
@@ -122,10 +123,8 @@ class SettingFragment : BaseFragment<DefaultViewModel, FragmentSettingBinding>()
         }
     }
 
-    override fun initViewBinding(
-        inflater: LayoutInflater,
-        viewGroup: ViewGroup?
-    ): FragmentSettingBinding = FragmentSettingBinding.inflate(inflater, viewGroup, false)
+    override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?) =
+        FragmentSettingBinding.inflate(inflater, parent, false)
 
     override fun onCheckedChanged(compoundButton: CompoundButton?, boolean: Boolean) {
         when (compoundButton?.id) {

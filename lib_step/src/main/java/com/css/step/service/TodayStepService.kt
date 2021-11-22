@@ -1,7 +1,6 @@
 package com.css.step.service
 
 import android.app.*
-import android.bluetooth.BluetoothAdapter
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -9,17 +8,18 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorManager
-import android.location.LocationManager
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Message
 import android.util.Log
 import com.css.service.data.StepData
-import com.css.service.data.UserData
 import com.css.service.utils.CacheKey
 import com.css.service.utils.WonderCoreCache
-import com.css.step.*
+import com.css.step.ISportStepInterface
+import com.css.step.R
+import com.css.step.TodayStepCounter
+import com.css.step.TodayStepDcretor
 import com.css.step.data.ConstantData
 import com.css.step.data.TodayStepData
 import com.css.step.utils.BootstrapService
@@ -99,8 +99,7 @@ class TodayStepService : Service(), Handler.Callback {
         super.onCreate()
         stepData = WonderCoreCache.getData(CacheKey.STEP_DATA, StepData::class.java) ?: StepData()
         mTodayStepDBHelper = TodayStepDBHelper(applicationContext)
-        sensorManager = this
-            .getSystemService(Context.SENSOR_SERVICE) as SensorManager?
+        sensorManager = this.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
         initNotification(currentTimeSportStep + defaultSteps())
 
         //广播
@@ -108,7 +107,6 @@ class TodayStepService : Service(), Handler.Callback {
         filter.addAction("android.intent.action.OPEN_NOTIFICATION")
         filter.addAction("android.intent.action.CLOSE_NOTIFICATION")
         registerReceiver(receiver, filter)
-
 
     }
 
@@ -156,7 +154,7 @@ class TodayStepService : Service(), Handler.Callback {
             builder = Notification.Builder(this.applicationContext)
         }
         builder!!.setPriority(Notification.PRIORITY_MIN)
-        var contentIntent = PendingIntent.getActivity(
+        val contentIntent = PendingIntent.getActivity(
             this,
             0,
             Intent("com.css.Notification.action"),
@@ -328,8 +326,7 @@ class TodayStepService : Service(), Handler.Callback {
             notification = builder!!.build()
             nm!!.notify(R.string.app_name, notification)
             currentNotifySteps = realSteps
-//        EventBus.getDefault()
-//            .post(EventMessage<StepData>(EventMessage.Code.MAIN_INDEX_BACK, StepData(1, 2, 3, "")))
+//          EventBus.getDefault().post(EventMessage<StepData>(EventMessage.Code.MAIN_INDEX_BACK, StepData(1, 2, 3, "")))
             this.stepData.todaySteps = realSteps
             WonderCoreCache.saveData(CacheKey.STEP_DATA, stepData)
             if (!notificationIsOpen) {

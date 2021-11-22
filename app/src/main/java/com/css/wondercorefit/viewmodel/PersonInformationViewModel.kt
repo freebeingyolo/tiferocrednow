@@ -21,7 +21,9 @@ class PersonInformationViewModel : BaseViewModel() {
                 }
             }, { _, d ->
                 hideLoading()
-                WonderCoreCache.saveUserInfo(d!![0])
+                if (d != null && d.size > 0) {
+                    WonderCoreCache.saveUserInfo(d[0])
+                }
             }, { _, msg, _ ->
                 hideLoading()
                 showCenterToast(msg)
@@ -34,7 +36,7 @@ class PersonInformationViewModel : BaseViewModel() {
         age: String = "",
         height: String = "",
         goalBodyWeight: String = "",
-        goalStepCount: String= ""
+        goalStepCount: String = ""
     ) {
         netLaunch(
             {

@@ -13,15 +13,16 @@ import java.io.InputStream
 object DownloadUtil {
     private val okHttpClient: OkHttpClient = OkHttpClient()
     private val TAG = javaClass.simpleName
+
     /**
      * @param url 下载连接
      * @param listener 下载监听
      */
-    fun download(url: String?, listener: OnDownloadListener) {
+    fun download(url: String, listener: OnDownloadListener) {
         // 需要token的时候可以这样做
         // Request request = new Request.Builder().header("token",token).url(url).build();
         val application = ActivityUtils.getTopActivity().application
-        val request: Request = Request.Builder().url(url!!).build()
+        val request: Request = Request.Builder().url(url).tag("dl_upgrade_apk").build()
         val default_save_apk_path = "${application.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}/".trim()
         val default_apk_name = "WonderCoreFit.apk"
         okHttpClient.newCall(request).enqueue(object : Callback {

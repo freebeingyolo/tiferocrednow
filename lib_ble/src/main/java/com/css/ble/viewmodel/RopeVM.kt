@@ -30,24 +30,49 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
     override val deviceType: DeviceType = DeviceType.ROPE
     var isStart = false
     val modeObsvr: LiveData<Mode> by lazy { MutableLiveData(Mode.byFree) }
-    val modeObsvrStr: LiveData<String> = Transformations.map(modeObsvr) {
-        getString(it.msgId)
+    val modeObsvrStr: LiveData<String> by lazy {
+        Transformations.map(modeObsvr) {
+            getString(it.msgId)
+        }
     }
-    val motionState by lazy { MutableLiveData(false) }
+    private val deviceStateObsvr: LiveData<DeviceState> by lazy { MutableLiveData(DeviceState.DISCONNECT) }
+    var deviceState
+        set(value) {
+            (deviceStateObsvr as MutableLiveData).value = value
+            state = state //only notify observers update
+        }
+        get() = deviceStateObsvr.value!!
 
-    //transformations
-  /*  val durationCaption = Transformations.map(modeObsvr){
-        if(it == Mode.byCountTime) "倒计时" else "运行时长"
+    enum class DeviceState(val str: String) {
+        DISCONNECT("未连接"),
+        SHUTDOWN("已关机"),
+        CONNECTING("连接中"),
+        CONNECTED("已连接"),
+        MOTIONING("运动中"),
+        MOTIONEND("运动结束")
     }
-    val countCaption = Transformations.map(modeObsvr){
-        if(it == Mode.byCountNumber) "本地训练次数" else "运行时长"
+
+    override fun connectStateTxt(it: State): String {
+        return deviceState!!.str
+    }
+
+    override val connectStateTxt by lazy {
+        Transformations.map(deviceStateObsvr) { it.str }
+    }
+
+    val durationCaption = Transformations.map(modeObsvr) {
+        if (it == Mode.byCountTime) "倒计时" else "运行时长"
+    }
+
+    val countCaption = Transformations.map(modeObsvr) {
+        if (it == Mode.byCountNumber) "本地训练次数" else "运行时长"
     }
 
     override val exerciseCountTxt = Transformations.map(exerciseCount) {
         if (it == -1) "--" else {
             if (mode == Mode.byCountNumber) (mCountNumber - it).toString() else it.toString()
         }
-    }*/
+    }
 
     override val exerciseKcalTxt = Transformations.map(exerciseCount) {
         if (it == -1) "--"
@@ -84,7 +109,12 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
 
     fun setIsStart(iS: Boolean) {
         isStart = iS
+        //重新去查询电量
         takeIf { isStart && batteryLevel.value == -1 }?.let { writeCharacter(Command.QUERY_BATTERY.code()) }
+    }
+
+    fun sendGetBatteryCmd() {
+        takeIf { batteryLevel.value == -1 }?.let { writeCharacter(Command.QUERY_BATTERY.code()) }
     }
 
     fun getModels(): List<String> {
@@ -100,6 +130,7 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
         writeCharacter(Command.CONNECTION_STATE.code(0x01))  //蓝牙连接状态：已连接
         writeCharacter(Command.SET_TIME.codeInt((System.currentTimeMillis() / 1000L).toInt()))  //查询
         writeCharacter(Command.QUERY.code())//查询
+        deviceState = RopeVM.DeviceState.SHUTDOWN
     }
 
     /*sealed class Command2() {
@@ -164,6 +195,7 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
 
 
     override fun onDisconnected(d: Device?) {
+        deviceState = DeviceState.DISCONNECT
     }
 
     override fun onBondedOk(d: BondDeviceData) {//绑定成功后进行断开
@@ -224,6 +256,7 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
         }
     }
 
+
     fun reset(cb: WriteCharacteristicCallback? = null) {
         writeCharacter(Command.RESET.code(), object : WriteCharacteristicCallback {
             override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
@@ -257,13 +290,14 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
             if (command == Command.BATTERY) {
                 val v = DataUtils.bytes2IntBig(value[5])
                 (batteryLevel as MutableLiveData).value = v
+                deviceState = RopeVM.DeviceState.CONNECTED
             }
             return
         }
         when (command) {
             Command.REAL_DATA -> {// 当前模式
                 //是否运动
-                motionState.value = DataUtils.bytes2IntBig(value[5]) == 1
+                val isWorkouting = DataUtils.bytes2IntBig(value[5]) == 1
                 //时长
                 val d = DataUtils.bytes2IntBig(value[6], value[7])
                 (exerciseDuration as MutableLiveData).value = d * 1000L
@@ -282,10 +316,10 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
             Command.BATTERY -> {//电池电量
                 val v = DataUtils.bytes2IntBig(value[5])
                 (batteryLevel as MutableLiveData).value = v
+                deviceState = DeviceState.CONNECTED
             }
-            Command.LOW_POWER_MODE -> {//进低功耗模式,电量为0
-                val v = DataUtils.bytes2IntBig(value[5])
-                (batteryLevel as MutableLiveData).value = v
+            Command.LOW_POWER_MODE -> {//进低功耗模式
+                deviceState = DeviceState.SHUTDOWN
             }
             else -> {}
         }

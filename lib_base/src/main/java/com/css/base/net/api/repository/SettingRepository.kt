@@ -1,5 +1,6 @@
 package com.css.base.net.api.repository
 
+import com.css.base.constants.CommonConstants
 import com.css.base.net.CommonResponse
 import com.css.base.net.NetManager
 import com.css.base.net.RequestBodyBuilder
@@ -49,7 +50,7 @@ object SettingRepository {
     ): CommonResponse<UpGradeData> {
         val map: MutableMap<String, String> = HashMap()
         map["version"] = version
-        map["OSType"] = "Android"
+        map["OSType"] = CommonConstants.OSType
         return settingApi.upGrade(map)
     }
 }

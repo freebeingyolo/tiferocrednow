@@ -75,6 +75,7 @@ open class AboutUsActivity : BaseActivity<AboutUsViewModel, ActivityAboutUsBindi
                             super.onRightBtnClick(view)
                             getFileFromServer(it.upgradePackage)
                         }
+
                         override fun onLeftBtnClick(view: View) {
                             super.onLeftBtnClick(view)
                             if (it.mandatoryUpgrade == "是") {
@@ -90,7 +91,7 @@ open class AboutUsActivity : BaseActivity<AboutUsViewModel, ActivityAboutUsBindi
 
     }
 
-    private fun getFileFromServer(downUrl: String?) {
+    private fun getFileFromServer(downUrl: String) {
         DownloadUtil.download(downUrl, object : DownloadUtil.OnDownloadListener {
             override fun onDownloadSuccess(file: File) {
                 startInstallApk(file)
@@ -127,10 +128,10 @@ open class AboutUsActivity : BaseActivity<AboutUsViewModel, ActivityAboutUsBindi
         startActivityForResult(intent, INSTALL_PERMISS_CODE)
     }
 
-    override fun onActivityResult( requestCode: Int, resultCode: Int, data: Intent? ) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == INSTALL_PERMISS_CODE) {
-            val successDownloadApkPath = "${getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}/".trim()+"Wondercare.apk"
+            val successDownloadApkPath = "${getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}/".trim() + "WonderCoreFit.apk"
             AppUtils.installApp(successDownloadApkPath)
         }
     }

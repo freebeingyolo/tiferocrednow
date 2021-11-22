@@ -114,4 +114,6 @@ class MainViewModel : BaseViewModel() {
         fetchRemoteWeight()
         getPersonInfo()
     }
+
+    val userData = WonderCoreCache.getLiveData<UserData>(CacheKey.USER_INFO)
 }

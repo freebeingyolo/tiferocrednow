@@ -10,7 +10,7 @@ kapt {
 }
 android {
     compileSdkVersion rootProject.ext.android["compileSdkVersion"]
-    buildToolsVersion "30.0.3"
+    buildToolsVersion rootProject.ext.android["buildToolsVersion"]
 
     defaultConfig {
         applicationId "com.css.wondercorefit"
@@ -78,7 +78,6 @@ dependencies {
     implementation project(':lib_step')
     implementation project(':lib_login')
     implementation project(':lib_ble')
-    implementation 'com.alibaba:arouter-api:1.5.1'
     implementation dep.liteplayer
     implementation 'com.danikula:videocache:2.7.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'

@@ -388,7 +388,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
                     }
 
                     override fun onCharacteristicWrite(request: Request, value: ByteArray) {
-                        LogUtils.d("discovered#shangweima：" + StringUtils.toHex(value, " "))
+                        LogUtils.d("discovered#shangweima：" + StringUtils.toHex(value))
                     }
                 })
             //开启通知
@@ -511,20 +511,17 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
      * 默认为false，方法默认执行线程在[EasyBLEBuilder.setMethodDefaultThreadMode]指定
      */
     override fun onCharacteristicWrite(request: Request, value: ByteArray) {
-        LogUtils.d("onCharacteristicWrite：" + StringUtils.toHex(value, " "))
+        LogUtils.d("onCharacteristicWrite：" + StringUtils.toHex(value))
     }
 
     override fun onCharacteristicRead(request: Request, value: ByteArray) {
-        LogUtils.d("onCharacteristicRead：" + StringUtils.toHex(value, " "))
+        LogUtils.d("onCharacteristicRead：" + StringUtils.toHex(value))
     }
 
     override fun onCharacteristicChanged(device: Device, service: UUID, characteristic: UUID, value: ByteArray) {
         super.onCharacteristicChanged(device, service, characteristic, value)
         LogUtils.d(
-            "onCharacteristicChanged：" + StringUtils.toHex(
-                value,
-                " "
-            ) + (Looper.myLooper() == Looper.getMainLooper())
+            "onCharacteristicChanged：" + StringUtils.toHex(value) + (Looper.myLooper() == Looper.getMainLooper())
         )
         if (value.size > 3) {
             (batteryLevel as MutableLiveData).value = (1f / value[value.size - 1] * 100).toInt()
@@ -550,7 +547,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
             }
 
             override fun onCharacteristicWrite(request: Request, value: ByteArray) {
-                LogUtils.d("discovered#onCharacteristicWrite：" + StringUtils.toHex(value, " "))
+                LogUtils.d("discovered#onCharacteristicWrite：" + StringUtils.toHex(value))
             }
         }, "getBattlerLevel")
     }
@@ -563,7 +560,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
             }
 
             override fun onCharacteristicWrite(request: Request, value: ByteArray) {
-                LogUtils.d("discovered#onCharacteristicWrite：" + StringUtils.toHex(value, " "))
+                LogUtils.d("discovered#onCharacteristicWrite：" + StringUtils.toHex(value))
             }
         })
     }
@@ -578,7 +575,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
             }
 
             override fun onCharacteristicWrite(request: Request, value: ByteArray) {
-                LogUtils.d("setExerciseNum#onCharacteristicWrite：" + StringUtils.toHex(value, " "))
+                LogUtils.d("setExerciseNum#onCharacteristicWrite：" + StringUtils.toHex(value))
             }
         })
     }

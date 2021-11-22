@@ -77,7 +77,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
                                 android:layout_marginTop="15dp"
-                                android:text="万达康"
+                                android:text="@{model.userData.userName}"
                                 android:textColor="@color/white"
                                 android:textSize="16sp" />
 

@@ -67,9 +67,9 @@ class MainActivity : BaseActivity<MainActivityViewModel, ActivityMainBinding>() 
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
         mViewModel.upGradeData.observe(this, {
-            var version = it.version
-            var packVersion = AppUtils.getAppVersionName()
-            if (packVersion != version) {
+            val versionName = it.version
+            val packVersion = AppUtils.getAppVersionName()
+            if (packVersion != versionName) {
                 CommonAlertDialog(this).apply {
                     gravity = Gravity.BOTTOM
                     type = CommonAlertDialog.DialogType.Confirm
@@ -83,6 +83,7 @@ class MainActivity : BaseActivity<MainActivityViewModel, ActivityMainBinding>() 
                             //更新操作
                             getFileFromServer(it.upgradePackage)
                         }
+
                         override fun onLeftBtnClick(view: View) {
                             super.onLeftBtnClick(view)
                             if (it.mandatoryUpgrade == "是") {
@@ -95,16 +96,20 @@ class MainActivity : BaseActivity<MainActivityViewModel, ActivityMainBinding>() 
         })
     }
 
-    private fun getFileFromServer(downUrl: String?) {
+    private fun getFileFromServer(downUrl: String) {
         DownloadUtil.download(downUrl, object : DownloadUtil.OnDownloadListener {
             override fun onDownloadSuccess(file: File) {
                 startInstallApk(file)
+                LogUtils.d(TAG, "onDownloadSuccess:start to install")
             }
 
             override fun onDownloading(progress: Int) {
+                LogUtils.d(TAG, "onDownloading:$progress")
             }
 
             override fun onDownloadFailed() {
+                LogUtils.d(TAG, "onDownloadFailed")
+                showToast("下载升级包失败")
             }
         })
     }
@@ -133,7 +138,8 @@ class MainActivity : BaseActivity<MainActivityViewModel, ActivityMainBinding>() 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == INSTALL_PERMISS_CODE) {
-            val successDownloadApkPath = "${getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}/".trim()+"Wondercare.apk"
+            val successDownloadApkPath =
+                "${getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}/".trim() + "WonderCoreFit.apk"
             AppUtils.installApp(successDownloadApkPath)
         }
     }
@@ -151,7 +157,7 @@ class MainActivity : BaseActivity<MainActivityViewModel, ActivityMainBinding>() 
         mTabSettingFragment = SettingFragment()
         mViewBinding.tablayout.initTab(callback = {
             mViewBinding.tablayout.tag = it
-/*            val fragment = getFragment(it)
+            /*val fragment = getFragment(it)
             when (it) {
                 BaseInner.TabIndex.HOME -> {
                     if (mCurFragment == fragment) {
@@ -216,9 +222,6 @@ class MainActivity : BaseActivity<MainActivityViewModel, ActivityMainBinding>() 
         return null
     }
 
-    override fun initViewBinding(
-        inflater: LayoutInflater,
-        parent: ViewGroup?
-    ): ActivityMainBinding =
+    override fun initViewBinding(inflater: LayoutInflater, parent: ViewGroup?): ActivityMainBinding =
         ActivityMainBinding.inflate(layoutInflater, parent, false)
 }

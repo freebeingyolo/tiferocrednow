@@ -225,7 +225,7 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
             }
 
             override fun onCharacteristicWrite(request: Request, value: ByteArray) {
-                LogUtils.d("切换模式成功:${StringUtils.toHex(value, "")}")
+                LogUtils.d("切换模式成功:${StringUtils.toHex(value)}")
                 ToastUtils.showShort("切换${getString(mode.msgId)}成功")
                 popupWindow.dismiss()
             }
@@ -243,6 +243,11 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
     }
 
     fun startExercise() {
+        /*if (mViewModel2.deviceState == RopeVM.DeviceState.SHUTDOWN) {
+            showToast("设备已关机，请先开机才能训练")
+            mViewModel2.sendGetBatteryCmd()
+            return
+        }*/
         mViewModel2.reset()
         mViewModel2.setIsStart(true)
         when (mViewModel2.mode) {

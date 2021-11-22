@@ -2,7 +2,6 @@ package com.css.wondercorefit.ui.fragment
 
 import LogUtils
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.*
 import android.graphics.Typeface
 import android.os.*
@@ -24,6 +23,7 @@ import com.css.ble.bean.DeviceType
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
 import com.css.service.data.GlobalData
 import com.css.service.data.StepData
+import com.css.service.data.UserData
 import com.css.service.router.ARouterConst
 import com.css.service.utils.CacheKey
 import com.css.service.utils.SystemBarHelper
@@ -335,14 +335,13 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
         }
     }
 
-    override fun initViewModel(): MainViewModel =
-        ViewModelProvider(this).get(MainViewModel::class.java)
+    override fun initViewModel(): MainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
 
     override fun initViewBinding(
         inflater: LayoutInflater,
-        viewGroup: ViewGroup?
-    ): FragmentMainBinding = FragmentMainBinding.inflate(inflater, viewGroup, false)
+        parent: ViewGroup?
+    ): FragmentMainBinding = FragmentMainBinding.inflate(inflater, parent, false)
 
     override fun onClick(v: View) {
         when (v.id) {
