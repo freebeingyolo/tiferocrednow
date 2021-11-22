@@ -307,8 +307,8 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
                 (exerciseCount as MutableLiveData).value = r
                 //运动模式
                 val v = DataUtils.bytes2IntBig(value[18])
-                if (v in 0..2) {
-                    (modeObsvr as MutableLiveData).value = Mode.values()[v]
+                if (v in 1..3) {
+                    (modeObsvr as MutableLiveData).value = Mode.values()[v-1]
                 } else {
                     LogUtils.e(TAG, "found wrong data:$hexData")
                 }
