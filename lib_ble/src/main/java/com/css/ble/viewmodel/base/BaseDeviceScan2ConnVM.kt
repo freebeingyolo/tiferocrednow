@@ -2,7 +2,9 @@ package com.css.ble.viewmodel.base
 
 import LogUtils
 import android.bluetooth.BluetoothGattService
+import android.bluetooth.le.ScanFilter
 import android.os.Looper
+import android.os.ParcelUuid
 import androidx.annotation.NonNull
 import androidx.lifecycle.*
 import cn.wandersnail.ble.*
@@ -23,7 +25,6 @@ import com.css.ble.viewmodel.IBleScan
 import com.css.res.R
 import com.css.service.bus.LiveDataBus.BusMutableLiveData
 import com.css.service.data.CourseData
-import com.css.service.data.DeviceData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -40,6 +41,8 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     protected open val UUID_SRVC = "0000ffb0-0000-1000-8000-00805f9b34fb"
     protected open val UUID_WRITE = "0000ffb1-0000-1000-8000-00805f9b34fb"
     protected open val UUID_NOTIFY = "0000ffb2-0000-1000-8000-00805f9b34fb"
+    //绑定失败地址列表，对于失败的地址间隔几次再去绑定
+    protected val bondFailedAddres by lazy { mutableMapOf<String, Int>() }
 
     enum class FoundWay {
         NAME,
@@ -184,6 +187,12 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
 
         override fun onScanResult(device: Device, isConnectedBySys: Boolean) {
             if (filterName(device.name)) {
+                LogUtils.d(TAG, "bondFailedDevices-->$bondFailedAddres,${device.address}")
+                if (bondFailedAddres.containsKey(device.address)) {
+                    bondFailedAddres[device.address] = bondFailedAddres[device.address]!! - 1
+                    if (bondFailedAddres[device.address]!! <= 0) bondFailedAddres.remove(device.address)
+                    return
+                }
                 LogUtils.d(TAG, "device:$device")
                 EasyBLE.getInstance().stopScan()
                 if (foundMethod == FoundWay.NAME) {
@@ -217,9 +226,12 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     override fun startScanBle() {
         if (EasyBLE.getInstance().isScanning) return
         LogUtils.d(TAG, "startScanBle,state:${state},isScanning:${EasyBLE.getInstance().isScanning}")
-        EasyBLE.getInstance().scanConfiguration.isOnlyAcceptBleDevice = true
-        EasyBLE.getInstance().scanConfiguration.rssiLowLimit = -100
-        EasyBLE.getInstance().scanConfiguration.scanPeriodMillis = bondTimeout.toInt()//永不超时
+        EasyBLE.getInstance().scanConfiguration.apply {
+            isOnlyAcceptBleDevice = true
+            rssiLowLimit = -100
+            scanPeriodMillis = bondTimeout.toInt()
+            filters = listOf(ScanFilter.Builder().setServiceUuid(ParcelUuid.fromString(UUID_SRVC)).build())
+        }
         EasyBLE.getInstance().startScan()
         EasyBLE.getInstance().addScanListener(scanListener)
         startTimeoutTimer(bondTimeout)
@@ -387,17 +399,27 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
                 //val bondRst = EasyBLE.getInstance().createBond(it.address)
                 //LogUtils.d(TAG,"bondRst:$bondRst")
                 success?.invoke(msg, device)
-                onBondedOk(device)
+                onBondedOk2(device)
                 avaliableDevice = null
             },
             { code, msg, d ->
                 avaliableDevice = null
                 disconnect()
-                onBondedFailed(device)
+                onBondedFailed2(device)
                 failed?.invoke(code, msg, device)
                 LogUtils.d(TAG, "$msg,mac:${device.mac}")
             }
         )
+    }
+
+    private fun onBondedOk2(device: BondDeviceData) {
+        bondFailedAddres.clear()
+        onBondedOk(device)
+    }
+
+    private fun onBondedFailed2(device: BondDeviceData) {
+        bondFailedAddres[device.mac] = 2
+        onBondedFailed(device)
     }
 
     fun fetchRecommentation(scene: String = "教学视频") {

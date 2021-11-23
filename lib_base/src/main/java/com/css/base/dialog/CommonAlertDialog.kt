@@ -92,7 +92,7 @@ class CommonAlertDialog : BasePopupWindow.OnDismissListener {
                     dialog = SingleDialog(context)
                 }
                 DialogType.Edit -> {
-                    dialog = EditDialog.Builder().build(context)
+                    dialog = EditDialog(context)
                 }
                 DialogType.Image -> {
                     dialog = ImageDialog(context)
@@ -116,7 +116,7 @@ class CommonAlertDialog : BasePopupWindow.OnDismissListener {
                     dialog = SingleDialog(attachDialog!!)
                 }
                 DialogType.Edit -> {
-                    dialog = EditDialog.Builder().build(attachDialog!!)
+                    dialog = EditDialog(attachDialog!!)
                 }
                 DialogType.Image -> {
                     dialog = ImageDialog(context)
@@ -271,7 +271,7 @@ class CommonAlertDialog : BasePopupWindow.OnDismissListener {
                 } else if (rightBtnColorInt != null) {
                     editDialog.setRightBtnColorInt(rightBtnColorInt)
                 }
-                editDialog.setListener(listener)
+                editDialog.listener = listener
             }
             is ImageDialog -> {
                 val imageDialog = dialog as ImageDialog

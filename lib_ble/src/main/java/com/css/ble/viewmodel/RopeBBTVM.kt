@@ -15,8 +15,7 @@ import java.util.*
 class RopeBBTVM : RopeVM() {
     override val deviceType: DeviceType = DeviceType.ROPE_BBT
     override fun filterName(name: String): Boolean {
-        val names = arrayOf("Hi-BBTTS")
-        return names.find { name.startsWith(it) } != null
+        return name.startsWith("Hi-BBTTS")
     }
 
     @Observe

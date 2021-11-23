@@ -90,7 +90,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:text="运行时长"
+                        android:text="@{model.durationCaption}"
                         android:textColor="#666666"
                         android:textSize="10sp" />
                 </LinearLayout>
@@ -182,7 +182,7 @@
                         android:layout_height="0dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="本次训练计数"
+                        android:text="@{model.countCaption}"
                         android:textColor="#666666"
                         android:textSize="12sp" />
                 </androidx.appcompat.widget.LinearLayoutCompat>

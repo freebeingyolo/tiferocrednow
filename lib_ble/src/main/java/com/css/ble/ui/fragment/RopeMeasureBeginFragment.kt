@@ -134,9 +134,7 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
                                     ) { options1, _, _, _ ->
                                         //mCountTime = mCountTimeList[options1]
                                         mViewModel2.mCountTime = mCountTimeList[options1].toInt()
-                                    }.setLayoutRes(
-                                        R.layout.dialog_rope_count_time
-                                    ) { v ->
+                                    }.setLayoutRes(R.layout.dialog_rope_count_time) { v ->
                                         val title = v?.findViewById<TextView>(R.id.tv_title)
                                         val cancel = v?.findViewById<TextView>(R.id.btn_cancel)
                                         val submit = v?.findViewById<TextView>(R.id.btn_submit)
@@ -164,14 +162,14 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
                                     mCountTimeDialog!!.dialog.window?.setWindowAnimations(R.style.picker_view_slide_anim)
                                     mCountTimeDialog?.show()
                                 } else if (Mode.byCountNumber == modes[position]) {
-                                    EditDialog.Builder().apply {
+                                    EditDialog(context).apply {
                                         title = "设置倒计数数量"
                                         hint = "请输入数量"
                                         leftBtnText = "取消"
                                         rightBtnText = "确定"
                                         inputType = InputType.TYPE_CLASS_NUMBER
-                                    }.build(context).apply {
-                                        setListener(listener = object : DialogClickListener.DefaultLisener() {
+                                        content = "10"
+                                        listener = object : DialogClickListener.DefaultLisener() {
                                             override fun onRightEditBtnClick(view: View, content: String?) {
                                                 if (content == "") {
                                                     showCenterToast("您还未输入倒计数个数")
@@ -193,8 +191,8 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
                                                     showCenterToast("倒计数只能是1-500的整数才可开始训练")
                                                 }
                                             }
-                                        })
-                                    }.show()
+                                        }
+                                    }.showPopupWindow()
 
                                 } else {
                                     switchMode(modes[position], popupWindow)

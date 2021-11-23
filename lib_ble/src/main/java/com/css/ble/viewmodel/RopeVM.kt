@@ -53,7 +53,7 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
     }
 
     override fun connectStateTxt(it: State): String {
-        return deviceState!!.str
+        return deviceState.str
     }
 
     override val connectStateTxt by lazy {
@@ -65,7 +65,7 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
     }
 
     val countCaption = Transformations.map(modeObsvr) {
-        if (it == Mode.byCountNumber) "本地训练次数" else "运行时长"
+        if (it == Mode.byCountNumber) "剩余训练次数" else "本地训练次数"
     }
 
     override val exerciseCountTxt = Transformations.map(exerciseCount) {
@@ -99,8 +99,7 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
     }
 
     override fun filterName(name: String): Boolean {
-        val names = arrayOf("Hi-RDTS")
-        return names.find { name.startsWith(it) } != null
+        return name.startsWith("Hi-RDTS")
     }
 
     override fun filterUUID(uuid: UUID): Boolean {
@@ -152,11 +151,11 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
         RESET("F55F06021101"),//重置
         CONNECTION_STATE("F55F10030100"),//下发连接状态,01-已连接，00-断开
         SET_TIME("F55F06060100"), //设置时间
-        SWITCH_MODE("F55F060403"),
+        SWITCH_MODE("F55F060403"),//切换模式
         CHANGE_EXERCISE("F55F060203"),//04-暂停，05-恢复，06-停止
-        REAL_DATA("F55F070F04"),
-        BATTERY("F55F070202"),
-        LOW_POWER_MODE("F55F0B0201")
+        REAL_DATA("F55F070F04"),//真实数据
+        BATTERY("F55F070202"),//电量
+        LOW_POWER_MODE("F55F0B0201")//低功耗模式
         ;
 
         companion object {
@@ -290,7 +289,7 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
             if (command == Command.BATTERY) {
                 val v = DataUtils.bytes2IntBig(value[5])
                 (batteryLevel as MutableLiveData).value = v
-                deviceState = RopeVM.DeviceState.CONNECTED
+                deviceState = DeviceState.CONNECTED
             }
             return
         }
@@ -308,7 +307,7 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
                 //运动模式
                 val v = DataUtils.bytes2IntBig(value[18])
                 if (v in 1..3) {
-                    (modeObsvr as MutableLiveData).value = Mode.values()[v-1]
+                    (modeObsvr as MutableLiveData).value = Mode.values()[v - 1]
                 } else {
                     LogUtils.e(TAG, "found wrong data:$hexData")
                 }
