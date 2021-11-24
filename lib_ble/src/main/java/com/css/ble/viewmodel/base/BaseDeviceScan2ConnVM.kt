@@ -59,7 +59,6 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         connected,
         discovering,
         discovered,
-        exercise
     }
 
     /*** abstractable start ****/
@@ -399,25 +398,25 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
                 //val bondRst = EasyBLE.getInstance().createBond(it.address)
                 //LogUtils.d(TAG,"bondRst:$bondRst")
                 success?.invoke(msg, device)
-                onBondedOk2(device)
+                onBondedok(device)
                 avaliableDevice = null
             },
             { code, msg, d ->
                 avaliableDevice = null
                 disconnect()
-                onBondedFailed2(device)
+                onBondedfailed(device)
                 failed?.invoke(code, msg, device)
                 LogUtils.d(TAG, "$msg,mac:${device.mac}")
             }
         )
     }
 
-    private fun onBondedOk2(device: BondDeviceData) {
+    private fun onBondedok(device: BondDeviceData) {
         bondFailedAddres.clear()
         onBondedOk(device)
     }
 
-    private fun onBondedFailed2(device: BondDeviceData) {
+    private fun onBondedfailed(device: BondDeviceData) {
         bondFailedAddres[device.mac] = 2
         onBondedFailed(device)
     }
@@ -487,11 +486,11 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     }
 
 
-    open fun finishExercise(
+    open fun uploadExerciseData(
         success: ((String?, Any?) -> Unit)? = null,
         failed: ((Int, String?, Any?) -> Unit)? = null
     ) {
-        finishExercise(
+        uploadExerciseData(
             time = (exerciseDuration.value!! / 1000).toInt(),
             num = exerciseCount.value!!.toInt(),
             calory = (exerciseKcalTxt.value!!).toFloat(),
@@ -501,7 +500,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         )
     }
 
-    fun finishExercise(
+    fun uploadExerciseData(
         time: Int, num: Int, calory: Float, type: String,
         success: ((String?, Any?) -> Unit)? = null,
         failed: ((Int, String?, Any?) -> Unit)? = null

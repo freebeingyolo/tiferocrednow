@@ -70,7 +70,7 @@ abstract class CommonMeasureBeginFragment<VB : ViewDataBinding>(d: DeviceType, v
         ): CommonMeasureBeginFragment<out ViewDataBinding> {
 
             return when (t) {
-                DeviceType.HORIZONTAL_BAR -> HorizontalBarMeasureBeginFragment(t, vm)
+                DeviceType.HORIZONTAL_BAR -> HorizontalBar2MeasureBeginFragment(t, vm)
                 DeviceType.PUSH_UP -> PushUpMeasureBeginFragment(t, vm)
                 DeviceType.COUNTER -> CounterMeasureBeginFragment(t, vm)
                 DeviceType.ROPE,DeviceType.ROPE_BBT -> RopeMeasureBeginFragment(t, vm)

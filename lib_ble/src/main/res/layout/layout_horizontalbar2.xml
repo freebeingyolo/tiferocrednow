@@ -9,15 +9,17 @@
 
         <import type="android.view.View" />
 
+        <import type="com.css.ble.viewmodel.HorizontalBarVM.MotionState" />
+
         <import type="com.css.base.utils.BindingUtils" />
 
         <variable
             name="view"
-            type="com.css.ble.ui.fragment.RopeMeasureBeginFragment" />
+            type="com.css.ble.ui.fragment.HorizontalBar2MeasureBeginFragment" />
 
         <variable
             name="model"
-            type="com.css.ble.viewmodel.RopeVM" />
+            type="com.css.ble.viewmodel.HorizontalBarVM" />
     </data>
 
 
@@ -393,10 +395,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:onClick="@{v->view.connectChange()}"
+                        android:onClick="@{v->view.startConnect()}"
                         android:text="连接设备"
                         android:textColor="#F2682A"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"
+                        android:visibility="@{model.state == State.disconnected ? View.VISIBLE:View.GONE }" />
 
                     <TextView
                         android:id="@+id/startExercise"
@@ -407,7 +410,8 @@
                         android:text="开始训练"
                         android:textColor="#F2682A"
                         android:textSize="15sp"
-                        android:visibility="gone" />
+                        android:visibility="@{model.motionState == MotionState.STOP ? View.VISIBLE:View.GONE }" />
+
                 </RelativeLayout>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -416,7 +420,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:visibility="gone">
+                    android:visibility="@{model.motionState.ordinal() > MotionState.STOP.ordinal() ? View.VISIBLE:View.GONE }">
 
                     <TextView
                         android:id="@+id/pauseExercise"
@@ -427,12 +431,14 @@
                         android:onClick="@{v->view.resumeOrPauseExercise()}"
                         android:text="暂停训练"
                         android:textColor="#F2682A"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"
+                        android:visibility="gone" />
 
                     <View
                         android:layout_width="2dp"
                         android:layout_height="20dp"
-                        android:background="#333333" />
+                        android:background="#333333"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/startExercise2"

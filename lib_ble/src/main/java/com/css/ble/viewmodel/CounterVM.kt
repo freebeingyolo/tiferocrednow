@@ -20,7 +20,7 @@ import java.util.*
  *@description 计数器
  */
 class CounterVM : HorizontalBarVM() {
-    private var motionState = 0x00
+    private var motionState2 = 0x00
     override val deviceType: DeviceType = DeviceType.COUNTER
     private var initExerciseCount = -1
     private var initExerciseDuration = -1L
@@ -62,7 +62,7 @@ class CounterVM : HorizontalBarVM() {
     }
 
     override fun onDisconnected(d: Device?) {
-        finishExercise()
+        uploadExerciseData()
     }
 
     override fun onBondedOk(d: BondDeviceData) {
@@ -89,7 +89,7 @@ class CounterVM : HorizontalBarVM() {
             hexData.startsWith("F55F0701") -> {//次数
                 val v = DataUtils.bytes2IntBig(value[5], value[6])
                 if (v == 0 && exerciseCountDelta > 0) { //固件sb,非得让次数清零指令在清零指令之前发送
-                    finishExercise()
+                    uploadExerciseData()
                 }
                 (exerciseCount as MutableLiveData).value = v
                 if (initExerciseCount == -1) initExerciseCount = v
@@ -99,7 +99,7 @@ class CounterVM : HorizontalBarVM() {
                 (batteryLevel as MutableLiveData).value = v
             }
             hexData.startsWith("F55F0702") -> {//清零
-                finishExercise()
+                uploadExerciseData()
                 initExerciseCount = 0
                 initExerciseDuration = 0
             }
@@ -111,18 +111,18 @@ class CounterVM : HorizontalBarVM() {
             hexData.startsWith("F55F0705") -> {//运动状态
                 //LogUtils.d("onCharacteristicChanged#F55F0705#$hexData")
                 val v = DataUtils.bytes2IntBig(value[5])
-                if (motionState == 0x00 && v == 0x01) {
+                if (motionState2 == 0x00 && v == 0x01) {
                     onMotionStart()
-                } else if (motionState == 0x01 && v == 0x00) {
+                } else if (motionState2 == 0x01 && v == 0x00) {
                     onMotionEnd()
                 }
-                motionState = v
+                motionState2 = v
             }
         }
     }
 
-    override fun finishExercise(success: ((String?, Any?) -> Unit)?, failed: ((Int, String?, Any?) -> Unit)?) {
-        super.finishExercise(
+    override fun uploadExerciseData(success: ((String?, Any?) -> Unit)?, failed: ((Int, String?, Any?) -> Unit)?) {
+        super.uploadExerciseData(
             time = (exerciseDurationDelta / 1000).toInt(),
             num = exerciseCountDelta,
             calory = (exerciseKcalTxtDelta).toFloat(),

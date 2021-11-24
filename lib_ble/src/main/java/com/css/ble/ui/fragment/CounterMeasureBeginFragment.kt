@@ -20,6 +20,6 @@ class CounterMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) : Ho
     override fun onStop() {
         super.onStop()
         //退出页面进行数据上传
-        mViewModel.finishExercise()
+        mViewModel.uploadExerciseData()
     }
 }

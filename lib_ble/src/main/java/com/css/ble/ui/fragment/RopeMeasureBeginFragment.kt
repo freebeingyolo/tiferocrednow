@@ -305,7 +305,7 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
         }.show()
     }
 
-    fun startExercise2() {
+    fun resumeOrPauseExercise() {
         if ("暂停训练" == mViewBinding?.pauseExercise?.text) {
             mViewModel2.changeExercise(RopeVM.MotionState.PAUSE)
             mViewBinding?.pauseExercise?.text = "开始训练"

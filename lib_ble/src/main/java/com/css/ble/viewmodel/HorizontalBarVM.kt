@@ -1,6 +1,7 @@
 package com.css.ble.viewmodel
 
 import LogUtils
+import android.util.Log
 import androidx.annotation.NonNull
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -33,6 +34,10 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
             else -> String.format(getString(R.string.byTime), it.time)
         }
     }
+
+    val durationCaption = Transformations.map(modeObsvr) { if (it != Mode.byCount) "倒计时" else "运行时长" }
+    val countCaption = Transformations.map(modeObsvr) { "本地训练次数" }
+    val motionState by lazy { MutableLiveData(MotionState.UNKOWN) }
 
     //transformations
     var mode: Mode
@@ -80,12 +85,14 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
         //开启通知
         sendNotification(true)
         if (deviceType == DeviceType.HORIZONTAL_BAR) writeWeight()
+        motionState.value = MotionState.STOP
     }
 
     override fun onFoundDevice(d: Device) {
     }
 
     override fun onDisconnected(d: Device?) {
+        motionState.value = MotionState.UNKOWN
     }
 
     override fun onBondedOk(d: BondDeviceData) {
@@ -163,48 +170,54 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
     override fun onCharacteristicChanged(device: Device, service: UUID, characteristic: UUID, value: ByteArray) {
         super.onCharacteristicChanged(device, service, characteristic, value)
         val hexData = StringUtils.toHex(value, "")
-        when {
-            hexData.startsWith("F55F0701") -> {//计数模式时间
+        when (Command.toCommand(hexData, 0..7)) {
+            Command.COUNT_MODE -> {
                 val v = DataUtils.bytes2IntBig(value[5], value[6])
                 (exerciseDuration as MutableLiveData).value = v * 1000L
             }
-            hexData.startsWith("F55F0702") -> {//倒计模式时间
+            Command.COUNTDOWN_MODE -> {
                 val v = DataUtils.bytes2IntBig(value[5], value[6])
                 (exerciseDuration as MutableLiveData).value = v * 1000L
             }
-            hexData.startsWith("F55F0703") -> {//运动次数
+            Command.COUNT_DATA -> {
                 val v = DataUtils.bytes2IntBig(value[5], value[6])
                 (exerciseCount as MutableLiveData).value = v
             }
-            hexData.startsWith("F55F0704") -> {//模式切换
+            Command.SWITCH_MODE -> {
                 val v = DataUtils.bytes2IntBig(value[5], value[6])
                 val m = Mode.values()[v]
                 (modeObsvr as MutableLiveData).value = m
-
                 clearAllExerciseData() //本地清零
             }
-            hexData.startsWith("F55F0705") -> {//重置切换
+            Command.RESET -> {
 
             }
-            hexData.startsWith("F55F0706") -> {//设备休眠/关机
+            Command.SHUTDOWN -> {
 
             }
-            hexData.startsWith("F55F0707") -> {//电池电量
+            Command.BATTERY -> {
                 val v = DataUtils.bytes2IntBig(value[5], value[6])
                 (batteryLevel as MutableLiveData).value = v
             }
-            hexData.startsWith("F55F0708") -> {//提醒上传数据：【切换模式，双击power,时间超出范围，计数超过范围】
-                finishExercise()
+            Command.UPLOAD_DATA -> {
+                uploadExerciseData()
+            }
+            Command.CHANGE_EXERCISE -> {
+                val v = value[6].toInt()
+                motionState.value = MotionState.values()[v]
+            }
+            else -> {
+                Log.e(TAG, "receive unkonwn data:$hexData")
             }
         }
     }
 
-    override fun finishExercise(
+    override fun uploadExerciseData(
         success: ((String?, Any?) -> Unit)?,
         failed: ((Int, String?, Any?) -> Unit)?
     ) {
         //计数模式：exerciseDuration；倒计时模式：mode.time-exerciseDuration
-        finishExercise(
+        uploadExerciseData(
             time = (exerciseDuration.value!! / 1000).toInt().let { if (mode == Mode.byCount) it else mode.time - it },
             num = exerciseCountTxt.value!!.toInt(),
             calory = (exerciseKcalTxt.value!!).toFloat(),
@@ -216,6 +229,84 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
 
     fun jumpToStatistic() {
         (callUILiveData as MutableLiveData).value = "jumpToStatistic"
+    }
+
+    enum class MotionState(val str: String) {
+        //00-无训练，01-开始训练，02-结束训练
+        UNKOWN("00"),
+        STOP("02"),
+        PAUSE("04"),
+        RESUME("01"),
+    }
+
+
+    enum class Command(val base: String) {
+        QUERY_BATTERY("F55F06020200"),//查询电量
+        COUNT_MODE("F55F0701"),  //计数模式时间
+        COUNTDOWN_MODE("F55F0702"),//倒计时模式时间
+        COUNT_DATA("F55F0703"),//锻炼次数
+        SWITCH_MODE("F55F0704"),//模式切换
+        RESET("F55F0705"),//重置
+        SHUTDOWN("F55F0706"),//设备休眠/关机
+        BATTERY("F55F0707"),//电量
+        UPLOAD_DATA("F55F0708"),//提醒上传数据：【切换模式，双击power,时间超出范围，计数超过范围】
+        LOW_POWER_MODE("F55F0B0201"),//低功耗模式
+        CHANGE_EXERCISE("F55F07100200"),//00-无训练，01-开始训练，02-结束训练
+        ;
+
+        companion object {
+            fun toCommand(code: String, range: IntRange? = null): Command? {
+                val code2 = (range?.let { code.substring(it) } ?: code).toUpperCase(Locale.ROOT)
+                for (v in values()) {
+                    if (v.base.startsWith(code2)) return v
+                }
+                return null
+            }
+        }
+
+        fun code(vararg extra: Byte) = run {//拼接组装
+            var data: ByteArray = StringUtils.toByteArray(base, "")
+            extra.let { data += extra }
+            val data3 = (data.sum() and 0xff).toByte()
+            val data4 = data + data3
+            data4
+        }
+
+        fun code(extra: String, separator: String = "") = run {
+            val bytes = StringUtils.toByteArray(extra, separator)
+            code(*bytes)
+        }
+
+        fun codeInt(i: Int) = run {
+            val bytes = DataUtils.intToByteBig(i)
+            code(*bytes)
+        }
+
+        fun codeShort(i: Short) = run {
+            val bytes = DataUtils.shortToByteBig(i)
+            code(*bytes)
+        }
+    }
+
+    //str:04-暂停，05-恢复，06-停止
+    fun changeExercise(motion: MotionState, cb: WriteCharacteristicCallback? = null) {
+        if (motion == MotionState.RESUME && motionState.value == MotionState.STOP) {
+            reset()
+            takeIf { batteryLevel.value == -1 }?.let { writeCharacter(Command.QUERY_BATTERY.code()) }
+        }
+        writeCharacter(RopeVM.Command.CHANGE_EXERCISE.code(motion.str), object : WriteCharacteristicCallback {
+            override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
+                cb?.onRequestFailed(request, failType, value)
+            }
+
+            override fun onCharacteristicWrite(request: Request, value: ByteArray) {
+                cb?.onCharacteristicWrite(request, value)
+                motionState.value = motion
+            }
+        })
+        if (MotionState.STOP == motion && exerciseCount.value!! > 0) {
+            uploadExerciseData()
+        }
     }
 
 }

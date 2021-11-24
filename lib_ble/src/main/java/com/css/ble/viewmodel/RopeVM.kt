@@ -251,7 +251,7 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
             }
         })
         if (MotionState.STOP == motion && exerciseCount.value!! > 0) {
-            finishExercise()
+            uploadExerciseData()
         }
     }
 
