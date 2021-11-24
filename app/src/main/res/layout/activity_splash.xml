@@ -4,22 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/splash_bg"
+    android:background="#C91F1C"
     android:orientation="vertical"
     tools:context=".ui.activity.SplashActivity">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="77dp"
+        android:layout_height="77dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="146dp"
+        android:layout_marginTop="195dp"
         android:src="@mipmap/icon" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginStart="180dp"
+        android:layout_height="50dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="220dp"
+        android:layout_marginBottom="50dp"
+        android:layout_alignParentBottom="true"
         android:src="@mipmap/splash_text" />
 
 </RelativeLayout>
