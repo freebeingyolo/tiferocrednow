@@ -2,7 +2,6 @@ package com.css.ble.ui.fragment
 
 import LogUtils
 import android.graphics.Color
-import android.os.Bundle
 import android.text.InputType
 import android.view.Gravity
 import android.view.View
@@ -23,6 +22,7 @@ import com.css.ble.databinding.LayoutRopeBinding
 import com.css.ble.viewmodel.RopeVM
 import com.css.ble.viewmodel.RopeVM.Mode
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
+import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM.State
 import com.css.pickerview.builder.OptionsPickerBuilder
 import com.css.pickerview.view.OptionsPickerView
 import com.tencent.bugly.Bugly.applicationContext
@@ -40,15 +40,9 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
 
     override val vbCls: Class<LayoutRopeBinding> get() = LayoutRopeBinding::class.java
     private val mViewModel2: RopeVM get() = mViewModel as RopeVM
-    private var connectControl: Int = 0
     private var mCountTimeDialog: OptionsPickerView<String>? = null
     private val mCountTimeList by lazy { (30 downTo 1).map { it.toString() } }
 
-    override fun initView(savedInstanceState: Bundle?) {
-        super.initView(savedInstanceState)
-        initState()
-        initUI()
-    }
 
     override fun initData() {
         super.initData()
@@ -57,60 +51,6 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
             it.model = mViewModel as RopeVM
             it.lifecycleOwner = viewLifecycleOwner
         }
-    }
-
-    fun initUI() {
-        when (mViewModel2.state) {
-            BaseDeviceScan2ConnVM.State.discovered -> {
-                discoveredBLE()
-            }
-            BaseDeviceScan2ConnVM.State.disconnected -> {
-                disconnectBLE()
-            }
-        }
-    }
-
-    fun initState() {
-        mViewModel2.stateObsrv.observe(viewLifecycleOwner) {
-            when (it) {
-                BaseDeviceScan2ConnVM.State.disconnected -> {
-                    disconnectBLE()
-                }
-                BaseDeviceScan2ConnVM.State.connected -> {
-                    discoveredBLE()
-                }
-                BaseDeviceScan2ConnVM.State.connecting -> {
-                    mViewBinding?.connectControl?.text = "取消连接"
-                }
-            }
-        }
-    }
-
-    private fun discoveredBLE() {
-        mViewBinding?.tv?.setTextColor(Color.BLACK)
-        mViewBinding?.connectControl?.visibility = View.GONE
-        mViewBinding?.startExercise?.visibility = View.VISIBLE
-        mViewBinding?.modeSwitch?.setTextColor(Color.BLACK)
-        mViewBinding?.modeSwitch2?.setTextColor(resources.getColor(R.color.colorAccent))
-        mViewBinding?.ropeStatics?.setImageResource(R.mipmap.icon_statistics)
-        mViewBinding?.modeSwitch3?.setImageResource(R.mipmap.icon_rope_mode)
-        mViewBinding?.statisticGroup?.isEnabled = true
-        mViewBinding?.modeContainer?.isEnabled = true
-    }
-
-    fun disconnectBLE() {
-        mViewBinding?.startExercise?.visibility = View.GONE
-        mViewBinding?.startExercised?.visibility = View.GONE
-        mViewBinding?.startExercise1?.visibility = View.VISIBLE
-        mViewBinding?.connectControl?.visibility = View.VISIBLE
-        mViewBinding?.connectControl?.text = "连接设备"
-        mViewBinding?.tv?.setTextColor(Color.GRAY)
-        mViewBinding?.modeSwitch?.setTextColor(Color.GRAY)
-        mViewBinding?.modeSwitch2?.setTextColor(resources.getColor(R.color.color_F8B698))
-        mViewBinding?.ropeStatics?.setImageResource(R.mipmap.icon_statistics_gray)
-        mViewBinding?.modeSwitch3?.setImageResource(R.mipmap.icon_rope_mode_gray)
-        mViewBinding?.statisticGroup?.isEnabled = false
-        mViewBinding?.modeContainer?.isEnabled = false
     }
 
     fun openSwitchSpinner(v: View) {
@@ -230,24 +170,23 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
         })
     }
 
-    fun connectChange() {
-        if (connectControl == 0) {
+    fun startConnectOrCancel() {
+        if (mViewModel2.state == State.disconnected) {
             startConnect()
-            connectControl = 1
         } else {
             disconnect()
-            connectControl = 0
         }
     }
 
     fun startExercise() {
-        /*if (mViewModel2.deviceState == RopeVM.DeviceState.SHUTDOWN) {
+        if (mViewModel2.deviceState == RopeVM.DeviceState.SHUTDOWN) {
             showToast("设备已关机，请先开机才能训练")
             mViewModel2.sendGetBatteryCmd()
             return
-        }*/
+        }
         mViewModel2.reset()
         mViewModel2.setIsStart(true)
+        mViewModel2.changeExercise(RopeVM.MotionState.RESUME)
         when (mViewModel2.mode) {
             Mode.byFree -> {
                 //开始时保证对端数据正确
@@ -272,12 +211,6 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
                 }
             }
         }
-        mViewBinding?.modeSwitch?.setTextColor(Color.GRAY)
-        mViewBinding?.modeSwitch2?.setTextColor(resources.getColor(R.color.color_F8B698))
-        mViewBinding?.modeSwitch3?.setImageResource(R.mipmap.icon_rope_mode_gray)
-        mViewBinding?.modeContainer?.isEnabled = false
-        mViewBinding?.startExercised?.visibility = View.VISIBLE
-        mViewBinding?.startExercise1?.visibility = View.GONE
     }
 
     fun stopExercise() {
@@ -293,25 +226,16 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
                     super.onRightBtnClick(view)
                     mViewModel2.changeExercise(RopeVM.MotionState.STOP)
                     mViewModel2.setIsStart(false)
-                    mViewBinding?.modeSwitch?.setTextColor(Color.BLACK)
-                    mViewBinding?.modeSwitch2?.setTextColor(resources.getColor(R.color.colorAccent))
-                    mViewBinding?.modeSwitch3?.setImageResource(R.mipmap.icon_rope_mode)
-                    mViewBinding?.modeContainer?.isEnabled = true
-                    mViewBinding?.startExercised?.visibility = View.GONE
-                    mViewBinding?.startExercise1?.visibility = View.VISIBLE
-
                 }
             }
         }.show()
     }
 
     fun resumeOrPauseExercise() {
-        if ("暂停训练" == mViewBinding?.pauseExercise?.text) {
+        if (mViewModel2.deviceState == RopeVM.DeviceState.MOTION_RESUME) {
             mViewModel2.changeExercise(RopeVM.MotionState.PAUSE)
-            mViewBinding?.pauseExercise?.text = "开始训练"
         } else {
             mViewModel2.changeExercise(RopeVM.MotionState.RESUME)
-            mViewBinding?.pauseExercise?.text = "暂停训练"
         }
     }
 

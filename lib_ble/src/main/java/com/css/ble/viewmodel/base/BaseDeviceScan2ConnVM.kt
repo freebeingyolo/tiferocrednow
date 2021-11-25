@@ -5,6 +5,8 @@ import android.bluetooth.BluetoothGattService
 import android.bluetooth.le.ScanFilter
 import android.os.Looper
 import android.os.ParcelUuid
+import android.view.View
+import androidx.annotation.CallSuper
 import androidx.annotation.NonNull
 import androidx.lifecycle.*
 import cn.wandersnail.ble.*
@@ -41,6 +43,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     protected open val UUID_SRVC = "0000ffb0-0000-1000-8000-00805f9b34fb"
     protected open val UUID_WRITE = "0000ffb1-0000-1000-8000-00805f9b34fb"
     protected open val UUID_NOTIFY = "0000ffb2-0000-1000-8000-00805f9b34fb"
+
     //绑定失败地址列表，对于失败的地址间隔几次再去绑定
     protected val bondFailedAddres by lazy { mutableMapOf<String, Int>() }
 
@@ -71,6 +74,9 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     abstract fun onBondedFailed(d: BondDeviceData)
 
     /*** abstractable end ****/
+    @CallSuper
+    open fun onConnecting(d: Device) {
+    }
 
     /*** overridable start ****/
     abstract val bonded_tip: String
@@ -91,6 +97,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     private var avaliableDevice: Device? = null
     protected var connection: Connection? = null
     val stateObsrv: LiveData<State> by lazy { BusMutableLiveData(State.disconnected) }
+
     var state: State
         set(value) {
             (stateObsrv as MutableLiveData).value = value
@@ -106,10 +113,17 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     }
 
     //Transformations
+    val connectControlTxt = Transformations.map(stateObsrv) {
+        when {
+            it == State.disconnected -> "连接设备"
+            it < State.discovered -> "取消连接"
+            else -> "已连接"
+        }
+    }
+
     val isConnecting = Transformations.map(stateObsrv) {
         it >= State.connecting && it < State.discovered
     }
-
     open val connectStateTxt = Transformations.map(stateObsrv) {
         connectStateTxt(it)
     }
@@ -135,7 +149,6 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
             DecimalFormat("0.00000").format(1f * weightKg * it * 25 / 30000)
         }
     }
-
     val exerciseDuration: LiveData<Long> by lazy { MutableLiveData(-1) }
     open val exerciseDurationTxt = Transformations.map(exerciseDuration) { if (it == -1L) "--" else formatTime(it) }
     val batteryLevel: LiveData<Int> by lazy { MutableLiveData(-1) }
@@ -260,6 +273,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         cancelTimeOutTimer()
         avaliableDevice = null
         onDisconnected(device)
+        uploadExerciseData()
         resetData()
     }
 
@@ -275,6 +289,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
             }
             ConnectionState.CONNECTING -> {
                 state = State.connecting
+                onConnecting(device)
             }
             ConnectionState.SCANNING_FOR_RECONNECTION -> {
                 state = State.reconnecting
@@ -317,7 +332,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     }
 
     override fun onCharacteristicChanged(device: Device, service: UUID, characteristic: UUID, value: ByteArray) {
-        LogUtils.d(TAG, "onCharacteristicChanged:" + StringUtils.toHex(value))
+        LogUtils.d(TAG, "onCharacteristicChanged:" + StringUtils.toHex(value, ""))
     }
 
     @Observe
@@ -493,7 +508,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         uploadExerciseData(
             time = (exerciseDuration.value!! / 1000).toInt(),
             num = exerciseCount.value!!.toInt(),
-            calory = (exerciseKcalTxt.value!!).toFloat(),
+            calory = exerciseKcalTxt.value?.toFloatOrNull() ?: 0f,
             type = deviceType.alias,
             success,
             failed
@@ -506,7 +521,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         failed: ((Int, String?, Any?) -> Unit)? = null
     ) {
         if (time <= 0 || num <= 0) {
-            return LogUtils.d(TAG, "the time is ${time}} the num is ${num},ignore this uploading")
+            return LogUtils.d(TAG, "time is $time,num is $num,calory is $calory,ignore this uploading")
         }
         netLaunch({
             withContext(Dispatchers.IO) {

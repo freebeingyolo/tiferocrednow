@@ -48,11 +48,6 @@ open class HorizontalBar2MeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2
         }
     }
 
-    override fun initView(savedInstanceState: Bundle?) {
-        super.initView(savedInstanceState)
-    }
-
-
     fun openSwitchSpinner(v: View) {
         val anchorView = mViewBinding!!.modeContainer
         val popUpWindow =
@@ -99,16 +94,6 @@ open class HorizontalBar2MeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2
         popUpWindow.showPopupWindow(anchorView)
     }
 
-    fun resumeOrPauseExercise() {
-        if ("暂停训练" == mViewBinding?.pauseExercise?.text) {
-            mViewModel2.changeExercise(HorizontalBarVM.MotionState.PAUSE)
-            mViewBinding?.pauseExercise?.text = "开始训练"
-        } else {
-            mViewModel2.changeExercise(HorizontalBarVM.MotionState.RESUME)
-            mViewBinding?.pauseExercise?.text = "暂停训练"
-        }
-    }
-
     fun stopExercise() {
         CommonAlertDialog(Bugly.applicationContext).apply {
             type = CommonAlertDialog.DialogType.Confirm
@@ -125,8 +110,18 @@ open class HorizontalBar2MeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2
             }
         }.show()
     }
-    fun startExercise(){
+
+    fun startExercise() {
+        mViewModel2.switchMode(mViewModel2.mode)
         mViewModel2.changeExercise(HorizontalBarVM.MotionState.RESUME)
+    }
+
+    fun startConnectOrCancel(){
+        if (mViewModel2.state == BaseDeviceScan2ConnVM.State.disconnected) {
+            startConnect()
+        } else {
+            disconnect()
+        }
     }
 
 }

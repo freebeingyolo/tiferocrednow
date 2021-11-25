@@ -261,8 +261,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
+                        android:duplicateParentState="true"
                         android:text="数据统计"
-                        android:textColor="@color/gray"
+                        android:textColor="@color/sl_enable_black_gray_color"
                         android:textSize="15sp" />
 
                     <ImageView
@@ -271,8 +272,8 @@
                         android:layout_height="27dp"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-
-                        android:src="@mipmap/icon_statistics_gray" />
+                        android:duplicateParentState="true"
+                        android:src="@drawable/sl_enable_ropestatics_gray_drawable" />
                 </RelativeLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -282,6 +283,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_while_radius4"
+                    android:enabled="@{model.motionState!= MotionState.RESUME &amp;&amp; model.motionState!= MotionState.UNKNOWN}"
                     android:onClick="@{v->view.openSwitchSpinner(v)}"
                     android:paddingStart="22dp"
                     android:paddingEnd="22dp"
@@ -291,8 +293,9 @@
                         android:id="@+id/mode_switch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:duplicateParentState="true"
                         android:text="模式切换"
-                        android:textColor="@color/gray"
+                        android:textColor="@color/sl_enable_black_gray_color"
                         android:textSize="15sp"
                         app:layout_constraintBottom_toTopOf="@+id/mode_switch2"
                         app:layout_constraintStart_toStartOf="parent"
@@ -305,8 +308,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
+                        android:duplicateParentState="true"
                         android:text="@{model.modeObsvrStr,default=`自由模式`}"
-                        android:textColor="@color/color_F8B698"
+                        android:textColor="@color/sl_enable_accent_f8b698_color"
                         android:textSize="10sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -316,7 +320,7 @@
                         android:id="@+id/mode_switch_group"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
-
+                        android:duplicateParentState="true"
                         app:constraint_referenced_ids="mode_switch,mode_switch2,mode_switch3"
                         app:layout_constraintBottom_toBottomOf="@+id/mode_switch2"
                         app:layout_constraintEnd_toEndOf="@id/mode_switch3"
@@ -327,7 +331,8 @@
                         android:id="@+id/mode_switch3"
                         android:layout_width="27dp"
                         android:layout_height="27dp"
-                        android:src="@mipmap/icon_rope_mode_gray"
+                        android:duplicateParentState="true"
+                        android:src="@drawable/sl_enable_ropemode_gray_drawable"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -367,16 +372,6 @@
 
                 </androidx.viewpager2.widget.ViewPager2>
 
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_play_recommend"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/courseTitle"
-                    tools:itemCount="3"
-                    tools:listitem="@layout/layout_play_recommend_item" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.LinearLayoutCompat
@@ -385,21 +380,25 @@
                 android:background="@drawable/bg_while_radius4"
                 android:orientation="horizontal">
 
-                <RelativeLayout
-                    android:id="@+id/startExercise1"
+                <TextView
+                    android:id="@+id/connectControl"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:enabled="@{model.stateObsrv == State.disconnected}"
+                    android:gravity="center"
+                    android:onClick="@{v->view.startConnectOrCancel()}"
+                    android:text="@{model.connectControlTxt,default=`连接设备`}"
+                    android:textColor="#F2682A"
+                    android:textSize="15sp"
+                    android:visibility="@{model.stateObsrv.ordinal() &lt; State.discovered.ordinal() ? View.VISIBLE:View.GONE }" />
 
-                    <TextView
-                        android:id="@+id/connectControl"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:onClick="@{v->view.startConnect()}"
-                        android:text="连接设备"
-                        android:textColor="#F2682A"
-                        android:textSize="15sp"
-                        android:visibility="@{model.state == State.disconnected ? View.VISIBLE:View.GONE }" />
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/startExercised"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:visibility="@{model.stateObsrv.ordinal() &gt;= State.discovered.ordinal() ? View.VISIBLE:View.GONE }">
 
                     <TextView
                         android:id="@+id/startExercise"
@@ -410,35 +409,7 @@
                         android:text="开始训练"
                         android:textColor="#F2682A"
                         android:textSize="15sp"
-                        android:visibility="@{model.motionState == MotionState.STOP ? View.VISIBLE:View.GONE }" />
-
-                </RelativeLayout>
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/startExercised"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:visibility="@{model.motionState.ordinal() > MotionState.STOP.ordinal() ? View.VISIBLE:View.GONE }">
-
-                    <TextView
-                        android:id="@+id/pauseExercise"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:onClick="@{v->view.resumeOrPauseExercise()}"
-                        android:text="暂停训练"
-                        android:textColor="#F2682A"
-                        android:textSize="15sp"
-                        android:visibility="gone" />
-
-                    <View
-                        android:layout_width="2dp"
-                        android:layout_height="20dp"
-                        android:background="#333333"
-                        android:visibility="gone" />
+                        android:visibility="@{model.motionState != MotionState.RESUME ? View.VISIBLE:View.GONE }" />
 
                     <TextView
                         android:id="@+id/startExercise2"
@@ -449,7 +420,8 @@
                         android:onClick="@{v->view.stopExercise()}"
                         android:text="结束训练"
                         android:textColor="#F2682A"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"
+                        android:visibility="@{model.motionState == MotionState.RESUME ? View.VISIBLE:View.GONE }" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.appcompat.widget.LinearLayoutCompat>
         </LinearLayout>

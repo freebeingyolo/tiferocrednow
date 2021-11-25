@@ -37,7 +37,7 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
 
     val durationCaption = Transformations.map(modeObsvr) { if (it != Mode.byCount) "倒计时" else "运行时长" }
     val countCaption = Transformations.map(modeObsvr) { "本地训练次数" }
-    val motionState by lazy { MutableLiveData(MotionState.UNKOWN) }
+    val motionState by lazy { MutableLiveData(MotionState.UNKNOWN) }
 
     //transformations
     var mode: Mode
@@ -46,11 +46,11 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
         }
         get() = modeObsvr.value!!
 
-    enum class Mode(val time: Int) {
-        byCount(0),
-        byTime30(30),
-        byTime60(60),
-        byTime90(90)
+    enum class Mode(val time: Int, val code: Byte) {
+        byCount(0, 0x00),
+        byTime30(30, 0x01),
+        byTime60(60, 0x02),
+        byTime90(90, 0x03)
     }
 
 
@@ -85,14 +85,14 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
         //开启通知
         sendNotification(true)
         if (deviceType == DeviceType.HORIZONTAL_BAR) writeWeight()
-        motionState.value = MotionState.STOP
+        motionState.value = MotionState.NONE
     }
 
     override fun onFoundDevice(d: Device) {
     }
 
     override fun onDisconnected(d: Device?) {
-        motionState.value = MotionState.UNKOWN
+        motionState.value = MotionState.UNKNOWN
     }
 
     override fun onBondedOk(d: BondDeviceData) {
@@ -103,12 +103,7 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
 
     fun writeWeight(cb: WriteCharacteristicCallback? = null) {
         val weightKgx10 = (weightKg * 10).toInt().toShort()
-        val data: ByteArray = StringUtils.toByteArray("F55F060902", "")
-        val data2 = DataUtils.shortToByteBig(weightKgx10)
-        val data3 = ((data + data2).sum() and 0xff).toByte()
-        val data4 = data + data2 + data3
-        LogUtils.d("writeWeight:data4:" + StringUtils.toHex(data4))
-        writeCharacter(data4, object : WriteCharacteristicCallback {
+        writeCharacter(Command.WEIGTH_WRITE.codeShort(weightKgx10), object : WriteCharacteristicCallback {
             override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
                 cb?.onRequestFailed(request, failType, value)
             }
@@ -121,12 +116,7 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
     }
 
     fun switchMode(m: Mode, cb: WriteCharacteristicCallback? = null) {
-        val data: ByteArray = StringUtils.toByteArray("F55F060402", "")
-        val data2 = DataUtils.shortToByteBig(m.ordinal.toShort())
-        val data3 = ((data + data2).sum() and 0xff).toByte()
-        val data4 = data + data2 + data3
-        LogUtils.d("switchMode:data4:" + StringUtils.toHex(data4))
-        writeCharacter(data4, object : WriteCharacteristicCallback {
+        writeCharacter(Command.SWITCH_MODE_WRITE.code(m.code), object : WriteCharacteristicCallback {
             override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
                 cb?.onRequestFailed(request, failType, value)
             }
@@ -139,11 +129,7 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
     }
 
     open fun reset(cb: WriteCharacteristicCallback? = null) {
-        val data: ByteArray = StringUtils.toByteArray("F55F060502", "")
-        val data2 = DataUtils.shortToByteBig(0x0001)
-        val data3 = ((data + data2).sum() and 0xff).toByte()
-        val data4 = data + data2 + data3
-        writeCharacter(data4, object : WriteCharacteristicCallback {
+        writeCharacter(Command.RESET.code(), object : WriteCharacteristicCallback {
             override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
                 cb?.onRequestFailed(request, failType, value)
             }
@@ -183,7 +169,7 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
                 val v = DataUtils.bytes2IntBig(value[5], value[6])
                 (exerciseCount as MutableLiveData).value = v
             }
-            Command.SWITCH_MODE -> {
+            Command.SWITCH_MODE_READ -> {
                 val v = DataUtils.bytes2IntBig(value[5], value[6])
                 val m = Mode.values()[v]
                 (modeObsvr as MutableLiveData).value = m
@@ -202,9 +188,9 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
             Command.UPLOAD_DATA -> {
                 uploadExerciseData()
             }
-            Command.CHANGE_EXERCISE -> {
-                val v = value[6].toInt()
-                motionState.value = MotionState.values()[v]
+            Command.EXERCISE_READ -> {
+                val v = value[6]
+                motionState.value = MotionState.get(v)!!
             }
             else -> {
                 Log.e(TAG, "receive unkonwn data:$hexData")
@@ -219,8 +205,8 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
         //计数模式：exerciseDuration；倒计时模式：mode.time-exerciseDuration
         uploadExerciseData(
             time = (exerciseDuration.value!! / 1000).toInt().let { if (mode == Mode.byCount) it else mode.time - it },
-            num = exerciseCountTxt.value!!.toInt(),
-            calory = (exerciseKcalTxt.value!!).toFloat(),
+            num = exerciseCountTxt.value?.toIntOrNull() ?: 0,
+            calory = exerciseKcalTxt.value?.toFloatOrNull() ?: 0f,
             type = deviceType.alias,
             success,
             failed
@@ -231,12 +217,20 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
         (callUILiveData as MutableLiveData).value = "jumpToStatistic"
     }
 
-    enum class MotionState(val str: String) {
+    enum class MotionState(val code: Byte) {
         //00-无训练，01-开始训练，02-结束训练
-        UNKOWN("00"),
-        STOP("02"),
-        PAUSE("04"),
-        RESUME("01"),
+        UNKNOWN(-0x01),
+        NONE(0x00),
+        STOP(0x02),
+        PAUSE(0x04),
+        RESUME(0x01);
+
+        companion object {
+            fun get(b: Byte): MotionState? {
+                return values().find { it.code == b }
+            }
+        }
+
     }
 
 
@@ -245,13 +239,16 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
         COUNT_MODE("F55F0701"),  //计数模式时间
         COUNTDOWN_MODE("F55F0702"),//倒计时模式时间
         COUNT_DATA("F55F0703"),//锻炼次数
-        SWITCH_MODE("F55F0704"),//模式切换
-        RESET("F55F0705"),//重置
+        SWITCH_MODE_READ("F55F0704"),//模式切换
+        SWITCH_MODE_WRITE("F55F06040200"),//模式切换
+        WEIGTH_WRITE("F55F060902"),
+        RESET("F55F0605020001"),//重置
         SHUTDOWN("F55F0706"),//设备休眠/关机
         BATTERY("F55F0707"),//电量
         UPLOAD_DATA("F55F0708"),//提醒上传数据：【切换模式，双击power,时间超出范围，计数超过范围】
         LOW_POWER_MODE("F55F0B0201"),//低功耗模式
-        CHANGE_EXERCISE("F55F07100200"),//00-无训练，01-开始训练，02-结束训练
+        EXERCISE_READ("F55F07100200"),//00-无训练，01-开始训练，02-结束训练
+        EXERCISE_WRITE("F55F06100200"),//00-无训练，01-开始训练，02-结束训练
         ;
 
         companion object {
@@ -288,13 +285,13 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
         }
     }
 
-    //str:04-暂停，05-恢复，06-停止
+    //00-无训练，01-开始训练，02-结束训练
     fun changeExercise(motion: MotionState, cb: WriteCharacteristicCallback? = null) {
-        if (motion == MotionState.RESUME && motionState.value == MotionState.STOP) {
+        if (motion == MotionState.RESUME && motionState.value == MotionState.NONE) {//
             reset()
             takeIf { batteryLevel.value == -1 }?.let { writeCharacter(Command.QUERY_BATTERY.code()) }
         }
-        writeCharacter(RopeVM.Command.CHANGE_EXERCISE.code(motion.str), object : WriteCharacteristicCallback {
+        writeCharacter(Command.EXERCISE_WRITE.code(motion.code), object : WriteCharacteristicCallback {
             override fun onRequestFailed(request: Request, failType: Int, value: Any?) {
                 cb?.onRequestFailed(request, failType, value)
             }

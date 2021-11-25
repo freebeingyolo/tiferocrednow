@@ -1,123 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
-    android:paddingStart="15dp"
-    android:paddingEnd="15dp"
     tools:context=".ui.LoginActivity">
-
-    <View
-        android:id="@+id/top_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/white" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="62dp"
-        android:src="@mipmap/icon" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="7dp"
-        android:text="@string/login"
-        android:textColor="#000000"
-        android:textSize="27sp"
-        android:textStyle="bold" />
-
-    <EditText
-        android:id="@+id/et_telephone"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginStart="51dp"
-        android:layout_marginTop="42dp"
-        android:layout_marginEnd="51dp"
-        android:background="@drawable/login_edittext_bg"
-        android:hint="@string/register_phone_tip"
-        android:digits="1234567890"
-        android:inputType="phone|number"
-        android:maxLength="11"
-        android:paddingStart="7dp"
-        android:textSize="13sp" />
-
-    <TextView
-        android:id="@+id/tv_phone_tip"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="68dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="61dp"
-        android:text="请输入符合大陆手机号格式的11位数字"
-        android:textColor="#FFFF0000"
-        android:textSize="9dp"
-        android:visibility="invisible" />
-
-    <EditText
-        android:id="@+id/et_password"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginStart="51dp"
-        android:layout_marginTop="17dp"
-        android:layout_marginEnd="51dp"
-        android:background="@drawable/login_edittext_bg"
-        android:hint="@string/login_input_password"
-        android:inputType="textPassword"
-        android:maxLength="16"
-        android:paddingStart="7dp"
-        android:textSize="13sp" />
-
-    <com.css.base.view.RoundTextView
-        android:id="@+id/tv_login"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginStart="51dp"
-        android:layout_marginTop="27dp"
-        android:layout_marginEnd="51dp"
-        android:gravity="center"
-        android:text="@string/login"
-        android:textColor="@color/white"
-        android:textSize="14sp"
-        app:rv_backgroundColor="#FFF2682A"
-        app:rv_cornerRadius="164dp" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="62dp"
-        android:layout_marginTop="7dp"
-        android:layout_marginEnd="62dp"
-        android:gravity="end"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp">
+
+        <View
+            android:id="@+id/top_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/white" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="62dp"
+            android:src="@mipmap/icon" />
 
         <TextView
-            android:id="@+id/tv_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="17dp"
-            android:text="注册新用户"
-            android:textColor="#FFF2682A"
-            android:textSize="12dp" />
+            android:layout_marginTop="7dp"
+            android:text="@string/login"
+            android:textColor="#000000"
+            android:textSize="27sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/et_telephone"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginStart="51dp"
+            android:layout_marginTop="42dp"
+            android:layout_marginEnd="51dp"
+            android:background="@drawable/login_edittext_bg"
+            android:digits="1234567890"
+            android:hint="@string/register_phone_tip"
+            android:inputType="phone|number"
+            android:maxLength="11"
+            android:paddingStart="7dp"
+            android:textSize="13sp" />
 
         <TextView
-            android:id="@+id/forget_password"
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_phone_tip"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="忘记密码？"
-            android:textColor="#FFF2682A"
-            android:textSize="12dp" />
+            android:layout_marginStart="68dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="61dp"
+            android:text="请输入符合大陆手机号格式的11位数字"
+            android:textColor="#FFFF0000"
+            android:textSize="9dp"
+            android:visibility="invisible" />
+
+        <EditText
+            android:id="@+id/et_password"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginStart="51dp"
+            android:layout_marginTop="17dp"
+            android:layout_marginEnd="51dp"
+            android:background="@drawable/login_edittext_bg"
+            android:hint="@string/login_input_password"
+            android:inputType="textPassword"
+            android:maxLength="16"
+            android:paddingStart="7dp"
+            android:textSize="13sp" />
+
+        <com.css.base.view.RoundTextView
+            android:id="@+id/tv_login"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="51dp"
+            android:layout_marginTop="27dp"
+            android:layout_marginEnd="51dp"
+            android:gravity="center"
+            android:text="@string/login"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:rv_backgroundColor="#FFF2682A"
+            app:rv_cornerRadius="164dp" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="62dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="62dp"
+            android:gravity="end"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_register"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="17dp"
+                android:text="注册新用户"
+                android:textColor="#FFF2682A"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/forget_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="忘记密码？"
+                android:textColor="#FFF2682A"
+                android:textSize="12sp" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="210dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="63.5dp"
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
@@ -126,7 +134,7 @@
             android:layout_height="wrap_content"
             android:text="其他登录方式"
             android:textColor="#FFAAAAAA"
-            android:textSize="12dp" />
+            android:textSize="12sp" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_jd"
@@ -135,4 +143,5 @@
             android:layout_marginTop="15dp"
             android:src="@mipmap/icon_jd" />
     </LinearLayout>
-</androidx.appcompat.widget.LinearLayoutCompat>
+
+</RelativeLayout>

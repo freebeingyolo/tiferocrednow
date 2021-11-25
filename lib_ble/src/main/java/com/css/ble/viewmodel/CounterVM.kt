@@ -62,7 +62,7 @@ class CounterVM : HorizontalBarVM() {
     }
 
     override fun onDisconnected(d: Device?) {
-        uploadExerciseData()
+
     }
 
     override fun onBondedOk(d: BondDeviceData) {

@@ -431,8 +431,8 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
         failed: ((Int, String?, Any?) -> Unit)? = null
     ) {
         val time = (exerciseDuration.value!! / 1000).toInt()
-        val num = exerciseCountTxt.value!!.toInt()
-        val calory = (exerciseKcalTxt.value!!).toFloat()
+        val num = exerciseCountTxt.value?.toIntOrNull() ?: 0
+        val calory = exerciseKcalTxt.value?.toFloatOrNull() ?: 0f
         val deviceType = deviceType.alias
         if (time == 0 && num == 0) {
             return LogUtils.d("the time and the num is zero,ignore this uploading")
