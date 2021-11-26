@@ -52,7 +52,7 @@
             android:paddingEnd="13dp"
             android:paddingBottom="3dp"
             android:text="播放"
-            android:textColor="@color/color_f66e00"
+            android:textColor="@color/color_e1251b"
             android:textSize="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -42,7 +42,7 @@
                     android:id="@+id/layout_store"
                     android:layout_width="match_parent"
                     android:layout_height="70dp"
-                    android:background="@color/color_f66e00"
+                    android:background="@color/color_e1251b"
                     android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatImageView
@@ -78,7 +78,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_transparent_f66e00_radius20"
+                    android:background="@drawable/bg_transparent_e1251b_radius20"
                     android:layout_marginTop="15dp"
                     android:layout_marginStart="10dp"
                     android:paddingTop="5dp"
@@ -86,7 +86,7 @@
                     android:paddingStart="13dp"
                     android:paddingEnd="14dp"
                     android:text="智能健身产品"
-                    android:textColor="@color/color_f66e00"
+                    android:textColor="@color/color_e1251b"
                     android:textSize="13sp" />
 
                 <LinearLayout
@@ -429,7 +429,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_transparent_f66e00_radius20"
+                    android:background="@drawable/bg_transparent_e1251b_radius20"
                     android:layout_marginTop="15dp"
                     android:layout_marginStart="10dp"
                     android:paddingTop="5dp"
@@ -437,7 +437,7 @@
                     android:paddingStart="13dp"
                     android:paddingEnd="14dp"
                     android:text="非智能健身产品"
-                    android:textColor="@color/color_f66e00"
+                    android:textColor="@color/color_e1251b"
                     android:textSize="13sp" />
 
                 <LinearLayout

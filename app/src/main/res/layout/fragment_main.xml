@@ -90,7 +90,7 @@
                             android:layout_marginStart="15dp"
                             android:layout_marginTop="10dp"
                             android:layout_marginEnd="15dp"
-                            android:background="@drawable/bg_f66e00_radius5"
+                            android:background="@drawable/bg_e1251b_radius5"
                             android:orientation="vertical">
 
                             <LinearLayout
@@ -557,7 +557,7 @@
                             android:layout_width="2dp"
                             android:layout_height="25dp"
                             android:layout_marginStart="15dp"
-                            android:background="@color/color_f66e00" />
+                            android:background="@color/color_e1251b" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -579,7 +579,7 @@
                         android:layout_marginEnd="15dp"
                         app:tabBackground="@color/transparent"
                         app:tabGravity="center"
-                        app:tabIndicatorColor="@color/color_f66e00"
+                        app:tabIndicatorColor="@color/color_e1251b"
                         app:tabIndicatorHeight="2dp"
                         app:tabMode="scrollable"
                         app:tabPaddingEnd="10dp"
@@ -701,7 +701,7 @@
                             android:layout_width="2dp"
                             android:layout_height="25dp"
                             android:layout_marginStart="15dp"
-                            android:background="@color/color_f66e00" />
+                            android:background="@color/color_e1251b" />
 
                         <TextView
                             android:layout_width="wrap_content"

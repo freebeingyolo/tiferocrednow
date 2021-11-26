@@ -207,7 +207,7 @@ class XTabLayout @JvmOverloads constructor(
     ) {
         doApngAnim(icon, iconRes)
         name.setText(text)
-        name.setTextColor(ContextCompat.getColor(context, R.color.color_f66e00))
+        name.setTextColor(ContextCompat.getColor(context, R.color.color_e1251b))
     }
 
     private fun doApngAnim(icon: AppCompatImageView, iconRes: Int) {
