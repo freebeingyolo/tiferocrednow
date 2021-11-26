@@ -108,7 +108,7 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
                                         leftBtnText = "取消"
                                         rightBtnText = "确定"
                                         inputType = InputType.TYPE_CLASS_NUMBER
-                                        content = "10"
+                                        content = "100"
                                         listener = object : DialogClickListener.DefaultLisener() {
                                             override fun onRightEditBtnClick(view: View, content: String?) {
                                                 if (content == "") {

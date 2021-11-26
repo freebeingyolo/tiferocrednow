@@ -12,8 +12,7 @@ import kotlinx.coroutines.withContext
 
 class RegisterViewModel : BaseViewModel() {
     val registerData = MutableLiveData<String>()
-    val timeDownData = MutableLiveData<Long>()
-    val resetCodeData = MutableLiveData<String>()
+    val timeDownData = MutableLiveData<String>()
     private var mTimer: CountDownTimer? = null
     fun register(
         phone: String,
@@ -46,12 +45,12 @@ class RegisterViewModel : BaseViewModel() {
                 {
                     mTimer = object : CountDownTimer(60 * 1000, 1000) {
                         override fun onTick(millisUntilFinished: Long) {
-                            var seconds = millisUntilFinished / 1000 + 1
-                            timeDownData.value = seconds
+                            val seconds = millisUntilFinished / 1000 + 1
+                            timeDownData.value = "${seconds}秒后可重发"
                         }
 
                         override fun onFinish() {
-                            resetCodeData.value = "重发验证码"
+                            timeDownData.value = "重发验证码"
                         }
                     }
                     showLoading()

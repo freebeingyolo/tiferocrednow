@@ -55,7 +55,7 @@ class SensorService : Service(), SensorEventListener {
             mChannel = NotificationChannel(
                 ConstantData.CHANNEL_ID,
                 ConstantData.CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_HIGH
+                NotificationManager.IMPORTANCE_MIN
             )
             notificationManager.createNotificationChannel(mChannel)
             var notification: Notification =
@@ -114,7 +114,7 @@ class SensorService : Service(), SensorEventListener {
      * 初始化当天数据
      */
     private fun initTodayData() {
-        stepData = WonderCoreCache.getData(CacheKey.STEP_DATA, StepData::class.java)?:StepData()
+        stepData = WonderCoreCache.getData(CacheKey.STEP_DATA, StepData::class.java) ?: StepData()
         //获取当前时间
         currentDate = TimeUtil.getCurrentDate()
         Thread(Runnable { getStepDetector() }).start()

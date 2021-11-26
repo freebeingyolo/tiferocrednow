@@ -38,13 +38,9 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel, ActivityReset
 
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
-        mViewModel.resetCodeData.observe(this, {
-            mViewBinding.tvSendCode.isEnabled = true
-            mViewBinding.tvSendCode.text = it
-        })
         mViewModel.timeDownData.observe(this, {
-            mViewBinding.tvSendCode.isEnabled = false
-            mViewBinding.tvSendCode.text = "${it}秒后可重发"
+            mViewBinding.tvSendCode.isEnabled = !it.matches(Regex(".*\\d+.*")) //不是读秒才enable
+            mViewBinding.tvSendCode.text = it
         })
         mViewModel.resetPwdData.observe(this, {
             showCenterToast("重置成功")

@@ -152,6 +152,9 @@ class TodayStepService : Service(), Handler.Callback {
             builder?.setChannelId(ConstantData.CHANNEL_ID)
         } else {
             builder = Notification.Builder(this.applicationContext)
+                .setVibrate(null)
+                .setSound(null)
+                .setLights(0, 0, 0)
         }
         builder!!.setPriority(Notification.PRIORITY_MIN)
         val contentIntent = PendingIntent.getActivity(
@@ -314,30 +317,30 @@ class TodayStepService : Service(), Handler.Callback {
      * 更新通知
      */
     private fun updateNotification(stepCount: Int) {
-            this.stepData = WonderCoreCache.getData(CacheKey.STEP_DATA, StepData::class.java) ?: StepData()
-            val realSteps = stepCount + defaultSteps()
-            if (null == builder || null == nm) {
-                return
-            }
-            builder!!.setContentTitle(getString(R.string.title_notification_bar, realSteps.toString()))
-            val km = getDistanceByStep(realSteps.toLong())
-            val calorie = getCalorieByStep(realSteps.toLong())
-            builder!!.setContentText("步行 $km km    消耗 $calorie kcal")
-            notification = builder!!.build()
-            nm!!.notify(R.string.app_name, notification)
-            currentNotifySteps = realSteps
+        this.stepData = WonderCoreCache.getData(CacheKey.STEP_DATA, StepData::class.java) ?: StepData()
+        val realSteps = stepCount + defaultSteps()
+        if (null == builder || null == nm) {
+            return
+        }
+        builder!!.setContentTitle(getString(R.string.title_notification_bar, realSteps.toString()))
+        val km = getDistanceByStep(realSteps.toLong())
+        val calorie = getCalorieByStep(realSteps.toLong())
+        builder!!.setContentText("步行 $km km    消耗 $calorie kcal")
+        notification = builder!!.build()
+        nm!!.notify(R.string.app_name, notification)
+        currentNotifySteps = realSteps
 //          EventBus.getDefault().post(EventMessage<StepData>(EventMessage.Code.MAIN_INDEX_BACK, StepData(1, 2, 3, "")))
-            this.stepData.todaySteps = realSteps
-            WonderCoreCache.saveData(CacheKey.STEP_DATA, stepData)
-            if (!notificationIsOpen) {
-                Log.d("0000" , " stop notification ")
-                val intentBootstrap = Intent(this, BootstrapService::class.java)
-                if (Build.VERSION.SDK_INT >= 26) {
-                    startForegroundService(intentBootstrap)
-                } else {
-                    startService(intentBootstrap)
-                }
+        this.stepData.todaySteps = realSteps
+        WonderCoreCache.saveData(CacheKey.STEP_DATA, stepData)
+        if (!notificationIsOpen) {
+            Log.d("0000", " stop notification ")
+            val intentBootstrap = Intent(this, BootstrapService::class.java)
+            if (Build.VERSION.SDK_INT >= 26) {
+                startForegroundService(intentBootstrap)
+            } else {
+                startService(intentBootstrap)
             }
+        }
     }
 
     private fun isStepCounter(): Boolean {

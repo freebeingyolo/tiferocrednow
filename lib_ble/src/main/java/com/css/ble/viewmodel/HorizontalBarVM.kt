@@ -246,7 +246,7 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
         SHUTDOWN("F55F0706"),//设备休眠/关机
         BATTERY("F55F0707"),//电量
         UPLOAD_DATA("F55F0708"),//提醒上传数据：【切换模式，双击power,时间超出范围，计数超过范围】
-        LOW_POWER_MODE("F55F0B0201"),//低功耗模式
+        LOW_POWER_MODE("F55F110201"),//低功耗模式
         EXERCISE_READ("F55F07100200"),//00-无训练，01-开始训练，02-结束训练
         EXERCISE_WRITE("F55F06100200"),//00-无训练，01-开始训练，02-结束训练
         ;

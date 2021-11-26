@@ -18,14 +18,15 @@ object DownloadUtil {
      * @param url 下载连接
      * @param listener 下载监听
      */
-    fun download(url: String, listener: OnDownloadListener) {
+    fun download(url: String, listener: OnDownloadListener): Call {
         // 需要token的时候可以这样做
         // Request request = new Request.Builder().header("token",token).url(url).build();
         val application = ActivityUtils.getTopActivity().application
         val request: Request = Request.Builder().url(url).tag("dl_upgrade_apk").build()
         val default_save_apk_path = "${application.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}/".trim()
         val default_apk_name = "WonderCoreFit.apk"
-        okHttpClient.newCall(request).enqueue(object : Callback {
+        val call = okHttpClient.newCall(request)
+        call.enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
                 listener.onDownloadFailed()
@@ -66,8 +67,8 @@ object DownloadUtil {
                     }
                 }
             }
-
         })
+        return call
     }
 
     class AppConfig(context: Context) {

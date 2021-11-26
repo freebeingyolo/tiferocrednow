@@ -241,7 +241,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         EasyBLE.getInstance().scanConfiguration.apply {
             isOnlyAcceptBleDevice = true
             rssiLowLimit = -100
-            scanPeriodMillis = bondTimeout.toInt()
+            scanPeriodMillis = -1
             filters = listOf(ScanFilter.Builder().setServiceUuid(ParcelUuid.fromString(UUID_SRVC)).build())
         }
         EasyBLE.getInstance().startScan()
@@ -427,6 +427,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     }
 
     private fun onBondedok(device: BondDeviceData) {
+        //bondFailedAddres[device.mac] = 2
         bondFailedAddres.clear()
         onBondedOk(device)
     }
@@ -496,7 +497,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
             cb?.onRequestFailed(builder.build(), -1, null)
             return
         }
-        LogUtils.d(TAG, "writeCharacter-->${StringUtils.toHex(data)}")
+        LogUtils.d(TAG, "writeCharacter-->${StringUtils.toHex(data,"")}")
         connection?.execute(builder.build())
     }
 

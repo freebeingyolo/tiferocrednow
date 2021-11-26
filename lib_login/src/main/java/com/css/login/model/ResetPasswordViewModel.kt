@@ -1,8 +1,6 @@
 package com.css.login.model
 
-import LogUtils
 import android.os.CountDownTimer
-import android.os.Looper
 import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.RegexUtils
 import com.css.base.net.api.repository.UserRepository
@@ -12,8 +10,7 @@ import kotlinx.coroutines.withContext
 
 class ResetPasswordViewModel : BaseViewModel() {
     val resetPwdData = MutableLiveData<String>()
-    val timeDownData = MutableLiveData<Long>()
-    val resetCodeData = MutableLiveData<String>()
+    val timeDownData = MutableLiveData<String>()
     private var mTimer: CountDownTimer? = null
     private fun resetPassword(
         phone: String,
@@ -40,12 +37,12 @@ class ResetPasswordViewModel : BaseViewModel() {
                     mTimer = object : CountDownTimer(60 * 1000, 1000) {
                         override fun onTick(millisUntilFinished: Long) {
                             val seconds = millisUntilFinished / 1000 + 1
-                            timeDownData.value = seconds
-                            LogUtils.d(TAG, "onTick-->seconds:$seconds,is main:${Looper.myLooper() == Looper.getMainLooper()}")
+                            LogUtils.d(TAG,"onTick-->$seconds")
+                            timeDownData.value = "${seconds}秒后可重发"
                         }
 
                         override fun onFinish() {
-                            resetCodeData.value = "重发验证码"
+                            timeDownData.value = "重发验证码"
                         }
                     }
                     showLoading()

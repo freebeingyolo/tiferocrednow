@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.AppUtils
@@ -32,6 +33,7 @@ import com.css.wondercorefit.ui.fragment.MallFragment
 import com.css.wondercorefit.ui.fragment.SettingFragment
 import com.css.wondercorefit.viewmodel.MainActivityViewModel
 import com.tencent.bugly.Bugly
+import kotlinx.coroutines.launch
 import java.io.File
 
 @Route(path = ARouterConst.PATH_APP_MAIN)
@@ -98,19 +100,69 @@ class MainActivity : BaseActivity<MainActivityViewModel, ActivityMainBinding>() 
     private fun getFileFromServer(downUrl: String) {
         DownloadUtil.download(downUrl, object : DownloadUtil.OnDownloadListener {
             override fun onDownloadSuccess(file: File) {
-                startInstallApk(file)
-                LogUtils.d(TAG, "onDownloadSuccess:start to install")
+                lifecycleScope.launch {
+                    showToast("升级包下载完成，开始安装")
+                    startInstallApk(file)
+                }
             }
 
             override fun onDownloading(progress: Int) {
-                LogUtils.d(TAG, "onDownloading:$progress")
             }
 
             override fun onDownloadFailed() {
-                LogUtils.d(TAG, "onDownloadFailed")
-                showToast("下载升级包失败")
+                lifecycleScope.launch {
+                    showToast("升级包下载失败")
+                }
             }
         })
+        /*var call: Call? = null
+        var dlg: ProgressDialog? = null
+        var dlLis: DownloadUtil.OnDownloadListener? = null
+        val lambda_cancel: (DialogInterface, Int) -> Unit = { _, _ ->
+            call?.cancel()
+            ActivityUtils.finishAllActivities()
+        }
+        val lambda_retry: (DialogInterface, Int) -> Unit = { _, _ ->
+            getFileFromServer(downUrl)
+        }
+        dlLis = object : DownloadUtil.OnDownloadListener {
+            override fun onDownloadSuccess(file: File) {
+                LogUtils.d(TAG, "onDownloadSuccess:start to install,isMain:")
+                lifecycleScope.launch {
+                    startInstallApk(file)
+                    showToast("下载成功，开始安装...")
+                    dlg!!.dismiss()
+                }
+            }
+
+            override fun onDownloading(progress: Int) {
+                LogUtils.d(TAG, "onDownloading:$progress,isMain:" + (Looper.myLooper() == Looper.getMainLooper()))
+                lifecycleScope.launch {
+                    dlg!!.progress = progress
+                }
+            }
+
+            override fun onDownloadFailed() {
+                LogUtils.d(TAG, "onDownloadFailed,isMain:" + (Looper.myLooper() == Looper.getMainLooper()))
+                lifecycleScope.launch {
+                    showToast("下载升级包失败,请重试")
+                    dlg!!.getButton(DialogInterface.BUTTON_NEGATIVE).visibility = View.VISIBLE
+                }
+            }
+        }
+
+        dlg = ProgressDialog(this).apply {
+            setTitle("温馨提示")
+            setMessage("正在下载...")
+            setCancelable(false)
+            setButton(DialogInterface.BUTTON_NEGATIVE, "重试", lambda_retry)
+            setButton(DialogInterface.BUTTON_POSITIVE, "取消", lambda_cancel)
+            setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        }
+        call = DownloadUtil.download(downUrl, dlLis)
+        dlg.setOnShowListener { dlg.getButton(DialogInterface.BUTTON_NEGATIVE).visibility = View.INVISIBLE }
+        dlg.show()*/
+
     }
 
     // 下载成功，开始安装,兼容8.0安装位置来源的权限

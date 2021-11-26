@@ -19,15 +19,17 @@ class BootstrapService : Service() {
         startForeGround(this)
         stopSelf()
     }
+
     override fun onBind(intent: Intent): IBinder? {
         return null
     }
+
     override fun onDestroy() {
         super.onDestroy()
         stopForeground(true)
     }
 
-    private fun startForeGround (service: BootstrapService) {
+    private fun startForeGround(service: BootstrapService) {
         val notificationManager: NotificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val mChannel: NotificationChannel?
@@ -35,7 +37,7 @@ class BootstrapService : Service() {
             mChannel = NotificationChannel(
                 ConstantData.CHANNEL_ID,
                 ConstantData.CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_HIGH
+                NotificationManager.IMPORTANCE_MIN
             )
             notificationManager.createNotificationChannel(mChannel)
             val notification: Notification = Notification.Builder(applicationContext, ConstantData.CHANNEL_ID).build()

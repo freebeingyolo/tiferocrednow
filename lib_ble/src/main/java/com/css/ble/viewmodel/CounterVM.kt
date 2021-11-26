@@ -125,7 +125,7 @@ class CounterVM : HorizontalBarVM() {
         super.uploadExerciseData(
             time = (exerciseDurationDelta / 1000).toInt(),
             num = exerciseCountDelta,
-            calory = (exerciseKcalTxtDelta).toFloat(),
+            calory = exerciseKcalTxtDelta.toFloatOrNull() ?: 0f,
             type = deviceType.alias,
             { _, _ ->
                 initExerciseCount = exerciseCount.value!!

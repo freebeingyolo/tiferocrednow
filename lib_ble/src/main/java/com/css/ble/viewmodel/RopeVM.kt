@@ -156,7 +156,7 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
         CHANGE_EXERCISE("F55F060203"),//04-暂停，05-恢复，06-停止
         REAL_DATA("F55F070F04"),//真实数据
         BATTERY("F55F070202"),//电量
-        LOW_POWER_MODE("F55F0B0201")//低功耗模式
+        LOW_POWER_MODE("F55F110201")//低功耗模式
         ;
 
         companion object {
@@ -233,8 +233,8 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
     }
 
     enum class MotionState(val codeW: String, val msg: String, val codeR: Byte) {
-        PAUSE("04", "暂停训练", 0x01),
-        RESUME("05", "开始训练", 0x02),
+        PAUSE("04", "暂停训练", 0x02),
+        RESUME("05", "开始训练", 0x01),
         STOP("06", "停止训练", 0x00);
 
         val deviceState get() = DeviceState.valueOf("MOTION_${name}")
@@ -309,11 +309,9 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
             Command.REAL_DATA -> {// 当前模式
                 //运动模式
                 val v = DataUtils.bytes2IntBig(value[18])
-                if (v in 1..3) {
-                    mode = Mode.values()[v - 1]
-                } else {
-                    LogUtils.e(TAG, "found wrong data:$hexData")
-                }
+                val m = Mode.values()[v - 1]
+                if (m != mode) uploadExerciseData()
+                mode = m
                 //模式对应的值，
                 val s = DataUtils.bytes2IntBig(value[16], value[17])
                 when (mode) {
@@ -321,24 +319,40 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
                     Mode.byCountNumber -> mCountNumber = s
                 }
                 //是否运动
-                MotionState.deviceState(value[5])?.let { deviceState = it } ?: let {
-                    LogUtils.e(TAG, "found wrong data:$hexData")
+                MotionState.deviceState(value[5]).let {
+                    if (it != null) {
+                        deviceState = it
+                        if (it == DeviceState.MOTION_STOP) uploadExerciseData()
+                    } else {
+                        LogUtils.e(TAG, "found wrong data:$hexData")
+                    }
                 }
 
                 // 运动次数
-                val r = DataUtils.bytes2IntBig(value[8], value[9])
-                (exerciseCount as MutableLiveData).value = r
+                DataUtils.bytes2IntBig(value[8], value[9]).let {
+                    if (mode == Mode.byCountNumber && it == mCountNumber) showToast("计数结束")
+                    (exerciseCount as MutableLiveData).value = it
+                }
                 //时长
-                val d = DataUtils.bytes2IntBig(value[6], value[7])
-                (exerciseDuration as MutableLiveData).value = d * 1000L
+                DataUtils.bytes2IntBig(value[6], value[7]).let {
+                    if (mode == Mode.byCountTime && it == mCountTime * 60) showToast("计时结束")
+                    (exerciseDuration as MutableLiveData).value = it * 1000L
+                }
+
             }
             Command.BATTERY -> {//电池电量
                 val v = DataUtils.bytes2IntBig(value[5])
                 (batteryLevel as MutableLiveData).value = v
-                deviceState = DeviceState.MOTION_STOP
             }
             Command.LOW_POWER_MODE -> {//进低功耗模式
-                deviceState = DeviceState.SHUTDOWN
+                val v = value[5].toInt()
+                if (v == 0) {
+                    //开机
+                    writeCharacter(Command.QUERY.code())//查询
+                } else {
+                    //关机
+                    deviceState = DeviceState.SHUTDOWN
+                }
             }
             else -> {}
         }

@@ -13,8 +13,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.NetworkUtils
@@ -26,9 +26,9 @@ import com.css.base.view.ToolBarView
 import com.css.ble.R
 import com.css.wondercorefit.databinding.ActivityAboutUsBinding
 import com.css.wondercorefit.viewmodel.AboutUsViewModel
+import kotlinx.coroutines.launch
 import razerdp.basepopup.BasePopupWindow
 import java.io.File
-import java.util.concurrent.Executor
 
 @Suppress("DEPRECATION")
 open class AboutUsActivity : BaseActivity<AboutUsViewModel, ActivityAboutUsBinding>(),
@@ -94,14 +94,19 @@ open class AboutUsActivity : BaseActivity<AboutUsViewModel, ActivityAboutUsBindi
     private fun getFileFromServer(downUrl: String) {
         DownloadUtil.download(downUrl, object : DownloadUtil.OnDownloadListener {
             override fun onDownloadSuccess(file: File) {
-                startInstallApk(file)
+                lifecycleScope.launch {
+                    showToast("升级包下载完成，开始安装")
+                    startInstallApk(file)
+                }
             }
 
             override fun onDownloading(progress: Int) {
             }
 
             override fun onDownloadFailed() {
-                Toast.makeText(this@AboutUsActivity, "更新下载失败，请稍后再试", Toast.LENGTH_SHORT).show()
+                lifecycleScope.launch {
+                    showToast("升级包下载失败")
+                }
             }
         })
     }
@@ -131,7 +136,8 @@ open class AboutUsActivity : BaseActivity<AboutUsViewModel, ActivityAboutUsBindi
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == INSTALL_PERMISS_CODE) {
-            val successDownloadApkPath = "${getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}/".trim() + "WonderCoreFit.apk"
+            val successDownloadApkPath =
+                "${getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}/".trim() + "WonderCoreFit.apk"
             AppUtils.installApp(successDownloadApkPath)
         }
     }

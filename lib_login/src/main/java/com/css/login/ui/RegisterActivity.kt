@@ -43,19 +43,16 @@ class RegisterActivity : BaseActivity<RegisterViewModel, ActivityRegisterBinding
         mViewModel.registerData.observe(this, {
             showCenterToast(it)
         })
-        mViewModel.resetCodeData.observe(this, {
-            mViewBinding.tvSendCode.isEnabled = true
-            mViewBinding.tvSendCode.text = it
-        })
         mViewModel.timeDownData.observe(this, {
-            mViewBinding.tvSendCode.isEnabled = false
-            mViewBinding.tvSendCode.text = "${it}秒后可重发"
+            mViewBinding.tvSendCode.isEnabled = !it.matches(Regex(".*\\d+.*")) //不是读秒才enable
+            mViewBinding.tvSendCode.text = it
         })
         mViewModel.registerData.observe(this, {
             finish()
             showCenterToast("注册成功")
             ARouterUtil.openLogin()
         })
+        
     }
 
     override fun initViewBinding(
