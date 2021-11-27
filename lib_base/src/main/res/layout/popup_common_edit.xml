@@ -102,7 +102,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:textColor="#F2682A"
+            android:textColor="@color/color_e1251b"
             android:textSize="16sp"
             tools:text="确定" />
     </LinearLayout>

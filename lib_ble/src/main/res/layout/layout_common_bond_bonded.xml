@@ -88,7 +88,7 @@
                 android:background="@drawable/ble_bonded_backnow_frame"
                 android:stateListAnimator="@null"
                 android:text="@string/backnow"
-                android:textColor="#fff2682a"
+                android:textColor="@color/color_e1251b"
                 android:textSize="13sp" />
         </RelativeLayout>
     </RelativeLayout>

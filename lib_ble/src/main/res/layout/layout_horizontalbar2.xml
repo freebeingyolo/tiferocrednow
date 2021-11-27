@@ -388,7 +388,7 @@
                     android:gravity="center"
                     android:onClick="@{v->view.startConnectOrCancel()}"
                     android:text="@{model.connectControlTxt,default=`连接设备`}"
-                    android:textColor="#F2682A"
+                    android:textColor="@color/color_e1251b"
                     android:textSize="15sp"
                     android:visibility="@{model.stateObsrv.ordinal() &lt; State.discovered.ordinal() ? View.VISIBLE:View.GONE }" />
 
@@ -407,7 +407,7 @@
                         android:gravity="center"
                         android:onClick="@{v->view.startExercise()}"
                         android:text="开始训练"
-                        android:textColor="#F2682A"
+                        android:textColor="@color/color_e1251b"
                         android:textSize="15sp"
                         android:visibility="@{model.motionState != MotionState.RESUME ? View.VISIBLE:View.GONE }" />
 
@@ -419,7 +419,7 @@
                         android:gravity="center"
                         android:onClick="@{v->view.stopExercise()}"
                         android:text="结束训练"
-                        android:textColor="#F2682A"
+                        android:textColor="@color/color_e1251b"
                         android:textSize="15sp"
                         android:visibility="@{model.motionState == MotionState.RESUME ? View.VISIBLE:View.GONE }" />
                 </androidx.appcompat.widget.LinearLayoutCompat>

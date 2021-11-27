@@ -61,7 +61,7 @@
                 android:background="@drawable/bg_to_measure_btn"
                 android:gravity="center"
                 android:text="去测量"
-                android:textColor="#F2682A"
+                android:textColor="@color/color_e1251b"
                 android:textSize="12sp"
                 android:visibility="gone" />
 

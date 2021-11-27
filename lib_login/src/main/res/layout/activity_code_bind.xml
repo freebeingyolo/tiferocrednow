@@ -96,7 +96,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="10dp"
                     android:text="发送验证码"
-                    android:textColor="#FFF2682A"
+                    android:textColor="@color/color_e1251b"
                     android:textSize="11dp" />
             </RelativeLayout>
 
@@ -122,7 +122,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="80dp"
             android:text="密码绑定"
-            android:textColor="#FFF2682A"
+            android:textColor="@color/color_e1251b"
             android:textSize="12dp" />
 
         <com.css.base.view.RoundTextView
@@ -138,7 +138,7 @@
             android:text="绑定"
             android:textColor="@color/white"
             android:textSize="14sp"
-            app:rv_backgroundColor="#FFF2682A"
+            app:rv_backgroundColor="@color/color_e1251b"
             app:rv_cornerRadius="164dp" />
     </RelativeLayout>
 </androidx.core.widget.NestedScrollView>

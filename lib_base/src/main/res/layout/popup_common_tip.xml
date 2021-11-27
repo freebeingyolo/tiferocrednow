@@ -45,7 +45,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="取消连接"
-            android:textColor="#FFF2682A"
+            android:textColor="@color/color_e1251b"
             android:textSize="13sp" />
 
         <View
@@ -60,7 +60,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="重新连接"
-            android:textColor="#FFF2682A"
+            android:textColor="@color/color_e1251b"
             android:textSize="13sp" />
     </LinearLayout>
 
