@@ -125,7 +125,7 @@ class PersonInformationActivity : BaseActivity<PersonInformationViewModel, Activ
         }
             .setSelectOptions(mSexList.indexOf(WonderCoreCache.getUserInfo().sex))  //设置默认选中项
             .setOutSideCancelable(true)//点击外部dismiss default true
-            .setTextColorCenter(Color.parseColor("#F2682A"))
+            .setTextColorCenter(R.color.color_e1251b)
             .isDialog(true)//是否显示为对话框样式
             .build()
         mSexPickerDialog?.setPicker(mSexList)
@@ -168,7 +168,7 @@ class PersonInformationActivity : BaseActivity<PersonInformationViewModel, Activ
             .isCenterLabel(true)
             .setSelectOptions(mAgeList.indexOf(WonderCoreCache.getUserInfo().age))
             .setLineSpacingMultiplier(3.0F)
-            .setTextColorCenter(Color.parseColor("#F2682A"))
+            .setTextColorCenter(R.color.color_e1251b)
             .setOutSideCancelable(true)//点击外部dismiss default true
             .isDialog(true)//是否显示为对话框样式
             .build()
@@ -212,7 +212,7 @@ class PersonInformationActivity : BaseActivity<PersonInformationViewModel, Activ
             .isCenterLabel(true)
             .setSelectOptions(mStatureList.indexOf(WonderCoreCache.getUserInfo().height))
             .setLineSpacingMultiplier(3.0F)
-            .setTextColorCenter(Color.parseColor("#F2682A"))
+            .setTextColorCenter(R.color.color_e1251b)
             .setOutSideCancelable(true)//点击外部dismiss default true
             .isDialog(true)//是否显示为对话框样式
             .build()
@@ -255,7 +255,7 @@ class PersonInformationActivity : BaseActivity<PersonInformationViewModel, Activ
             .isCenterLabel(true)
             .setSelectOptions(mTargetWeightList.indexOf(WonderCoreCache.getUserInfo().goalBodyWeight))
             .setLineSpacingMultiplier(3.0F)
-            .setTextColorCenter(Color.parseColor("#F2682A"))
+            .setTextColorCenter(R.color.color_e1251b)
             .setOutSideCancelable(true)//点击外部dismiss default true
             .isDialog(true)//是否显示为对话框样式
             .build()
@@ -299,7 +299,7 @@ class PersonInformationActivity : BaseActivity<PersonInformationViewModel, Activ
             .isCenterLabel(true)
             .setSelectOptions(mTargetStepList.indexOf(WonderCoreCache.getUserInfo().goalStepCount))
             .setLineSpacingMultiplier(3.0F)
-            .setTextColorCenter(Color.parseColor("#F2682A"))
+            .setTextColorCenter(R.color.color_e1251b)
             .setOutSideCancelable(true)//点击外部dismiss default true
             .isDialog(true)//是否显示为对话框样式
             .build()

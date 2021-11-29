@@ -1,19 +1,17 @@
 package com.css.base.view
 
 import android.animation.ObjectAnimator
-import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.os.Build
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import com.css.base.R
 
 class ProgressView : View {
     private var preWidth = 0
@@ -38,7 +36,7 @@ class ProgressView : View {
         paint1.color = Color.WHITE
 
         paint2 = Paint(Paint.ANTI_ALIAS_FLAG)
-        paint2.color = Color.parseColor("#8B8C8D")
+        paint2.color = resources.getColor(R.color.color_8b8c8d)
 
     }
 
@@ -108,9 +106,9 @@ class ProgressView : View {
         for (i in 0..mCount) {
             startAngle += i1 + 2
             if (i < (mProgress / 1.5).toInt()) {
-                paint2.color = Color.parseColor("#F2682A")
+                paint2.color = resources.getColor(R.color.color_e1251b)
             } else {
-                paint2.color = Color.parseColor("#8B8C8D")
+                paint2.color = resources.getColor(R.color.color_8b8c8d)
             }
             canvas.drawArc(oval2, startAngle, 1f, true, paint2)
         }

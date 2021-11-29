@@ -37,7 +37,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="忘记密码"
-            android:textColor="#FFF2682A"
+            android:textColor="@color/color_e1251b"
             android:textSize="13sp" />
 
         <View
@@ -52,7 +52,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="重新输入"
-            android:textColor="#FFF2682A"
+            android:textColor="@color/color_e1251b"
             android:textSize="13sp" />
     </LinearLayout>
 

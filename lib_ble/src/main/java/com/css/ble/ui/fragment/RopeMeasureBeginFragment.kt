@@ -89,7 +89,7 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
                                         .isCenterLabel(true)
                                         .setSelectOptions(mCountTimeList.indexOf(mViewModel2.mCountTime.toString()))
                                         .setLineSpacingMultiplier(3.0F)
-                                        .setTextColorCenter(Color.parseColor("#F2682A"))
+                                        .setTextColorCenter(R.color.color_e1251b)
                                         .setOutSideCancelable(true)//点击外部dismiss default true
                                         .isDialog(true)//是否显示为对话框样式
                                         .build()

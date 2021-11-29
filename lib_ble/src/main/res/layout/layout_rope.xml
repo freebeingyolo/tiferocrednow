@@ -396,7 +396,7 @@
                     android:gravity="center"
                     android:onClick="@{v->view.startConnectOrCancel()}"
                     android:text="@{model.deviceStateObsvr != DeviceState.DISCONNECT ? `取消连接` : `连接设备`}"
-                    android:textColor="#F2682A"
+                    android:textColor="@color/color_e1251b"
                     android:textSize="15sp"
                     android:visibility="@{model.deviceStateObsvr.ordinal() &lt; DeviceState.SHUTDOWN.ordinal() ? View.VISIBLE : View.GONE}" />
 
@@ -407,7 +407,7 @@
                     android:gravity="center"
                     android:onClick="@{v->view.startExercise()}"
                     android:text="开始训练"
-                    android:textColor="#F2682A"
+                    android:textColor="@color/color_e1251b"
                     android:textSize="15sp"
                     android:visibility="@{(model.deviceStateObsvr == DeviceState.MOTION_STOP || model.deviceStateObsvr == DeviceState.SHUTDOWN) ? View.VISIBLE : View.GONE}" />
 
@@ -427,7 +427,7 @@
                         android:gravity="center"
                         android:onClick="@{v->view.resumeOrPauseExercise()}"
                         android:text="@{model.deviceStateObsvr == DeviceState.MOTION_RESUME ? `暂停训练`: `开始训练`}"
-                        android:textColor="#F2682A"
+                        android:textColor="@color/color_e1251b"
                         android:textSize="15sp" />
 
                     <View
@@ -443,7 +443,7 @@
                         android:gravity="center"
                         android:onClick="@{v->view.stopExercise()}"
                         android:text="结束训练"
-                        android:textColor="#F2682A"
+                        android:textColor="@color/color_e1251b"
                         android:textSize="15sp" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.appcompat.widget.LinearLayoutCompat>

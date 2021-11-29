@@ -72,11 +72,11 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
     val leftButtonBackground = Transformations.map(stateObsrv) {
         when (it) {
             State.exercise_start -> getDrawable(R.drawable.bg_34394d_radius45)
-            State.exercise_pause -> getDrawable(R.drawable.bg_f66e00_radius45)
-            State.disconnected -> getDrawable(R.drawable.bg_f66e00_radius45)
+            State.exercise_pause -> getDrawable(R.drawable.bg_e1251b_radius45)
+            State.disconnected -> getDrawable(R.drawable.bg_e1251b_radius45)
             State.connecting -> getDrawable(R.drawable.bg_34394d_radius45)
-            State.discovered -> getDrawable(R.drawable.bg_f66e00_radius45)
-            else -> getDrawable(R.drawable.bg_f66e00_radius45)
+            State.discovered -> getDrawable(R.drawable.bg_e1251b_radius45)
+            else -> getDrawable(R.drawable.bg_e1251b_radius45)
         }
     }
 

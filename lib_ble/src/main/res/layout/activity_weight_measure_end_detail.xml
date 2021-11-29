@@ -185,7 +185,7 @@
             android:background="@color/white"
             android:gravity="center"
             android:text="@string/measure_weight"
-            android:textColor="#F2682A"
+            android:textColor="@color/color_e1251b"
             android:textSize="14sp" />
     </RelativeLayout>
 </layout>
