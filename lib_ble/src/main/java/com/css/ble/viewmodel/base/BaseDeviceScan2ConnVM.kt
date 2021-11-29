@@ -149,8 +149,8 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
             DecimalFormat("0.00000").format(1f * weightKg * it * 25 / 30000)
         }
     }
-    val exerciseDuration: LiveData<Long> by lazy { MutableLiveData(-1) }
-    open val exerciseDurationTxt = Transformations.map(exerciseDuration) { if (it == -1L) "--" else formatTime(it) }
+    val exerciseDuration: LiveData<Int> by lazy { MutableLiveData(-1) }
+    open val exerciseDurationTxt = Transformations.map(exerciseDuration) { if (it == -1) "--" else formatTime(it) }
     val batteryLevel: LiveData<Int> by lazy { MutableLiveData(-1) }
 
     val batteryLevelTxt = Transformations.map(batteryLevel) {
@@ -158,8 +158,8 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
             String.format("%d%%", it)
     }
 
-    protected fun formatTime(ms: Long): String {
-        val ss = 1000
+    protected fun formatTime(ms: Int): String {
+        val ss = 1
         val mi = ss * 60
         val hh = mi * 60
         val dd = hh * 24
@@ -383,6 +383,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         if (connection != null) {
             LogUtils.d(TAG, "release", 5)
             connection?.release()
+            onDisconnectedX(connection?.device)
             //state = State.disconnected
             connection = null
         }

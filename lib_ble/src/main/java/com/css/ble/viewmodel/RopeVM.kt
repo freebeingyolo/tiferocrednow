@@ -24,7 +24,7 @@ import java.util.*
  *@description 燃动跳绳
  */
 open class RopeVM : BaseDeviceScan2ConnVM() {
-    var mCountTime: Int = -1    //单位分钟
+    var mCountTime: Int = -1    //单位秒
     var mCountNumber: Int = -1  //单位个数
 
     override val deviceType: DeviceType = DeviceType.ROPE
@@ -84,8 +84,8 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
     }
 
     override val exerciseDurationTxt = Transformations.map(exerciseDuration) {
-        if (it == -1L) "--" else
-            formatTime(if (mode == Mode.byCountTime) (mCountTime * 60 * 1000 - it) else it)
+        if (it == -1) "--" else
+            formatTime(if (mode == Mode.byCountTime) (mCountTime - it) else it)
     }
 
 
@@ -196,6 +196,7 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
 
     override fun onDisconnected(d: Device?) {
         deviceState = DeviceState.DISCONNECT
+        isStart = false
     }
 
     override fun onBondedOk(d: BondDeviceData) {}
@@ -217,7 +218,7 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
         val extra: Short = when (m) {
             Mode.byFree -> 0
             Mode.byCountNumber -> mCountNumber.toShort()
-            Mode.byCountTime -> (mCountTime * 60).toShort()
+            Mode.byCountTime -> (mCountTime).toShort()
         }
         writeCharacter(Command.SWITCH_MODE.code(m.code, *DataUtils.shortToByteBig(extra)),
             object : WriteCharacteristicCallback {
@@ -315,7 +316,7 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
                 //模式对应的值，
                 val s = DataUtils.bytes2IntBig(value[16], value[17])
                 when (mode) {
-                    Mode.byCountTime -> mCountTime = s / 60
+                    Mode.byCountTime -> mCountTime = s
                     Mode.byCountNumber -> mCountNumber = s
                 }
                 //是否运动
@@ -330,13 +331,17 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
 
                 // 运动次数
                 DataUtils.bytes2IntBig(value[8], value[9]).let {
-                    if (mode == Mode.byCountNumber && it == mCountNumber) showToast("计数结束")
+                    if (mode == Mode.byCountNumber && it == mCountNumber && exerciseCount.value == mCountNumber - 1) {
+                        showToast("计数结束")
+                    }
                     (exerciseCount as MutableLiveData).value = it
                 }
                 //时长
                 DataUtils.bytes2IntBig(value[6], value[7]).let {
-                    if (mode == Mode.byCountTime && it == mCountTime * 60) showToast("计时结束")
-                    (exerciseDuration as MutableLiveData).value = it * 1000L
+                    if (mode == Mode.byCountTime && it == mCountTime && exerciseDuration.value == (mCountTime - 1)) {
+                        showToast("计时结束")
+                    }
+                    (exerciseDuration as MutableLiveData).value = it
                 }
 
             }

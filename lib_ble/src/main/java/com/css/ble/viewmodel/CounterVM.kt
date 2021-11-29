@@ -23,7 +23,7 @@ class CounterVM : HorizontalBarVM() {
     private var motionState2 = 0x00
     override val deviceType: DeviceType = DeviceType.COUNTER
     private var initExerciseCount = -1
-    private var initExerciseDuration = -1L
+    private var initExerciseDuration = -1
 
     val exerciseCountDelta
         get() = run { //锻炼增量
@@ -41,7 +41,7 @@ class CounterVM : HorizontalBarVM() {
     val exerciseDurationDelta
         get() = run {
             val it = exerciseDuration.value!!
-            if (it == -1L) 0 else it - initExerciseDuration
+            if (it == -1) 0 else it - initExerciseDuration
         }
 
     override fun filterName(name: String): Boolean {
@@ -105,8 +105,8 @@ class CounterVM : HorizontalBarVM() {
             }
             hexData.startsWith("F55F0704") -> {//计时
                 val v = DataUtils.bytes2IntBig(value[5], value[6])
-                (exerciseDuration as MutableLiveData).value = v * 1000L
-                if (initExerciseDuration == -1L) initExerciseDuration = v * 1000L
+                (exerciseDuration as MutableLiveData).value = v
+                if (initExerciseDuration == -1) initExerciseDuration = v
             }
             hexData.startsWith("F55F0705") -> {//运动状态
                 //LogUtils.d("onCharacteristicChanged#F55F0705#$hexData")

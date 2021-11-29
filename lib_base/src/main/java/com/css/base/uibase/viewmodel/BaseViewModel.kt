@@ -12,6 +12,7 @@ import com.css.base.uibase.inner.IBaseViewModel
 import com.css.base.uibase.inner.INetView
 import com.css.base.uibase.inner.IResource
 import com.css.base.utils.UICoreConfig
+import com.css.service.bus.LiveDataBus.BusMutableLiveData
 import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -25,12 +26,12 @@ import javax.net.ssl.SSLException
 
 abstract class BaseViewModel : ViewModel(), IBaseViewModel, INetView, IResource {
     protected val TAG = javaClass.simpleName
-    val showToastStrEvent = MutableLiveData<String?>()
-    val showLongToastStrEvent = MutableLiveData<String?>()
-    val showToastResEvent = MutableLiveData<Int>()
-    val showLongToastResEvent = MutableLiveData<Int>()
-    val showCenterToastStrEvent = MutableLiveData<String?>()
-    val showCenterLongToastStrEvent = MutableLiveData<String?>()
+    val showToastStrEvent = BusMutableLiveData<String?>()
+    val showLongToastStrEvent = BusMutableLiveData<String?>()
+    val showToastResEvent = BusMutableLiveData<Int>()
+    val showLongToastResEvent = BusMutableLiveData<Int>()
+    val showCenterToastStrEvent = BusMutableLiveData<String?>()
+    val showCenterLongToastStrEvent = BusMutableLiveData<String?>()
     val showLoadingEvent = MutableLiveData<String?>()
     val hideLoadingEvent = MutableLiveData<String?>()
     val showCenterToastResEvent = MutableLiveData<Int>()

@@ -1,7 +1,6 @@
 package com.css.ble.ui.fragment
 
 import LogUtils
-import android.graphics.Color
 import android.text.InputType
 import android.view.Gravity
 import android.view.View
@@ -41,7 +40,7 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
     override val vbCls: Class<LayoutRopeBinding> get() = LayoutRopeBinding::class.java
     private val mViewModel2: RopeVM get() = mViewModel as RopeVM
     private var mCountTimeDialog: OptionsPickerView<String>? = null
-    private val mCountTimeList by lazy { (30 downTo 1).map { it.toString() } }
+    private val mCountTimeList by lazy { (1..30).map { it.toString() } }
 
 
     override fun initData() {
@@ -73,7 +72,7 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
                                         activity
                                     ) { options1, _, _, _ ->
                                         //mCountTime = mCountTimeList[options1]
-                                        mViewModel2.mCountTime = mCountTimeList[options1].toInt()
+                                        mViewModel2.mCountTime = mCountTimeList[options1].toInt() * 60
                                     }.setLayoutRes(R.layout.dialog_rope_count_time) { v ->
                                         val title = v?.findViewById<TextView>(R.id.tv_title)
                                         val cancel = v?.findViewById<TextView>(R.id.btn_cancel)
@@ -87,7 +86,7 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
                                         }
                                     }.setLabels("分钟", "", "")
                                         .isCenterLabel(true)
-                                        .setSelectOptions(mCountTimeList.indexOf(mViewModel2.mCountTime.toString()))
+                                        .setSelectOptions(mCountTimeList.indexOf((mViewModel2.mCountTime * 60).toString()))
                                         .setLineSpacingMultiplier(3.0F)
                                         .setTextColorCenter(R.color.color_e1251b)
                                         .setOutSideCancelable(true)//点击外部dismiss default true

@@ -16,6 +16,7 @@ import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.utils.DataUtils
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
+import com.tencent.bugly.proguard.v
 import java.text.DecimalFormat
 import java.util.*
 
@@ -159,15 +160,20 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
         when (Command.toCommand(hexData, 0..7)) {
             Command.COUNT_MODE -> {
                 val v = DataUtils.bytes2IntBig(value[5], value[6])
-                (exerciseDuration as MutableLiveData).value = v * 1000L
+                (exerciseDuration as MutableLiveData).value = v
             }
             Command.COUNTDOWN_MODE -> {
-                val v = DataUtils.bytes2IntBig(value[5], value[6])
-                (exerciseDuration as MutableLiveData).value = v * 1000L
+                DataUtils.bytes2IntBig(value[5], value[6]).let {
+                    if (it == 0 && exerciseDuration.value == 1) {
+                        showToast("计时结束")
+                    }
+                    (exerciseDuration as MutableLiveData).value = it
+                }
             }
             Command.COUNT_DATA -> {
-                val v = DataUtils.bytes2IntBig(value[5], value[6])
-                (exerciseCount as MutableLiveData).value = v
+                DataUtils.bytes2IntBig(value[5], value[6]).let {
+                    (exerciseCount as MutableLiveData).value = it
+                }
             }
             Command.SWITCH_MODE_READ -> {
                 val v = DataUtils.bytes2IntBig(value[5], value[6])
@@ -204,7 +210,7 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
     ) {
         //计数模式：exerciseDuration；倒计时模式：mode.time-exerciseDuration
         uploadExerciseData(
-            time = (exerciseDuration.value!! / 1000).toInt().let { if (mode == Mode.byCount) it else mode.time - it },
+            time = (exerciseDuration.value!!).toInt().let { if (mode == Mode.byCount) it else mode.time - it },
             num = exerciseCountTxt.value?.toIntOrNull() ?: 0,
             calory = exerciseKcalTxt.value?.toFloatOrNull() ?: 0f,
             type = deviceType.alias,
