@@ -46,7 +46,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
     val stateObsrv: LiveData<State> by lazy { LiveDataBus.BusMutableLiveData(State.disconnected) }
     val batteryLevel: LiveData<Int> by lazy { MutableLiveData(-1) }
     val exerciseCount: LiveData<Int> by lazy { MutableLiveData(-1) } //锻炼个数
-    val exerciseDuration: LiveData<Long> by lazy { MutableLiveData(-1) }
+    val exerciseDuration: LiveData<Int> by lazy { MutableLiveData(-1) }
     private var exerciseLiveCount: Int = 0 //锻炼长存计数
     private var exercisePauseCount = 0 //暂停期间的计数
 
@@ -91,7 +91,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
         else getString(R.string.device_connecting)
     }
 
-    val exerciseDurationTxt = Transformations.map(exerciseDuration) { if (it == -1L) "--" else formatTime(it) }
+    val exerciseDurationTxt = Transformations.map(exerciseDuration) { if (it == -1) "--" else formatTime(it) }
     val batteryLevelTxt = Transformations.map(batteryLevel) {
         if (it == -1) "--" else
             String.format("%d%%", it)
@@ -150,8 +150,8 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
     }
 
 
-    private fun formatTime(ms: Long): String {
-        val ss = 1000
+    private fun formatTime(ms: Int): String {
+        val ss = 1
         val mi = ss * 60
         val hh = mi * 60
         val dd = hh * 24
@@ -430,7 +430,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
         success: ((String?, Any?) -> Unit)? = null,
         failed: ((Int, String?, Any?) -> Unit)? = null
     ) {
-        val time = (exerciseDuration.value!! / 1000).toInt()
+        val time = exerciseDuration.value!!.toInt()
         val num = exerciseCountTxt.value?.toIntOrNull() ?: 0
         val calory = exerciseKcalTxt.value?.toFloatOrNull() ?: 0f
         val deviceType = deviceType.alias
@@ -472,7 +472,7 @@ class WheelMeasureVM : BaseWheelVM(), EventObserver {
         exerciseDurationJob = viewModelScope.launch(Dispatchers.IO) {
             while (true) {
                 delay(1000)
-                (exerciseDuration as MutableLiveData).postValue(exerciseDuration.value!! + 1000)
+                (exerciseDuration as MutableLiveData).postValue(exerciseDuration.value!! + 1)
             }
         }
     }

@@ -508,7 +508,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
         failed: ((Int, String?, Any?) -> Unit)? = null
     ) {
         uploadExerciseData(
-            time = (exerciseDuration.value!! / 1000).toInt(),
+            time = exerciseDuration.value!!,
             num = exerciseCount.value!!.toInt(),
             calory = exerciseKcalTxt.value?.toFloatOrNull() ?: 0f,
             type = deviceType.alias,

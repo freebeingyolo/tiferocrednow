@@ -319,16 +319,6 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
                     Mode.byCountTime -> mCountTime = s
                     Mode.byCountNumber -> mCountNumber = s
                 }
-                //是否运动
-                MotionState.deviceState(value[5]).let {
-                    if (it != null) {
-                        deviceState = it
-                        if (it == DeviceState.MOTION_STOP) uploadExerciseData()
-                    } else {
-                        LogUtils.e(TAG, "found wrong data:$hexData")
-                    }
-                }
-
                 // 运动次数
                 DataUtils.bytes2IntBig(value[8], value[9]).let {
                     if (mode == Mode.byCountNumber && it == mCountNumber && exerciseCount.value == mCountNumber - 1) {
@@ -343,7 +333,15 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
                     }
                     (exerciseDuration as MutableLiveData).value = it
                 }
-
+                //是否运动
+                MotionState.deviceState(value[5]).let {
+                    if (it != null) {
+                        deviceState = it
+                        if (it == DeviceState.MOTION_STOP) uploadExerciseData()
+                    } else {
+                        LogUtils.e(TAG, "found wrong data:$hexData")
+                    }
+                }
             }
             Command.BATTERY -> {//电池电量
                 val v = DataUtils.bytes2IntBig(value[5])
