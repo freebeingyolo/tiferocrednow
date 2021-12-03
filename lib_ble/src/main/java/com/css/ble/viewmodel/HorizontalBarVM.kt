@@ -16,7 +16,6 @@ import com.css.ble.bean.BondDeviceData
 import com.css.ble.bean.DeviceType
 import com.css.ble.utils.DataUtils
 import com.css.ble.viewmodel.base.BaseDeviceScan2ConnVM
-import com.tencent.bugly.proguard.v
 import java.text.DecimalFormat
 import java.util.*
 
@@ -38,7 +37,7 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
 
     val durationCaption = Transformations.map(modeObsvr) { if (it != Mode.byCount) "倒计时" else "运行时长" }
     val countCaption = Transformations.map(modeObsvr) { "本地训练次数" }
-    val motionState by lazy { MutableLiveData(MotionState.UNKNOWN) }
+    val motionStateObsvr by lazy { MutableLiveData(MotionState.UNKNOWN) }
 
     //transformations
     var mode: Mode
@@ -86,14 +85,14 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
         //开启通知
         sendNotification(true)
         if (deviceType == DeviceType.HORIZONTAL_BAR) writeWeight()
-        motionState.value = MotionState.NONE
+        motionStateObsvr.value = MotionState.NONE
     }
 
     override fun onFoundDevice(d: Device) {
     }
 
     override fun onDisconnected(d: Device?) {
-        motionState.value = MotionState.UNKNOWN
+        motionStateObsvr.value = MotionState.UNKNOWN
     }
 
     override fun onBondedOk(d: BondDeviceData) {
@@ -196,7 +195,7 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
             }
             Command.EXERCISE_READ -> {
                 val v = value[6]
-                motionState.value = MotionState.get(v)!!
+                motionStateObsvr.value = MotionState.get(v)!!
             }
             else -> {
                 Log.e(TAG, "receive unkonwn data:$hexData")
@@ -223,13 +222,17 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
         (callUILiveData as MutableLiveData).value = "jumpToStatistic"
     }
 
-    enum class MotionState(val code: Byte) {
+    override val connectStateTxt by lazy {
+        Transformations.map(motionStateObsvr) { it.str }
+    }
+
+    enum class MotionState(val code: Byte,val str: String) {
         //00-无训练，01-开始训练，02-结束训练
-        UNKNOWN(-0x01),
-        NONE(0x00),
-        STOP(0x02),
-        PAUSE(0x04),
-        RESUME(0x01);
+        UNKNOWN(-0x01,"未连接"),
+        NONE(0x00,"已连接"),
+        STOP(0x02,"运动结束"),
+        PAUSE(0x04,"运动暂停"),
+        RESUME(0x01,"运动中");
 
         companion object {
             fun get(b: Byte): MotionState? {
@@ -293,7 +296,7 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
 
     //00-无训练，01-开始训练，02-结束训练
     fun changeExercise(motion: MotionState, cb: WriteCharacteristicCallback? = null) {
-        if (motion == MotionState.RESUME && motionState.value == MotionState.NONE) {//
+        if (motion == MotionState.RESUME && motionStateObsvr.value == MotionState.NONE) {//
             reset()
             takeIf { batteryLevel.value == -1 }?.let { writeCharacter(Command.QUERY_BATTERY.code()) }
         }
@@ -304,7 +307,7 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
 
             override fun onCharacteristicWrite(request: Request, value: ByteArray) {
                 cb?.onCharacteristicWrite(request, value)
-                motionState.value = motion
+                motionStateObsvr.value = motion
             }
         })
         if (MotionState.STOP == motion && exerciseCount.value!! > 0) {

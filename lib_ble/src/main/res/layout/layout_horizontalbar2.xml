@@ -283,7 +283,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_while_radius4"
-                    android:enabled="@{model.motionState!= MotionState.RESUME &amp;&amp; model.motionState!= MotionState.UNKNOWN}"
+                    android:enabled="@{model.motionStateObsvr!= MotionState.RESUME &amp;&amp; model.motionStateObsvr!= MotionState.UNKNOWN}"
                     android:onClick="@{v->view.openSwitchSpinner(v)}"
                     android:paddingStart="22dp"
                     android:paddingEnd="22dp"
@@ -409,7 +409,7 @@
                         android:text="开始训练"
                         android:textColor="@color/color_e1251b"
                         android:textSize="15sp"
-                        android:visibility="@{model.motionState != MotionState.RESUME ? View.VISIBLE:View.GONE }" />
+                        android:visibility="@{model.motionStateObsvr != MotionState.RESUME ? View.VISIBLE:View.GONE }" />
 
                     <TextView
                         android:id="@+id/startExercise2"
@@ -421,7 +421,7 @@
                         android:text="结束训练"
                         android:textColor="@color/color_e1251b"
                         android:textSize="15sp"
-                        android:visibility="@{model.motionState == MotionState.RESUME ? View.VISIBLE:View.GONE }" />
+                        android:visibility="@{model.motionStateObsvr == MotionState.RESUME ? View.VISIBLE:View.GONE }" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.appcompat.widget.LinearLayoutCompat>
         </LinearLayout>

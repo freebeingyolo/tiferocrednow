@@ -354,6 +354,7 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
                     writeCharacter(Command.QUERY.code())//查询
                 } else {
                     //关机
+                    if (deviceState != DeviceState.SHUTDOWN) showToast(deviceState.str)
                     deviceState = DeviceState.SHUTDOWN
                 }
             }

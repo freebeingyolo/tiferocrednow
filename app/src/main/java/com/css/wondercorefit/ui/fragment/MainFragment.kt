@@ -50,7 +50,6 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     private val mDelayHandler = Handler(TodayStepCounterCall())
     private val REFRESH_STEP_WHAT = 0
     private val TIME_INTERVAL_REFRESH: Long = 500
-    private lateinit var targetStep: String
     private var currentStep: Int = 0
     private var result: Float = 0.0f
     private lateinit var stepData: StepData
@@ -59,6 +58,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     private lateinit var mMainDeviceAdapter: MainDeviceAdapter
     var mData = ArrayList<BondDeviceData>()
     private val tabTitle = arrayListOf("最近使用", "全部")
+    val targetStep get()= WonderCoreCache.getUserInfo().goalStepCountInt
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
@@ -186,13 +186,13 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
 
     private fun initProgressRate() {
         val mUserData = WonderCoreCache.getUserInfo()
-        targetStep = mUserData.goalStepCount
         stepData = WonderCoreCache.getData(CacheKey.STEP_DATA, StepData::class.java) ?: StepData()
         currentStep = stepData.todaySteps
-        result = ((currentStep * 100) / targetStep.toInt()).toFloat()
+        result = ((currentStep * 100) / targetStep).toFloat()
         Log.d(TAG, "ProgressInformation   :  $currentStep    $targetStep    $result")
         mViewBinding?.pbStep?.setProgress(result)
     }
+
 
     private fun initClickListenr() {
         mViewBinding!!.addBleDevice.setOnClickListener(this)

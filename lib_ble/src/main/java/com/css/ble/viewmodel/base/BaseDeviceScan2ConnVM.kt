@@ -82,7 +82,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     abstract val bonded_tip: String
     open val foundMethod: FoundWay = FoundWay.NAME
     open val bondTimeout = 5 * 1000L
-    open val connectTimeout = 5 * 1000L
+    open val connectTimeout = 10 * 1000L
 
     /*** overridable end ****/
     enum class WorkMode { BOND, MEASURE }
@@ -260,7 +260,9 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
     }
 
     private fun foundDevice(d: Device) {
-        if (avaliableDevice != null) throw IllegalStateException("avaliableDevice is not null")
+        if (avaliableDevice != null) throw IllegalStateException(
+            "${javaClass.simpleName}#${avaliableDevice!!.address}#${d.address}# avaliableDevice is not null"
+        )
         if (avaliableDevice == null) {
             avaliableDevice = d
             cancelTimeOutTimer()
@@ -498,7 +500,7 @@ abstract class BaseDeviceScan2ConnVM : BaseDeviceVM(), IBleScan, IBleConnect, Ev
             cb?.onRequestFailed(builder.build(), -1, null)
             return
         }
-        LogUtils.d(TAG, "writeCharacter-->${StringUtils.toHex(data,"")}")
+        LogUtils.d(TAG, "writeCharacter-->${StringUtils.toHex(data, "")}")
         connection?.execute(builder.build())
     }
 

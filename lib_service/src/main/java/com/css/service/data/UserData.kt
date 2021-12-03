@@ -15,13 +15,15 @@ data class UserData(
 ) {
     val sexInt: Int get() = if (sex == "男") 0 else 1
     val ageInt: Int get() = age.toInt()
-    val statureFloat: Float get() = height.toFloat()
-    val targetWeightFloat get() = goalBodyWeight.toFloat()
+    val statureFloat: Float get() = height.toFloatOrNull() ?: 175f
+    val targetWeightFloat get() = goalBodyWeight.toFloatOrNull() ?: 60f
+    val goalStepCountInt get() = goalStepCount.toIntOrNull() ?: 8000
 }
 
 data class GlobalData(
     var isFirst: Boolean = true
 )
+
 data class StepData(
     var sensorSteps: Int = 0,
     var defaultSteps: Int = 0,
