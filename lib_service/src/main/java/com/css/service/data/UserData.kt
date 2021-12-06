@@ -16,8 +16,22 @@ data class UserData(
     val sexInt: Int get() = if (sex == "男") 0 else 1
     val ageInt: Int get() = age.toInt()
     val statureFloat: Float get() = height.toFloatOrNull() ?: 175f
-    val targetWeightFloat get() = goalBodyWeight.toFloatOrNull() ?: 60f
-    val goalStepCountInt get() = goalStepCount.toIntOrNull() ?: 8000
+    val targetWeightFloat: Float
+        get() = goalBodyWeight.toFloatOrNull().let {
+            if (it == null || it !in 1f..1000f) {
+                goalBodyWeight = "60"
+                60f
+            }
+            else it
+        }
+    val goalStepCountInt: Int
+        get() = goalStepCount.toIntOrNull().let {
+            if (it == null || it !in 1000..8000) {
+                goalStepCount = "8000"
+                8000
+            }
+            else it
+        }
 }
 
 data class GlobalData(
