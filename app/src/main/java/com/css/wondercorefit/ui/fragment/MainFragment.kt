@@ -185,7 +185,6 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(), View.On
     }
 
     private fun initProgressRate() {
-        val mUserData = WonderCoreCache.getUserInfo()
         stepData = WonderCoreCache.getData(CacheKey.STEP_DATA, StepData::class.java) ?: StepData()
         currentStep = stepData.todaySteps
         result = ((currentStep * 100) / targetStep).toFloat()

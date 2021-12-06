@@ -116,7 +116,7 @@ class MainViewModel : BaseViewModel() {
     private fun getSubtractedWeightPer(): Int {
         val initialWeight = WonderCoreCache.getLiveData<WeightBondData>(CacheKey.FIRST_WEIGHT_INFO).value?.weightKg
         val currentWeight = WonderCoreCache.getLiveData<WeightBondData>(CacheKey.LAST_WEIGHT_INFO).value?.weightKg
-        val goalWeight = WonderCoreCache.getLiveData<UserData>(CacheKey.USER_INFO).value?.targetWeightFloat
+        val goalWeight = WonderCoreCache.getLiveData<UserData>(CacheKey.USER_INFO).value?.goalBodyWeightFloat
         if (null != initialWeight && null != currentWeight && null != goalWeight) {
             val sub = initialWeight - currentWeight
             val goal = initialWeight - goalWeight

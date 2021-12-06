@@ -37,7 +37,7 @@ class BodyFatDataWrapper(var data: BodyFatData, var weight: Float, var ui: UserD
         get() = run {
             val fi = WonderCoreCache.getData(CacheKey.FIRST_WEIGHT_INFO,WeightBondData::class.java)!!
             //橙色/整圆=（初始体重-当前体重）/（初始体重-目标体重）
-            Math.max(Math.min((fi.weightKg - weight) / (fi.weightKg - WonderCoreCache.getUserInfo().targetWeightFloat), 1f), 0f) * 100
+            Math.max(Math.min((fi.weightKg - weight) / (fi.weightKg - WonderCoreCache.getUserInfo().goalBodyWeightFloat), 1f), 0f) * 100
         }
 
     //肥胖等级

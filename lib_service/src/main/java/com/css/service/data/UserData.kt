@@ -16,7 +16,7 @@ data class UserData(
     val sexInt: Int get() = if (sex == "男") 0 else 1
     val ageInt: Int get() = age.toInt()
     val statureFloat: Float get() = height.toFloatOrNull() ?: 175f
-    val targetWeightFloat: Float
+    val goalBodyWeightFloat: Float
         get() = goalBodyWeight.toFloatOrNull().let {
             if (it == null || it !in 1f..1000f) {
                 goalBodyWeight = "60"
