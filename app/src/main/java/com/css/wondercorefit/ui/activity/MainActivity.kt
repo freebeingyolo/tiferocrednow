@@ -72,6 +72,8 @@ class MainActivity : BaseActivity<MainActivityViewModel, ActivityMainBinding>() 
             val packVersion = AppUtils.getAppVersionName()
             if (packVersion != versionName) {
                 CommonAlertDialog(this).apply {
+                    outSideDismiss = false
+                    backPressEnable = false
                     gravity = Gravity.BOTTOM
                     type = CommonAlertDialog.DialogType.Confirm
                     title = "检测更新"

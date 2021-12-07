@@ -15,12 +15,15 @@
         android:id="@+id/cl_device"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg_f8f8f8_radius5"
         android:orientation="vertical">
 
         <RelativeLayout
             android:id="@+id/my_device_recycle"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="15dp"
             tools:ignore="MissingConstraints">
 
             <TextView
@@ -58,6 +61,8 @@
                 android:id="@+id/rel_device_name"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="15dp"
                 tools:ignore="MissingConstraints">
 
                 <TextView
@@ -92,6 +97,8 @@
                 android:id="@+id/rel_device_model"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="15dp"
                 app:layout_constraintTop_toBottomOf="@id/rel_device_name"
                 tools:ignore="MissingConstraints">
 
@@ -127,6 +134,8 @@
                 android:id="@+id/rel_device_address"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="15dp"
                 app:layout_constraintTop_toBottomOf="@id/rel_device_model"
                 tools:ignore="MissingConstraints">
 
@@ -162,6 +171,8 @@
                 android:id="@+id/rel_device_hardware"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="15dp"
                 app:layout_constraintTop_toBottomOf="@id/rel_device_address"
                 tools:ignore="MissingConstraints">
 
@@ -197,6 +208,8 @@
                 android:id="@+id/rel_device_delete"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="15dp"
                 app:layout_constraintTop_toBottomOf="@id/rel_device_hardware"
                 tools:ignore="MissingConstraints">
 
