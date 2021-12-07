@@ -50,6 +50,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:visibility="gone"
+            android:background="#FFF6F6F6"
             app:layout_constraintTop_toBottomOf="@id/my_device_recycle"
             tools:ignore="MissingConstraints"
             tools:visibility="visible">

@@ -68,10 +68,7 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
                                 dismiss()
                                 val modes = Mode.values()
                                 if (Mode.byCountTime == modes[position]) {//倒计时长
-                                    mCountTimeDialog = OptionsPickerBuilder(
-                                        activity
-                                    ) { options1, _, _, _ ->
-                                        //mCountTime = mCountTimeList[options1]
+                                    mCountTimeDialog = OptionsPickerBuilder(activity) { options1, _, _, _ ->
                                         mViewModel2.mCountTime = mCountTimeList[options1].toInt() * 60
                                     }.setLayoutRes(R.layout.dialog_rope_count_time) { v ->
                                         val title = v?.findViewById<TextView>(R.id.tv_title)
@@ -86,14 +83,14 @@ class RopeMeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2ConnVM) :
                                         }
                                     }.setLabels("分钟", "", "")
                                         .isCenterLabel(true)
-                                        .setSelectOptions(mCountTimeList.indexOf((mViewModel2.mCountTime * 60).toString()))
+                                        .setSelectOptions(mCountTimeList.indexOf(mViewModel2.mCountTime.let { if (it == -1) 10 else it }.toString()))
                                         .setLineSpacingMultiplier(3.0F)
                                         .setTextColorCenter(R.color.color_e1251b)
                                         .setOutSideCancelable(true)//点击外部dismiss default true
                                         .isDialog(true)//是否显示为对话框样式
                                         .build()
                                     mCountTimeDialog?.setPicker(mCountTimeList)
-                                    val lp: FrameLayout.LayoutParams =
+                                    val lp =
                                         mCountTimeDialog!!.dialogContainerLayout.layoutParams as FrameLayout.LayoutParams
                                     lp.leftMargin = 0
                                     lp.rightMargin = 0

@@ -51,7 +51,7 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
         SHUTDOWN("已关机"),
         MOTION_STOP("已连接"), //连接且已开机
         MOTION_RESUME("运动中"),
-        MOTION_PAUSE("运动暂停"),
+        MOTION_PAUSE("已暂停"),
     }
 
     override fun connectStateTxt(it: State): String {
@@ -298,14 +298,6 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
         super.onCharacteristicChanged(device, service, characteristic, value)
         val hexData = StringUtils.toHex(value, "")
         val command = Command.toCommand(hexData, 0..7)
-        if (!isStart) {
-            if (command == Command.BATTERY) {
-                val v = DataUtils.bytes2IntBig(value[5])
-                (batteryLevel as MutableLiveData).value = v
-                deviceState = DeviceState.MOTION_STOP
-            }
-            return
-        }
         when (command) {
             Command.REAL_DATA -> {// 当前模式
                 //运动模式
@@ -319,42 +311,47 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
                     Mode.byCountTime -> mCountTime = s
                     Mode.byCountNumber -> mCountNumber = s
                 }
-                // 运动次数
-                DataUtils.bytes2IntBig(value[8], value[9]).let {
-                    if (mode == Mode.byCountNumber && it == mCountNumber && exerciseCount.value == mCountNumber - 1) {
-                        showToast("计数结束")
+                if (isStart) {
+                    // 运动次数
+                    DataUtils.bytes2IntBig(value[8], value[9]).let {
+                        if (mode == Mode.byCountNumber && it == mCountNumber && exerciseCount.value == mCountNumber - 1) {
+                            showToast("计数结束")
+                        }
+                        (exerciseCount as MutableLiveData).value = it
                     }
-                    (exerciseCount as MutableLiveData).value = it
-                }
-                //时长
-                DataUtils.bytes2IntBig(value[6], value[7]).let {
-                    if (mode == Mode.byCountTime && it == mCountTime && exerciseDuration.value == (mCountTime - 1)) {
-                        showToast("计时结束")
+                    //时长
+                    DataUtils.bytes2IntBig(value[6], value[7]).let {
+                        if (mode == Mode.byCountTime && it == mCountTime && exerciseDuration.value == (mCountTime - 1)) {
+                            showToast("计时结束")
+                        }
+                        (exerciseDuration as MutableLiveData).value = it
                     }
-                    (exerciseDuration as MutableLiveData).value = it
-                }
-                //是否运动
-                MotionState.deviceState(value[5]).let {
-                    if (it != null) {
-                        deviceState = it
-                        if (it == DeviceState.MOTION_STOP) uploadExerciseData()
-                    } else {
-                        LogUtils.e(TAG, "found wrong data:$hexData")
+                    //是否运动
+                    MotionState.deviceState(value[5]).let {
+                        if (it != null) {
+                            deviceState = it
+                            if (it == DeviceState.MOTION_STOP) uploadExerciseData()
+                        } else {
+                            LogUtils.e(TAG, "found wrong data:$hexData")
+                        }
                     }
                 }
             }
             Command.BATTERY -> {//电池电量
                 val v = DataUtils.bytes2IntBig(value[5])
                 (batteryLevel as MutableLiveData).value = v
+                if (!isStart) {
+                    deviceState = DeviceState.MOTION_STOP
+                }
             }
             Command.LOW_POWER_MODE -> {//进低功耗模式
                 val v = value[5].toInt()
-                if (v == 0) {
+                if (v == 0x01) {
                     //开机
                     writeCharacter(Command.QUERY.code())//查询
                 } else {
                     //关机
-                    if (deviceState != DeviceState.SHUTDOWN) showToast(deviceState.str)
+                    if (deviceState != DeviceState.SHUTDOWN) showToast(DeviceState.SHUTDOWN.str)
                     deviceState = DeviceState.SHUTDOWN
                 }
             }

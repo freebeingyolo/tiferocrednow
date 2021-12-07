@@ -184,7 +184,8 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
 
             }
             Command.SHUTDOWN -> {
-
+                showToast("已关机")
+                motionStateObsvr.value = MotionState.SHUTDOWN
             }
             Command.BATTERY -> {
                 val v = DataUtils.bytes2IntBig(value[5], value[6])
@@ -228,10 +229,11 @@ open class HorizontalBarVM : BaseDeviceScan2ConnVM() {
 
     enum class MotionState(val code: Byte,val str: String) {
         //00-无训练，01-开始训练，02-结束训练
-        UNKNOWN(-0x01,"未连接"),
+        UNKNOWN(-0x02,"未连接"),
+        SHUTDOWN(-0x01,"已关机"),
         NONE(0x00,"已连接"),
         STOP(0x02,"运动结束"),
-        PAUSE(0x04,"运动暂停"),
+        PAUSE(0x04,"已暂停"),
         RESUME(0x01,"运动中");
 
         companion object {

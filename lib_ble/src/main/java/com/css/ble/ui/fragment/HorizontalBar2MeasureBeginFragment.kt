@@ -1,14 +1,13 @@
 package com.css.ble.ui.fragment
 
 import LogUtils
-import android.os.Bundle
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
 import android.widget.ArrayAdapter
 import android.widget.ListView
-import androidx.core.content.ContextCompat
 import cn.wandersnail.ble.Request
 import cn.wandersnail.ble.callback.WriteCharacteristicCallback
 import cn.wandersnail.commons.util.StringUtils
@@ -25,6 +24,7 @@ import com.css.service.utils.CacheKey
 import com.css.service.utils.WonderCoreCache
 import com.tencent.bugly.Bugly
 import razerdp.basepopup.BasePopupWindow
+
 
 /**
  *@author baoyuedong
@@ -53,13 +53,9 @@ open class HorizontalBar2MeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2
         val popUpWindow =
             object : BasePopupWindow(requireContext(), anchorView.width, AbsListView.LayoutParams.WRAP_CONTENT) {
                 override fun onCreateContentView(): View {
-                    val listView = ListView(requireContext())
-                    listView.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_while_radius4)
-                    listView.divider = null
+                    val listView = LayoutInflater.from(requireContext()).inflate(R.layout.layout_device_mode_switch_lv,null,false) as ListView
                     val datas = mViewModel2.getModels()
-                    listView.adapter = object :
-                        ArrayAdapter<String>(requireContext(), R.layout.layout_device_mode_switch_item, datas) {
-
+                    listView.adapter = object : ArrayAdapter<String>(requireContext(), R.layout.layout_device_mode_switch_item, datas) {
                         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                             val ret = super.getView(position, convertView, parent)
                             ret.setOnClickListener {
@@ -69,7 +65,6 @@ open class HorizontalBar2MeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2
                                         ToastUtils.showShort("切换模式失败")
                                         popupWindow.dismiss()
                                     }
-
                                     override fun onCharacteristicWrite(request: Request, value: ByteArray) {
                                         LogUtils.d("切换模式成功:${StringUtils.toHex(value)}")
                                         popupWindow.dismiss()
@@ -79,7 +74,6 @@ open class HorizontalBar2MeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2
                             return ret
                         }
                     }
-                    listView.choiceMode = ListView.CHOICE_MODE_SINGLE
                     listView.setItemChecked(mViewModel2.mode.ordinal, true)
                     return listView
                 }
@@ -116,7 +110,7 @@ open class HorizontalBar2MeasureBeginFragment(d: DeviceType, vm: BaseDeviceScan2
         mViewModel2.changeExercise(HorizontalBarVM.MotionState.RESUME)
     }
 
-    fun startConnectOrCancel(){
+    fun startConnectOrCancel() {
         if (mViewModel2.state == BaseDeviceScan2ConnVM.State.disconnected) {
             startConnect()
         } else {
