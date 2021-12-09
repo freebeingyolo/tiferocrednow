@@ -297,7 +297,7 @@ open class RopeVM : BaseDeviceScan2ConnVM() {
     override fun onCharacteristicChanged(device: Device, service: UUID, characteristic: UUID, value: ByteArray) {
         super.onCharacteristicChanged(device, service, characteristic, value)
         val hexData = StringUtils.toHex(value, "")
-        val command = Command.toCommand(hexData, 0..7)
+        val command = Command.toCommand(hexData, 0..9)
         when (command) {
             Command.REAL_DATA -> {// 当前模式
                 //运动模式
