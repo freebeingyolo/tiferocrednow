@@ -7,7 +7,7 @@
 
         <variable
             name="model"
-            type="com.css.wondercorefit.viewmodel.SettingVM" />
+            type="com.shopwonder.jingzaoyd.viewmodel.SettingVM" />
     </data>
 
     <LinearLayout

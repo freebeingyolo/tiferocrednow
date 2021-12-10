@@ -7,7 +7,7 @@
 
         <variable
             name="model"
-            type="com.css.wondercorefit.viewmodel.MainViewModel" />
+            type="com.shopwonder.jingzaoyd.viewmodel.MainViewModel" />
 
         <import type="android.view.View" />
     </data>
@@ -180,7 +180,7 @@
 
                                     </LinearLayout>
 
-                                    <com.css.wondercorefit.widget.ProgressRing
+                                    <com.shopwonder.jingzaoyd.widget.ProgressRing
                                         android:id="@+id/progress_ring"
                                         android:layout_width="100dp"
                                         android:layout_height="100dp"
@@ -733,7 +733,7 @@
                                 android:layout_height="100dp"
                                 android:layout_weight="1">
 
-                                <com.css.wondercorefit.widget.GeneralRoundImageView
+                                <com.shopwonder.jingzaoyd.widget.GeneralRoundImageView
                                     android:id="@+id/iv_rec1"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
@@ -768,7 +768,7 @@
                                 android:layout_marginStart="5dp"
                                 android:layout_weight="1">
 
-                                <com.css.wondercorefit.widget.GeneralRoundImageView
+                                <com.shopwonder.jingzaoyd.widget.GeneralRoundImageView
                                     android:id="@+id/iv_rec2"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
@@ -811,7 +811,7 @@
                                 android:layout_height="100dp"
                                 android:layout_weight="1">
 
-                                <com.css.wondercorefit.widget.GeneralRoundImageView
+                                <com.shopwonder.jingzaoyd.widget.GeneralRoundImageView
                                     android:id="@+id/iv_rec3"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
@@ -849,7 +849,7 @@
                                 android:layout_marginStart="5dp"
                                 android:layout_weight="1">
 
-                                <com.css.wondercorefit.widget.GeneralRoundImageView
+                                <com.shopwonder.jingzaoyd.widget.GeneralRoundImageView
                                     android:id="@+id/iv_rec4"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"

@@ -44,12 +44,12 @@
 			}
 		},
 		{
-			"package_name":"com.css.wondercorefit",
+			"package_name":"com.shopwonder.jingzaoyd",
 			"client":{
 				"app_id":"104287891"
 			},
 			"app_info":{
-				"package_name":"com.css.wondercorefit",
+				"package_name":"com.shopwonder.jingzaoyd",
 				"app_id":"104287891"
 			},
 			"oauth_client":{

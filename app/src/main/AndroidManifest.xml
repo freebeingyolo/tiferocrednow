@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.css.wondercorefit">
+    package="com.shopwonder.jingzaoyd">
     <!-- 网络权限 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -84,7 +84,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.css.wondercorefit.fileprovider"
+            android:authorities="com.shopwonder.jingzaoyd.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
