@@ -84,46 +84,46 @@ class MallFragment : BaseFragment<MallViewModel, FragmentMallBinding>(), View.On
     override fun onClick(v: View) {
         when (v.id) {
             R.id.layout_store -> {
-                openUrl("https://mall.jd.com/index-1000096602.html")
+                openUrl("https://shop.m.jd.com/?shopId=1000096602")
             }
             R.id.iv_banner -> {
-                openUrl("https://mall.jd.com/index-1000096602.html")
+                openUrl("https://shop.m.jd.com/?shopId=1000096602")
             }
             R.id.iv_product1 -> {
-                openUrl("https://item.jd.com/100016327406.html")
+                openUrl("https://item.m.jd.com/product/100016327406.html")
             }
             R.id.iv_product2 -> {
-                openUrl("https://item.jd.com/100021255872.html")
+                openUrl("https://item.m.jd.com/product/100021255872.html")
             }
             R.id.iv_product3 -> {
-                openUrl("https://item.jd.com/100020670306.html")
+                openUrl("https://item.m.jd.com/product/100020670306.html")
             }
             R.id.iv_product4 -> {
-                openUrl("https://item.jd.com/100009543563.html")
+                openUrl("https://item.m.jd.com/product/100009543563.html")
             }
             R.id.iv_product5 -> {
-                openUrl("https://item.jd.com/100007794845.html")
+                openUrl("https://item.m.jd.com/product/100007794845.html")
             }
             R.id.iv_product6 -> {
-                openUrl("https://item.jd.com/100019547802.html")
+                openUrl("https://item.m.jd.com/product/100019547802.html")
             }
             R.id.iv_product7 -> {
-                openUrl("https://item.jd.com/100021255850.html")
+                openUrl("https://item.m.jd.com/product/100021255850.html")
             }
             R.id.iv_product8 -> {
-                openUrl("https://item.jd.com/100016414388.html")
+                openUrl("https://item.m.jd.com/product/100016414388.html")
             }
             R.id.iv_product9 -> {
-                openUrl("https://item.jd.com/100020401214.html")
+                openUrl("https://item.m.jd.com/product/100020401214.html")
             }
             R.id.iv_product10 -> {
-                openUrl("https://item.jd.com/100012143757.html")
+                openUrl("https://item.m.jd.com/product/100012143757.html")
             }
             R.id.iv_product11 -> {
-                openUrl("https://item.jd.com/100020882540.html")
+                openUrl("https://item.m.jd.com/product/100020882540.html")
             }
             R.id.iv_product12 -> {
-                openUrl("https://item.jd.com/100009271611.html")
+                openUrl("https://item.m.jd.com/product/100009271611.html")
             }
         }
     }
