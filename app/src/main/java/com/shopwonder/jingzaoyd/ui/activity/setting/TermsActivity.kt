@@ -21,7 +21,7 @@ class TermsActivity : BaseActivity<DefaultViewModel, ActivityTermsBinding>() {
         const val TERMS_SERVICE = 1
         const val TERMS_PRIVACY = 2
         const val TERMS_LIABILITY = 3
-        var CURRENT = 0
+        var CURRENT = TERMS_SERVICE
         fun starActivity(context: Context, type: Int) {
             CURRENT = type
             val intent = Intent(context, TermsActivity::class.java)

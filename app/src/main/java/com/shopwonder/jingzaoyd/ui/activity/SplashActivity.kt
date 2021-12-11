@@ -117,7 +117,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
                 }
                 override fun updateDrawState(ds: TextPaint) {
                     super.updateDrawState(ds)
-                    ds.color = resources.getColor(R.color.color_0066ff)
+                    ds.color = resources.getColor(R.color.color_e1251b)
                     ds.isUnderlineText = false
                 }
             }, 11, 17, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -127,7 +127,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
                 }
                 override fun updateDrawState(ds: TextPaint) {
                     super.updateDrawState(ds)
-                    ds.color = resources.getColor(R.color.color_0066ff)
+                    ds.color = resources.getColor(R.color.color_e1251b)
                     ds.isUnderlineText = false
                 }
             }, 18, 24, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)

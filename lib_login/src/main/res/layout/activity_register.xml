@@ -195,17 +195,30 @@
                 android:visibility="invisible"
                 tools:visibility="visible" />
 
-            <CheckBox
-                android:id="@+id/cb_agreement"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="51dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="51dp"
-                android:checked="true"
-                android:text="勾选同意《用户服务协议》"
-                android:textColor="#FFAAAAAA"
-                android:textSize="11dp" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/cb_agreement"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true" />
+
+                <TextView
+                    android:id="@+id/tv_agreement"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="勾选同意《用户服务协议》"
+                    android:textColor="#FFAAAAAA"
+                    android:textSize="11dp"/>
+
+            </LinearLayout>
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <com.css.base.view.RoundTextView

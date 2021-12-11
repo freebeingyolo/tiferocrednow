@@ -44,7 +44,12 @@
         <activity
             android:screenOrientation="portrait"
             android:name=".ui.activity.setting.TermsActivity"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask" >
+            <intent-filter>
+                <action android:name="com.shopwonder.open" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:screenOrientation="portrait"
             android:name=".ui.activity.setting.FeedbackActivity"

@@ -1,8 +1,10 @@
 package com.css.login.ui
 
+import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
+import android.text.*
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.NetworkUtils
+import com.css.base.R
 import com.css.base.uibase.BaseActivity
 import com.css.base.utils.StringUtils
 import com.css.login.databinding.ActivityRegisterBinding
@@ -30,6 +33,19 @@ class RegisterActivity : BaseActivity<RegisterViewModel, ActivityRegisterBinding
         super.initView(savedInstanceState)
         SystemBarHelper.immersiveStatusBar(this, 0f)
         SystemBarHelper.setHeightAndPadding(this, mViewBinding.topView)
+        val builder = SpannableStringBuilder("勾选同意《用户服务协议》")
+        builder.setSpan(object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                startActivity(Intent("com.shopwonder.open"))
+            }
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.color = resources.getColor(R.color.color_e1251b)
+                ds.isUnderlineText = false
+            }
+        }, 4, 12, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+        mViewBinding.tvAgreement.text = builder
+        mViewBinding.tvAgreement.movementMethod = LinkMovementMethod.getInstance()
         mViewBinding.tvRegisterBtn.setOnClickListener(this)
         mViewBinding.tvToLogin.setOnClickListener(this)
         mViewBinding.tvSendCode.setOnClickListener(this)
