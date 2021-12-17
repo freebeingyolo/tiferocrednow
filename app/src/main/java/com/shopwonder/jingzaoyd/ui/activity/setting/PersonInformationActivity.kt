@@ -50,9 +50,9 @@ class PersonInformationActivity : BaseActivity<PersonInformationViewModel, Activ
 
     override fun registorUIChangeLiveDataCallBack() {
         super.registorUIChangeLiveDataCallBack()
-        WonderCoreCache.getLiveData<UserData>(CacheKey.USER_INFO).observe(this) {
+        WonderCoreCache.getLiveData<UserData>(CacheKey.USER_INFO).observe(this) { userData ->
             hideLoading()
-            val userData = it
+            if (userData == null) return@observe
             mViewBinding.tvTargetWeight.text = "${userData.goalBodyWeight}kg"
             mViewBinding.tvTargetStep.text = "${userData.goalStepCount}步"
             mViewBinding.tvStature.text = "${userData.height}cm"
