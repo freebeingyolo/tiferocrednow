@@ -42,7 +42,7 @@ class CodeBindActivity : BaseActivity<CodeBindViewModel, ActivityCodeBindBinding
         super.initView(savedInstanceState)
         SystemBarHelper.immersiveStatusBar(this, 0f)
         SystemBarHelper.setHeightAndPadding(this, mViewBinding.topView)
-        extra = intent.getStringExtra("extra")
+        extra = intent.getStringExtra("extra")!!
         mViewBinding.tvBindBtn.setOnClickListener(this)
         mViewBinding.tvToPwdBind.setOnClickListener(this)
         mViewBinding.tvSendCode.setOnClickListener(this)

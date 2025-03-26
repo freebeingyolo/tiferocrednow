@@ -38,7 +38,7 @@ class PwdBindActivity : BaseActivity<PwdBindViewModel, ActivityPwdBindBinding>()
         super.initView(savedInstanceState)
         SystemBarHelper.immersiveStatusBar(this, 0f)
         SystemBarHelper.setHeightAndPadding(this, mViewBinding.topView)
-        extra = intent.getStringExtra("extra")
+        extra = intent.getStringExtra("extra")!!
         mViewBinding.tvBindBtn.setOnClickListener(this)
         mViewBinding.tvToCodeBind.setOnClickListener(this)
     }
